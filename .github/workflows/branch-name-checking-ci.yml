@@ -1,0 +1,23 @@
+name: Branch Name Check
+
+on:
+  pull_request:
+    types: [ opened, edited, synchronize, reopened ]
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Branch Name
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            const regex = /^(feature|feat|fix|test|refactor|chore|style|screen|docs|component|ci)\/[\w-\/.]+$/;
+
+            if (!regex.test(branchName)) {
+              core.setFailed('Branch name does not match the required format: <type>/<branch-name>. Allowed types: feature,feat,fix,test,refactor,chore,style,screen,docs');
+            } else {
+              console.log('Branch name matches the required format');
+            }
