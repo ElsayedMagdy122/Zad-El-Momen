@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mehrab Al Momen</string>
+    <string name="fajr">الفجر</string>
+    <string name="sunrise">الشروق</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="asr">العصر</string>
+    <string name="maghrib">المغرب</string>
+    <string name="isha">العشاء</string>
+</resources>
