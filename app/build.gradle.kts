@@ -42,6 +42,12 @@ android {
 }
 
 dependencies {
+    implementation("com.batoulapps.adhan:adhan2:0.0.6")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
