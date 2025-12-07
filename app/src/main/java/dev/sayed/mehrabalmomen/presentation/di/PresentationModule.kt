@@ -1,0 +1,9 @@
+package dev.sayed.mehrabalmomen.presentation.di
+
+import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+val presentationModule = module {
+    viewModelOf(::HomeViewModel)
+}
