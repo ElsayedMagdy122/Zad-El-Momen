@@ -1,8 +1,12 @@
 package dev.sayed.mehrabalmomen.domain.entity
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
-data class Prayer(
+
+@OptIn(ExperimentalTime::class)
+data class Prayer constructor(
     val name: PrayerName,
-    val time: String,
+    val time: Instant,
 ){
     enum class PrayerName{
         FAJR,
