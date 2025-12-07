@@ -33,8 +33,7 @@ fun PrayersRowSection(
     Column(modifier = modifier) {
         ViewAllTodayPrayers(
             modifier = Modifier
-                .padding(top = 12.dp, bottom = 8.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         )
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
