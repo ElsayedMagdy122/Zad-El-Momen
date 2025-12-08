@@ -5,7 +5,8 @@ import androidx.annotation.StringRes
 data class HomeUiState(
     val location : LocationUiState = LocationUiState(),
     val time: TimeUiState = TimeUiState(),
-    val prayers: List<HomeUiState.PrayerUiState> = emptyList(),
+    val prayers: List<PrayerUiState> = emptyList(),
+    val nextPrayer: PrayerUiState = PrayerUiState()
 ) {
     data class LocationUiState(
         val country: String = "",
@@ -15,13 +16,13 @@ data class HomeUiState(
     data class PrayerUiState(
         @param:StringRes
         val name: Int = 0,
-        val time: String = "",
+        val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,
         val icon: Int = 0,
     )
     data class TimeUiState(
-        val hours: String = "",
-        val minutes: String = "",
-        val seconds: String = "",
+        val hours: String = "00",
+        val minutes: String = "00",
+        val seconds: String = "00",
     )
 }

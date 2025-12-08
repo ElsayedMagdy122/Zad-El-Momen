@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen
+package dev.sayed.mehrabalmomen.presentation.base
 
 import android.app.Application
 import dev.sayed.mehrabalmomen.data.di.dataModule

@@ -17,6 +17,12 @@ interface PrayerRepository {
     ): List<Prayer>
 
     @OptIn(ExperimentalTime::class)
-    fun getNextPrayer(instant: Instant) : Prayer
+    fun getNextPrayer(
+        instant: Instant,
+        madhab: Madhab,
+        calculationMethod: CalculationMethod,
+        location: Location,
+        date: LocalDate
+    ): Prayer
 
 }

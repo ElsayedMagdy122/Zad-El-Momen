@@ -12,11 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.UpComingPrayer
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.FeaturesSection
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.HomeAppBar
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.PrayersRowSection
+import dev.sayed.mehrabalmomen.presentation.screen.home.component.UpComingPrayer
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -29,7 +29,7 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         item { HomeAppBar(modifier = Modifier.padding(horizontal = 16.dp)) }
-        item { UpComingPrayer(modifier = Modifier.padding(horizontal = 16.dp)) }
+        item { UpComingPrayer(state = state, modifier = Modifier.padding(horizontal = 16.dp)) }
         item { PrayersRowSection(state.prayers) }
         item { FeaturesSection() }
     }
