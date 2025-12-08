@@ -1,0 +1,36 @@
+package dev.sayed.mehrabalmomen.presentation.screen.home.component
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+
+@Composable
+fun HomeAppBar(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
+        Text(
+            text = "Prayer Times",
+            color = Theme.color.primary.primary,
+            style = Theme.textStyle.title.medium,
+            modifier = modifier.weight(1f)
+        )
+        LocationCarousel()
+        Icon(
+            modifier = Modifier.padding(start = 8.dp),
+            painter = painterResource(id = R.drawable.settings_ic),
+            tint = Theme.color.primary.primary,
+            contentDescription = null
+        )
+    }
+}
