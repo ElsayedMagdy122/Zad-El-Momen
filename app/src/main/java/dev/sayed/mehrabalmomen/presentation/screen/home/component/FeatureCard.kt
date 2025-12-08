@@ -41,6 +41,7 @@ fun FeatureCard(
         Icon(
             painter = painterResource(R.drawable.mosque_column),
             contentDescription = null,
+            tint = Theme.color.secondary.secondary,
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(end = 10.dp)
