@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.FullPrayerTimesAppBar
+import dev.sayed.mehrabalmomen.presentation.components.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
 import org.koin.androidx.compose.koinViewModel
@@ -31,10 +31,10 @@ fun FullPrayerTimesViewScreen(viewModel: FullPrayerTimesViewModel = koinViewMode
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         item {
-            FullPrayerTimesAppBar(
+            AppBar(
+                title = "Prayer Times",
                 modifier = Modifier.padding(
-                    horizontal = 16.dp,
-                    vertical = 8.dp
+                    horizontal = 16.dp
                 )
             )
         }
