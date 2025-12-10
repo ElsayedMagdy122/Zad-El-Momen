@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
-import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
+import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
+import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MehrabTheme(isDarkTheme = isSystemInDarkTheme()) {
-                FullPrayerTimesViewScreen()
+                AppNavigation()
             }
         }
     }

@@ -13,16 +13,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
     private val prayerRepository: PrayerRepository
-) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()) {
+) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
+   private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     init {
         getDailyPrayers()
-      //  getNextPrayer()
+        //  getNextPrayer()
     }
 
     fun getDailyPrayers() {
@@ -32,7 +34,7 @@ class HomeViewModel(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
                     location = Location(latitude = 30.033333, longitude = 31.233334),
-                    date = LocalDate(2025, 12, 8)
+                    date =today
                 )
                 val zone = TimeZone.currentSystemDefault()
                 prayers.map { it.toPrayerUiState(zone = zone) }
@@ -57,7 +59,7 @@ class HomeViewModel(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
                     location = Location(latitude = 30.033333, longitude = 31.233334),
-                    date = LocalDate(2025, 12, 8)
+                    date = today
                 )
                 nextPrayer
             },
@@ -123,6 +125,15 @@ class HomeViewModel(
                 delay(1000)
             }
         }
+    }
+
+
+    override fun onClickViewAll() {
+        sendEffect(HomeEffect.NavigateToFullPrayersDetails)
+    }
+
+    override fun onClickQiblaDirection() {
+        sendEffect(HomeEffect.NavigateToCalibrateDevice)
     }
 
 }

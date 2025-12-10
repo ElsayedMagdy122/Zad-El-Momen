@@ -8,19 +8,21 @@ import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class FullPrayerTimesViewModel(
     private val prayerRepository: PrayerRepository
-) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()) {
+) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
+    FullPrayerTimeInteractionListener {
     private var countdownJob: Job? = null
+   private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
     init {
         getDailyPrayers()
         //  getNextPrayer()
@@ -33,7 +35,7 @@ class FullPrayerTimesViewModel(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
                     location = Location(latitude = 30.033333, longitude = 31.233334),
-                    date = LocalDate(2025, 12, 8)
+                    date = today
                 )
                 val zone = TimeZone.currentSystemDefault()
                 prayers.map { it.toPrayerUiState(zone = zone) }
@@ -61,7 +63,7 @@ class FullPrayerTimesViewModel(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
                     location = Location(latitude = 30.033333, longitude = 31.233334),
-                    date = LocalDate(2025, 12, 8)
+                    date = today
                 )
                 nextPrayer
             },
@@ -128,13 +130,15 @@ class FullPrayerTimesViewModel(
             }
         }
     }
+
     fun calculatePrayerProgress(
         prayers: List<FullPrayerTimesUiState.PrayerUiState>,
         nowMillis: Long
     ): List<FullPrayerTimesUiState.PrayerUiState> {
         return prayers.mapIndexed { index, prayer ->
             val prayerTimeMillis = prayer.instantTime?.toEpochMilliseconds() ?: 0L
-            val previousPrayerTimeMillis = if (index > 0) prayers[index - 1].instantTime?.toEpochMilliseconds() ?: 0L else 0L
+            val previousPrayerTimeMillis =
+                if (index > 0) prayers[index - 1].instantTime?.toEpochMilliseconds() ?: 0L else 0L
 
             val progress = when {
                 nowMillis >= prayerTimeMillis -> 1f
@@ -148,5 +152,10 @@ class FullPrayerTimesViewModel(
 
             prayer.copy(progress = progress)
         }
+    }
+
+    override fun onClickBack() {
+        sendEffect(FullPrayerTimesEffect.NavigateBack)
+
     }
 }
