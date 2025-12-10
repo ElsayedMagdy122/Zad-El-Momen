@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import kotlin.math.roundToInt
 
@@ -27,7 +29,7 @@ fun DirectionInfoSection(direction: Float) {
     ) {
 
         Text(
-            text = "Qibla Direction",
+            text = stringResource(R.string.qibla_direction),
             color = Theme.color.secondary.secondaryText,
             style = Theme.textStyle.label.medium
         )

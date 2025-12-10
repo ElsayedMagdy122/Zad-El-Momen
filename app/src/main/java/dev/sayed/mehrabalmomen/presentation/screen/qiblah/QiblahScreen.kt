@@ -23,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.components.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.DirectionCard
@@ -103,7 +105,7 @@ private fun QiblahScreenContent(
 
         AppBar(
             onBackClick = { navController.popBackStack() },
-            title = "Qiblah",
+            title = stringResource(R.string.qiblah),
         )
 
         KaabaOnCircle(

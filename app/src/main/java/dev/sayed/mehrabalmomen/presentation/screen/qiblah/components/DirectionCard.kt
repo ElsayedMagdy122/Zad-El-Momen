@@ -10,7 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 
 @Composable
@@ -37,8 +40,9 @@ private fun ColumnScope.DirectionInstruction() {
         modifier = Modifier
             .align(Alignment.CenterHorizontally)
             .padding(top = 16.dp),
-        text = "Rotate your phone to align with the Qibla direction.",
+        text = stringResource(R.string.rotate_your_phone_to_align_with_the_qibla_direction),
         color = Theme.color.primary.primary,
         style = Theme.textStyle.label.medium,
+        textAlign = TextAlign.Center
     )
 }
