@@ -22,14 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import kotlin.math.cos
 import kotlin.math.pow
@@ -37,7 +34,7 @@ import kotlin.math.sin
 
 
 @Composable
- fun CardFigureAnimation(modifier: Modifier = Modifier) {
+fun CardFigureAnimation(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -55,7 +52,6 @@ private fun AnimatedFigure8Component(modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition()
     val strokeColor = Theme.color.primary.primary
     val circleColor = Theme.color.secondary.secondaryText
-    val icon = ImageBitmap.imageResource(id = R.drawable.iphone)
     val imageSizeDp = 40.dp
 
     val imageSizePx = with(LocalDensity.current) { imageSizeDp.toPx() }
@@ -107,25 +103,10 @@ private fun AnimatedFigure8Component(modifier: Modifier = Modifier) {
 
 
             drawCircle(
-                //  color = Color(0xFFDAA520),
                 color = circleColor,
                 radius = 8.dp.toPx(),
                 center = Offset(pos[0], pos[1])
             )
-
-//            drawImage(
-//                image = icon,
-//                srcOffset = IntOffset.Zero,
-//                srcSize = IntSize(icon.width, icon.height),
-//                dstOffset = IntOffset(
-//                    (pos[0] - (imageSizePx / 2)).toInt(),
-//                    (pos[1] - (imageSizePx / 2)).toInt()
-//                ),
-//                dstSize = IntSize(
-//                    imageSizePx.toInt(),
-//                    imageSizePx.toInt()
-//                )
-//            )
         }
     }
 }
