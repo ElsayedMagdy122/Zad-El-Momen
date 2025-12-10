@@ -56,12 +56,12 @@ private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener):
         FeatureItem(
             title = "Nearby Mosques",
             icon = painterResource(R.drawable.mosque_02),
-            onClick = homeInteractionListener::onClickQiblaDirection
+            onClick = { }
         ),
         FeatureItem(
             title = "Qiblah Direction",
             icon = painterResource(R.drawable.kaaba_01),
-            onClick = {}
+            onClick = homeInteractionListener::onClickQiblaDirection
         ),
     )
 }

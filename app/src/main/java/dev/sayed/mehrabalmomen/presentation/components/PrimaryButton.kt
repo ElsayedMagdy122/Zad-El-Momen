@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,12 +19,14 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 @Composable
 fun PrimaryButton(
     text: String ,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.primary.primary)
+            .clickable(onClick =onClick)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -39,5 +42,5 @@ fun PrimaryButton(
 @Preview
 @Composable
 private fun PrimaryButtonPreview() {
-    PrimaryButton(text = "Primary Button")
+    PrimaryButton(text = "Primary Button", onClick = {})
 }

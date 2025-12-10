@@ -7,9 +7,13 @@ import kotlinx.serialization.Serializable
 sealed interface Route {
     @Serializable
     data object HomeScreen
+
     @Serializable
     data object FullPrayerTimeView
 
     @Serializable
     data object CalibrateDevice
+
+    @Serializable
+    data object QiblahScreen
 }

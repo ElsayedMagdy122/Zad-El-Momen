@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
+import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun AppNavigation() {
@@ -20,5 +22,6 @@ fun AppNavigation() {
         composable <Route.HomeScreen>{ HomeScreen(navController) }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }
+        composable<Route.QiblahScreen> { QiblahScreen(navController) }
     }
 }

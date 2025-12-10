@@ -24,6 +24,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.components.AppBar
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryButton
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.CardFigureAnimation
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard
 
@@ -97,6 +98,7 @@ fun Figure8CalibrationScreen(
         }
         PrimaryButton(
             text = "Continue",
+            onClick = {navController.navigate(Route.QiblahScreen)},
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp, top = 16.dp)
