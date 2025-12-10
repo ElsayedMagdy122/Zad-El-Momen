@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen
+package dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component
 
 import android.graphics.PathMeasure
 import androidx.compose.animation.core.LinearEasing
@@ -12,15 +12,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,55 +28,16 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.components.AppBar
-import dev.sayed.mehrabalmomen.presentation.components.PrimaryButton
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-@Composable
-fun Figure8CalibrationScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surfaces.surface)
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .padding(horizontal = 16.dp)
-    ) {
-        Column() {
-            AppBar(
-                title = "Calibrate Device",
-            )
-            CardFigureAnimation(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 16.dp)
-            )
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
-                text = "To improve accuracy, rotate your device slowly in a figure-8 motion three times.",
-                textAlign = TextAlign.Center,
-                color = Theme.color.primary.primary,
-                style = Theme.textStyle.label.medium,
-            )
-        }
-        PrimaryButton(
-            text = "Continue",
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp)
-
-        )
-    }
-}
 
 @Composable
-private fun CardFigureAnimation(modifier: Modifier = Modifier) {
+ fun CardFigureAnimation(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -90,7 +46,7 @@ private fun CardFigureAnimation(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AnimatedFigure8Component(modifier = Modifier.size(200.dp))
+        AnimatedFigure8Component(modifier = Modifier.size(160.dp))
     }
 }
 
@@ -153,7 +109,7 @@ private fun AnimatedFigure8Component(modifier: Modifier = Modifier) {
             drawCircle(
                 //  color = Color(0xFFDAA520),
                 color = circleColor,
-                radius = 10.dp.toPx(),
+                radius = 8.dp.toPx(),
                 center = Offset(pos[0], pos[1])
             )
 
@@ -172,10 +128,4 @@ private fun AnimatedFigure8Component(modifier: Modifier = Modifier) {
 //            )
         }
     }
-}
-
-@Preview
-@Composable
-private fun Figure8CalibrationScreenPreview() {
-    Figure8CalibrationScreen()
 }

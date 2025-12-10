@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 @Composable
 fun AppBar(
     title: String,
+    onBackClick: () -> Unit ,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth().padding(8.dp)) {
@@ -29,6 +31,9 @@ fun AppBar(
                 .size(40.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.surfaces.surfaceLow)
+                .clickable{
+                    onBackClick()
+                }
                 .align(Alignment.CenterStart),
             contentAlignment = Alignment.Center
         ) {
@@ -53,5 +58,5 @@ fun AppBar(
 @Preview
 @Composable
 private fun PrimaryAppBarPreview() {
-    AppBar(title = "Prayer Times")
+    AppBar(title = "Prayer Times", onBackClick = {})
 }

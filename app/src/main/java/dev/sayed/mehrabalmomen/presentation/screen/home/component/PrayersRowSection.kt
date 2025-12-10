@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,15 +24,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
 fun PrayersRowSection(
     prayers: List<HomeUiState.PrayerUiState>,
+    homeInteractionListener: HomeInteractionListener,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         ViewAllTodayPrayers(
+            onClickViewAll =homeInteractionListener::onClickViewAll ,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
@@ -53,7 +57,9 @@ fun PrayersRowSection(
 }
 
 @Composable
-fun ViewAllTodayPrayers(modifier: Modifier = Modifier) {
+fun ViewAllTodayPrayers(
+    onClickViewAll: () -> Unit,
+    modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -69,6 +75,9 @@ fun ViewAllTodayPrayers(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.primary.primary)
                 .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable {
+                    onClickViewAll()
+                }
         ) {
             Text(
                 text = "View All",

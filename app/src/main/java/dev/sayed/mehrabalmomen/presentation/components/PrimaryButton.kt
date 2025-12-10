@@ -31,7 +31,7 @@ fun PrimaryButton(
         Text(
             text = text,
             color = Theme.color.surfaces.surfaceHigh,
-            style = Theme.textStyle.title.large
+            style = Theme.textStyle.label.medium
         )
     }
 }

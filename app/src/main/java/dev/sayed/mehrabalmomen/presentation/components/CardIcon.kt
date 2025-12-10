@@ -18,7 +18,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 @Composable
 fun CardIcon(
     icon: Painter,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier
 ) {
     Icon(

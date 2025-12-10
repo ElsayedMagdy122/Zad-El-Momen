@@ -57,7 +57,7 @@ fun FeatureCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.Start,
         ) {
-            CardIcon(modifier = Modifier.size(24.dp), icon = icon, contentDescription = title)
+            CardIcon(modifier = Modifier.size(40.dp), icon = icon, contentDescription = title)
             Text(
                 text = title,
                 style = Theme.textStyle.title.small,
