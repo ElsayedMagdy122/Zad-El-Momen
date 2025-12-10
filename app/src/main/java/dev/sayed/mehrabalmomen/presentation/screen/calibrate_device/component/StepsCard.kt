@@ -44,7 +44,7 @@ private fun StepsItem(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .padding(vertical = 8.dp, horizontal = 12.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CardIcon(

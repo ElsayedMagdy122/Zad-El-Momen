@@ -48,7 +48,7 @@ fun Figure8CalibrationScreen(
             Steps(
                 icon = R.drawable.ic_rotated_phone,
                 title = "Step 2: Rotate on axis",
-                description = "Rotate your phone in a figure-eight motion to calibrate the…"
+                description = "Rotate your phone in a figure-eight motion to calibrate the magnetometer."
             ),
             Steps(
                 icon = R.drawable.ic_rotate,
