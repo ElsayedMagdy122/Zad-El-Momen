@@ -8,10 +8,11 @@ import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
+import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
@@ -21,20 +22,20 @@ class HomeViewModel(
     private val prayerRepository: PrayerRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
-   private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
     init {
         getDailyPrayers()
-        //  getNextPrayer()
     }
 
-    fun getDailyPrayers() {
+    private fun getDailyPrayers() {
         tryToCall(
             block = {
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
                     location = Location(latitude = 30.033333, longitude = 31.233334),
-                    date =today
+                    date = today
                 )
                 val zone = TimeZone.currentSystemDefault()
                 prayers.map { it.toPrayerUiState(zone = zone) }
@@ -51,7 +52,7 @@ class HomeViewModel(
 
     }
 
-    fun getNextPrayer() {
+    private fun getNextPrayer() {
         tryToCall(
             block = {
                 val nextPrayer = prayerRepository.getNextPrayer(
@@ -96,37 +97,41 @@ class HomeViewModel(
 
         countdownJob = viewModelScope.launch {
             while (true) {
-                val now = System.currentTimeMillis()
-                val diff = nextPrayerMillis - now
+                val diff = getTimeDifference(nextPrayerMillis)
 
                 if (diff <= 0) {
-                    updateState { current ->
-                        current.copy(
-                            time = HomeUiState.TimeUiState("00", "00", "00")
-                        )
-                    }
+                    handleCountdownFinished()
+                    getNextPrayer()
                     break
                 }
 
-                val hours = diff / 1000 / 3600
-                val minutes = (diff / 1000 % 3600) / 60
-                val seconds = diff / 1000 % 60
-
-                updateState { current ->
-                    current.copy(
-                        time = HomeUiState.TimeUiState(
-                            hours = String.format("%02d", hours),
-                            minutes = String.format("%02d", minutes),
-                            seconds = String.format("%02d", seconds)
-                        )
-                    )
-                }
+                val time = convertMillisToHMS(diff)
+                updateCountdownUi(time)
 
                 delay(1000)
             }
         }
     }
 
+    private fun updateCountdownUi(time: Triple<String, String, String>) {
+        updateState { current ->
+            current.copy(
+                time = HomeUiState.TimeUiState(
+                    hours = time.first,
+                    minutes = time.second,
+                    seconds = time.third
+                )
+            )
+        }
+    }
+
+    private fun handleCountdownFinished() {
+        updateState { current ->
+            current.copy(
+                time = HomeUiState.TimeUiState("00", "00", "00")
+            )
+        }
+    }
 
     override fun onClickViewAll() {
         sendEffect(HomeEffect.NavigateToFullPrayersDetails)

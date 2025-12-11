@@ -38,12 +38,23 @@ fun QiblahScreen(
     navController: NavController,
     viewModel: QiblahViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
-    val sensorManager =
-        remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     val state by viewModel.screenState.collectAsState()
     val animatedDirection by animateFloatAsState(targetValue = state.direction)
 
+    HandleCompassSensor(viewModel = viewModel)
+
+    QiblahScreenContent(
+        navController = navController,
+        direction = animatedDirection
+    )
+
+}
+
+@Composable
+private fun HandleCompassSensor(viewModel: QiblahViewModel) {
+    val context = LocalContext.current
+    val sensorManager =
+        remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
 
     val fixedReady = !viewModel.fixedQiblaDirection.isNaN()
 
@@ -51,9 +62,12 @@ fun QiblahScreen(
         if (!fixedReady) {
             onDispose { }
         } else {
+
             val listener = object : SensorEventListener {
                 override fun onSensorChanged(event: SensorEvent) {
-                    if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
+                    if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR ||
+                        event.sensor.type == Sensor.TYPE_ORIENTATION
+                    ) {
                         val rotationMatrix = FloatArray(9)
                         SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
                         val orientation = FloatArray(3)
@@ -69,23 +83,21 @@ fun QiblahScreen(
             }
 
             val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+                ?: sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+
             if (rotationSensor != null) {
                 sensorManager.registerListener(
                     listener,
                     rotationSensor,
-                    SensorManager.SENSOR_DELAY_UI
+                    SensorManager.SENSOR_DELAY_GAME
                 )
             }
+
             onDispose {
                 sensorManager.unregisterListener(listener)
             }
         }
     }
-    QiblahScreenContent(
-        navController = navController,
-        direction = animatedDirection
-    )
-
 }
 
 @Composable
