@@ -7,4 +7,13 @@
     <string name="asr">العصر</string>
     <string name="maghrib">المغرب</string>
     <string name="isha">العشاء</string>
+    <string name="upcoming_prayer">الصلاة القادمة</string>
+    <string name="no_upcoming_prayer">لا توجد صلاة قادمة</string>
+    <string name="no_remaining_time">لا يوجد وقت متبقٍ</string>
+    <string name="time_until">الوقت المتبقي حتى %1$s</string>
+    <string name="qiblah">القبلة</string>
+    <string name="rotate_your_phone_to_align_with_the_qibla_direction">
+    قم بتدوير هاتفك لمحاذاة اتجاه القبلة.
+</string>
+    <string name="qibla_direction">اتجاه القبلة</string>
 </resources>
