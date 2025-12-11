@@ -13,11 +13,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 
 
 @Composable
-fun FeaturesSection(modifier: Modifier = Modifier) {
-    val faithFeatureCards = faithFeatureCards()
+fun FeaturesSection(
+    homeInteractionListener: HomeInteractionListener,
+    modifier: Modifier = Modifier) {
+    val faithFeatureCards = faithFeatureCards(homeInteractionListener = homeInteractionListener)
     LazyVerticalGrid(
         modifier = modifier
             .padding(top = 12.dp)
@@ -48,17 +51,17 @@ data class FeatureItem(
 )
 
 @Composable
-private fun faithFeatureCards(): List<FeatureItem> {
+private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener): List<FeatureItem> {
     return listOf(
         FeatureItem(
             title = "Nearby Mosques",
             icon = painterResource(R.drawable.mosque_02),
-            onClick = {}
+            onClick = { }
         ),
         FeatureItem(
             title = "Qiblah Direction",
             icon = painterResource(R.drawable.kaaba_01),
-            onClick = {}
+            onClick = homeInteractionListener::onClickQiblaDirection
         ),
     )
 }

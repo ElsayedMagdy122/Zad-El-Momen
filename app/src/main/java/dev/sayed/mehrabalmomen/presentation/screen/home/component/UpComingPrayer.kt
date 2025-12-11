@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
@@ -44,7 +45,7 @@ fun UpComingPrayer(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp),
-            text = "Upcoming Prayer : ",
+            text = stringResource(R.string.upcoming_prayer),
             color = Theme.color.secondary.secondaryText,
             style = Theme.textStyle.label.medium,
             textAlign = TextAlign.Center
@@ -56,7 +57,7 @@ fun UpComingPrayer(
                 if (state.nextPrayer.name != 0)
                     "${context.getString(state.nextPrayer.name)} – ${state.nextPrayer.time}"
                 else
-                    "—",
+                    stringResource(R.string.no_upcoming_prayer),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large,
             textAlign = TextAlign.Center
@@ -66,9 +67,9 @@ fun UpComingPrayer(
                 .padding(horizontal = 16.dp),
             text =
                 if (state.nextPrayer.name != 0)
-                    "Time until ${context.getString(state.nextPrayer.name)} : "
+                    stringResource(R.string.time_until, context.getString(state.nextPrayer.name))
                 else
-                    "—",
+                    stringResource(R.string.no_remaining_time),
             color = Theme.color.secondary.secondaryText,
             style = Theme.textStyle.label.medium,
             textAlign = TextAlign.Center

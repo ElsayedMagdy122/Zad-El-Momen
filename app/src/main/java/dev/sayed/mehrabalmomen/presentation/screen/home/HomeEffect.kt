@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
-sealed interface HomeEffect {
-    data object NavigateToFullPrayersDetails
+sealed interface  HomeEffect {
+     object NavigateToFullPrayersDetails : HomeEffect
+    object NavigateToCalibrateDevice : HomeEffect
 }

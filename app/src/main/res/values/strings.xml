@@ -6,4 +6,11 @@
     <string name="asr">Asr</string>
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha</string>
+    <string name="upcoming_prayer">Upcoming prayer</string>
+    <string name="no_upcoming_prayer">No upcoming prayer</string>
+    <string name="no_remaining_time">No remaining time</string>
+    <string name="time_until">"Time until %1$s "</string>
+    <string name="qiblah">Qiblah</string>
+    <string name="rotate_your_phone_to_align_with_the_qibla_direction">Rotate your phone to align with the Qibla direction.</string>
+    <string name="qibla_direction">Qibla Direction</string>
 </resources>
