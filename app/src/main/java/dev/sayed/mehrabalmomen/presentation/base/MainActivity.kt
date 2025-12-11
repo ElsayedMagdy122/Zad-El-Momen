@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
-import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
