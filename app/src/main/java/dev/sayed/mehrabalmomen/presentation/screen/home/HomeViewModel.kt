@@ -4,8 +4,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
@@ -19,7 +19,8 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
-    private val prayerRepository: PrayerRepository
+    private val prayerRepository: PrayerRepository,
+    private val locationRepository: LocationRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -31,10 +32,11 @@ class HomeViewModel(
     private fun getDailyPrayers() {
         tryToCall(
             block = {
+                val location = locationRepository.getSavedLocation()
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = Location(latitude = 30.033333, longitude = 31.233334),
+                    location = location,
                     date = today
                 )
                 val zone = TimeZone.currentSystemDefault()
@@ -55,11 +57,12 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
+                val location = locationRepository.getSavedLocation()
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = Location(latitude = 30.033333, longitude = 31.233334),
+                    location = location,
                     date = today
                 )
                 nextPrayer
