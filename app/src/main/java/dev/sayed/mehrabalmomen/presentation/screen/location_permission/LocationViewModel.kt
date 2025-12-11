@@ -3,31 +3,18 @@ package dev.sayed.mehrabalmomen.presentation.screen.location_permission
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class LocationViewModel(
     private val locationRepository: LocationRepository
 ) : BaseViewModel<LocationUiState, LocationEffect>(LocationUiState()),
     LocationInteractionListener {
 
-    init {
-        getSavedLocation()
-    }
-
-    fun getSavedLocation() {
-        viewModelScope.launch {
-            delay(8.seconds)
-            val location = locationRepository.getSavedLocation()
-            println("SAYED Location : ${location}")
-        }
-    }
 
     override fun onClickAllowLocationAccess() {
         val state = screenState.value
 
-        if (state.buttonText == "Next") {
+        if (state.buttonState == LocationUiState.LocationButtonState.NEXT) {
             sendEffect(LocationEffect.NavigateToHome)
             return
         }
@@ -35,7 +22,8 @@ class LocationViewModel(
         updateState {
             it.copy(
                 isLoading = true,
-                isButtonEnabled = false
+                isButtonEnabled = false,
+                buttonState = LocationUiState.LocationButtonState.LOADING
             )
         }
 
@@ -47,17 +35,16 @@ class LocationViewModel(
             it.copy(
                 isLoading = false,
                 isButtonEnabled = true,
-                buttonText = "Next"
+                buttonState = LocationUiState.LocationButtonState.NEXT
             )
         }
     }
 
     fun onLocationPermissionGranted() {
-        // عند الموافقة على البيرمشن، جلب الموقع
         viewModelScope.launch {
             try {
                 val location = locationRepository.getCurrentLocation()
-                locationRepository.saveLocation(location) // حفظ الموقع
+                locationRepository.saveLocation(location)
                 onLocationGranted()
             } catch (e: Exception) {
                 onLocationDenied()
@@ -70,7 +57,7 @@ class LocationViewModel(
             it.copy(
                 isLoading = false,
                 isButtonEnabled = true,
-                buttonText = "Allow Location Access"
+                buttonState = LocationUiState.LocationButtonState.REQUEST_PERMISSION
             )
         }
     }

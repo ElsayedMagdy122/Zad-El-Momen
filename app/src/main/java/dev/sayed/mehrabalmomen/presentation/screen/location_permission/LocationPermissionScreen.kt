@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -28,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,7 +42,10 @@ import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.st
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LocationPermissionScreen(navController: NavController,viewModel: LocationViewModel = koinViewModel()) {
+fun LocationPermissionScreen(
+    navController: NavController,
+    viewModel: LocationViewModel = koinViewModel()
+) {
     val list = remember {
         listOf(
             Steps(
@@ -63,13 +66,14 @@ fun LocationPermissionScreen(navController: NavController,viewModel: LocationVie
         )
     }
     val state by viewModel.screenState.collectAsState()
-    val context = LocalContext.current
-
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-        viewModel.onLocationPermissionGranted()
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+        if (fineGranted || coarseGranted) {
+            viewModel.onLocationPermissionGranted()
         } else {
             viewModel.onLocationDenied()
         }
@@ -79,7 +83,12 @@ fun LocationPermissionScreen(navController: NavController,viewModel: LocationVie
         viewModel.effect.collect { effect ->
             when (effect) {
                 LocationEffect.RequestLocationPermission -> {
-                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    launcher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    )
                 }
 
                 LocationEffect.NavigateToHome -> {
@@ -111,7 +120,12 @@ fun LocationPermissionScreen(navController: NavController,viewModel: LocationVie
             ) {
 
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    LocationCard()
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LocationCard()
+                    }
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     LocationHeaders()
@@ -122,8 +136,8 @@ fun LocationPermissionScreen(navController: NavController,viewModel: LocationVie
         PrimaryButton(
             isLoading = state.isLoading,
             isEnabled = state.isButtonEnabled,
-            text = "Allow Location Access",
-            onClick = { viewModel.onClickAllowLocationAccess()  },
+            text = state.buttonState.text,
+            onClick = { viewModel.onClickAllowLocationAccess() },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
@@ -135,13 +149,15 @@ fun LocationPermissionScreen(navController: NavController,viewModel: LocationVie
 fun LocationCard(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(height = 80.dp, width = 80.dp)
+            .size(120.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow),
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
             painter = painterResource(id = R.drawable.location_ic),
             contentDescription = null,
             tint = Theme.color.primary.primary

@@ -1,12 +1,12 @@
 package dev.sayed.mehrabalmomen.data
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
@@ -28,7 +28,7 @@ class LocationRepositoryImpl(val context: Context, private val dataStore: DataSt
         LocationServices.getFusedLocationProviderClient(context)
 
 
-    @SuppressLint("MissingPermission")
+
     override suspend fun getCurrentLocation(): Location {
         return suspendCancellableCoroutine { cont ->
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
