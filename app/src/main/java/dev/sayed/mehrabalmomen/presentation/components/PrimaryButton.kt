@@ -26,13 +26,13 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
-    modifier: Modifier = Modifier,
     enabledContainerColor: Color = Theme.color.primary.primary,
-    disabledContainerColor: Color = Theme.color.surfaces.surfaceLow,
-    enabledTextColor: Color = Theme.color.surfaces.surfaceHigh,
-    disabledTextColor: Color = Theme.color.primary.shadePrimary,
+    disabledContainerColor: Color = Theme.color.semantic.disabled,
+    enabledTextColor: Color = Theme.color.primary.onPrimary,
+    disabledTextColor: Color = Theme.color.semantic.textDisabled,
 ) {
     val containerColor by animateColorAsState(
         targetValue = if (isEnabled) enabledContainerColor else disabledContainerColor,
