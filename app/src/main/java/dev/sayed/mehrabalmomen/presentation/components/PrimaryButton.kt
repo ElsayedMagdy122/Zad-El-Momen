@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -53,11 +54,16 @@ fun PrimaryButton(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = text,
-            color = textColor,
-            style = Theme.textStyle.label.medium
-        )
+        AnimatedContent(
+            targetState = text,
+            label = "TextChangeAnimation"
+        ) { newText ->
+            Text(
+                text = newText,
+                color = textColor,
+                style = Theme.textStyle.label.medium
+            )
+        }
         Crossfade(targetState = isLoading) { loading ->
             if (loading) {
                 Spacer(modifier = Modifier.padding(start = 12.dp))
