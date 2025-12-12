@@ -56,46 +56,41 @@ private fun HandleCompassSensor(viewModel: QiblahViewModel) {
     val sensorManager =
         remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
 
-    val fixedReady = !viewModel.fixedQiblaDirection.isNaN()
+    DisposableEffect(Unit) {
 
-    DisposableEffect(sensorManager, fixedReady) {
-        if (!fixedReady) {
-            onDispose { }
-        } else {
+        val listener = object : SensorEventListener {
 
-            val listener = object : SensorEventListener {
-                override fun onSensorChanged(event: SensorEvent) {
-                    if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR ||
-                        event.sensor.type == Sensor.TYPE_ORIENTATION
-                    ) {
-                        val rotationMatrix = FloatArray(9)
-                        SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-                        val orientation = FloatArray(3)
-                        SensorManager.getOrientation(rotationMatrix, orientation)
-                        val azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()
-                        val normalizedAzimuth = (azimuth + 360f) % 360f
+            override fun onSensorChanged(event: SensorEvent) {
+                if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
 
-                        viewModel.updateDirection(normalizedAzimuth)
-                    }
+                    val rotationMatrix = FloatArray(9)
+                    SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+
+                    val orientation = FloatArray(3)
+                    SensorManager.getOrientation(rotationMatrix, orientation)
+
+                    val azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()
+                    val normalized = (azimuth + 360f) % 360f
+
+                    viewModel.updateDirection(normalized)
                 }
-
-                override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
             }
 
-            val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-                ?: sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
 
-            if (rotationSensor != null) {
-                sensorManager.registerListener(
-                    listener,
-                    rotationSensor,
-                    SensorManager.SENSOR_DELAY_GAME
-                )
-            }
+        val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
-            onDispose {
-                sensorManager.unregisterListener(listener)
-            }
+        if (rotationSensor != null) {
+            sensorManager.registerListener(
+                listener,
+                rotationSensor,
+                SensorManager.SENSOR_DELAY_GAME
+            )
+        }
+
+        onDispose {
+            sensorManager.unregisterListener(listener)
         }
     }
 }
