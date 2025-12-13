@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.components
+package dev.sayed.mehrabalmomen.design_system.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.components.AnimatedLoadingIndicator
 
 @Composable
 fun PrimaryButton(

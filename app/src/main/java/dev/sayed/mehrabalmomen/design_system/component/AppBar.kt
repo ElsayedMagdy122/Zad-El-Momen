@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.components
+package dev.sayed.mehrabalmomen.design_system.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
