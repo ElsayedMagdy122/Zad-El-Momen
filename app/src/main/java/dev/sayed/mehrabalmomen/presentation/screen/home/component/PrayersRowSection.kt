@@ -74,10 +74,10 @@ fun ViewAllTodayPrayers(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.primary.primary)
-                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable {
                     onClickViewAll()
                 }
+                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             Text(
                 text = "View All",

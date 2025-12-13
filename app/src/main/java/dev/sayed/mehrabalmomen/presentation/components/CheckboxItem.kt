@@ -37,7 +37,7 @@ fun CheckboxItem(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Theme.color.surfaces.surface)
+            .background(Theme.color.surfaces.surfaceLow)
             .fillMaxWidth()
             .clickable { onCheckedChange(!isChecked) }
             .padding(12.dp),

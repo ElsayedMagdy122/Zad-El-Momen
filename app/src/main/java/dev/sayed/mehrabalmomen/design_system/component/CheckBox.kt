@@ -35,7 +35,7 @@ fun CheckboxTick(
         targetValue = if (isChecked)
             Theme.color.primary.primary
         else
-            Theme.color.surfaces.surfaceLow,
+            Theme.color.surfaces.surfaceHigh,
         animationSpec = tween(300)
     )
 
