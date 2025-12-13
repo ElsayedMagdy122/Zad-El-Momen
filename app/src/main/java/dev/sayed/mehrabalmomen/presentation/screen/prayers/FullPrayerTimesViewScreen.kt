@@ -12,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
@@ -45,7 +47,7 @@ fun FullPrayerTimesViewScreen(
         item {
             AppBar(
                 onBackClick = viewModel::onClickBack,
-                title = "Prayer Times",
+                title =  stringResource(R.string.prayer_times),
                 modifier = Modifier.padding(
                     horizontal = 16.dp
                 )

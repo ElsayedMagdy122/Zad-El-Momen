@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.design_system.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,28 +23,36 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 @Composable
 fun AppBar(
     title: String,
-    onBackClick: () -> Unit ,
-    modifier: Modifier = Modifier
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isBackEnabled: Boolean = true,
 ) {
-    Box(modifier = modifier.fillMaxWidth().padding(8.dp)) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Theme.color.surfaces.surfaceLow)
-                .clickable{
-                    onBackClick()
-                }
-                .align(Alignment.CenterStart),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        AnimatedVisibility(isBackEnabled) {
+            Box(
                 modifier = Modifier
-                    .size(12.dp),
-                painter = painterResource(id = R.drawable.ic_arrow_back),
-                contentDescription = null,
-                tint = Theme.color.primary.primary
-            )
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Theme.color.surfaces.surfaceLow)
+                    .clickable {
+                        onBackClick()
+                    }
+                    .align(Alignment.CenterStart),
+                contentAlignment = Alignment.Center
+            ) {
+
+                Icon(
+                    modifier = Modifier
+                        .size(12.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    contentDescription = null,
+                    tint = Theme.color.primary.primary
+                )
+            }
         }
 
         Text(

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.components.CardIcon
@@ -28,8 +29,8 @@ fun LazyGridScope.stepsCard(
     items(steps) {
         StepsItem(
             icon = painterResource(id = it.icon),
-            title = it.title,
-            description = it.description
+            title = stringResource( it.title),
+            description = stringResource(it.description)
         )
     }
 }
