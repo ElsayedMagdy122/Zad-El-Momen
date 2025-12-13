@@ -1,12 +1,12 @@
 package dev.sayed.mehrabalmomen.presentation.screen.location_permission
 
-import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import kotlinx.coroutines.launch
 
 class LocationViewModel(
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository
 ) : BaseViewModel<LocationUiState, LocationEffect>(LocationUiState()),
     LocationInteractionListener {
 
@@ -41,15 +41,19 @@ class LocationViewModel(
     }
 
     fun onLocationPermissionGranted() {
-        viewModelScope.launch {
-            try {
+        tryToCall(
+            block = {
                 val location = locationRepository.getCurrentLocation()
-                locationRepository.saveLocation(location)
+                settingsRepository.saveLocation(location.latitude,location.longitude)
+            },
+            onSuccess = {
                 onLocationGranted()
-            } catch (e: Exception) {
-                onLocationDenied()
+                settingsRepository.setOnboardingComplete()
+            },
+            onError = {
+                sendEffect(LocationEffect.RequestEnableGps)
             }
-        }
+        )
     }
 
     fun onLocationDenied() {

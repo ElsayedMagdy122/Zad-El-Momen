@@ -11,9 +11,10 @@ interface SettingsRepository {
     suspend fun saveCalculationMethod(method: CalculationMethod)
     suspend fun saveLocation(lat: Double, lng: Double)
 
+    suspend fun setOnboardingComplete()
     fun observeMadhab(): Flow<Madhab>
     fun observeCalculationMethod(): Flow<CalculationMethod>
     fun observeLocation(): Flow<Location>
-    
+    fun observeOnboardingComplete(): Flow<Boolean>
     fun observeAll(): Flow<AppSettings>
 }

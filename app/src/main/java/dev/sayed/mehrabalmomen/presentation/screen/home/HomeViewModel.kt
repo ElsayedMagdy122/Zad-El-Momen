@@ -7,11 +7,13 @@ import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -20,19 +22,36 @@ import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
     private val prayerRepository: PrayerRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     init {
         getDailyPrayers()
+        getAll()
     }
 
+    fun getAll(){
+        tryToCall(
+            block = {
+                settingsRepository.observeAll()
+            },
+            onSuccess = { flow ->
+                flow.collect { value ->
+                    println("SAYED Settings: $value")
+                }
+            },
+            onError = { error ->
+                error.printStackTrace()
+            }
+        )
+    }
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val location = locationRepository.getSavedLocation()
+                val location = settingsRepository.observeLocation().first()
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = Madhab.SHAFI,
                     calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,

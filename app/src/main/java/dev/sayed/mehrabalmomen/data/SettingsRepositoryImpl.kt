@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import dev.sayed.mehrabalmomen.data.DataStoreKeys.ONBOARDING_COMPLETE
 import dev.sayed.mehrabalmomen.domain.AppSettings
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
@@ -29,6 +30,10 @@ class SettingsRepositoryImpl(
         }
     }
 
+    override suspend fun setOnboardingComplete() {
+        dataStore.edit { it[ONBOARDING_COMPLETE] = true }
+    }
+
     override fun observeMadhab(): Flow<Madhab> =
         dataStore.data.map {
             Madhab.valueOf(
@@ -51,6 +56,9 @@ class SettingsRepositoryImpl(
                 longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0
             )
         }
+
+    override fun observeOnboardingComplete(): Flow<Boolean>  =
+        dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
 
     override fun observeAll(): Flow<AppSettings> =
         dataStore.data.map { prefs ->
