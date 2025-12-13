@@ -3,8 +3,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -33,7 +32,7 @@ class HomeViewModel(
         getAll()
     }
 
-    fun getAll(){
+    fun getAll() {
         tryToCall(
             block = {
                 settingsRepository.observeAll()
@@ -48,14 +47,18 @@ class HomeViewModel(
             }
         )
     }
+
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val location = settingsRepository.observeLocation().first()
+                val settings = settingsRepository.observeAll().first()
                 val prayers = prayerRepository.getDailyPrayers(
-                    madhab = Madhab.SHAFI,
-                    calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = location,
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(
+                        longitude = settings.longitude,
+                        latitude = settings.latitude
+                    ),
                     date = today
                 )
                 val zone = TimeZone.currentSystemDefault()
@@ -76,12 +79,15 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
-                val location = locationRepository.getSavedLocation()
+                val settings = settingsRepository.observeAll().first()
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
-                    madhab = Madhab.SHAFI,
-                    calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = location,
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(
+                        longitude = settings.longitude,
+                        latitude = settings.latitude
+                    ),
                     date = today
                 )
                 nextPrayer
