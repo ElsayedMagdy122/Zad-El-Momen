@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.components.PrimaryButton
+import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard

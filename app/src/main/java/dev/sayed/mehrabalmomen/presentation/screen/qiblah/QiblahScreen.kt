@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.components.AppBar
+import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.DirectionCard
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.KaabaOnCircle
 import org.koin.compose.viewmodel.koinViewModel

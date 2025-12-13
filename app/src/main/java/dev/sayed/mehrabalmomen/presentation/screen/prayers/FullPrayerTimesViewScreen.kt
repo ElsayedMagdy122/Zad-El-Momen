@@ -15,9 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.components.AppBar
-import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import dev.sayed.mehrabalmomen.presentation.screen.home.HomeEffect
+import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
 import org.koin.androidx.compose.koinViewModel
