@@ -10,7 +10,6 @@ import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
-import org.koin.core.scope.get
 import org.koin.dsl.module
 
 private const val DATASTORE_NAME = "location_prefs"
@@ -20,6 +19,6 @@ val dataModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl() }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
-    single<LocationRepository> { LocationRepositoryImpl(get(),get()) }
+    single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
     single { get<Context>().locationDataStore }
 }

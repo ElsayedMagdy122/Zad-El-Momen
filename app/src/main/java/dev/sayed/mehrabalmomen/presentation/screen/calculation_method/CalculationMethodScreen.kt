@@ -45,6 +45,7 @@ fun CalculationMethodScreen(
             }
         }
     }
+    val bottomPadding = 24.dp + 56.dp
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,19 +57,21 @@ fun CalculationMethodScreen(
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
-                .align(Alignment.TopCenter)
-                .padding(bottom = 64.dp),
+                .align(Alignment.TopCenter),
             columns = GridCells.Adaptive(minSize = 320.dp),
             contentPadding = PaddingValues(
-                bottom = 16.dp
+                top = 8.dp,
+                bottom = bottomPadding
             ),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            stickyHeader {
                 AppBar(
                     title = stringResource(R.string.prayer_time_calculation_methods),
-                    onBackClick = {}
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
                 )
             }
             items(CalculationMethodUiState.CalculationMethod.entries) { method ->

@@ -14,8 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -27,6 +30,7 @@ fun AppBar(
     modifier: Modifier = Modifier,
     isBackEnabled: Boolean = true,
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -47,7 +51,10 @@ fun AppBar(
 
                 Icon(
                     modifier = Modifier
-                        .size(12.dp),
+                        .size(12.dp)
+                        .graphicsLayer {
+                            scaleX = if (isRtl) -1f else 1f
+                        },
                     painter = painterResource(id = R.drawable.ic_arrow_back),
                     contentDescription = null,
                     tint = Theme.color.primary.primary
