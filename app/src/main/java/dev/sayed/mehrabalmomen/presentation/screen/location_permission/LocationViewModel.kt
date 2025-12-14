@@ -14,20 +14,25 @@ class LocationViewModel(
     override fun onClickAllowLocationAccess() {
         val state = screenState.value
 
-        if (state.buttonState == LocationUiState.LocationButtonState.NEXT) {
-            sendEffect(LocationEffect.NavigateToHome)
-            return
-        }
+        when (state.buttonState) {
+            LocationUiState.LocationButtonState.NEXT -> {
+                sendEffect(LocationEffect.NavigateToHome)
+            }
 
-        updateState {
-            it.copy(
-                isLoading = true,
-                isButtonEnabled = false,
-                buttonState = LocationUiState.LocationButtonState.LOADING
-            )
-        }
+            LocationUiState.LocationButtonState.REQUEST_PERMISSION -> {
+                updateState {
+                    it.copy(
+                        isLoading = true,
+                        isButtonEnabled = false,
+                        buttonState = LocationUiState.LocationButtonState.LOADING
+                    )
+                }
+                sendEffect(LocationEffect.RequestLocationPermission)
+            }
 
-        sendEffect(LocationEffect.RequestLocationPermission)
+            else -> {
+            }
+        }
     }
 
     fun onLocationGranted() {
@@ -44,7 +49,7 @@ class LocationViewModel(
         tryToCall(
             block = {
                 val location = locationRepository.getCurrentLocation()
-                settingsRepository.saveLocation(location.latitude,location.longitude)
+                settingsRepository.saveLocation(location.latitude, location.longitude)
             },
             onSuccess = {
                 onLocationGranted()
@@ -65,4 +70,5 @@ class LocationViewModel(
             )
         }
     }
+
 }

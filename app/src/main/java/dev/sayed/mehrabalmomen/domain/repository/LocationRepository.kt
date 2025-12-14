@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.domain.entity.Location
 
 interface LocationRepository {
     suspend fun saveLocation(location: Location)
+    suspend fun getCountryAndState(): Pair<String, String>
     suspend fun getCurrentLocation(): Location
     suspend fun getSavedLocation(): Location
 }

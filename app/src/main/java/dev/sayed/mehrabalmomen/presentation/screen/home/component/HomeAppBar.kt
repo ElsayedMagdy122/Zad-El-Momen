@@ -12,9 +12,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
-fun HomeAppBar(modifier: Modifier = Modifier) {
+fun HomeAppBar(
+    locationUiState: HomeUiState.LocationUiState,
+    modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -26,7 +29,7 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
             style = Theme.textStyle.title.medium,
             modifier = modifier.weight(1f)
         )
-        LocationCarousel()
+        LocationCarousel(locationUiState = locationUiState)
         Icon(
             modifier = Modifier.padding(start = 8.dp),
             painter = painterResource(id = R.drawable.settings_ic),

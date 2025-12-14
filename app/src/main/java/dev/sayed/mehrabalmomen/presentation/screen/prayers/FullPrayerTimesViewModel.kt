@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -155,17 +156,26 @@ class FullPrayerTimesViewModel(
         prayers: List<FullPrayerTimesUiState.PrayerUiState>,
         nowMillis: Long
     ): List<FullPrayerTimesUiState.PrayerUiState> {
+        val todayStartMillis = prayers.firstOrNull()?.instantTime
+            ?.toLocalDateTime(TimeZone.currentSystemDefault())
+            ?.date
+            ?.atStartOfDayIn(TimeZone.currentSystemDefault())
+            ?.toEpochMilliseconds() ?: 0L
+
         return prayers.mapIndexed { index, prayer ->
             val prayerTimeMillis = prayer.instantTime?.toEpochMilliseconds() ?: 0L
-            val previousPrayerTimeMillis =
-                if (index > 0) prayers[index - 1].instantTime?.toEpochMilliseconds() ?: 0L else 0L
+            val previousPrayerTimeMillisCorrected = if (index > 0) {
+                prayers[index - 1].instantTime?.toEpochMilliseconds() ?: 0L
+            } else {
+                todayStartMillis
+            }
 
             val progress = when {
                 nowMillis >= prayerTimeMillis -> 1f
-                nowMillis < previousPrayerTimeMillis -> 0f
+                nowMillis < previousPrayerTimeMillisCorrected -> 0f
                 else -> {
-                    val elapsed = nowMillis - previousPrayerTimeMillis
-                    val duration = prayerTimeMillis - previousPrayerTimeMillis
+                    val elapsed = nowMillis - previousPrayerTimeMillisCorrected
+                    val duration = prayerTimeMillis - previousPrayerTimeMillisCorrected
                     (elapsed.toFloat() / duration.toFloat()).coerceIn(0f, 1f)
                 }
             }

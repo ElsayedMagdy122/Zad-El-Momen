@@ -45,7 +45,7 @@ fun QiblahScreen(
 
     QiblahScreenContent(
         navController = navController,
-        direction = animatedDirection
+       state = state
     )
 
 }
@@ -98,7 +98,7 @@ private fun HandleCompassSensor(viewModel: QiblahViewModel) {
 @Composable
 private fun QiblahScreenContent(
     navController: NavController,
-    direction: Float
+    state: QiblahUiState
 ) {
     Column(
         modifier = Modifier
@@ -116,10 +116,10 @@ private fun QiblahScreenContent(
         )
 
         KaabaOnCircle(
-            directionDegrees = direction,
+            directionDegrees = state.direction,
             modifier = Modifier.padding(vertical = 64.dp)
         )
 
-        DirectionCard(direction = direction)
+        DirectionCard(locationUiState = state.location,direction =state.direction)
     }
 }

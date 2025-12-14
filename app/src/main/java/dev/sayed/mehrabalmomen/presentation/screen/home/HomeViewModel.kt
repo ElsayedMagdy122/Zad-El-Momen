@@ -29,21 +29,30 @@ class HomeViewModel(
 
     init {
         getDailyPrayers()
-        getAll()
+        getLocation()
     }
 
-    fun getAll() {
+
+    private fun getLocation() {
         tryToCall(
             block = {
-                settingsRepository.observeAll()
+                val location = locationRepository.getCountryAndState()
+                location
             },
-            onSuccess = { flow ->
-                flow.collect { value ->
-                    println("SAYED Settings: $value")
+            onSuccess = {
+                val location = HomeUiState.LocationUiState(
+                    country = it.first,
+                    city = it.second
+                )
+                updateState { state ->
+                    state.copy(
+                        location = location
+                    )
                 }
             },
-            onError = { error ->
-                error.printStackTrace()
+            onError = {
+                val location = HomeUiState.LocationUiState(country = "Unknown", city = "Unknown")
+                updateState { it.copy(location = location) }
             }
         )
     }

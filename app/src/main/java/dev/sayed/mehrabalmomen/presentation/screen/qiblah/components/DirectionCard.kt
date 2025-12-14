@@ -15,14 +15,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahUiState
 
 @Composable
-fun DirectionCard(direction: Float, modifier: Modifier = Modifier) {
+fun DirectionCard(
+    locationUiState: QiblahUiState.LocationUiState,
+    direction: Float, modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier.height(280.dp)
     ) {
         Column {
-            DirectionInfoSection(direction)
+            DirectionInfoSection(locationUiState = locationUiState, direction = direction)
             DirectionInstruction()
         }
 
