@@ -17,7 +17,7 @@
             android:name=".presentation.base.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MehrabAlMomen">
+            android:theme="@style/Theme.MehrabAlMomen.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

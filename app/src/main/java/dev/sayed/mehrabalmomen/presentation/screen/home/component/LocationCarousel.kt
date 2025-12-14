@@ -15,9 +15,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
-fun LocationCarousel(modifier: Modifier = Modifier) {
+fun LocationCarousel(
+    locationUiState: HomeUiState.LocationUiState,
+    modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -33,7 +36,7 @@ fun LocationCarousel(modifier: Modifier = Modifier) {
         )
         Text(
             modifier = Modifier.padding(start = 4.dp),
-            text = "Baghdad, Iraq",
+            text = "${locationUiState.city}, ${locationUiState.country}",
             color = Theme.color.primary.shadePrimary,
             style = Theme.textStyle.label.small
         )
