@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mehrab Al Momen</string>
+<!--    <string name="app_name">Mehrab Al Momen</string>-->
+    <string name="app_name">زاد المؤمن</string>
     <string name="fajr">الفجر</string>
     <string name="sunrise">الشروق</string>
     <string name="dhuhr">الظهر</string>
@@ -16,4 +17,63 @@
     قم بتدوير هاتفك لمحاذاة اتجاه القبلة.
 </string>
     <string name="qibla_direction">اتجاه القبلة</string>
+    <string name="hanafi">حنفي</string>
+    <string name="shafi">شافعي</string>
+    <string name="btn_continue">متابعة</string>
+    <string name="juristic_madhab">المذهب الفقهي</string>
+    <string name="accurate_prayer_times">مواقيت صلاة دقيقة</string>
+    <string name="precise_calculation_based_on_your_location">حساب دقيق بناءً على موقعك.</string>
+
+    <string name="qibla_direction_step">اتجاه القبلة</string>
+    <string name="guidance_to_the_kaaba_for_your_prayers">إرشادك نحو الكعبة لأداء صلواتك.</string>
+
+    <string name="protected_privacy">خصوصية محمية</string>
+    <string name="your_data_is_safe_and_secured">بياناتك آمنة ومحفوظة.</string>
+
+    <string name="step_1_hold_device_flat">الخطوة 1: أمسك الجهاز بشكل مستوٍ</string>
+    <string name="hold_your_phone_parallel_to_the_ground_to_establish_a_baseline">
+    أمسك هاتفك موازيًا للأرض لضبط الوضع الأساسي.
+</string>
+
+    <string name="step_2_rotate_on_axis">الخطوة 2: الدوران حول المحور</string>
+    <string name="rotate_your_phone_in_a_figure_eight_motion_to_calibrate_the_magnetometer">
+    قم بتدوير هاتفك بحركة تشبه رقم 8 لمعايرة مستشعر البوصلة.
+</string>
+
+    <string name="step_3_tilt_rotate">الخطوة 3: إمالة وتدوير</string>
+    <string name="tilt_and_rotate_the_device_to_cover_all_axes_for_complete_calibration">
+    قم بإمالة وتدوير الجهاز لتغطية جميع المحاور لإتمام المعايرة.
+</string>
+
+    <string name="location_permission">إذن الموقع</string>
+    <string name="we_need_your_location_to_calculate_accurate_prayer_times_and_determine_the_qibla_direction">
+    نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة.
+</string>
+    <string name="muslim_world_league">رابطة العالم الإسلامي</string>
+    <string name="egyptian">الهيئة المصرية</string>
+    <string name="karachi">كراتشي</string>
+    <string name="umm_al_qura">أم القرى</string>
+    <string name="dubai">دبي</string>
+    <string name="qatar">قطر</string>
+    <string name="kuwait">الكويت</string>
+    <string name="moonsighting_committee">لجنة تحري الهلال</string>
+    <string name="singapore">سنغافورة</string>
+    <string name="north_america">أمريكا الشمالية</string>
+    <string name="prayer_time_calculation_methods">طرق حساب أوقات الصلاة</string>
+    <string name="allow_location_access">السماح بالوصول إلى الموقع</string>
+    <string name="loading">جارٍ التحميل...</string>
+    <string name="next">التالي</string>
+    <string name="calibrate_device">معايرة الجهاز</string>
+    <string name="to_improve_accuracy_rotate_your_device_slowly_in_a_figure_8_motion_three_times">
+    لتحسين الدقة، قم بتدوير جهازك ببطء على شكل رقم 8 ثلاث مرات.
+</string>
+    <string name="qiblah_direction">اتجاه القبلة</string>
+    <string name="prayer_times">مواقيت الصلاة</string>
+    <string name="today_s_prayers">صلوات اليوم</string>
+    <string name="view_all">عرض الكل</string>
+    <string name="hours">ساعات</string>
+    <string name="minutes">دقائق</string>
+    <string name="seconds">ثوانٍ</string>
+    <string name="time_remaining">الوقت المتبقي</string>
+    <string name="today_s_full_timetable">الجدول الكامل لصلوات اليوم</string>
 </resources>

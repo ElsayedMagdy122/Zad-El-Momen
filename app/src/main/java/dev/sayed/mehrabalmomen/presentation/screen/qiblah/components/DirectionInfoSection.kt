@@ -14,10 +14,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahUiState
 import kotlin.math.roundToInt
 
 @Composable
-fun DirectionInfoSection(direction: Float) {
+fun DirectionInfoSection(
+    locationUiState: QiblahUiState.LocationUiState,
+    direction: Float) {
     Column(
         modifier = Modifier
             .padding(top = 16.dp)
@@ -41,7 +44,7 @@ fun DirectionInfoSection(direction: Float) {
         )
 
         Text(
-            text = "Cairo, Egypt",
+            text = "${locationUiState.city}, ${locationUiState.country}",
             color = Theme.color.surfaces.surfaceHigh,
             style = Theme.textStyle.label.small
         )

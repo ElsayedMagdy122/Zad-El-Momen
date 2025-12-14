@@ -18,4 +18,10 @@ sealed interface Route {
     data object QiblahScreen
     @Serializable
     data object LocationPermissionScreen
+
+    @Serializable
+    data object MadhabScreen
+
+    @Serializable
+    data object CalculationMethodScreen
 }

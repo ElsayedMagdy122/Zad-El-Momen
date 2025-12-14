@@ -1,5 +1,6 @@
-package dev.sayed.mehrabalmomen.presentation.components
+package dev.sayed.mehrabalmomen.design_system.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -20,18 +21,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.components.AnimatedLoadingIndicator
 
 @Composable
 fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
-    modifier: Modifier = Modifier,
     enabledContainerColor: Color = Theme.color.primary.primary,
-    disabledContainerColor: Color = Theme.color.surfaces.surfaceLow,
-    enabledTextColor: Color = Theme.color.surfaces.surfaceHigh,
-    disabledTextColor: Color = Theme.color.primary.shadePrimary,
+    disabledContainerColor: Color = Theme.color.semantic.disabled,
+    enabledTextColor: Color = Theme.color.primary.onPrimary,
+    disabledTextColor: Color = Theme.color.semantic.textDisabled,
 ) {
     val containerColor by animateColorAsState(
         targetValue = if (isEnabled) enabledContainerColor else disabledContainerColor,
@@ -53,11 +55,16 @@ fun PrimaryButton(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = text,
-            color = textColor,
-            style = Theme.textStyle.label.medium
-        )
+        AnimatedContent(
+            targetState = text,
+            label = "TextChangeAnimation"
+        ) { newText ->
+            Text(
+                text = newText,
+                color = textColor,
+                style = Theme.textStyle.label.medium
+            )
+        }
         Crossfade(targetState = isLoading) { loading ->
             if (loading) {
                 Spacer(modifier = Modifier.padding(start = 12.dp))

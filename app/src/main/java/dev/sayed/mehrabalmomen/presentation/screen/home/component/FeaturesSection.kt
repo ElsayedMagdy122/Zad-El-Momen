@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
@@ -53,13 +54,13 @@ data class FeatureItem(
 @Composable
 private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener): List<FeatureItem> {
     return listOf(
+//        FeatureItem(
+//            title = "Nearby Mosques",
+//            icon = painterResource(R.drawable.mosque_02),
+//            onClick = { }
+//        ),
         FeatureItem(
-            title = "Nearby Mosques",
-            icon = painterResource(R.drawable.mosque_02),
-            onClick = { }
-        ),
-        FeatureItem(
-            title = "Qiblah Direction",
+            title = stringResource(R.string.qiblah_direction),
             icon = painterResource(R.drawable.kaaba_01),
             onClick = homeInteractionListener::onClickQiblaDirection
         ),

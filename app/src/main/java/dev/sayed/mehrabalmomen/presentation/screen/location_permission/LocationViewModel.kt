@@ -1,12 +1,12 @@
 package dev.sayed.mehrabalmomen.presentation.screen.location_permission
 
-import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import kotlinx.coroutines.launch
 
 class LocationViewModel(
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository
 ) : BaseViewModel<LocationUiState, LocationEffect>(LocationUiState()),
     LocationInteractionListener {
 
@@ -14,20 +14,25 @@ class LocationViewModel(
     override fun onClickAllowLocationAccess() {
         val state = screenState.value
 
-        if (state.buttonState == LocationUiState.LocationButtonState.NEXT) {
-            sendEffect(LocationEffect.NavigateToHome)
-            return
-        }
+        when (state.buttonState) {
+            LocationUiState.LocationButtonState.NEXT -> {
+                sendEffect(LocationEffect.NavigateToHome)
+            }
 
-        updateState {
-            it.copy(
-                isLoading = true,
-                isButtonEnabled = false,
-                buttonState = LocationUiState.LocationButtonState.LOADING
-            )
-        }
+            LocationUiState.LocationButtonState.REQUEST_PERMISSION -> {
+                updateState {
+                    it.copy(
+                        isLoading = true,
+                        isButtonEnabled = false,
+                        buttonState = LocationUiState.LocationButtonState.LOADING
+                    )
+                }
+                sendEffect(LocationEffect.RequestLocationPermission)
+            }
 
-        sendEffect(LocationEffect.RequestLocationPermission)
+            else -> {
+            }
+        }
     }
 
     fun onLocationGranted() {
@@ -41,15 +46,19 @@ class LocationViewModel(
     }
 
     fun onLocationPermissionGranted() {
-        viewModelScope.launch {
-            try {
+        tryToCall(
+            block = {
                 val location = locationRepository.getCurrentLocation()
-                locationRepository.saveLocation(location)
+                settingsRepository.saveLocation(location.latitude, location.longitude)
+            },
+            onSuccess = {
                 onLocationGranted()
-            } catch (e: Exception) {
-                onLocationDenied()
+                settingsRepository.setOnboardingComplete()
+            },
+            onError = {
+                sendEffect(LocationEffect.RequestEnableGps)
             }
-        }
+        )
     }
 
     fun onLocationDenied() {
@@ -61,4 +70,5 @@ class LocationViewModel(
             )
         }
     }
+
 }

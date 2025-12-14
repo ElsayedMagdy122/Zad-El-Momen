@@ -79,7 +79,10 @@ fun UpComingPrayerFullView(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.asr),
+                    painter =  if (state.nextPrayer.icon != 0)
+                       painterResource(state.nextPrayer.icon)
+                    else
+                        painterResource(id = R.drawable.mosque_02),
                     contentDescription = null,
                     tint = Theme.color.primary.primary,
                     modifier = Modifier
@@ -94,7 +97,7 @@ fun UpComingPrayerFullView(
                 .padding(horizontal = 16.dp),
             text =
                 if (state.nextPrayer.name != 0)
-                    "Time remaining"
+                    stringResource(R.string.time_remaining)
                 else
                     stringResource(R.string.no_remaining_time),
             color = Theme.color.secondary.secondaryText,

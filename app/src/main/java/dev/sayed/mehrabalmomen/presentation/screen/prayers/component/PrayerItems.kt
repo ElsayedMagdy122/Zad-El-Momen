@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.components.LinearProgress
@@ -44,7 +45,7 @@ fun PrayerItems(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp),
-            text = "Today’s Full Timetable",
+            text = stringResource(R.string.today_s_full_timetable),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large
         )

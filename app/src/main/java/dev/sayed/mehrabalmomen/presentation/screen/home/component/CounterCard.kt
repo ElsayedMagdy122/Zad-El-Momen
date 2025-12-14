@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
@@ -39,21 +41,21 @@ fun CounterCard(
         ) {
             Text(
                 textAlign = TextAlign.Center,
-                text = "Hours",
+                text = stringResource(R.string.hours),
                 color = Theme.color.secondary.secondaryText,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)
             )
             Text(
                 textAlign = TextAlign.Center,
-                text = "Minutes",
+                text = stringResource(R.string.minutes),
                 color = Theme.color.secondary.secondaryText,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)
             )
             Text(
                 textAlign = TextAlign.Center,
-                text = "Seconds",
+                text = stringResource(R.string.seconds),
                 color = Theme.color.secondary.secondaryText,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)

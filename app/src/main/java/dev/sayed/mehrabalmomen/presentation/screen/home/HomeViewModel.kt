@@ -3,15 +3,16 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -20,23 +21,53 @@ import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
     private val prayerRepository: PrayerRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     init {
         getDailyPrayers()
+        getLocation()
+    }
+
+
+    private fun getLocation() {
+        tryToCall(
+            block = {
+                val location = locationRepository.getCountryAndState()
+                location
+            },
+            onSuccess = {
+                val location = HomeUiState.LocationUiState(
+                    country = it.first,
+                    city = it.second
+                )
+                updateState { state ->
+                    state.copy(
+                        location = location
+                    )
+                }
+            },
+            onError = {
+                val location = HomeUiState.LocationUiState(country = "Unknown", city = "Unknown")
+                updateState { it.copy(location = location) }
+            }
+        )
     }
 
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val location = locationRepository.getSavedLocation()
+                val settings = settingsRepository.observeAll().first()
                 val prayers = prayerRepository.getDailyPrayers(
-                    madhab = Madhab.SHAFI,
-                    calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = location,
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(
+                        longitude = settings.longitude,
+                        latitude = settings.latitude
+                    ),
                     date = today
                 )
                 val zone = TimeZone.currentSystemDefault()
@@ -57,12 +88,15 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
-                val location = locationRepository.getSavedLocation()
+                val settings = settingsRepository.observeAll().first()
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
-                    madhab = Madhab.SHAFI,
-                    calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-                    location = location,
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(
+                        longitude = settings.longitude,
+                        latitude = settings.latitude
+                    ),
                     date = today
                 )
                 nextPrayer

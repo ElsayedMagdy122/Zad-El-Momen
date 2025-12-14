@@ -7,10 +7,12 @@ data class MehrabColors(
     val primary: Primary,
     val surfaces: Surfaces,
     val secondary: Secondary,
+    val semantic : Semantic
 )
 
 data class Primary(
     val primary: Color,
+    val onPrimary: Color,
     val shadePrimary: Color,
 )
 
@@ -26,4 +28,11 @@ data class Secondary(
     val secondaryText: Color
 )
 
+data class Semantic(
+    val disabled : Color,
+    val textDisabled : Color,
+    val error : Color,
+    val warning : Color,
+    val success : Color
+)
 internal val LocalMehrabColor = staticCompositionLocalOf { lightThemeColors }

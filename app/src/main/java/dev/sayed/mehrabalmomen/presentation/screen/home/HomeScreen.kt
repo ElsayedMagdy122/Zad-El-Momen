@@ -47,7 +47,7 @@ fun HomeScreen(
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        item { HomeAppBar(modifier = Modifier.padding(horizontal = 16.dp)) }
+        item { HomeAppBar(modifier = Modifier.padding(horizontal = 16.dp), locationUiState = state.location) }
         item { UpComingPrayer(state = state, modifier = Modifier.padding(horizontal = 16.dp)) }
         item { PrayersRowSection(state.prayers, homeInteractionListener = viewModel) }
         item { FeaturesSection(homeInteractionListener = viewModel) }

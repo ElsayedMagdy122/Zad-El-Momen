@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
@@ -66,7 +67,7 @@ fun ViewAllTodayPrayers(
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = "Today's Prayers",
+            text = stringResource(R.string.today_s_prayers),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.medium
         )
@@ -74,13 +75,13 @@ fun ViewAllTodayPrayers(
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.color.primary.primary)
-                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable {
                     onClickViewAll()
                 }
+                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             Text(
-                text = "View All",
+                text = stringResource(R.string.view_all),
                 color = Theme.color.surfaces.surfaceHigh,
                 style = Theme.textStyle.label.medium
             )
