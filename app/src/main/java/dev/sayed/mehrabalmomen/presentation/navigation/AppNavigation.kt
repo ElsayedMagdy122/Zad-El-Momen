@@ -19,15 +19,20 @@ import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
     val navController = rememberNavController()
-    val startDestination by settingsRepository.observeOnboardingComplete()
-        .collectAsState(initial = null)
-    val destination =
-        if (startDestination == true && startDestination != null) Route.HomeScreen else Route.MadhabScreen
 
+    val onboardingComplete by settingsRepository
+        .observeOnboardingComplete()
+        .collectAsState(initial = null)
+
+    if (onboardingComplete == null) return
+
+    val startDestination =
+        if (onboardingComplete == true) Route.HomeScreen
+        else Route.MadhabScreen
 
     NavHost(
         navController = navController,
-        startDestination = destination
+        startDestination = startDestination
     ) {
         composable<Route.HomeScreen> { HomeScreen(navController) }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }

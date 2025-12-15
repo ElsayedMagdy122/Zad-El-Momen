@@ -27,7 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,8 +45,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
+import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard
@@ -97,7 +101,7 @@ fun LocationPermissionScreen(
             viewModel.onLocationDenied()
         }
     }
-
+    var toastData by remember { mutableStateOf<ToastDetails?>(null) }
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -111,7 +115,7 @@ fun LocationPermissionScreen(
                 }
 
                 LocationEffect.NavigateToHome -> {
-                   // navController.navigate(Route.HomeScreen)
+                    // navController.navigate(Route.HomeScreen)
                     navController.navigate(Route.HomeScreen) {
                         popUpTo(Route.MadhabScreen) { inclusive = true }
                     }
@@ -136,6 +140,14 @@ fun LocationPermissionScreen(
                                 )
                             }
                         }
+                }
+
+                is LocationEffect.ShowToast -> {
+                    toastData = ToastDetails(
+                        title = effect.title,
+                        message = effect.message,
+                        icon = effect.icon
+                    )
                 }
             }
         }
@@ -185,6 +197,16 @@ fun LocationPermissionScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
         )
+
+        toastData?.let {
+            PrimaryToast(
+                data = it,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 24.dp),
+                durationMillis = 3000L
+            )
+        }
     }
 }
 
