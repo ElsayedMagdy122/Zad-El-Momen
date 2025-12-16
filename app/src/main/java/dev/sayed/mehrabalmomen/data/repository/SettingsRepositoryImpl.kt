@@ -1,10 +1,11 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import dev.sayed.mehrabalmomen.data.DataStoreKeys
 import dev.sayed.mehrabalmomen.data.DataStoreKeys.ONBOARDING_COMPLETE
-import dev.sayed.mehrabalmomen.domain.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab

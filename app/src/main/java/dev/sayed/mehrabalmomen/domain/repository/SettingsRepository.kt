@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
-import dev.sayed.mehrabalmomen.domain.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
