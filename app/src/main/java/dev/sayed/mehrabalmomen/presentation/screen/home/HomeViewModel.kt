@@ -3,7 +3,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -22,7 +25,8 @@ import kotlin.time.ExperimentalTime
 class HomeViewModel(
     private val prayerRepository: PrayerRepository,
     private val locationRepository: LocationRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val azanSchedulerRepository: AzanSchedulerRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -30,6 +34,19 @@ class HomeViewModel(
     init {
         getDailyPrayers()
         getLocation()
+        scheduleAlarms()
+        viewModelScope.launch {
+            settingsRepository.observeAll().collect { settings ->
+                val prayers = prayerRepository.getDailyPrayers(
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(settings.latitude, settings.longitude),
+                    date = today
+                )
+                val alarms = prayers.map { it.toAlarm() }
+                azanSchedulerRepository.reschedule(alarms)
+            }
+        }
     }
 
 
@@ -56,7 +73,35 @@ class HomeViewModel(
             }
         )
     }
-
+    fun scheduleAlarms() {
+        tryToCall(
+            block = {
+                val settings = settingsRepository.observeAll().first()
+                val prayers = prayerRepository.getDailyPrayers(
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = Location(
+                        longitude = settings.longitude,
+                        latitude = settings.latitude
+                    ),
+                    date = today
+                )
+                prayers.map { it.toAlarm() }
+            },
+            onSuccess = { prayerList ->
+                azanSchedulerRepository.reschedule(prayerList)
+            },
+            onError = {}
+        )
+    }
+    fun Prayer.toAlarm(): PrayerAlarm {
+        return PrayerAlarm(
+            id = this.name.ordinal,
+            name = this.name,
+            timeMillis = time.toEpochMilliseconds(),
+            enabled = true
+        )
+    }
     private fun getDailyPrayers() {
         tryToCall(
             block = {
