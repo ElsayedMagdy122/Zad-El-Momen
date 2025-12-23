@@ -1,13 +1,14 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import dev.sayed.mehrabalmomen.data.DataStoreKeys
 import dev.sayed.mehrabalmomen.data.DataStoreKeys.ONBOARDING_COMPLETE
-import dev.sayed.mehrabalmomen.domain.AppSettings
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,6 +35,12 @@ class SettingsRepositoryImpl(
         dataStore.edit { it[ONBOARDING_COMPLETE] = true }
     }
 
+    override suspend fun setAlarmsScheduled(value: Boolean) {
+        dataStore.edit {
+            it[DataStoreKeys.ALARMS_SCHEDULED] = value
+        }
+    }
+
     override fun observeMadhab(): Flow<Madhab> =
         dataStore.data.map {
             Madhab.valueOf(
@@ -50,15 +57,18 @@ class SettingsRepositoryImpl(
         }
 
     override fun observeLocation(): Flow<Location> =
-        dataStore.data.map {prefs->
+        dataStore.data.map { prefs ->
             Location(
                 latitude = prefs[DataStoreKeys.LATITUDE_KEY] ?: 0.0,
                 longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0
             )
         }
 
-    override fun observeOnboardingComplete(): Flow<Boolean>  =
+    override fun observeOnboardingComplete(): Flow<Boolean> =
         dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
+
+    override fun observeAlarmsScheduled(): Flow<Boolean> =
+        dataStore.data.map { it[DataStoreKeys.ALARMS_SCHEDULED] ?: false }
 
     override fun observeAll(): Flow<AppSettings> =
         dataStore.data.map { prefs ->
@@ -71,7 +81,8 @@ class SettingsRepositoryImpl(
                         ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
                 ),
                 latitude = prefs[DataStoreKeys.LATITUDE_KEY] ?: 0.0,
-                longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0
+                longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0,
+                alarmsScheduled = prefs[DataStoreKeys.ALARMS_SCHEDULED] ?: false
             )
         }
 }
