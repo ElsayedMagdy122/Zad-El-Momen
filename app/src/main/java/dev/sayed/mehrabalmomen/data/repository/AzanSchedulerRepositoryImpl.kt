@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.data.repository
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import dev.sayed.mehrabalmomen.data.AlarmScheduler
 import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
 import dev.sayed.mehrabalmomen.data.reciver.AzanAlarmReceiver
@@ -28,20 +29,34 @@ class AzanSchedulerRepositoryImpl(
         return RescheduleResult.Success
     }
 
+//    private fun schedulePrayerAlarms(prayers: List<PrayerAlarm>) {
+//        prayers.forEach { prayer ->
+//            val intent = Intent(context, AzanAlarmReceiver::class.java)
+//                .putExtra("PRAYER_NAME", prayer.name.name)
+//
+//            if (prayer.enabled) {
+//                alarmScheduler.scheduleExact(
+//                    prayer.id,
+//                    prayer.timeMillis,
+//                    intent
+//                )
+//            } else {
+//                alarmScheduler.cancel(prayer.id, intent)
+//            }
+//        }
+//    }
     private fun schedulePrayerAlarms(prayers: List<PrayerAlarm>) {
         prayers.forEach { prayer ->
             val intent = Intent(context, AzanAlarmReceiver::class.java)
                 .putExtra("PRAYER_NAME", prayer.name.name)
+            alarmScheduler.cancel(prayer.id, intent)
+        }
 
-            if (prayer.enabled) {
-                alarmScheduler.scheduleExact(
-                    prayer.id,
-                    prayer.timeMillis,
-                    intent
-                )
-            } else {
-                alarmScheduler.cancel(prayer.id, intent)
-            }
+        prayers.filter { it.enabled }.forEach { prayer ->
+            val intent = Intent(context, AzanAlarmReceiver::class.java)
+                .putExtra("PRAYER_NAME", prayer.name.name)
+            Log.d("AzanSchedulerRepository", "Scheduling alarm for prayer: ${prayer.name}")
+            alarmScheduler.scheduleExact(prayer.id, prayer.timeMillis, intent)
         }
     }
 

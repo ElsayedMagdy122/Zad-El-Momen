@@ -33,19 +33,23 @@ class HomeViewModel(
 
     init {
         getDailyPrayers()
-        getLocation()
-        scheduleAlarms()
+        scheduleAlarmsIfNeeded()
+    }
+
+    private fun scheduleAlarmsIfNeeded() {
         viewModelScope.launch {
-            settingsRepository.observeAll().collect { settings ->
-                val prayers = prayerRepository.getDailyPrayers(
-                    madhab = settings.madhab,
-                    calculationMethod = settings.calculationMethod,
-                    location = Location(settings.latitude, settings.longitude),
-                    date = today
-                )
-                val alarms = prayers.map { it.toAlarm() }
-                azanSchedulerRepository.reschedule(alarms)
-            }
+            val isAlarmScheduled = settingsRepository.observeAlarmsScheduled().first()
+            if (isAlarmScheduled) return@launch
+            val settings = settingsRepository.observeAll().first()
+            val prayers = prayerRepository.getDailyPrayers(
+                madhab = settings.madhab,
+                calculationMethod = settings.calculationMethod,
+                location = Location(settings.latitude, settings.longitude),
+                date = today
+            )
+
+            azanSchedulerRepository.reschedule(prayers.map { it.toAlarm() })
+            settingsRepository.setAlarmsScheduled(true)
         }
     }
 
@@ -71,27 +75,6 @@ class HomeViewModel(
                 val location = HomeUiState.LocationUiState(country = "Unknown", city = "Unknown")
                 updateState { it.copy(location = location) }
             }
-        )
-    }
-    fun scheduleAlarms() {
-        tryToCall(
-            block = {
-                val settings = settingsRepository.observeAll().first()
-                val prayers = prayerRepository.getDailyPrayers(
-                    madhab = settings.madhab,
-                    calculationMethod = settings.calculationMethod,
-                    location = Location(
-                        longitude = settings.longitude,
-                        latitude = settings.latitude
-                    ),
-                    date = today
-                )
-                prayers.map { it.toAlarm() }
-            },
-            onSuccess = { prayerList ->
-                azanSchedulerRepository.reschedule(prayerList)
-            },
-            onError = {}
         )
     }
     fun Prayer.toAlarm(): PrayerAlarm {
@@ -123,6 +106,7 @@ class HomeViewModel(
                     currentState.copy(prayers = prayerList)
                 }
                 getNextPrayer()
+                getLocation()
             },
             onError = {}
         )

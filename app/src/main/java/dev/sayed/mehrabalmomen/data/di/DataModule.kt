@@ -8,12 +8,14 @@ import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
 import dev.sayed.mehrabalmomen.data.repository.AzanSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -31,6 +33,7 @@ val dataModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl() }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
+    single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
 
@@ -48,5 +51,5 @@ val dataModule = module {
     }
 
     // Manager
-    single { AzanManager(get(), get(), get()) }
+    single { AzanManager(get(), get(), get(),get()) }
 }

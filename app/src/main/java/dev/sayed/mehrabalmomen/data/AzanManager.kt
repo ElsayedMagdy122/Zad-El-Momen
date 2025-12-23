@@ -1,10 +1,14 @@
+@file:OptIn(ExperimentalTime::class)
+
 package dev.sayed.mehrabalmomen.data
 
+import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
+import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.first
@@ -20,7 +24,8 @@ import kotlin.time.ExperimentalTime
 class AzanManager(
     private val settingsRepository: SettingsRepository,
     private val prayerRepository: PrayerRepository,
-    private val schedulerRepository: AzanSchedulerRepository
+    private val schedulerRepository: AzanSchedulerRepository,
+    private val notificationsRepository: PrayerNotificationsRepository,
 ) {
 
     @OptIn(ExperimentalTime::class)
@@ -49,17 +54,28 @@ class AzanManager(
         }
 
     private fun createAlarms(prayers: List<Prayer>): List<PrayerAlarm> {
-        val enabledMap = mapOf(
-            Prayer.PrayerName.ASR to false
-        )
-        return prayers.toPrayerAlarms(enabledMap)
+        val enabledMap = runBlocking {
+            notificationsRepository.observeAll().first()
+        }
+
+        return prayers.mapIndexed { index, prayer ->
+
+            val offsetMillis = index * 5_000L
+
+            PrayerAlarm(
+                id = prayer.name.ordinal,
+                name = prayer.name,
+                timeMillis = prayer.time.toEpochMilliseconds() + offsetMillis,
+                enabled = enabledMap[prayer.name] ?: true
+            )
+        }
     }
 
     private fun logAlarms(alarms: List<PrayerAlarm>) {
         alarms.forEach { alarm ->
             val formatted = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
                 .format(Date(alarm.timeMillis))
-            android.util.Log.d("AthanReschedule", "Alarm for ${alarm.id} scheduled at $formatted")
+            Log.d("AzanManager", "Alarm for ${alarm.name}: $formatted")
         }
     }
 }

@@ -7,5 +7,6 @@ data class AppSettings(
     val madhab: Madhab,
     val calculationMethod: CalculationMethod,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val alarmsScheduled: Boolean
 )
