@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.repository
 
 import com.batoulapps.adhan2.Coordinates
 import com.batoulapps.adhan2.Qibla

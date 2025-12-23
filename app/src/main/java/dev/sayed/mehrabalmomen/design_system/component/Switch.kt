@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 @Composable
 fun Switch(
     isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val trackWidth = 48.dp
@@ -45,7 +47,8 @@ fun Switch(
         modifier = modifier
             .size(trackWidth, trackHeight)
             .clip(CircleShape)
-            .background(trackColor),
+            .background(trackColor)
+            .clickable(onClick = { onCheckedChange(!isChecked) }),
         contentAlignment = Alignment.CenterStart
     ) {
         Box(
@@ -70,8 +73,8 @@ private fun SwitchPreview() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Switch(isChecked = false)
-            Switch(isChecked = true)
+            Switch(isChecked = false, onCheckedChange = {})
+            Switch(isChecked = true, onCheckedChange = {})
         }
     }
 }

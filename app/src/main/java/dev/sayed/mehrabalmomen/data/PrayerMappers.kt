@@ -3,6 +3,7 @@
 package dev.sayed.mehrabalmomen.data
 
 import com.batoulapps.adhan2.PrayerTimes
+import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import kotlin.time.ExperimentalTime
@@ -22,6 +23,20 @@ fun PrayerTimes.toDomainPrayer(prayerName: Prayer.PrayerName): Prayer {
         name = prayerName,
         time = this.toPrayerTime(prayerName)
     )
+}
+
+@OptIn(ExperimentalTime::class)
+fun List<Prayer>.toPrayerAlarms(
+    enabledMap: Map<Prayer.PrayerName, Boolean>
+): List<PrayerAlarm> {
+    return this.mapIndexed { index, prayer ->
+        PrayerAlarm(
+            id = index,
+            timeMillis = prayer.time.toEpochMilliseconds(),
+            enabled = enabledMap[prayer.name] ?: true,
+            name = prayer.name
+        )
+    }
 }
 
 fun PrayerTimes.toPrayerTime(name: Prayer.PrayerName): Instant {
@@ -44,7 +59,8 @@ fun com.batoulapps.adhan2.Prayer.toDomainName(): Prayer.PrayerName {
         else -> throw IllegalArgumentException("Unsupported prayer")
     }
 }
-fun CalculationMethod.toAdhanCalculationMethod():  com.batoulapps.adhan2.CalculationMethod  {
+
+fun CalculationMethod.toAdhanCalculationMethod(): com.batoulapps.adhan2.CalculationMethod {
     return when (this) {
         CalculationMethod.MUSLIM_WORLD_LEAGUE -> com.batoulapps.adhan2.CalculationMethod.MUSLIM_WORLD_LEAGUE
         CalculationMethod.EGYPTIAN -> com.batoulapps.adhan2.CalculationMethod.EGYPTIAN

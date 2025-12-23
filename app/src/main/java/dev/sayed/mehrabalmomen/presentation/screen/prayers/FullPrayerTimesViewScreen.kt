@@ -19,6 +19,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerNotifications
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -34,6 +35,10 @@ fun FullPrayerTimesViewScreen(
            when(it){
                FullPrayerTimesEffect.NavigateBack ->{
                    navController.popBackStack()
+               }
+
+               FullPrayerTimesEffect.RequestExactAlarmPermission->{
+
                }
            }
         }
@@ -62,6 +67,13 @@ fun FullPrayerTimesViewScreen(
         item {
             PrayerItems(
                 prayers = state.prayers,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+        }
+        item {
+            PrayerNotifications(
+                prayerNotifications = state.prayerNotifications,
+                listener = viewModel,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }

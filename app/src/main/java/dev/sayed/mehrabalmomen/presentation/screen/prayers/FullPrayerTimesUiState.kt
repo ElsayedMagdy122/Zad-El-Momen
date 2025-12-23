@@ -1,6 +1,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import androidx.annotation.StringRes
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState.PrayerNotificationUiState
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -8,14 +10,15 @@ import kotlin.time.Instant
 data class FullPrayerTimesUiState(
     val time: TimeUiState = TimeUiState(),
     val prayers: List<PrayerUiState> = emptyList(),
-    val nextPrayer: PrayerUiState = PrayerUiState()
+    val nextPrayer: PrayerUiState = PrayerUiState(),
+    val prayerNotifications: List<PrayerNotificationUiState> =emptyList()
 ) {
     data class PrayerUiState(
         @param:StringRes
         val name: Int = 0,
         val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,
-        val progress : Float = 100.0f,
+        val progress: Float = 100.0f,
         val icon: Int = 0,
         val instantTime: Instant? = null
     )
@@ -25,4 +28,11 @@ data class FullPrayerTimesUiState(
         val minutes: String = "00",
         val seconds: String = "00",
     )
+
+    data class PrayerNotificationUiState(
+        @param:StringRes
+        val name: Int = 0,
+        val isEnabled: Boolean = true
+    )
+
 }

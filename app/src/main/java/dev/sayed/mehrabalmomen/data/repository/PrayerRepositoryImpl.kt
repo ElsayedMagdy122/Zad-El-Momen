@@ -1,10 +1,13 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.repository
 
 
 import com.batoulapps.adhan2.CalculationMethod
 import com.batoulapps.adhan2.Coordinates
 import com.batoulapps.adhan2.PrayerTimes
 import com.batoulapps.adhan2.data.DateComponents
+import dev.sayed.mehrabalmomen.data.toDomain
+import dev.sayed.mehrabalmomen.data.toDomainName
+import dev.sayed.mehrabalmomen.data.toPrayerTime
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.entity.Prayer

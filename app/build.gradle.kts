@@ -49,7 +49,7 @@ android {
 dependencies {
     implementation("com.batoulapps.adhan:adhan2:0.0.6")
     implementation("com.google.android.gms:play-services-location:21.0.1")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
@@ -59,7 +59,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.navigation:navigation-runtime-ktx:$nav_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
     implementation(libs.androidx.core.ktx)
