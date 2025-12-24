@@ -24,4 +24,7 @@ sealed interface Route {
 
     @Serializable
     data object CalculationMethodScreen
+
+    @Serializable
+    data object MapsScreen
 }
