@@ -5,7 +5,7 @@ import com.batoulapps.adhan2.CalculationMethod
 import com.batoulapps.adhan2.Coordinates
 import com.batoulapps.adhan2.PrayerTimes
 import com.batoulapps.adhan2.data.DateComponents
-import dev.sayed.mehrabalmomen.data.toDomain
+import dev.sayed.mehrabalmomen.data.toPrayerList
 import dev.sayed.mehrabalmomen.data.toDomainName
 import dev.sayed.mehrabalmomen.data.toPrayerTime
 import dev.sayed.mehrabalmomen.domain.entity.Location
@@ -28,7 +28,7 @@ class PrayerRepositoryImpl : PrayerRepository {
         date: LocalDate
     ): List<Prayer> {
         val prayerTimes = getPrayerTimes(location = location, date = date)
-        return prayerTimes.toDomain()
+        return prayerTimes.toPrayerList()
     }
 
     override fun getNextPrayer(

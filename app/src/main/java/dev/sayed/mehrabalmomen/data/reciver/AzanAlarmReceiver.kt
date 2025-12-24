@@ -7,23 +7,21 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.content.ContextCompat
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.Constants.AZAN_CHANNEL_ID
 import dev.sayed.mehrabalmomen.data.Constants.AZAN_CHANNEL_NAME
 import dev.sayed.mehrabalmomen.data.Constants.PRAYER_NAME_KEY
-import dev.sayed.mehrabalmomen.data.service.AzanService
 
 class AzanAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val prayerName =
             intent?.getStringExtra(PRAYER_NAME_KEY) ?: "Unknown"
-        //   showNotification(context, prayerName)
+        showNotification(context, prayerName)
 
-        val serviceIntent = Intent(context, AzanService::class.java).apply {
-            putExtra(PRAYER_NAME_KEY, prayerName)
-        }
-        ContextCompat.startForegroundService(context, serviceIntent)
+//        val serviceIntent = Intent(context, AzanService::class.java).apply {
+//            putExtra(PRAYER_NAME_KEY, prayerName)
+//        }
+//        ContextCompat.startForegroundService(context, serviceIntent)
 
     }
 

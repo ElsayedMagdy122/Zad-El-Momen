@@ -1,10 +1,11 @@
 package dev.sayed.mehrabalmomen.data.repository
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import dev.sayed.mehrabalmomen.data.AlarmScheduler
 import dev.sayed.mehrabalmomen.data.Constants.PRAYER_NAME_KEY
-import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
 import dev.sayed.mehrabalmomen.data.reciver.AzanAlarmReceiver
 import dev.sayed.mehrabalmomen.data.reciver.MidnightRolloverReceiver
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
@@ -14,19 +15,24 @@ import java.util.Calendar
 
 class AzanSchedulerRepositoryImpl(
     private val context: Context,
-    private val permission: ExactAlarmPermissionDataSource,
     private val alarmScheduler: AlarmScheduler
 ) : AzanSchedulerRepository {
 
     override fun reschedule(prayers: List<PrayerAlarm>): RescheduleResult {
 
-        if (!permission.hasPermission()) {
+        if (!hasPermission()) {
             return RescheduleResult.PermissionRequired
         }
 
         scheduleEnabledPrayerAlarms(prayers)
         scheduleMidnight()
         return RescheduleResult.Success
+    }
+   private fun hasPermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
+        return context
+            .getSystemService(AlarmManager::class.java)
+            .canScheduleExactAlarms()
     }
 
     private fun scheduleEnabledPrayerAlarms(prayers: List<PrayerAlarm>) {
@@ -62,7 +68,7 @@ class AzanSchedulerRepositoryImpl(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
 
-    private  companion object{
-       const val MIDNIGHT_ROLLOVER_REQUEST_CODE = 99
+    private companion object {
+        const val MIDNIGHT_ROLLOVER_REQUEST_CODE = 99
     }
 }

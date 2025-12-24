@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import dev.sayed.mehrabalmomen.data.AlarmScheduler
 import dev.sayed.mehrabalmomen.data.AzanManager
-import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
 import dev.sayed.mehrabalmomen.data.repository.AzanSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.NetworkConnectionRepositoryImpl
@@ -38,15 +37,13 @@ val dataModule = module {
     single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
 
     // Scheduler dependencies
-    single { ExactAlarmPermissionDataSource(androidContext()) }
     single { AlarmScheduler(androidContext()) }
 
     // Scheduler repository
     single<AzanSchedulerRepository> {
         AzanSchedulerRepositoryImpl(
             context = androidContext(),
-            alarmScheduler = get(),
-            permission = get()
+            alarmScheduler = get()
         )
     }
 
