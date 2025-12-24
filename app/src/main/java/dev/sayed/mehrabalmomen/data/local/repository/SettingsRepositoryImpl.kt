@@ -1,10 +1,9 @@
-package dev.sayed.mehrabalmomen.data.repository
+package dev.sayed.mehrabalmomen.data.local.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import dev.sayed.mehrabalmomen.data.DataStoreKeys
-import dev.sayed.mehrabalmomen.data.DataStoreKeys.ONBOARDING_COMPLETE
+import dev.sayed.mehrabalmomen.data.local.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
@@ -17,41 +16,35 @@ class SettingsRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
     override suspend fun saveMadhab(madhab: Madhab) {
-        dataStore.edit { it[DataStoreKeys.MADHAB] = madhab.name }
+        dataStore.edit { it[SettingsKeys.MADHAB] = madhab.name }
     }
 
     override suspend fun saveCalculationMethod(method: CalculationMethod) {
-        dataStore.edit { it[DataStoreKeys.CALCULATION] = method.name }
+        dataStore.edit { it[SettingsKeys.CALCULATION] = method.name }
     }
 
-    override suspend fun saveLocation(lat: Double, lng: Double) {
+    override suspend fun saveLocation(location: Location) {
         dataStore.edit {
-            it[DataStoreKeys.LATITUDE_KEY] = lat
-            it[DataStoreKeys.LONGITUDE_KEY] = lng
+            it[SettingsKeys.LATITUDE_KEY] = location.latitude
+            it[SettingsKeys.LONGITUDE_KEY] = location.longitude
         }
     }
 
     override suspend fun setOnboardingComplete() {
-        dataStore.edit { it[ONBOARDING_COMPLETE] = true }
-    }
-
-    override suspend fun setAlarmsScheduled(value: Boolean) {
-        dataStore.edit {
-            it[DataStoreKeys.ALARMS_SCHEDULED] = value
-        }
+        dataStore.edit { it[SettingsKeys.ONBOARDING_COMPLETE] = true }
     }
 
     override fun observeMadhab(): Flow<Madhab> =
         dataStore.data.map {
             Madhab.valueOf(
-                it[DataStoreKeys.MADHAB] ?: Madhab.SHAFI.name
+                it[SettingsKeys.MADHAB] ?: Madhab.SHAFI.name
             )
         }
 
     override fun observeCalculationMethod(): Flow<CalculationMethod> =
         dataStore.data.map {
             CalculationMethod.valueOf(
-                it[DataStoreKeys.CALCULATION]
+                it[SettingsKeys.CALCULATION]
                     ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
             )
         }
@@ -59,30 +52,28 @@ class SettingsRepositoryImpl(
     override fun observeLocation(): Flow<Location> =
         dataStore.data.map { prefs ->
             Location(
-                latitude = prefs[DataStoreKeys.LATITUDE_KEY] ?: 0.0,
-                longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0
+                latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
+                longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0
             )
         }
 
     override fun observeOnboardingComplete(): Flow<Boolean> =
-        dataStore.data.map { it[ONBOARDING_COMPLETE] ?: false }
+        dataStore.data.map { it[SettingsKeys.ONBOARDING_COMPLETE] ?: false }
 
-    override fun observeAlarmsScheduled(): Flow<Boolean> =
-        dataStore.data.map { it[DataStoreKeys.ALARMS_SCHEDULED] ?: false }
 
-    override fun observeAll(): Flow<AppSettings> =
+    override fun observeAppSettings(): Flow<AppSettings> =
         dataStore.data.map { prefs ->
             AppSettings(
                 madhab = Madhab.valueOf(
-                    prefs[DataStoreKeys.MADHAB] ?: Madhab.SHAFI.name
+                    prefs[SettingsKeys.MADHAB] ?: Madhab.SHAFI.name
                 ),
                 calculationMethod = CalculationMethod.valueOf(
-                    prefs[DataStoreKeys.CALCULATION]
+                    prefs[SettingsKeys.CALCULATION]
                         ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
                 ),
-                latitude = prefs[DataStoreKeys.LATITUDE_KEY] ?: 0.0,
-                longitude = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0,
-                alarmsScheduled = prefs[DataStoreKeys.ALARMS_SCHEDULED] ?: false
+                latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
+                longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
+                alarmsScheduled = prefs[SettingsKeys.ALARMS_SCHEDULED] ?: false
             )
         }
 }

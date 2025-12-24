@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.repository
+package dev.sayed.mehrabalmomen.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager

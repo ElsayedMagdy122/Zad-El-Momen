@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.edit
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import dev.sayed.mehrabalmomen.data.DataStoreKeys
+import dev.sayed.mehrabalmomen.data.local.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -25,8 +25,8 @@ class LocationRepositoryImpl(val context: Context, private val dataStore: DataSt
     LocationRepository {
     override suspend fun saveLocation(location: Location) {
         dataStore.edit { prefs ->
-            prefs[DataStoreKeys.LATITUDE_KEY] = location.latitude
-            prefs[DataStoreKeys.LONGITUDE_KEY] = location.longitude
+            prefs[SettingsKeys.LATITUDE_KEY] = location.latitude
+            prefs[SettingsKeys.LONGITUDE_KEY] = location.longitude
         }
     }
 
@@ -71,8 +71,8 @@ class LocationRepositoryImpl(val context: Context, private val dataStore: DataSt
 
     override suspend fun getSavedLocation(): Location {
         val prefs = dataStore.data.first()
-        val lat = prefs[DataStoreKeys.LATITUDE_KEY] ?: 0.0
-        val lon = prefs[DataStoreKeys.LONGITUDE_KEY] ?: 0.0
+        val lat = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0
+        val lon = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0
         return Location(lat, lon)
     }
 }

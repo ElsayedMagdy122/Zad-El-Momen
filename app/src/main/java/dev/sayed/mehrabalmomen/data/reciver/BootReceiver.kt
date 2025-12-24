@@ -4,12 +4,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dev.sayed.mehrabalmomen.data.AzanManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.context.GlobalContext
 
 
-class BootReceiver: BroadcastReceiver() {
+class BootReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent?) {
         val azanManager = GlobalContext.get().get<AzanManager>()
-        azanManager.reschedule()
+        CoroutineScope(Dispatchers.IO).launch {
+            azanManager.rescheduleTodayPrayerAlarms()
+        }
     }
 }

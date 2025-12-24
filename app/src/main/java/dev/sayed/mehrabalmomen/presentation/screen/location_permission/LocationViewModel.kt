@@ -69,7 +69,7 @@ class LocationViewModel(
             tryToCall(
                 block = {
                     val location = locationRepository.getCurrentLocation()
-                    settingsRepository.saveLocation(location.latitude, location.longitude)
+                    settingsRepository.saveLocation(location)
                 },
                 onSuccess = {
                     onLocationGranted()

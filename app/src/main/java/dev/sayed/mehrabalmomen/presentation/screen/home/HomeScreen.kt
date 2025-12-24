@@ -61,6 +61,11 @@ fun HomeScreen(
         }
     }
     LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+    LaunchedEffect(Unit) {
         viewModel.effect.collect {
             when (it) {
                 HomeEffect.NavigateToFullPrayersDetails -> {

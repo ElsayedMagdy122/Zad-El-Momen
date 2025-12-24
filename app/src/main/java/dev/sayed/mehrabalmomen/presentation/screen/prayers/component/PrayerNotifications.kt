@@ -44,7 +44,7 @@ fun PrayerNotifications(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp),
-            text = stringResource(R.string.today_s_full_timetable),
+            text = "Prayer Notifications",
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large
         )

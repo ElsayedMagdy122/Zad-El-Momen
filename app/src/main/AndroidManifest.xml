@@ -4,13 +4,11 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SET_ALARM"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <application
         android:name=".presentation.base.MehrabApplication"
         android:allowBackup="true"
@@ -41,7 +39,10 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
-
+        <service
+            android:name=".data.service.AzanService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"/>
         <receiver
             android:name=".data.reciver.MidnightRolloverReceiver"
             android:exported="true" />

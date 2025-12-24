@@ -2,16 +2,15 @@ package dev.sayed.mehrabalmomen.data.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import dev.sayed.mehrabalmomen.data.AlarmScheduler
+import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
 import dev.sayed.mehrabalmomen.data.AzanManager
-import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
 import dev.sayed.mehrabalmomen.data.repository.AzanSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
-import dev.sayed.mehrabalmomen.data.repository.NetworkConnectionRepositoryImpl
-import dev.sayed.mehrabalmomen.data.repository.PrayerNotificationsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.data.local.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
-import dev.sayed.mehrabalmomen.data.repository.SettingsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
@@ -38,15 +37,13 @@ val dataModule = module {
     single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
 
     // Scheduler dependencies
-    single { ExactAlarmPermissionDataSource(androidContext()) }
     single { AlarmScheduler(androidContext()) }
 
     // Scheduler repository
     single<AzanSchedulerRepository> {
         AzanSchedulerRepositoryImpl(
             context = androidContext(),
-            alarmScheduler = get(),
-            permission = get()
+            alarmScheduler = get()
         )
     }
 
