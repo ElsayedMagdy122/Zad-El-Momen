@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.Constants
+import dev.sayed.mehrabalmomen.data.util.Constants
 import dev.sayed.mehrabalmomen.presentation.base.MainActivity
 
 class AzanService : Service() {
@@ -54,7 +54,6 @@ class AzanService : Service() {
             .setContentIntent(pendingIntent)
             .setStyle(NotificationCompat.BigPictureStyle().bigPicture(bm))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-           // .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(false)
             .build()
     }

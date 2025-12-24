@@ -15,7 +15,7 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val azanManager = GlobalContext.get().get<AzanManager>()
         CoroutineScope(Dispatchers.IO).launch {
-            azanManager.rescheduleToday()
+            azanManager.rescheduleTodayPrayerAlarms()
         }
     }
 }

@@ -1,9 +1,9 @@
-package dev.sayed.mehrabalmomen.data.repository
+package dev.sayed.mehrabalmomen.data.local.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import dev.sayed.mehrabalmomen.data.DataStoreKeys
+import dev.sayed.mehrabalmomen.data.local.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +18,7 @@ class PrayerNotificationsRepositoryImpl(
         enabled: Boolean
     ) {
         dataStore.edit {
-            it[DataStoreKeys.prayerKey(prayer)] = enabled
+            it[SettingsKeys.prayerKey(prayer)] = enabled
         }
     }
 
@@ -26,13 +26,13 @@ class PrayerNotificationsRepositoryImpl(
         prayer: Prayer.PrayerName
     ): Flow<Boolean> =
         dataStore.data.map {
-            it[DataStoreKeys.prayerKey(prayer)] ?: false
+            it[SettingsKeys.prayerKey(prayer)] ?: false
         }
 
     override fun observeAll(): Flow<Map<Prayer.PrayerName, Boolean>> =
         dataStore.data.map { prefs ->
             val map = Prayer.PrayerName.entries.associateWith { prayer ->
-                prefs[DataStoreKeys.prayerKey(prayer)] ?: false
+                prefs[SettingsKeys.prayerKey(prayer)] ?: false
             }
             map
         }

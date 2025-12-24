@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalTime::class)
 
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.mappers
 
 import com.batoulapps.adhan2.PrayerTimes
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
@@ -36,3 +36,4 @@ fun com.batoulapps.adhan2.Prayer.toDomainName(): Prayer.PrayerName {
         else -> throw IllegalArgumentException("Unsupported prayer")
     }
 }
+

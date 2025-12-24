@@ -1,11 +1,11 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.data.local
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 
-object DataStoreKeys {
+object SettingsKeys {
     val LATITUDE_KEY = doublePreferencesKey("latitude")
     val LONGITUDE_KEY = doublePreferencesKey("longitude")
     val MADHAB = stringPreferencesKey("madhab")

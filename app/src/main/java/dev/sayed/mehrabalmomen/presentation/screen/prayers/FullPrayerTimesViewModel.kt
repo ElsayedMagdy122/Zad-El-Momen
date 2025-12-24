@@ -46,13 +46,13 @@ class FullPrayerTimesViewModel(
     private fun scheduleAlarmsIfNeeded() {
         viewModelScope.launch {
             combine(
-                settingsRepository.observeAll().distinctUntilChanged(),
+                settingsRepository.observeAppSettings().distinctUntilChanged(),
                 notificationsRepository.observeAll().distinctUntilChanged()
             ) { settings, notifications ->
                 settings to notifications
             }
                 .collect {
-                    val result = azanManager.rescheduleToday()
+                    val result = azanManager.rescheduleTodayPrayerAlarms()
                     Log.d("AZAN_DEBUG", "Reschedule triggered $result")
 
                     if (result == RescheduleResult.PermissionRequired) {
@@ -71,7 +71,7 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getDailyPrayersBlock(): List<FullPrayerTimesUiState.PrayerUiState> {
-        val settings = settingsRepository.observeAll().first()
+        val settings = settingsRepository.observeAppSettings().first()
         val prayers = prayerRepository.getDailyPrayers(
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
@@ -108,7 +108,7 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getNextPrayerBlock(): Prayer {
-        val settings = settingsRepository.observeAll().first()
+        val settings = settingsRepository.observeAppSettings().first()
         val nextPrayer = prayerRepository.getNextPrayer(
             instant = Clock.System.now(),
             madhab = settings.madhab,

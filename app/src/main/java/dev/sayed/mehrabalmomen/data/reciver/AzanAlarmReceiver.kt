@@ -8,9 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.Constants.AZAN_CHANNEL_ID
-import dev.sayed.mehrabalmomen.data.Constants.AZAN_CHANNEL_NAME
-import dev.sayed.mehrabalmomen.data.Constants.PRAYER_NAME_KEY
+import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_ID
+import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_NAME
+import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
 
 class AzanAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {

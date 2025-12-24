@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import dev.sayed.mehrabalmomen.data.AlarmScheduler
-import dev.sayed.mehrabalmomen.data.Constants.PRAYER_NAME_KEY
+import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
+import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
 import dev.sayed.mehrabalmomen.data.reciver.AzanAlarmReceiver
 import dev.sayed.mehrabalmomen.data.reciver.MidnightRolloverReceiver
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
@@ -20,7 +20,7 @@ class AzanSchedulerRepositoryImpl(
 
     override fun reschedule(prayers: List<PrayerAlarm>): RescheduleResult {
 
-        if (!hasPermission()) {
+        if (!hasExactAlarmPermission()) {
             return RescheduleResult.PermissionRequired
         }
 
@@ -28,7 +28,7 @@ class AzanSchedulerRepositoryImpl(
         scheduleMidnight()
         return RescheduleResult.Success
     }
-   private fun hasPermission(): Boolean {
+   private fun hasExactAlarmPermission(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
         return context
             .getSystemService(AlarmManager::class.java)
