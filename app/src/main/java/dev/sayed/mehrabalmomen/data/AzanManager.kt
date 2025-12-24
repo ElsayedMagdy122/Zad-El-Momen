@@ -1,26 +1,20 @@
-@file:OptIn(ExperimentalTime::class)
-
 package dev.sayed.mehrabalmomen.data
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
-import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class AzanManager(
     private val settingsRepository: SettingsRepository,
     private val prayerRepository: PrayerRepository,
@@ -28,54 +22,46 @@ class AzanManager(
     private val notificationsRepository: PrayerNotificationsRepository,
 ) {
 
-    @OptIn(ExperimentalTime::class)
-    fun reschedule() {
-        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-        val settings = getCurrentSettings()
-        val prayers = getDailyPrayers(settings, today)
-        val alarms = createAlarms(prayers)
-        logAlarms(alarms)
-        schedulerRepository.reschedule(alarms)
-    }
+    suspend fun rescheduleTodayPrayerAlarms() {
+        val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
 
-    private fun getCurrentSettings() = runBlocking {
-        settingsRepository.observeAll().first()
-    }
+        val notifications = notificationsRepository.observeAll().first()
 
-    @OptIn(ExperimentalTime::class)
-    private fun getDailyPrayers(settings: AppSettings, date: kotlinx.datetime.LocalDate) =
-        runBlocking {
-            prayerRepository.getDailyPrayers(
-                madhab = settings.madhab,
-                calculationMethod = settings.calculationMethod,
-                location = Location(settings.latitude, settings.longitude),
-                date = date
-            )
-        }
+        val prayers = getDailyPrayers(today)
 
-    private fun createAlarms(prayers: List<Prayer>): List<PrayerAlarm> {
-        val enabledMap = runBlocking {
-            notificationsRepository.observeAll().first()
-        }
+        val baseTime = System.currentTimeMillis() + 1_000L
 
-        return prayers.mapIndexed { index, prayer ->
-
-            val offsetMillis = index * 5_000L
-
+        val testAlarms = prayers.mapIndexed { index, prayer ->
             PrayerAlarm(
                 id = prayer.name.ordinal,
                 name = prayer.name,
-                timeMillis = prayer.time.toEpochMilliseconds() + offsetMillis,
-                enabled = enabledMap[prayer.name] ?: true
+                timeMillis = baseTime + (index * 5_000L),
+                enabled = notifications[prayer.name] ?: true
             )
         }
+        val alarms = setupAlarms(prayers)
+        schedulerRepository.reschedule(testAlarms)
     }
 
-    private fun logAlarms(alarms: List<PrayerAlarm>) {
-        alarms.forEach { alarm ->
-            val formatted = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                .format(Date(alarm.timeMillis))
-            Log.d("AzanManager", "Alarm for ${alarm.name}: $formatted")
+    private suspend fun getDailyPrayers(today: LocalDate): List<Prayer> {
+        val settings = settingsRepository.observeAppSettings().first()
+        return prayerRepository.getDailyPrayers(
+            madhab = settings.madhab,
+            calculationMethod = settings.calculationMethod,
+            location = Location(settings.latitude, settings.longitude),
+            date = today
+        )
+    }
+
+    private suspend fun setupAlarms(prayers: List<Prayer>): List<PrayerAlarm> {
+        val notifications = notificationsRepository.observeAll().first()
+        return prayers.map { prayer ->
+            PrayerAlarm(
+                id = prayer.name.ordinal,
+                name = prayer.name,
+                timeMillis = prayer.time.toEpochMilliseconds(),
+                enabled = notifications[prayer.name] ?: true
+            )
         }
     }
 }
