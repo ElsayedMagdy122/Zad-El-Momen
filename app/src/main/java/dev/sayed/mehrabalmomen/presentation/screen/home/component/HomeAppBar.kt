@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 @Composable
 fun HomeAppBar(
     locationUiState: HomeUiState.LocationUiState,
+    onClickSettings: () -> Unit,
     modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
@@ -31,7 +33,7 @@ fun HomeAppBar(
         )
         LocationCarousel(locationUiState = locationUiState)
         Icon(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 8.dp).clickable(onClick = {onClickSettings()},indication = null, interactionSource = null),
             painter = painterResource(id = R.drawable.settings_ic),
             tint = Theme.color.primary.primary,
             contentDescription = null
