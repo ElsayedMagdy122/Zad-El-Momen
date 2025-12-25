@@ -76,4 +76,27 @@
     <string name="seconds">ثوانٍ</string>
     <string name="time_remaining">الوقت المتبقي</string>
     <string name="today_s_full_timetable">الجدول الكامل لصلوات اليوم</string>
+   
+    <string name="settings">الإعدادات</string>
+    <string name="general">عام</string>
+
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+
+    <string name="theme">المظهر</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="system_default">افتراضي (حسب النظام)</string>
+
+    <string name="location">الموقع</string>
+
+    <string name="prayer_settings">مواقيت الصلاة</string>
+    <string name="calculation_method">طريقة الحساب</string>
+    <string name="madhab">المذهب</string>
+
+    <string name="support">الدعم</string>
+    <string name="help_feedback">المساعدة والملاحظات</string>
+    <string name="rate_app">قيّم التطبيق</string>
+    <string name="about">حول التطبيق</string>
 </resources>

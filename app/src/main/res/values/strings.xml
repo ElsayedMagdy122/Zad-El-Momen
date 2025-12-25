@@ -57,4 +57,32 @@
     <string name="seconds">Seconds</string>
     <string name="time_remaining">Time remaining</string>
     <string name="today_s_full_timetable">Today’s Full Timetable</string>
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+
+    <!-- Language -->
+    <string name="language">Language</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
+
+    <!-- Theme -->
+    <string name="theme">Theme</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="system_default">Default</string>
+
+    <!-- Location -->
+    <string name="location">Location</string>
+
+    <!-- Prayer Settings -->
+    <string name="prayer_settings">Prayer Times</string>
+    <string name="calculation_method">Calculation Method</string>
+    <string name="madhab">Madhab</string>
+
+    <!-- Support -->
+    <string name="support">Support</string>
+    <string name="help_feedback">Help &amp; Feedback</string>
+    <string name="rate_app">Rate the App</string>
+    <string name="about">About</string>
 </resources>
