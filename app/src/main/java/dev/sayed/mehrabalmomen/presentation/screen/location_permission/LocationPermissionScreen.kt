@@ -223,7 +223,7 @@ fun LocationCard(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            painter = painterResource(id = R.drawable.location_ic),
+            painter = painterResource(id = R.drawable.ic_location),
             contentDescription = null,
             tint = Theme.color.primary.primary
         )

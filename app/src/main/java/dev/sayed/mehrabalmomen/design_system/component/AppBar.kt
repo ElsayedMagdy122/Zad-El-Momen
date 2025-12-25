@@ -34,7 +34,7 @@ fun AppBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding( vertical =  8.dp)
     ) {
         AnimatedVisibility(isBackEnabled) {
             Box(

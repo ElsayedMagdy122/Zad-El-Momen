@@ -70,7 +70,6 @@
     <string name="theme">Theme</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
-    <string name="system_default">Default</string>
 
     <!-- Location -->
     <string name="location">Location</string>
@@ -85,4 +84,20 @@
     <string name="help_feedback">Help &amp; Feedback</string>
     <string name="rate_app">Rate the App</string>
     <string name="about">About</string>
+    <!-- عناوين الدايلوجات في الـ Settings -->
+    <string name="select_language">Select Language</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="select_madhab">Select Madhab</string>
+
+
+    <string name="maliki">Maliki</string>
+    <string name="hanbali">Hanbali</string>
+
+
+    <string name="system_default">System Default</string>
+
+    <string name="language_description_english">English (United States)</string>
+    <string name="language_description_arabic">العربية (مصر)</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

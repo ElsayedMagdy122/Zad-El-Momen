@@ -76,7 +76,7 @@
     <string name="seconds">ثوانٍ</string>
     <string name="time_remaining">الوقت المتبقي</string>
     <string name="today_s_full_timetable">الجدول الكامل لصلوات اليوم</string>
-   
+
     <string name="settings">الإعدادات</string>
     <string name="general">عام</string>
 
@@ -99,4 +99,6 @@
     <string name="help_feedback">المساعدة والملاحظات</string>
     <string name="rate_app">قيّم التطبيق</string>
     <string name="about">حول التطبيق</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
