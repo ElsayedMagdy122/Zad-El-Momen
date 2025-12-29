@@ -76,4 +76,40 @@
     <string name="seconds">ثوانٍ</string>
     <string name="time_remaining">الوقت المتبقي</string>
     <string name="today_s_full_timetable">الجدول الكامل لصلوات اليوم</string>
+
+    <string name="settings">الإعدادات</string>
+    <string name="general">عام</string>
+
+    <string name="language">اللغة</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+
+    <string name="theme">المظهر</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+    <string name="system_default">افتراضي (حسب النظام)</string>
+
+    <string name="location">الموقع</string>
+
+    <string name="prayer_settings">مواقيت الصلاة</string>
+    <string name="calculation_method">طريقة الحساب</string>
+    <string name="madhab">المذهب</string>
+
+    <string name="support">الدعم</string>
+    <string name="help_feedback">المساعدة والملاحظات</string>
+    <string name="rate_app">قيّم التطبيق</string>
+    <string name="about">حول التطبيق</string>
+    <string name="confirm">تأكيد</string>
+    <string name="choose_language">اختر اللغة</string>
+    <string name="language_description">سيتم استخدام هذه اللغة في جميع أنحاء التطبيق.</string>
+
+    <string name="choose_theme">اختر المظهر</string>
+    <string name="theme_description">حدد مظهر التطبيق المفضل لديك.</string>
+
+    <string name="choose_madhab">اختر المذهب</string>
+    <string name="madhab_description">يؤثر هذا على طريقة حساب وقت صلاة العصر.</string>
+
+    <string name="choose_calculation_method">اختر طريقة الحساب</string>
+    <string name="calculation_method_description">سيتم استخدام هذه الطريقة لحساب أوقات الصلاة بدقة.</string>
+    <string name="prayer_notifications">Prayer Notifications</string>
 </resources>

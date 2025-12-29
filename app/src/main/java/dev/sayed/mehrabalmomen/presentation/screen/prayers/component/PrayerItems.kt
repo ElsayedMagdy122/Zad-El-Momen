@@ -20,12 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.LinearProgress
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
 import kotlin.time.ExperimentalTime
@@ -45,7 +45,7 @@ fun PrayerItems(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp),
-            text = stringResource(R.string.today_s_full_timetable),
+            text = localizedString(R.string.today_s_full_timetable),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large
         )
@@ -105,7 +105,7 @@ fun PrayerItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(prayer.name),
+                text = localizedString(prayer.name),
                 color = prayerNameColor,
                 style = Theme.textStyle.title.small
             )

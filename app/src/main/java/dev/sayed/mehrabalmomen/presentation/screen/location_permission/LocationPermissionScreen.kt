@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -49,6 +48,7 @@ import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard
@@ -191,9 +191,10 @@ fun LocationPermissionScreen(
         PrimaryButton(
             isLoading = state.isLoading,
             isEnabled = state.isButtonEnabled,
-            text = stringResource(state.buttonState.value),
+            text = localizedString(state.buttonState.value),
             onClick = { viewModel.onClickAllowLocationAccess() },
             modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
         )
@@ -223,7 +224,7 @@ fun LocationCard(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
-            painter = painterResource(id = R.drawable.location_ic),
+            painter = painterResource(id = R.drawable.ic_location),
             contentDescription = null,
             tint = Theme.color.primary.primary
         )
@@ -234,13 +235,13 @@ fun LocationCard(modifier: Modifier = Modifier) {
 fun LocationHeaders(modifier: Modifier = Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = stringResource(R.string.location_permission),
+            text = localizedString(R.string.location_permission),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.medium
         )
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = stringResource(R.string.we_need_your_location_to_calculate_accurate_prayer_times_and_determine_the_qibla_direction),
+            text = localizedString(R.string.we_need_your_location_to_calculate_accurate_prayer_times_and_determine_the_qibla_direction),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.label.medium,
             textAlign = TextAlign.Center

@@ -23,24 +23,22 @@ class AzanManager(
 ) {
 
     suspend fun rescheduleTodayPrayerAlarms() {
-        val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
-
-        val notifications = notificationsRepository.observeAll().first()
+        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
         val prayers = getDailyPrayers(today)
 
-        val baseTime = System.currentTimeMillis() + 1_000L
-
-        val testAlarms = prayers.mapIndexed { index, prayer ->
-            PrayerAlarm(
-                id = prayer.name.ordinal,
-                name = prayer.name,
-                timeMillis = baseTime + (index * 5_000L),
-                enabled = notifications[prayer.name] ?: true
-            )
-        }
+//        val baseTime = System.currentTimeMillis() + 1_000L
+//
+//        val testAlarms = prayers.mapIndexed { index, prayer ->
+//            PrayerAlarm(
+//                id = prayer.name.ordinal,
+//                name = prayer.name,
+//                timeMillis = baseTime + (index * 5_000L),
+//                enabled = notifications[prayer.name] ?: true
+//            )
+//        }
         val alarms = setupAlarms(prayers)
-        schedulerRepository.reschedule(testAlarms)
+        schedulerRepository.reschedule(alarms)
     }
 
     private suspend fun getDailyPrayers(today: LocalDate): List<Prayer> {

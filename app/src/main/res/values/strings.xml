@@ -57,4 +57,59 @@
     <string name="seconds">Seconds</string>
     <string name="time_remaining">Time remaining</string>
     <string name="today_s_full_timetable">Today’s Full Timetable</string>
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+
+    <!-- Language -->
+    <string name="language">Language</string>
+    <string name="arabic">Arabic</string>
+    <string name="english">English</string>
+
+    <!-- Theme -->
+    <string name="theme">Theme</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+
+    <!-- Location -->
+    <string name="location">Location</string>
+
+    <!-- Prayer Settings -->
+    <string name="prayer_settings">Prayer Times</string>
+    <string name="calculation_method">Calculation Method</string>
+    <string name="madhab">Madhab</string>
+
+    <!-- Support -->
+    <string name="support">Support</string>
+    <string name="help_feedback">Help &amp; Feedback</string>
+    <string name="rate_app">Rate the App</string>
+    <string name="about">About</string>
+    <!-- عناوين الدايلوجات في الـ Settings -->
+    <string name="select_language">Select Language</string>
+    <string name="select_theme">Select Theme</string>
+    <string name="select_madhab">Select Madhab</string>
+
+
+    <string name="maliki">Maliki</string>
+    <string name="hanbali">Hanbali</string>
+
+
+    <string name="system_default">System Default</string>
+
+    <string name="language_description_english">English (United States)</string>
+    <string name="language_description_arabic">العربية (مصر)</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="choose_language">Choose Language</string>
+    <string name="language_description">This language will be used throughout the app.</string>
+
+    <string name="choose_theme">Choose Theme</string>
+    <string name="theme_description">Select your preferred app theme.</string>
+
+    <string name="choose_madhab">Choose Madhab</string>
+    <string name="madhab_description">This affects Asr prayer time calculation.</string>
+
+    <string name="choose_calculation_method">Choose Calculation Method</string>
+    <string name="calculation_method_description">This method will be used to calculate prayer times accurately.</string>
+    <string name="prayer_notifications">Prayer Notifications</string>
 </resources>

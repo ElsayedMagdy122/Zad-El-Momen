@@ -30,6 +30,14 @@ class SettingsRepositoryImpl(
         }
     }
 
+    override suspend fun saveLanguage(language: AppSettings.Language) {
+        dataStore.edit { it[SettingsKeys.LANGUAGE] = language.name }
+    }
+
+    override suspend fun saveTheme(theme: AppSettings.Theme) {
+        dataStore.edit { it[SettingsKeys.THEME] = theme.name }
+    }
+
     override suspend fun setOnboardingComplete() {
         dataStore.edit { it[SettingsKeys.ONBOARDING_COMPLETE] = true }
     }
@@ -60,6 +68,18 @@ class SettingsRepositoryImpl(
     override fun observeOnboardingComplete(): Flow<Boolean> =
         dataStore.data.map { it[SettingsKeys.ONBOARDING_COMPLETE] ?: false }
 
+    override fun observeLanguage(): Flow<AppSettings.Language> =
+        dataStore.data.map {
+            val value = it[SettingsKeys.LANGUAGE]
+            if (value != null) AppSettings.Language.valueOf(value) else AppSettings.Language.ARABIC
+        }
+
+    override fun observeTheme(): Flow<AppSettings.Theme> =
+        dataStore.data.map {
+            val value = it[SettingsKeys.THEME]
+            if (value != null) AppSettings.Theme.valueOf(value) else AppSettings.Theme.SYSTEM
+        }
+
 
     override fun observeAppSettings(): Flow<AppSettings> =
         dataStore.data.map { prefs ->
@@ -73,7 +93,13 @@ class SettingsRepositoryImpl(
                 ),
                 latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
                 longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
-                alarmsScheduled = prefs[SettingsKeys.ALARMS_SCHEDULED] ?: false
+                alarmsScheduled = prefs[SettingsKeys.ALARMS_SCHEDULED] ?: false,
+                theme = AppSettings.Theme.valueOf(
+                    prefs[SettingsKeys.THEME] ?: AppSettings.Theme.SYSTEM.name
+                ),
+                language = AppSettings.Language.valueOf(
+                    prefs[SettingsKeys.LANGUAGE] ?: AppSettings.Language.ARABIC.name
+                )
             )
         }
 }

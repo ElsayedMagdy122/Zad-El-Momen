@@ -31,6 +31,7 @@ data class Secondary(
 data class Semantic(
     val disabled : Color,
     val textDisabled : Color,
+    val shadeTertiary : Color,
     val error : Color,
     val warning : Color,
     val success : Color
