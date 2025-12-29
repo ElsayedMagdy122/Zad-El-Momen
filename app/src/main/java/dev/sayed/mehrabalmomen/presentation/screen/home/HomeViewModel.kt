@@ -3,9 +3,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -33,6 +33,7 @@ class HomeViewModel(
         getDailyPrayers()
 
     }
+
     private fun getLocation() {
         tryToCall(
             block = {
@@ -56,6 +57,7 @@ class HomeViewModel(
             }
         )
     }
+
     fun Prayer.toAlarm(): PrayerAlarm {
         return PrayerAlarm(
             id = this.name.ordinal,
@@ -64,6 +66,7 @@ class HomeViewModel(
             enabled = true
         )
     }
+
     private fun getDailyPrayers() {
         tryToCall(
             block = {
@@ -180,6 +183,10 @@ class HomeViewModel(
 
     override fun onClickViewAll() {
         sendEffect(HomeEffect.NavigateToFullPrayersDetails)
+    }
+
+    override fun onClickSettings() {
+        sendEffect(HomeEffect.NavigateToSettings)
     }
 
     override fun onClickQiblaDirection() {

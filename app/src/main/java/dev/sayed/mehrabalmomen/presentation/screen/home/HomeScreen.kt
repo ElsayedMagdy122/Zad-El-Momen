@@ -75,6 +75,10 @@ fun HomeScreen(
                 HomeEffect.NavigateToCalibrateDevice -> {
                     navController.navigate(Route.CalibrateDevice)
                 }
+
+                HomeEffect.NavigateToSettings -> {
+                    navController.navigate(Route.SettingsScreen)
+                }
             }
         }
     }
@@ -88,7 +92,8 @@ fun HomeScreen(
         item {
             HomeAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                locationUiState = state.location
+                locationUiState = state.location,
+                onClickSettings = viewModel::onClickSettings
             )
         }
         item { UpComingPrayer(state = state, modifier = Modifier.padding(horizontal = 16.dp)) }

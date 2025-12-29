@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
 import CheckboxTick
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,8 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 
@@ -32,18 +37,34 @@ fun CheckboxItem(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     description: String? = null,
-    titleColor: Color = Theme.color.primary.primary
+    icon: Painter? = null,
+    tintColor: Color= Theme.color.primary.primary,
+    titleColor: Color = Theme.color.primary.primary,
+    backgroundColor: Color = Theme.color.surfaces.surfaceLow
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Theme.color.surfaces.surfaceLow)
+            .background(backgroundColor)
             .fillMaxWidth()
             .clickable { onCheckedChange(!isChecked) }
-            .padding(12.dp),
+            .padding(vertical = 12.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        AnimatedVisibility(visible = icon != null) {
+            icon?.let {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .align(Alignment.CenterVertically),
+                    painter = it,
+                    tint = tintColor,
+                    contentDescription = null
+
+                )
+            }
+        }
 
         CheckboxText(
             text = text,
@@ -95,8 +116,8 @@ private fun CheckboxItemPreview() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             CheckboxItem(
+                icon = painterResource(R.drawable.ic_theme),
                 text = "Tick item",
-                description = "Checkbox with tick",
                 isChecked = checked,
                 onCheckedChange = { checked = it },
             )

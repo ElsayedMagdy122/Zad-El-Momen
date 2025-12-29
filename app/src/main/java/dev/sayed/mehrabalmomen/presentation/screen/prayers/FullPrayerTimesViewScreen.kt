@@ -12,12 +12,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerNotifications
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
@@ -28,19 +28,20 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun FullPrayerTimesViewScreen(
     navController: NavController,
-    viewModel: FullPrayerTimesViewModel = koinViewModel()) {
+    viewModel: FullPrayerTimesViewModel = koinViewModel()
+) {
     val state by viewModel.screenState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.effect.collect {
-           when(it){
-               FullPrayerTimesEffect.NavigateBack ->{
-                   navController.popBackStack()
-               }
+            when (it) {
+                FullPrayerTimesEffect.NavigateBack -> {
+                    navController.popBackStack()
+                }
 
-               FullPrayerTimesEffect.RequestExactAlarmPermission->{
+                FullPrayerTimesEffect.RequestExactAlarmPermission -> {
 
-               }
-           }
+                }
+            }
         }
     }
     LazyColumn(
@@ -52,7 +53,7 @@ fun FullPrayerTimesViewScreen(
         item {
             AppBar(
                 onBackClick = viewModel::onClickBack,
-                title =  stringResource(R.string.prayer_times),
+                title = localizedString(R.string.prayer_times),
                 modifier = Modifier.padding(
                     horizontal = 16.dp
                 )

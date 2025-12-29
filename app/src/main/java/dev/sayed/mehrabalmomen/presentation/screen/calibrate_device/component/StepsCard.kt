@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CardIcon
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
 
@@ -29,8 +30,8 @@ fun LazyGridScope.stepsCard(
     items(steps) {
         StepsItem(
             icon = painterResource(id = it.icon),
-            title = stringResource( it.title),
-            description = stringResource(it.description)
+            title = localizedString( it.title),
+            description = localizedString(it.description)
         )
     }
 }
