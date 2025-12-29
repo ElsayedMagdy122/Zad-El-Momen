@@ -99,5 +99,17 @@
     <string name="language_description_english">English (United States)</string>
     <string name="language_description_arabic">العربية (مصر)</string>
     <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
+
+    <string name="choose_language">Choose Language</string>
+    <string name="language_description">This language will be used throughout the app.</string>
+
+    <string name="choose_theme">Choose Theme</string>
+    <string name="theme_description">Select your preferred app theme.</string>
+
+    <string name="choose_madhab">Choose Madhab</string>
+    <string name="madhab_description">This affects Asr prayer time calculation.</string>
+
+    <string name="choose_calculation_method">Choose Calculation Method</string>
+    <string name="calculation_method_description">This method will be used to calculate prayer times accurately.</string>
+    <string name="prayer_notifications">Prayer Notifications</string>
 </resources>

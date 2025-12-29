@@ -1,4 +1,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-interface SettingsEffect {
+sealed interface SettingsEffect {
+    object NavigateToLocation : SettingsEffect
+    object NavigateToHelpFeedback : SettingsEffect
+    object NavigateToRateApp : SettingsEffect
+    object NavigateToAbout : SettingsEffect
 }

@@ -22,10 +22,11 @@ data class AppSettings(
         ENGLISH("en"),
         ARABIC("ar")
     }
+
     companion object {
         val default = AppSettings(
             madhab = Madhab.SHAFI,
-            calculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
+            calculationMethod = CalculationMethod.EGYPTIAN,
             latitude = 0.0,
             longitude = 0.0,
             alarmsScheduled = false,

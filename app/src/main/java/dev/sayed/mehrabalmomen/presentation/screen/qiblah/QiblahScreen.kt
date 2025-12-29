@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.DirectionCard
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.KaabaOnCircle
 import org.koin.compose.viewmodel.koinViewModel
@@ -112,7 +113,7 @@ private fun QiblahScreenContent(
 
         AppBar(
             onBackClick = { navController.popBackStack() },
-            title = stringResource(R.string.qiblah),
+            title = localizedString(R.string.qiblah),
         )
 
         KaabaOnCircle(

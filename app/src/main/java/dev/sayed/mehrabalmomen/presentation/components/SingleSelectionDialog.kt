@@ -93,7 +93,7 @@ fun SingleSelectionDialog(
             ) {
                 TextButton(onClick = onDismiss) {
                     Text(
-                       text = localizedString(R.string.cancel),
+                       text = "Cancel",
                         color = Theme.color.secondary.shadeSecondary
                     )
                 }

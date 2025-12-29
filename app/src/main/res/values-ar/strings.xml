@@ -99,6 +99,17 @@
     <string name="help_feedback">المساعدة والملاحظات</string>
     <string name="rate_app">قيّم التطبيق</string>
     <string name="about">حول التطبيق</string>
-    <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
+    <string name="confirm">تأكيد</string>
+    <string name="choose_language">اختر اللغة</string>
+    <string name="language_description">سيتم استخدام هذه اللغة في جميع أنحاء التطبيق.</string>
+
+    <string name="choose_theme">اختر المظهر</string>
+    <string name="theme_description">حدد مظهر التطبيق المفضل لديك.</string>
+
+    <string name="choose_madhab">اختر المذهب</string>
+    <string name="madhab_description">يؤثر هذا على طريقة حساب وقت صلاة العصر.</string>
+
+    <string name="choose_calculation_method">اختر طريقة الحساب</string>
+    <string name="calculation_method_description">سيتم استخدام هذه الطريقة لحساب أوقات الصلاة بدقة.</string>
+    <string name="prayer_notifications">Prayer Notifications</string>
 </resources>
