@@ -15,6 +15,8 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -61,7 +63,15 @@ fun AppRoot(settingsRepository: SettingsRepository) {
     val appSettings by settingsRepository.observeAppSettings()
         .collectAsState(initial = AppSettings.default)
 
-    CompositionLocalProvider(LocalAppLocale provides appSettings.language) {
+    val layoutDirection = when (appSettings.language) {
+        AppSettings.Language.ARABIC -> LayoutDirection.Rtl
+        else -> LayoutDirection.Ltr
+    }
+
+    CompositionLocalProvider(
+        LocalAppLocale provides appSettings.language,
+        LocalLayoutDirection provides layoutDirection
+    ) {
         MehrabTheme(
             isDarkTheme = when (appSettings.theme) {
                 AppSettings.Theme.SYSTEM -> isSystemInDarkTheme()
