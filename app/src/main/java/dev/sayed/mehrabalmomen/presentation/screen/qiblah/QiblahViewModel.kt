@@ -27,8 +27,10 @@ class QiblahViewModel(
                 val location = settingsRepository.observeLocation().first()
                 qiblahRepository.getQiblahDirection(
                     location = Location(
+                        longitude = location.longitude,
                         latitude = location.latitude,
-                        longitude = location.longitude
+                        country =location.country,
+                        state = location.state
                     )
                 )
             },
@@ -43,13 +45,13 @@ class QiblahViewModel(
     private fun getLocation() {
         tryToCall(
             block = {
-                val location = locationRepository.getCountryAndState()
+                val location = locationRepository.getOrDetectLocation()
                 location
             },
             onSuccess = {
                 val location = QiblahUiState.LocationUiState(
-                    country = it.first,
-                    city = it.second
+                    country = it.country,
+                    city = it.state
                 )
                 updateState { state ->
                     state.copy(

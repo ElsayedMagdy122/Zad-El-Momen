@@ -27,8 +27,12 @@ class SettingsViewModel(
                     state.copy(
                         selectedLanguage = appSettings.language.toUi(),
                         selectedTheme = appSettings.theme.toUi(),
-                        selectedMadhab = appSettings.madhab.toUi(),
-                        selectedCalculationMethod = appSettings.calculationMethod.toUi()
+                        selectedMadhab = appSettings.prayerSettings.madhab.toUi(),
+                        selectedCalculationMethod = appSettings.prayerSettings.calculationMethod.toUi(),
+                        location = SettingsUiState.LocationUiState(
+                            country = appSettings.prayerSettings.location.country,
+                            city = appSettings.prayerSettings.location.state
+                        )
                     )
                 }
                 rebuildSections()
@@ -57,7 +61,9 @@ class SettingsViewModel(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_location,
                         title = R.string.location,
-                        action = SettingsUiState.SettingsAction.LOCATION
+                        action = SettingsUiState.SettingsAction.LOCATION,
+                        descriptionText = state.location.country.plus(", ").plus(state.location.city)
+
                     )
                 )
             ),
@@ -67,7 +73,7 @@ class SettingsViewModel(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_calculation_method,
                         title = R.string.calculation_method,
-                        description = state.selectedCalculationMethod.value, // أضف هذا
+                        description = state.selectedCalculationMethod.value,
                         action = SettingsUiState.SettingsAction.CALCULATION_METHOD
                     ),
                     SettingsUiState.SettingsItemUiState(
@@ -239,7 +245,9 @@ class SettingsViewModel(
     }
 
 
-    override fun onLocationClick() {}
+    override fun onLocationClick() {
+        sendEffect(SettingsEffect.NavigateToLocation)
+    }
     override fun onCalculationMethodClick() {}
     override fun onHelpFeedbackClick() {}
     override fun onRateAppClick() {}

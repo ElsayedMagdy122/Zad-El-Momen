@@ -37,13 +37,13 @@ class HomeViewModel(
     private fun getLocation() {
         tryToCall(
             block = {
-                val location = locationRepository.getCountryAndState()
+                val location = settingsRepository.observeLocation().first()
                 location
             },
             onSuccess = {
                 val location = HomeUiState.LocationUiState(
-                    country = it.first,
-                    city = it.second
+                    country =it.country,
+                    city = it.state
                 )
                 updateState { state ->
                     state.copy(
@@ -70,13 +70,15 @@ class HomeViewModel(
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAppSettings().first()
+                val settings = settingsRepository.observeAppSettings().first().prayerSettings
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = settings.madhab,
                     calculationMethod = settings.calculationMethod,
                     location = Location(
-                        longitude = settings.longitude,
-                        latitude = settings.latitude
+                        longitude = settings.location.longitude,
+                        latitude = settings.location.latitude,
+                        country = "",
+                        state = ""
                     ),
                     date = today
                 )
@@ -99,14 +101,16 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAppSettings().first()
+                val settings = settingsRepository.observeAppSettings().first().prayerSettings
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
                     madhab = settings.madhab,
                     calculationMethod = settings.calculationMethod,
                     location = Location(
-                        longitude = settings.longitude,
-                        latitude = settings.latitude
+                        longitude = settings.location.longitude,
+                        latitude = settings.location.latitude,
+                        country = "",
+                        state = ""
                     ),
                     date = today
                 )

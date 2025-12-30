@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
 import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,7 +59,18 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by settingsViewModel.screenState.collectAsState()
-
+    LaunchedEffect(Unit) {
+        settingsViewModel.effect.collect {effect->
+ when(effect) {
+     SettingsEffect.NavigateToAbout -> TODO()
+     SettingsEffect.NavigateToHelpFeedback -> TODO()
+     SettingsEffect.NavigateToLocation -> {
+         navController.navigate(Route.MapsScreen)
+     }
+     SettingsEffect.NavigateToRateApp -> TODO()
+ }
+        }
+    }
     state.dialog?.let { dialog ->
         SettingsBottomSheet(
             items = dialog.options,
@@ -121,7 +134,6 @@ fun SettingsBottomSheet(
     onDismiss: () -> Unit
 ) {
     var currentSelected by remember { mutableStateOf(selectedIndex) }
-
     BottomSheetDs(onDismiss = onDismiss) {
         Text(
             text = title,
@@ -229,9 +241,19 @@ fun SettingsItem(
             color = Theme.color.primary.primary,
             style = Theme.textStyle.label.medium
         )
-        AnimatedVisibility(visible = item.description != 0) {
+        AnimatedVisibility(
+            visible = item.description != 0 || item.descriptionText != null
+        ) {
             Text(
-                text = localizedString(item.description),
+                text = when {
+                    item.description != 0 ->
+                        localizedString(item.description)
+
+                    item.descriptionText != null ->
+                        item.descriptionText
+
+                    else -> ""
+                },
                 color = Color(0xFF818599),
                 style = Theme.textStyle.label.small
             )

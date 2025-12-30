@@ -71,13 +71,15 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getDailyPrayersBlock(): List<FullPrayerTimesUiState.PrayerUiState> {
-        val settings = settingsRepository.observeAppSettings().first()
+        val settings = settingsRepository.observeAppSettings().first().prayerSettings
         val prayers = prayerRepository.getDailyPrayers(
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
             location = Location(
-                longitude = settings.longitude,
-                latitude = settings.latitude
+                longitude = settings.location.longitude,
+                latitude = settings.location.latitude,
+                country = "",
+                state = ""
             ),
             date = today
         )
@@ -108,14 +110,16 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getNextPrayerBlock(): Prayer {
-        val settings = settingsRepository.observeAppSettings().first()
+        val settings = settingsRepository.observeAppSettings().first().prayerSettings
         val nextPrayer = prayerRepository.getNextPrayer(
             instant = Clock.System.now(),
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
             location = Location(
-                longitude = settings.longitude,
-                latitude = settings.latitude
+                longitude = settings.location.longitude,
+                latitude = settings.location.latitude,
+                country = "",
+                state = ""
             ),
             date = today
         )

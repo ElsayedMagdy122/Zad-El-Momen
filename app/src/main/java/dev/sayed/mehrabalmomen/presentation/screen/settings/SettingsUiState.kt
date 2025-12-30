@@ -9,9 +9,13 @@ data class SettingsUiState(
     val selectedTheme: ThemeState = ThemeState.SYSTEM,
     val selectedMadhab: MadhabState = MadhabState.SHAFI,
     val selectedCalculationMethod: CalculationMethod = CalculationMethod.EGYPTIAN,
+    val location: LocationUiState = LocationUiState(),
     val dialog: SelectionDialogUiState? = null
 ) {
-
+    data class LocationUiState(
+        val country: String= "Unknown",
+        val city: String = "Unknown"
+    )
     data class SettingsSectionUiState(
         val titleRes: Int,
         val items: List<SettingsItemUiState>
@@ -21,6 +25,7 @@ data class SettingsUiState(
         val icon: Int,
         val title: Int,
         val description: Int = 0,
+        val descriptionText: String? = null,
         val action: SettingsAction
     )
 

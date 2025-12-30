@@ -21,58 +21,117 @@ import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class LocationRepositoryImpl(val context: Context, private val dataStore: DataStore<Preferences>,val settingsRepository: SettingsRepository) :
+class LocationRepositoryImpl(val context: Context,val settingsRepository: SettingsRepository) :
     LocationRepository {
-    override suspend fun saveLocation(location: Location) {
-        dataStore.edit { prefs ->
-            prefs[SettingsKeys.LATITUDE_KEY] = location.latitude
-            prefs[SettingsKeys.LONGITUDE_KEY] = location.longitude
-        }
-    }
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
+//
+//     suspend fun getCountryAndState(): Pair<String, String> = withContext(Dispatchers.IO) {
+//        val location = settingsRepository.observeLocation().first()
+//        val geocoder = Geocoder(context, Locale.getDefault())
+//        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+//        if (!addresses.isNullOrEmpty()) {
+//            val country = addresses[0].countryName ?: "Unknown"
+//            val state = addresses[0].adminArea ?: "Unknown"
+//            country to state
+//        } else {
+//            "Unknown" to "Unknown"
+//        }
+//    }
+//    @SuppressLint("MissingPermission")
+//     suspend fun getCurrentLocation(): Location {
+//        return suspendCancellableCoroutine { cont ->
+//            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+//                .addOnSuccessListener { location ->
+//                    if (location != null) {
+//                        cont.resume(
+//                            Location(
+//                                latitude = location.latitude,
+//                                longitude = location.longitude
+//                            )
+//                        )
+//                    } else {
+//                        cont.resumeWithException(
+//                            IllegalStateException("Location unavailable - GPS disabled")
+//                        )
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    cont.resumeWithException(exception)
+//                }
+//        }
+//    }
 
-    override suspend fun getCountryAndState(): Pair<String, String> = withContext(Dispatchers.IO) {
-        val location = settingsRepository.observeLocation().first()
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-        if (!addresses.isNullOrEmpty()) {
-            val country = addresses[0].countryName ?: "Unknown"
-            val state = addresses[0].adminArea ?: "Unknown"
-            country to state
-        } else {
-            "Unknown" to "Unknown"
+    override suspend fun getOrDetectLocation(): Location {
+
+        // 1️⃣ اقرأ من SettingsRepository
+        val savedLocation = settingsRepository.observeLocation().first()
+
+        if (savedLocation.isValid()) {
+            return savedLocation
         }
+
+        val currentLocation = getCurrentLocation()
+
+        val (country, state) = getCountryAndState(
+            currentLocation.latitude,
+            currentLocation.longitude
+        )
+
+        val finalLocation = currentLocation.copy(
+            country = country,
+            state = state
+        )
+        settingsRepository.saveLocation(finalLocation)
+
+        return finalLocation
     }
+
     @SuppressLint("MissingPermission")
-    override suspend fun getCurrentLocation(): Location {
-        return suspendCancellableCoroutine { cont ->
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+    private suspend fun getCurrentLocation(): Location =
+        suspendCancellableCoroutine { cont ->
+            fusedLocationClient
+                .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         cont.resume(
                             Location(
                                 latitude = location.latitude,
-                                longitude = location.longitude
+                                longitude = location.longitude,
+                                country = "Unknown",
+                                state = "Unknown"
                             )
                         )
                     } else {
                         cont.resumeWithException(
-                            IllegalStateException("Location unavailable - GPS disabled")
+                            IllegalStateException("Location unavailable")
                         )
                     }
                 }
-                .addOnFailureListener { exception ->
-                    cont.resumeWithException(exception)
-                }
+                .addOnFailureListener(cont::resumeWithException)
+        }
+
+    private suspend fun getCountryAndState(
+        lat: Double,
+        lon: Double
+    ): Pair<String, String> = withContext(Dispatchers.IO) {
+
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(lat, lon, 1)
+
+        if (!addresses.isNullOrEmpty()) {
+            val addr = addresses[0]
+            (addr.countryName ?: "Unknown") to
+                    (addr.adminArea ?: "Unknown")
+        } else {
+            "Unknown" to "Unknown"
         }
     }
-
-    override suspend fun getSavedLocation(): Location {
-        val prefs = dataStore.data.first()
-        val lat = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0
-        val lon = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0
-        return Location(lat, lon)
+    private fun Location.isValid(): Boolean {
+        return latitude != 0.0 &&
+                longitude != 0.0 &&
+                country != "Unknown" &&
+                state != "Unknown"
     }
 }

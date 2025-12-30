@@ -68,7 +68,7 @@ class LocationViewModel(
 
             tryToCall(
                 block = {
-                    val location = locationRepository.getCurrentLocation()
+                    val location = locationRepository.getOrDetectLocation()
                     settingsRepository.saveLocation(location)
                 },
                 onSuccess = {
