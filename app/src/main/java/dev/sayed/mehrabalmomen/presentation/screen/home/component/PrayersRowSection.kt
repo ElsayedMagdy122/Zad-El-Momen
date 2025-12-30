@@ -21,10 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
@@ -36,7 +36,7 @@ fun PrayersRowSection(
 ) {
     Column(modifier = modifier) {
         ViewAllTodayPrayers(
-            onClickViewAll =homeInteractionListener::onClickViewAll ,
+            onClickViewAll = homeInteractionListener::onClickViewAll,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
@@ -60,14 +60,15 @@ fun PrayersRowSection(
 @Composable
 fun ViewAllTodayPrayers(
     onClickViewAll: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             modifier = Modifier.weight(1f),
-            text = stringResource(R.string.today_s_prayers),
+            text = localizedString(R.string.today_s_prayers),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.medium
         )
@@ -81,7 +82,7 @@ fun ViewAllTodayPrayers(
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             Text(
-                text = stringResource(R.string.view_all),
+                text = localizedString(R.string.view_all),
                 color = Theme.color.surfaces.surfaceHigh,
                 style = Theme.textStyle.label.medium
             )
@@ -137,7 +138,7 @@ private fun PrayerItem(
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = "${stringResource(prayerName)} ${prayerTime}",
+            text = "${localizedString(prayerName)} ${prayerTime}",
             color = textColor,
             style = Theme.textStyle.label.medium
         )

@@ -46,7 +46,6 @@ fun PrimaryButton(
     )
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(containerColor)
             .clickable(onClick = onClick)

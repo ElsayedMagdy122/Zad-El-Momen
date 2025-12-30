@@ -61,6 +61,11 @@ fun HomeScreen(
         }
     }
     LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+    LaunchedEffect(Unit) {
         viewModel.effect.collect {
             when (it) {
                 HomeEffect.NavigateToFullPrayersDetails -> {
@@ -69,6 +74,10 @@ fun HomeScreen(
 
                 HomeEffect.NavigateToCalibrateDevice -> {
                     navController.navigate(Route.CalibrateDevice)
+                }
+
+                HomeEffect.NavigateToSettings -> {
+                    navController.navigate(Route.SettingsScreen)
                 }
             }
         }
@@ -83,7 +92,8 @@ fun HomeScreen(
         item {
             HomeAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                locationUiState = state.location
+                locationUiState = state.location,
+                onClickSettings = viewModel::onClickSettings
             )
         }
         item { UpComingPrayer(state = state, modifier = Modifier.padding(horizontal = 16.dp)) }

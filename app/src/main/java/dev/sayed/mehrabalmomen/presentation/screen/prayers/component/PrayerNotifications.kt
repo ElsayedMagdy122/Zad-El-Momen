@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimeInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
 import kotlin.time.ExperimentalTime
@@ -44,7 +45,7 @@ fun PrayerNotifications(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp),
-            text = stringResource(R.string.today_s_full_timetable),
+            text = localizedString(R.string.prayer_notifications),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large
         )

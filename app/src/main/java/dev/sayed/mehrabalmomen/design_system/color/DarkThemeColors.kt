@@ -23,6 +23,7 @@ val darkThemeColors = MehrabColors(
         textDisabled = Color(0xFF818599),
         error = Color(0xFFFDA29B),
         success = Color(0xFF71cb87),
-        warning = Color(0xFFFEC84B)
+        warning = Color(0xFFFEC84B),
+        shadeTertiary = Color(0XFF818599)
     )
 )

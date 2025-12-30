@@ -30,7 +30,7 @@ fun LocationCarousel(
     ) {
         Icon(
             modifier = modifier.size(16.dp),
-            painter = painterResource(id = R.drawable.location_ic),
+            painter = painterResource(id = R.drawable.ic_location),
             tint = Theme.color.primary.primary,
             contentDescription = null
         )

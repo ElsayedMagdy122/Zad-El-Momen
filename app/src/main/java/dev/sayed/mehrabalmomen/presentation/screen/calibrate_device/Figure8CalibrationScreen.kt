@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -17,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -25,6 +25,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.CardFigureAnimation
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard
@@ -77,7 +78,7 @@ fun Figure8CalibrationScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 AppBar(
                     onBackClick = { navController.popBackStack() },
-                    title = stringResource(R.string.calibrate_device),
+                    title = localizedString(R.string.calibrate_device),
                 )
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -89,7 +90,7 @@ fun Figure8CalibrationScreen(
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    text = stringResource(R.string.to_improve_accuracy_rotate_your_device_slowly_in_a_figure_8_motion_three_times),
+                    text = localizedString(R.string.to_improve_accuracy_rotate_your_device_slowly_in_a_figure_8_motion_three_times),
                     textAlign = TextAlign.Center,
                     color = Theme.color.primary.primary,
                     style = Theme.textStyle.label.medium,
@@ -98,7 +99,7 @@ fun Figure8CalibrationScreen(
             stepsCard(list)
         }
         PrimaryButton(
-            text = stringResource(R.string.btn_continue),
+            text = localizedString(R.string.btn_continue),
             onClick = {
                 navController.navigate(Route.QiblahScreen) {
                     launchSingleTop = true
@@ -108,6 +109,7 @@ fun Figure8CalibrationScreen(
                 }
             },
             modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp, top = 16.dp)
         )

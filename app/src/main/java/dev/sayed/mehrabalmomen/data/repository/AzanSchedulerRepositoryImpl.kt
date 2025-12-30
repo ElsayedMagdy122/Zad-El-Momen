@@ -1,61 +1,50 @@
 package dev.sayed.mehrabalmomen.data.repository
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import dev.sayed.mehrabalmomen.data.AlarmScheduler
-import dev.sayed.mehrabalmomen.data.ExactAlarmPermissionDataSource
+import android.os.Build
+import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
+import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
 import dev.sayed.mehrabalmomen.data.reciver.AzanAlarmReceiver
 import dev.sayed.mehrabalmomen.data.reciver.MidnightRolloverReceiver
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
+import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
-import dev.sayed.mehrabalmomen.domain.repository.RescheduleResult
 import java.util.Calendar
 
 class AzanSchedulerRepositoryImpl(
     private val context: Context,
-    private val permission: ExactAlarmPermissionDataSource,
     private val alarmScheduler: AlarmScheduler
 ) : AzanSchedulerRepository {
 
     override fun reschedule(prayers: List<PrayerAlarm>): RescheduleResult {
 
-        if (!permission.hasPermission()) {
+        if (!hasExactAlarmPermission()) {
             return RescheduleResult.PermissionRequired
         }
 
-        schedulePrayerAlarms(prayers)
+        scheduleEnabledPrayerAlarms(prayers)
         scheduleMidnight()
         return RescheduleResult.Success
     }
+   private fun hasExactAlarmPermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
+        return context
+            .getSystemService(AlarmManager::class.java)
+            .canScheduleExactAlarms()
+    }
 
-//    private fun schedulePrayerAlarms(prayers: List<PrayerAlarm>) {
-//        prayers.forEach { prayer ->
-//            val intent = Intent(context, AzanAlarmReceiver::class.java)
-//                .putExtra("PRAYER_NAME", prayer.name.name)
-//
-//            if (prayer.enabled) {
-//                alarmScheduler.scheduleExact(
-//                    prayer.id,
-//                    prayer.timeMillis,
-//                    intent
-//                )
-//            } else {
-//                alarmScheduler.cancel(prayer.id, intent)
-//            }
-//        }
-//    }
-    private fun schedulePrayerAlarms(prayers: List<PrayerAlarm>) {
+    private fun scheduleEnabledPrayerAlarms(prayers: List<PrayerAlarm>) {
         prayers.forEach { prayer ->
             val intent = Intent(context, AzanAlarmReceiver::class.java)
-                .putExtra("PRAYER_NAME", prayer.name.name)
+                .putExtra(PRAYER_NAME_KEY, prayer.name.name)
             alarmScheduler.cancel(prayer.id, intent)
         }
 
         prayers.filter { it.enabled }.forEach { prayer ->
             val intent = Intent(context, AzanAlarmReceiver::class.java)
-                .putExtra("PRAYER_NAME", prayer.name.name)
-            Log.d("AzanSchedulerRepository", "Scheduling alarm for prayer: ${prayer.name}")
+                .putExtra(PRAYER_NAME_KEY, prayer.name.name)
             alarmScheduler.scheduleExact(prayer.id, prayer.timeMillis, intent)
         }
     }
@@ -64,13 +53,13 @@ class AzanSchedulerRepositoryImpl(
         val intent = Intent(context, MidnightRolloverReceiver::class.java)
 
         alarmScheduler.scheduleExact(
-            99,
-            nextMidnightMillis(),
+            MIDNIGHT_ROLLOVER_REQUEST_CODE,
+            calculateNextMidnightMillis(),
             intent
         )
     }
 
-    private fun nextMidnightMillis(): Long =
+    private fun calculateNextMidnightMillis(): Long =
         Calendar.getInstance().apply {
             add(Calendar.DAY_OF_YEAR, 1)
             set(Calendar.HOUR_OF_DAY, 0)
@@ -78,4 +67,8 @@ class AzanSchedulerRepositoryImpl(
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
+
+    private companion object {
+        const val MIDNIGHT_ROLLOVER_REQUEST_CODE = 99
+    }
 }

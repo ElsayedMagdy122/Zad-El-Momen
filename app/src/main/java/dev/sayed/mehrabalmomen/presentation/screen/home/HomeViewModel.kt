@@ -3,10 +3,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
-import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
+import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -26,33 +25,14 @@ class HomeViewModel(
     private val prayerRepository: PrayerRepository,
     private val locationRepository: LocationRepository,
     private val settingsRepository: SettingsRepository,
-    private val azanSchedulerRepository: AzanSchedulerRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     init {
         getDailyPrayers()
-        scheduleAlarmsIfNeeded()
+
     }
-
-    private fun scheduleAlarmsIfNeeded() {
-        viewModelScope.launch {
-            val isAlarmScheduled = settingsRepository.observeAlarmsScheduled().first()
-            if (isAlarmScheduled) return@launch
-            val settings = settingsRepository.observeAll().first()
-            val prayers = prayerRepository.getDailyPrayers(
-                madhab = settings.madhab,
-                calculationMethod = settings.calculationMethod,
-                location = Location(settings.latitude, settings.longitude),
-                date = today
-            )
-
-            azanSchedulerRepository.reschedule(prayers.map { it.toAlarm() })
-            settingsRepository.setAlarmsScheduled(true)
-        }
-    }
-
 
     private fun getLocation() {
         tryToCall(
@@ -77,6 +57,7 @@ class HomeViewModel(
             }
         )
     }
+
     fun Prayer.toAlarm(): PrayerAlarm {
         return PrayerAlarm(
             id = this.name.ordinal,
@@ -85,10 +66,11 @@ class HomeViewModel(
             enabled = true
         )
     }
+
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAll().first()
+                val settings = settingsRepository.observeAppSettings().first()
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = settings.madhab,
                     calculationMethod = settings.calculationMethod,
@@ -117,7 +99,7 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAll().first()
+                val settings = settingsRepository.observeAppSettings().first()
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
                     madhab = settings.madhab,
@@ -201,6 +183,10 @@ class HomeViewModel(
 
     override fun onClickViewAll() {
         sendEffect(HomeEffect.NavigateToFullPrayersDetails)
+    }
+
+    override fun onClickSettings() {
+        sendEffect(HomeEffect.NavigateToSettings)
     }
 
     override fun onClickQiblaDirection() {

@@ -16,6 +16,7 @@ sealed interface Route {
 
     @Serializable
     data object QiblahScreen
+
     @Serializable
     data object LocationPermissionScreen
 
@@ -24,6 +25,9 @@ sealed interface Route {
 
     @Serializable
     data object CalculationMethodScreen
+
+    @Serializable
+    data object SettingsScreen
 
     @Serializable
     data object MapsScreen

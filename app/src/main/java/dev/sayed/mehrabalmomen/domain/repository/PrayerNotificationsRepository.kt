@@ -4,7 +4,6 @@ import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import kotlinx.coroutines.flow.Flow
 
 interface PrayerNotificationsRepository {
-    val events: Flow<Unit>
     suspend fun setPrayerEnabled(
         prayer: Prayer.PrayerName,
         enabled: Boolean

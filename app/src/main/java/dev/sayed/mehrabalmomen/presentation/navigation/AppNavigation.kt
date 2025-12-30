@@ -15,6 +15,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabScreen
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -42,6 +43,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.LocationPermissionScreen> { LocationPermissionScreen(navController) }
         composable<Route.MadhabScreen> { MadhabScreen(navController) }
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
+        composable<Route.SettingsScreen> { SettingsScreen(navController) }
         composable<Route.MapsScreen> { MapsScreen() }
     }
 }

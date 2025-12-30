@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.data.reciver
 
-import dev.sayed.mehrabalmomen.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,28 +7,42 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
+import androidx.core.content.ContextCompat
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.data.service.AzanService
+import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_ID
+import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_NAME
+import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
 
 class AzanAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val prayerName =
-            intent?.getStringExtra("PRAYER_NAME") ?: "Unknown"
-        Log.d("AzanAlarm", "Alarm received for prayer position $prayerName")
-        showNotification(context, prayerName)
+            intent?.getStringExtra(PRAYER_NAME_KEY) ?: "Unknown"
+     //   showNotification(context, prayerName)
+
+        val serviceIntent = Intent(context, AzanService::class.java).apply {
+            putExtra(PRAYER_NAME_KEY, prayerName)
+        }
+        ContextCompat.startForegroundService(context, serviceIntent)
 
     }
+
     private fun showNotification(context: Context, prayerName: String) {
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channelId = "azan_channel"
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (nm.getNotificationChannel(channelId) == null) {
-                val channel = NotificationChannel(channelId,"Azan", NotificationManager.IMPORTANCE_HIGH)
+            if (nm.getNotificationChannel(AZAN_CHANNEL_ID) == null) {
+                val channel = NotificationChannel(
+                    AZAN_CHANNEL_ID,
+                    AZAN_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH
+                )
                 nm.createNotificationChannel(channel)
             }
         }
 
-        val notification = Notification.Builder(context, channelId)
+        val notification = Notification.Builder(context, AZAN_CHANNEL_ID)
             .setContentTitle("وقت الصلاة")
             .setContentText("حان الآن وقت صلاة $prayerName")
             .setSmallIcon(R.drawable.app_icon)
