@@ -1,243 +1,142 @@
 package dev.sayed.mehrabalmomen.presentation.screen.maps
 
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.location.Address
-import android.location.Geocoder
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.launch
-import org.maplibre.android.annotations.MarkerOptions
-import org.maplibre.android.camera.CameraUpdateFactory
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.maps.MapLibreMap
-import org.maplibre.android.maps.MapView
-import org.maplibre.android.maps.Style
-import java.util.Locale
+import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.maps.components.LocationInfoBox
+import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsFloatingButton
+import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsHeaderWithMap
+import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsToast
+import io.github.dellisd.spatialk.geojson.Position
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraState
+import org.maplibre.compose.camera.rememberCameraState
+import kotlin.time.Duration.Companion.milliseconds
 
-@SuppressLint("MissingPermission")
+
 @Composable
 fun MapsScreen(
-    modifier: Modifier = Modifier
+    navController: NavController,
+    viewModel: MapsViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val state by viewModel.screenState.collectAsState()
+    val cameraState = rememberCameraState()
+    var toastData by remember { mutableStateOf<ToastDetails?>(null) }
 
-    var mapLibreMap by remember { mutableStateOf<MapLibreMap?>(null) }
-    var selectedLatLng by remember { mutableStateOf<LatLng?>(null) }
-    var placeName by remember { mutableStateOf("Selected Location") }
-    var addressLine by remember { mutableStateOf("") }
-
-    fun reverseGeocode(latLng: LatLng) {
-        scope.launch {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            try {
-                val addresses: List<Address>? =
-                    geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val addr = addresses[0]
-                    placeName = addr.locality ?: addr.subAdminArea ?: addr.featureName ?: "Makkah"
-                    addressLine = addr.getAddressLine(0)
-                        ?: "${addr.thoroughfare ?: ""}, ${addr.subLocality ?: ""}".trim(',', ' ')
-                    if (addressLine.isBlank()) addressLine = "King Abdulaziz Rd, Al Haram, 24231"
-                } else {
-                    placeName = "Makkah, Saudi Arabia"
-                    addressLine = "King Abdulaziz Rd, Al Haram, 24231"
-                }
-            } catch (e: Exception) {
-                placeName = "Makkah, Saudi Arabia"
-                addressLine = "King Abdulaziz Rd, Al Haram, 24231"
-            }
+    HandleMapsEffects(
+        viewModel = viewModel,
+        cameraState = cameraState,
+        onBack = navController::popBackStack,
+        onShowToast = { toastData = it }
+    )
+    LaunchedEffect(toastData) {
+        if (toastData != null) {
+            delay(2000)
+            toastData = null
         }
     }
-
-    Box(modifier = modifier.fillMaxSize()) {
-
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = {
-                MapView(context).apply {
-                    getMapAsync { map ->
-                        mapLibreMap = map
-                        map.setStyle(
-                            Style.Builder().fromUri("https://tiles.openfreemap.org/styles/liberty")
-                        )
-                        map.addOnMapClickListener { point ->
-                            val latLng = LatLng(point.latitude, point.longitude)
-                            selectedLatLng = latLng
-
-                            map.clear()
-                            map.addMarker(
-                                MarkerOptions().position(latLng).title("Selected Location")
-                            )
-
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0))
-
-                            reverseGeocode(latLng)
-                            true
-                        }
-                        map.uiSettings.apply {
-                            isZoomGesturesEnabled = true
-                            isScrollGesturesEnabled = true
-                            isRotateGesturesEnabled = true
-                            isTiltGesturesEnabled = true
-                            isAttributionEnabled = false
-
-                        }
-
-                    }
-                }
-            }
-        )
-
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = {
-                detectUserLocation(
-                    context = context,
-                    map = mapLibreMap
-                ) { latLng ->
-                    selectedLatLng = latLng
-                    reverseGeocode(latLng)
-                }
-            }
-        ) {
-            Icon(Icons.Default.LocationOn, contentDescription = "My Location")
-        }
-        selectedLatLng?.let {
-            LocationInfoBox(
-                placeName = placeName,
-                addressLine = addressLine,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                onConfirm = {
-                }
-            )
-        }
-    }
+    MapsContent(
+        state = state,
+        cameraState = cameraState,
+        toastData = toastData,
+        onBack = navController::popBackStack,
+        onMapClick = viewModel::onMapClicked,
+        onDetectLocation = viewModel::onDetectLocationClicked,
+        onConfirmLocation = viewModel::onConfirmLocation,
+        onDismissBottomSheet = viewModel::onDismissBottomSheet
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LocationInfoBox(
-    placeName: String,
-    addressLine: String,
-    onConfirm: () -> Unit,
-    modifier: Modifier = Modifier
+private fun HandleMapsEffects(
+    viewModel: MapsViewModel,
+    cameraState: CameraState,
+    onBack: () -> Unit,
+    onShowToast: (ToastDetails) -> Unit
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(8.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = null,
-                    tint = Color.Red,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = placeName,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is MapsEffect.NavigateToBack -> onBack()
 
-            Spacer(modifier = Modifier.height(8.dp))
+                is MapsEffect.MoveCamera -> {
+                    cameraState.animateTo(
+                        CameraPosition(
+                            target = Position(effect.lng, effect.lat),
+                            zoom = 15.0
+                        ),
+                        duration = 800.milliseconds
+                    )
+                }
 
-            Text(
-                text = addressLine,
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = onConfirm,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(
-                    text = "Confirm Location →",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                is MapsEffect.ShowToast -> {
+                    onShowToast(
+                        ToastDetails(
+                            title = effect.title,
+                            message = effect.message,
+                            icon = effect.icon
+                        )
+                    )
+                }
             }
         }
     }
 }
 
-@SuppressLint("MissingPermission")
-private fun detectUserLocation(
-    context: Context,
-    map: MapLibreMap?,
-    onDetected: (LatLng) -> Unit
+@Composable
+private fun MapsContent(
+    state: MapsUiState,
+    cameraState: CameraState,
+    toastData: ToastDetails?,
+    onBack: () -> Unit,
+    onMapClick: (Double, Double) -> Unit,
+    onDetectLocation: () -> Unit,
+    onConfirmLocation: () -> Unit,
+    onDismissBottomSheet: () -> Unit
 ) {
-    if (map == null) return
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surfaces.surface)
+            .windowInsetsPadding(WindowInsets.systemBars)
+    ) {
 
-    val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-
-    fusedClient.lastLocation.addOnSuccessListener { location ->
-        location ?: return@addOnSuccessListener
-
-        val latLng = LatLng(location.latitude, location.longitude)
-
-        map.clear()
-        map.addMarker(
-            MarkerOptions().position(latLng)
-                .title("My Location")
-                .snippet("This is my location")
+        MapsHeaderWithMap(
+            cameraState = cameraState,
+            onBack = onBack,
+            onMapClick = onMapClick
         )
 
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0))
+        MapsFloatingButton(onDetectLocation)
 
-        onDetected(latLng)
+        toastData?.let {
+            MapsToast(it, state.isSuccessToast)
+        }
+
+        if (state.isBottomSheetVisible) {
+            LocationInfoBox(
+                placeName = state.placeName,
+                addressLine = state.addressLine,
+                onConfirm = onConfirmLocation,
+                onDismiss = onDismissBottomSheet
+            )
+        }
     }
 }

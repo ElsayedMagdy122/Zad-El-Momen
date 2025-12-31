@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
@@ -255,7 +256,9 @@ fun SettingsItem(
                     else -> ""
                 },
                 color = Color(0xFF818599),
-                style = Theme.textStyle.label.small
+                style = Theme.textStyle.label.small,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 

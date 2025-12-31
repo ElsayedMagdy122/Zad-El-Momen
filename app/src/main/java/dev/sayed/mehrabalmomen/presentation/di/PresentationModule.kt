@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.Calculatio
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
@@ -18,5 +19,5 @@ val presentationModule = module {
     viewModelOf(::MadhabViewModel)
     viewModelOf(::CalculationMethodViewModel)
     viewModelOf(::SettingsViewModel)
-
+    viewModelOf(::MapsViewModel)
 }

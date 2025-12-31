@@ -45,7 +45,7 @@ class QiblahViewModel(
     private fun getLocation() {
         tryToCall(
             block = {
-                val location = locationRepository.getOrDetectLocation()
+                val location = locationRepository.getLocation()
                 location
             },
             onSuccess = {

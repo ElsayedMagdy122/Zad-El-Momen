@@ -3,13 +3,9 @@ package dev.sayed.mehrabalmomen.data.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import dev.sayed.mehrabalmomen.data.local.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -17,121 +13,94 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import org.maplibre.android.geometry.LatLng
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class LocationRepositoryImpl(val context: Context,val settingsRepository: SettingsRepository) :
+class LocationRepositoryImpl(val context: Context, val settingsRepository: SettingsRepository) :
     LocationRepository {
 
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
-//
-//     suspend fun getCountryAndState(): Pair<String, String> = withContext(Dispatchers.IO) {
-//        val location = settingsRepository.observeLocation().first()
-//        val geocoder = Geocoder(context, Locale.getDefault())
-//        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-//        if (!addresses.isNullOrEmpty()) {
-//            val country = addresses[0].countryName ?: "Unknown"
-//            val state = addresses[0].adminArea ?: "Unknown"
-//            country to state
-//        } else {
-//            "Unknown" to "Unknown"
-//        }
-//    }
-//    @SuppressLint("MissingPermission")
-//     suspend fun getCurrentLocation(): Location {
-//        return suspendCancellableCoroutine { cont ->
-//            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-//                .addOnSuccessListener { location ->
-//                    if (location != null) {
-//                        cont.resume(
-//                            Location(
-//                                latitude = location.latitude,
-//                                longitude = location.longitude
-//                            )
-//                        )
-//                    } else {
-//                        cont.resumeWithException(
-//                            IllegalStateException("Location unavailable - GPS disabled")
-//                        )
-//                    }
-//                }
-//                .addOnFailureListener { exception ->
-//                    cont.resumeWithException(exception)
-//                }
-//        }
-//    }
 
-    override suspend fun getOrDetectLocation(): Location {
-
-        // 1️⃣ اقرأ من SettingsRepository
+    suspend fun getCurrentOrSavedLocation(): Location {
         val savedLocation = settingsRepository.observeLocation().first()
+        if (savedLocation.isValid()) return savedLocation
 
-        if (savedLocation.isValid()) {
-            return savedLocation
+        val location = suspendCancellableCoroutine<Location> { cont ->
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { loc ->
+                    if (loc != null) cont.resume(
+                        Location(
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            country = "Unknown",
+                            state = "Unknown"
+                        )
+                    ) else cont.resumeWithException(IllegalStateException("Location unavailable"))
+                }
+                .addOnFailureListener(cont::resumeWithException)
         }
 
-        val currentLocation = getCurrentLocation()
+        val (country, state) = withContext(Dispatchers.IO) {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            if (!addresses.isNullOrEmpty()) {
+                val addr = addresses[0]
+                (addr.countryName ?: "Unknown") to (addr.adminArea ?: "Unknown")
+            } else "Unknown" to "Unknown"
+        }
 
-        val (country, state) = getCountryAndState(
-            currentLocation.latitude,
-            currentLocation.longitude
-        )
-
-        val finalLocation = currentLocation.copy(
-            country = country,
-            state = state
-        )
+        val finalLocation = location.copy(country = country, state = state)
         settingsRepository.saveLocation(finalLocation)
 
         return finalLocation
     }
 
+    private fun Location.isValid(): Boolean =
+        latitude != 0.0 && longitude != 0.0 && country != "Unknown" && state != "Unknown"
+
+
+    override suspend fun getLocation(): Location {
+        return getCurrentOrSavedLocation()
+    }
+
+    override suspend fun getLocation(lat: Double, lng: Double): Location =
+        withContext(Dispatchers.IO) {
+            val geocoder = Geocoder(context)
+            val addresses = geocoder.getFromLocation(lat, lng, 1)
+            val addr = addresses?.firstOrNull()
+
+            Location(
+                latitude = lat,
+                longitude = lng,
+                country = "${addr?.adminArea ?: "Unknown"}, ${addr?.countryName ?: "Unknown"}",
+                state = addr?.thoroughfare ?: addr?.featureName ?: ""
+            )
+        }
+
     @SuppressLint("MissingPermission")
-    private suspend fun getCurrentLocation(): Location =
+    override suspend fun getCurrentDeviceLocation(): LatLng =
         suspendCancellableCoroutine { cont ->
-            fusedLocationClient
-                .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        cont.resume(
-                            Location(
-                                latitude = location.latitude,
-                                longitude = location.longitude,
-                                country = "Unknown",
-                                state = "Unknown"
-                            )
-                        )
-                    } else {
-                        cont.resumeWithException(
-                            IllegalStateException("Location unavailable")
-                        )
-                    }
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                null
+            ).addOnSuccessListener { location ->
+                if (location != null) {
+                    cont.resume(LatLng(location.latitude, location.longitude))
+                } else {
+                    fusedLocationClient.lastLocation
+                        .addOnSuccessListener { fallback ->
+                            if (fallback != null) {
+                                cont.resume(LatLng(fallback.latitude, fallback.longitude))
+                            } else {
+                                cont.resumeWithException(
+                                    IllegalStateException("Location unavailable")
+                                )
+                            }
+                        }
                 }
-                .addOnFailureListener(cont::resumeWithException)
+            }.addOnFailureListener(cont::resumeWithException)
         }
-
-    private suspend fun getCountryAndState(
-        lat: Double,
-        lon: Double
-    ): Pair<String, String> = withContext(Dispatchers.IO) {
-
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(lat, lon, 1)
-
-        if (!addresses.isNullOrEmpty()) {
-            val addr = addresses[0]
-            (addr.countryName ?: "Unknown") to
-                    (addr.adminArea ?: "Unknown")
-        } else {
-            "Unknown" to "Unknown"
-        }
-    }
-    private fun Location.isValid(): Boolean {
-        return latitude != 0.0 &&
-                longitude != 0.0 &&
-                country != "Unknown" &&
-                state != "Unknown"
-    }
 }
