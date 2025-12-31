@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 import SettingsUiState
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.data.AzanManager
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -12,7 +13,8 @@ import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val azanManager: AzanManager
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -36,6 +38,7 @@ class SettingsViewModel(
                     )
                 }
                 rebuildSections()
+                azanManager.rescheduleTodayPrayerAlarms()
             }
         }
     }
@@ -62,7 +65,8 @@ class SettingsViewModel(
                         icon = R.drawable.ic_location,
                         title = R.string.location,
                         action = SettingsUiState.SettingsAction.LOCATION,
-                        descriptionText = state.location.country.plus(", ").plus(state.location.city)
+                        descriptionText = state.location.country.plus(", ")
+                            .plus(state.location.city)
 
                     )
                 )
@@ -147,6 +151,7 @@ class SettingsViewModel(
             selectedIndex = SettingsUiState.MadhabState.entries.indexOf(state.selectedMadhab)
         )
     }
+
     private fun openCalculationMethodDialog() {
         val state = screenState.value
         openDialog(
@@ -157,6 +162,7 @@ class SettingsViewModel(
             selectedIndex = SettingsUiState.CalculationMethod.entries.indexOf(state.selectedCalculationMethod)
         )
     }
+
     private fun openDialog(
         type: SettingsUiState.SelectionDialogType,
         titleRes: Int,
@@ -217,6 +223,7 @@ class SettingsViewModel(
             settingsRepository.saveMadhab(madhab)
         }
     }
+
     private fun saveCalculationMethod(method: CalculationMethod) {
         viewModelScope.launch {
             settingsRepository.saveCalculationMethod(method)
@@ -248,8 +255,12 @@ class SettingsViewModel(
     override fun onLocationClick() {
         sendEffect(SettingsEffect.NavigateToLocation)
     }
+
     override fun onCalculationMethodClick() {}
     override fun onHelpFeedbackClick() {}
-    override fun onRateAppClick() {}
+    override fun onRateAppClick() {
+        sendEffect(SettingsEffect.NavigateToRateApp)
+    }
+
     override fun onAboutClick() {}
 }

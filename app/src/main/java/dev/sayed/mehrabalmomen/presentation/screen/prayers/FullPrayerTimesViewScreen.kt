@@ -1,5 +1,11 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
@@ -31,15 +38,35 @@ fun FullPrayerTimesViewScreen(
     viewModel: FullPrayerTimesViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewModel.effect.collect {
-            when (it) {
-                FullPrayerTimesEffect.NavigateBack -> {
-                    navController.popBackStack()
+        viewModel.effect.collect { effect ->
+            when (effect) {
+
+                FullPrayerTimesEffect.RequestExactAlarm -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        context.startActivity(
+                            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        )
+                    }
                 }
 
-                FullPrayerTimesEffect.RequestExactAlarmPermission -> {
+                FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        context.startActivity(
+                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = Uri.parse("package:${context.packageName}")
+                            }
+                        )
+                    }
+                }
 
+                FullPrayerTimesEffect.RequestXiaomiAutoStart -> {
+                    openXiaomiAutoStart(context)
+                }
+
+                FullPrayerTimesEffect.NavigateBack -> {
+                    navController.popBackStack()
                 }
             }
         }
@@ -78,5 +105,18 @@ fun FullPrayerTimesViewScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
+    }
+}
+
+fun openXiaomiAutoStart(context: Context) {
+    try {
+        val intent = Intent().apply {
+            component = ComponentName(
+                "com.miui.securitycenter",
+                "com.miui.permcenter.autostart.AutoStartManagementActivity"
+            )
+        }
+        context.startActivity(intent)
+    } catch (e: Exception) {
     }
 }

@@ -36,7 +36,11 @@ class FullPrayerTimesViewModel(
     FullPrayerTimeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-
+    private var exactAlarmRequested = false
+    private var batteryOptRequested = false
+    private var autoStartRequested = false
+    private val isXiaomiDevice: Boolean
+        get() = android.os.Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
     init {
         observePrayerNotifications()
         getDailyPrayers()
@@ -46,7 +50,7 @@ class FullPrayerTimesViewModel(
     private fun scheduleAlarmsIfNeeded() {
         viewModelScope.launch {
             combine(
-                settingsRepository.observeAppSettings().distinctUntilChanged(),
+                settingsRepository.observePrayerSettings().distinctUntilChanged(),
                 notificationsRepository.observeAll().distinctUntilChanged()
             ) { settings, notifications ->
                 settings to notifications
@@ -55,8 +59,18 @@ class FullPrayerTimesViewModel(
                     val result = azanManager.rescheduleTodayPrayerAlarms()
                     Log.d("AZAN_DEBUG", "Reschedule triggered $result")
 
-                    if (result == RescheduleResult.PermissionRequired) {
-                        sendEffect(FullPrayerTimesEffect.RequestExactAlarmPermission)
+                    if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {
+                        exactAlarmRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+                    }
+                    if (!batteryOptRequested) {
+                        batteryOptRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
+                    }
+
+                    if (isXiaomiDevice && !autoStartRequested) {
+                        autoStartRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestXiaomiAutoStart)
                     }
                 }
         }
@@ -78,8 +92,6 @@ class FullPrayerTimesViewModel(
             location = Location(
                 longitude = settings.location.longitude,
                 latitude = settings.location.latitude,
-                country = "",
-                state = ""
             ),
             date = today
         )
@@ -118,8 +130,6 @@ class FullPrayerTimesViewModel(
             location = Location(
                 longitude = settings.location.longitude,
                 latitude = settings.location.latitude,
-                country = "",
-                state = ""
             ),
             date = today
         )

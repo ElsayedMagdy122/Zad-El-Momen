@@ -1,6 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,10 +43,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.android.play.core.review.ReviewManagerFactory
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
@@ -60,16 +66,20 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by settingsViewModel.screenState.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        settingsViewModel.effect.collect {effect->
- when(effect) {
-     SettingsEffect.NavigateToAbout -> TODO()
-     SettingsEffect.NavigateToHelpFeedback -> TODO()
-     SettingsEffect.NavigateToLocation -> {
-         navController.navigate(Route.MapsScreen)
-     }
-     SettingsEffect.NavigateToRateApp -> TODO()
- }
+        settingsViewModel.effect.collect { effect ->
+            when (effect) {
+                SettingsEffect.NavigateToAbout -> TODO()
+                SettingsEffect.NavigateToHelpFeedback -> TODO()
+                SettingsEffect.NavigateToLocation -> {
+                    navController.navigate(Route.MapsScreen)
+                }
+
+                SettingsEffect.NavigateToRateApp -> {
+                    launchReview(context)
+                }
+            }
         }
     }
     state.dialog?.let { dialog ->
@@ -263,4 +273,24 @@ fun SettingsItem(
         }
 
     }
+}
+
+fun launchReview(context: Context) {
+    val activity = context as? Activity ?: return
+
+    val reviewManager = ReviewManagerFactory.create(context)
+    val request = reviewManager.requestReviewFlow()
+
+    request.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            reviewManager.launchReviewFlow(activity, task.result)
+        }
+    }
+}
+
+fun openStoreReview(context: Context) {
+    val uri = Uri.parse("market://details?id=${context.packageName}")
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    context.startActivity(intent)
 }
