@@ -44,6 +44,6 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.MadhabScreen> { MadhabScreen(navController) }
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
         composable<Route.SettingsScreen> { SettingsScreen(navController) }
-        composable<Route.MapsScreen> { MapsScreen() }
+        composable<Route.MapsScreen> { MapsScreen(navController) }
     }
 }

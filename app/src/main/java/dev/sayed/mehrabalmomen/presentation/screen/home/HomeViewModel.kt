@@ -30,10 +30,53 @@ class HomeViewModel(
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     init {
-        getDailyPrayers()
-
+        observeLocationChanges()
     }
+    private fun observeLocationChanges() {
+        viewModelScope.launch {
+            settingsRepository.observePrayerSettings().collect { prayerSettings ->
+                updateLocationUi(prayerSettings.location)
+                refreshPrayersForLocation(prayerSettings.location)
+            }
+        }
+    }
+    private fun updateLocationUi(location: Location) {
+        updateState {
+            it.copy(
+                location = HomeUiState.LocationUiState(
+                    country = location.country,
+                    city = location.state
+                )
+            )
+        }
+    }
+    private fun refreshPrayersForLocation(location: Location) {
+        tryToCall(
+            block = {
+                val settings = settingsRepository
+                    .observeAppSettings()
+                    .first()
+                    .prayerSettings
 
+                val prayers = prayerRepository.getDailyPrayers(
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = location,
+                    date = today
+                )
+
+                val zone = TimeZone.currentSystemDefault()
+                prayers.map { it.toPrayerUiState(zone) }
+            },
+            onSuccess = { prayerList ->
+                updateState {
+                    it.copy(prayers = prayerList)
+                }
+                getNextPrayer()
+            },
+            onError = {}
+        )
+    }
     private fun getLocation() {
         tryToCall(
             block = {
@@ -55,15 +98,6 @@ class HomeViewModel(
                 val location = HomeUiState.LocationUiState(country = "Unknown", city = "Unknown")
                 updateState { it.copy(location = location) }
             }
-        )
-    }
-
-    fun Prayer.toAlarm(): PrayerAlarm {
-        return PrayerAlarm(
-            id = this.name.ordinal,
-            name = this.name,
-            timeMillis = time.toEpochMilliseconds(),
-            enabled = true
         )
     }
 
