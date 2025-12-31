@@ -47,9 +47,12 @@ fun MapsScreen(
         onShowToast = { toastData = it }
     )
     LaunchedEffect(toastData) {
-        if (toastData != null) {
+        toastData?.let {
+            val current = it
             delay(2000)
-            toastData = null
+            if (toastData == current) {
+                toastData = null
+            }
         }
     }
     MapsContent(
