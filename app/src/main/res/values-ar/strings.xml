@@ -113,4 +113,5 @@
     <string name="calculation_method_description">سيتم استخدام هذه الطريقة لحساب أوقات الصلاة بدقة.</string>
     <string name="prayer_notifications">اشعارات الصلاة</string>
     <string name="change_location">تغيير الموقع</string>
+    <string name="next_prayer_format">%1$s – %2$s</string>
 </resources>

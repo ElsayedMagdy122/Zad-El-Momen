@@ -24,7 +24,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
@@ -98,6 +101,10 @@ private fun PrayerItem(
     isUpComing: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val language = LocalAppLocale.current
+    val localizedTime = prayerTime
+        .toLocalizedDigits(language)
+        .localizeAmPm(language)
     val backgroundColor = if (isUpComing) {
         Theme.color.primary.primary
     } else {
@@ -138,7 +145,7 @@ private fun PrayerItem(
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = "${localizedString(prayerName)} ${prayerTime}",
+            text =  "${localizedString(prayerName)} $localizedTime",
             color = textColor,
             style = Theme.textStyle.label.medium
         )
