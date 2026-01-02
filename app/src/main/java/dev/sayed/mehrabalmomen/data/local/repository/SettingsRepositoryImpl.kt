@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.PrayerSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,6 +28,8 @@ class SettingsRepositoryImpl(
         dataStore.edit {
             it[SettingsKeys.LATITUDE_KEY] = location.latitude
             it[SettingsKeys.LONGITUDE_KEY] = location.longitude
+            it[SettingsKeys.COUNTRY_KEY] = location.country
+            it[SettingsKeys.STATE_KEY] = location.state
         }
     }
 
@@ -42,57 +45,57 @@ class SettingsRepositoryImpl(
         dataStore.edit { it[SettingsKeys.ONBOARDING_COMPLETE] = true }
     }
 
-    override fun observeMadhab(): Flow<Madhab> =
-        dataStore.data.map {
-            Madhab.valueOf(
-                it[SettingsKeys.MADHAB] ?: Madhab.SHAFI.name
-            )
-        }
-
-    override fun observeCalculationMethod(): Flow<CalculationMethod> =
-        dataStore.data.map {
-            CalculationMethod.valueOf(
-                it[SettingsKeys.CALCULATION]
-                    ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
-            )
-        }
-
     override fun observeLocation(): Flow<Location> =
         dataStore.data.map { prefs ->
             Location(
                 latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
-                longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0
+                longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
+                country = prefs[SettingsKeys.COUNTRY_KEY] ?: "Unknown",
+                state = prefs[SettingsKeys.STATE_KEY] ?: "Unknown"
             )
         }
 
     override fun observeOnboardingComplete(): Flow<Boolean> =
         dataStore.data.map { it[SettingsKeys.ONBOARDING_COMPLETE] ?: false }
 
-    override fun observeLanguage(): Flow<AppSettings.Language> =
-        dataStore.data.map {
-            val value = it[SettingsKeys.LANGUAGE]
-            if (value != null) AppSettings.Language.valueOf(value) else AppSettings.Language.ARABIC
-        }
-
-    override fun observeTheme(): Flow<AppSettings.Theme> =
-        dataStore.data.map {
-            val value = it[SettingsKeys.THEME]
-            if (value != null) AppSettings.Theme.valueOf(value) else AppSettings.Theme.SYSTEM
-        }
-
-
-    override fun observeAppSettings(): Flow<AppSettings> =
+    override fun observePrayerSettings(): Flow<PrayerSettings> =
         dataStore.data.map { prefs ->
-            AppSettings(
+            PrayerSettings(
                 madhab = Madhab.valueOf(
                     prefs[SettingsKeys.MADHAB] ?: Madhab.SHAFI.name
                 ),
                 calculationMethod = CalculationMethod.valueOf(
                     prefs[SettingsKeys.CALCULATION]
-                        ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
+                        ?: CalculationMethod.EGYPTIAN.name
                 ),
-                latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
-                longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
+                location = Location(
+                    latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
+                    longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
+                    country = prefs[SettingsKeys.COUNTRY_KEY] ?: "Unknown",
+                    state = prefs[SettingsKeys.STATE_KEY] ?: "Unknown"
+                )
+            )
+        }
+
+    override fun observeAppSettings(): Flow<AppSettings> =
+        dataStore.data.map { prefs ->
+            AppSettings(
+                prayerSettings = PrayerSettings(
+                    madhab = Madhab.valueOf(
+                        prefs[SettingsKeys.MADHAB] ?: Madhab.SHAFI.name
+                    ),
+                    calculationMethod = CalculationMethod.valueOf(
+                        prefs[SettingsKeys.CALCULATION]
+                            ?: CalculationMethod.MUSLIM_WORLD_LEAGUE.name
+                    ),
+                    location = Location(
+                        latitude = prefs[SettingsKeys.LATITUDE_KEY] ?: 0.0,
+                        longitude = prefs[SettingsKeys.LONGITUDE_KEY] ?: 0.0,
+                        country = prefs[SettingsKeys.COUNTRY_KEY] ?: "Unknown",
+                        state = prefs[SettingsKeys.STATE_KEY] ?: "Unknown"
+                    )
+                ),
+
                 alarmsScheduled = prefs[SettingsKeys.ALARMS_SCHEDULED] ?: false,
                 theme = AppSettings.Theme.valueOf(
                     prefs[SettingsKeys.THEME] ?: AppSettings.Theme.SYSTEM.name

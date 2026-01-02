@@ -6,6 +6,7 @@ data class LocationUiState(
     val isLoading: Boolean = false,
     val isButtonEnabled: Boolean = true,
     val isLocationPermissionGranted: Boolean = false,
+    val isSuccessToast : Boolean = false,
     val buttonState: LocationButtonState = LocationButtonState.REQUEST_PERMISSION
 ){
     enum class LocationButtonState(val value: Int) {

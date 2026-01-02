@@ -9,6 +9,8 @@ import dev.sayed.mehrabalmomen.domain.entity.Prayer
 object SettingsKeys {
     val LATITUDE_KEY = doublePreferencesKey("latitude")
     val LONGITUDE_KEY = doublePreferencesKey("longitude")
+    val COUNTRY_KEY = stringPreferencesKey("country")
+    val STATE_KEY = stringPreferencesKey("state")
     val MADHAB = stringPreferencesKey("madhab")
     val LANGUAGE = stringPreferencesKey("language")
     val THEME =  stringPreferencesKey("theme")

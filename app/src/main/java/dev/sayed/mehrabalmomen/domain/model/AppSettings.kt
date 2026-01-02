@@ -1,13 +1,11 @@
 package dev.sayed.mehrabalmomen.domain.model
 
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 
 data class AppSettings(
-    val madhab: Madhab,
-    val calculationMethod: CalculationMethod,
-    val latitude: Double,
-    val longitude: Double,
+    val prayerSettings: PrayerSettings,
     val alarmsScheduled: Boolean,
     val theme: Theme = Theme.SYSTEM,
     val language: Language = Language.ARABIC
@@ -25,10 +23,16 @@ data class AppSettings(
 
     companion object {
         val default = AppSettings(
-            madhab = Madhab.SHAFI,
-            calculationMethod = CalculationMethod.EGYPTIAN,
-            latitude = 0.0,
-            longitude = 0.0,
+            prayerSettings = PrayerSettings(
+                madhab = Madhab.SHAFI,
+                calculationMethod = CalculationMethod.EGYPTIAN,
+                location = Location(
+                    latitude = 0.0,
+                    longitude = 0.0,
+                    country = "Unknown",
+                    state = "Unknown"
+                )
+            ),
             alarmsScheduled = false,
             theme = Theme.SYSTEM,
             language = Language.ARABIC

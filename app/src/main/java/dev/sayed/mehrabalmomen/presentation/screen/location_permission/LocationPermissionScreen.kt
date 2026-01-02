@@ -202,6 +202,7 @@ fun LocationPermissionScreen(
         toastData?.let {
             PrimaryToast(
                 data = it,
+               isSuccess = state.isSuccessToast,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 24.dp),

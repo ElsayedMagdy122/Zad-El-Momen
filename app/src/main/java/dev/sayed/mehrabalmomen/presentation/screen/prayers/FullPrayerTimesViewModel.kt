@@ -36,7 +36,11 @@ class FullPrayerTimesViewModel(
     FullPrayerTimeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-
+    private var exactAlarmRequested = false
+    private var batteryOptRequested = false
+    private var autoStartRequested = false
+    private val isXiaomiDevice: Boolean
+        get() = android.os.Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
     init {
         observePrayerNotifications()
         getDailyPrayers()
@@ -46,7 +50,7 @@ class FullPrayerTimesViewModel(
     private fun scheduleAlarmsIfNeeded() {
         viewModelScope.launch {
             combine(
-                settingsRepository.observeAppSettings().distinctUntilChanged(),
+                settingsRepository.observePrayerSettings().distinctUntilChanged(),
                 notificationsRepository.observeAll().distinctUntilChanged()
             ) { settings, notifications ->
                 settings to notifications
@@ -55,8 +59,18 @@ class FullPrayerTimesViewModel(
                     val result = azanManager.rescheduleTodayPrayerAlarms()
                     Log.d("AZAN_DEBUG", "Reschedule triggered $result")
 
-                    if (result == RescheduleResult.PermissionRequired) {
-                        sendEffect(FullPrayerTimesEffect.RequestExactAlarmPermission)
+                    if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {
+                        exactAlarmRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+                    }
+                    if (!batteryOptRequested) {
+                        batteryOptRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
+                    }
+
+                    if (isXiaomiDevice && !autoStartRequested) {
+                        autoStartRequested = true
+                        sendEffect(FullPrayerTimesEffect.RequestXiaomiAutoStart)
                     }
                 }
         }
@@ -71,13 +85,13 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getDailyPrayersBlock(): List<FullPrayerTimesUiState.PrayerUiState> {
-        val settings = settingsRepository.observeAppSettings().first()
+        val settings = settingsRepository.observeAppSettings().first().prayerSettings
         val prayers = prayerRepository.getDailyPrayers(
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
             location = Location(
-                longitude = settings.longitude,
-                latitude = settings.latitude
+                longitude = settings.location.longitude,
+                latitude = settings.location.latitude,
             ),
             date = today
         )
@@ -108,14 +122,14 @@ class FullPrayerTimesViewModel(
     }
 
     private suspend fun getNextPrayerBlock(): Prayer {
-        val settings = settingsRepository.observeAppSettings().first()
+        val settings = settingsRepository.observeAppSettings().first().prayerSettings
         val nextPrayer = prayerRepository.getNextPrayer(
             instant = Clock.System.now(),
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
             location = Location(
-                longitude = settings.longitude,
-                latitude = settings.latitude
+                longitude = settings.location.longitude,
+                latitude = settings.location.latitude,
             ),
             date = today
         )
