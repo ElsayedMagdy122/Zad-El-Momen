@@ -2,15 +2,19 @@ name: Branch Name Check
 
 on:
   pull_request:
-    types: [ opened, edited, synchronize, reopened ]
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   check-branch-name:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Create google-services.json
-      - run: |
-      - echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+
       - name: Check Branch Name
         uses: actions/github-script@v6
         with:
@@ -20,7 +24,7 @@ jobs:
             const regex = /^(feature|feat|fix|test|refactor|chore|style|screen|docs|component|ci)\/[\w-\/.]+$/;
 
             if (!regex.test(branchName)) {
-              core.setFailed('Branch name does not match the required format: <type>/<branch-name>. Allowed types: feature,feat,fix,test,refactor,chore,style,screen,docs');
+              core.setFailed('Branch name does not match the required format: <type>/<branch-name>. Allowed types: feature,feat,fix,test,refactor,chore,style,screen,docs,component,ci');
             } else {
               console.log('Branch name matches the required format');
             }
