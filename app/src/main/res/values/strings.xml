@@ -113,4 +113,5 @@
     <string name="calculation_method_description">This method will be used to calculate prayer times accurately.</string>
     <string name="prayer_notifications">Prayer Notifications</string>
     <string name="change_location">Change Location</string>
+    <string name="next_prayer_format">%1$s – %2$s</string>
 </resources>
