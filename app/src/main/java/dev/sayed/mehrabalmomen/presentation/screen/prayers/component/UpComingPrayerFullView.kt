@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
 import kotlin.time.ExperimentalTime
 
@@ -34,6 +36,10 @@ fun UpComingPrayerFullView(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val language = LocalAppLocale.current
+    val localizedTime = state.nextPrayer.time
+        .toLocalizedDigits(language)
+        .localizeAmPm(language)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -57,15 +63,20 @@ fun UpComingPrayerFullView(
                     style = Theme.textStyle.label.medium,
                     textAlign = TextAlign.Center
                 )
+
+                val prayerName = if (state.nextPrayer.name != 0)
+                    localizedString(state.nextPrayer.name)
+                else
+                    localizedString(R.string.no_upcoming_prayer)
+
                 Text(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(top = 4.dp),
-                    text =
-                        if (state.nextPrayer.name != 0)
-                            "${context.getString(state.nextPrayer.name)} – ${state.nextPrayer.time}"
-                        else
-                            localizedString(R.string.no_upcoming_prayer),
+                    text = if (state.nextPrayer.name != 0)
+                        "$prayerName – $localizedTime"
+                    else
+                        localizedString(R.string.no_upcoming_prayer),
                     color = Theme.color.primary.primary,
                     style = Theme.textStyle.title.large,
                     textAlign = TextAlign.Center
@@ -80,8 +91,8 @@ fun UpComingPrayerFullView(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter =  if (state.nextPrayer.icon != 0)
-                       painterResource(state.nextPrayer.icon)
+                    painter = if (state.nextPrayer.icon != 0)
+                        painterResource(state.nextPrayer.icon)
                     else
                         painterResource(id = R.drawable.mosque_02),
                     contentDescription = null,

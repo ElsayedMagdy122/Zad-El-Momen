@@ -16,7 +16,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
@@ -24,15 +26,26 @@ fun CounterCard(
     timeUiState: HomeUiState.TimeUiState,
     modifier: Modifier = Modifier
 ) {
+    val language = LocalAppLocale.current
+
     Column(modifier = modifier) {
         Row(
             modifier = modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            CounterCard(modifier = Modifier.weight(1f), text = timeUiState.hours)
-            CounterCard(modifier = Modifier.weight(1f), text = timeUiState.minutes)
-            CounterCard(modifier = Modifier.weight(1f), text = timeUiState.seconds)
+            CounterCard(
+                modifier = Modifier.weight(1f),
+                text = timeUiState.hours.toLocalizedDigits(language)
+            )
+            CounterCard(
+                modifier = Modifier.weight(1f),
+                text = timeUiState.minutes.toLocalizedDigits(language)
+            )
+            CounterCard(
+                modifier = Modifier.weight(1f),
+                text = timeUiState.seconds.toLocalizedDigits(language)
+            )
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

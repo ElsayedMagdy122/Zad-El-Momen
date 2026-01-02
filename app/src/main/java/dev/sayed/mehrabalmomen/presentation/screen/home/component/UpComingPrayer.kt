@@ -19,7 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
@@ -51,12 +54,20 @@ fun UpComingPrayer(
             style = Theme.textStyle.label.medium,
             textAlign = TextAlign.Center
         )
+        val language = LocalAppLocale.current
+        val prayerTime = state.nextPrayer.time
+            .toLocalizedDigits(language)
+            .localizeAmPm(language)
+        val prayerName = if (state.nextPrayer.name != 0)
+            localizedString(state.nextPrayer.name)
+        else
+            localizedString(R.string.no_upcoming_prayer)
         Text(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 4.dp),
             text =
                 if (state.nextPrayer.name != 0)
-                    "${context.getString(state.nextPrayer.name)} – ${state.nextPrayer.time}"
+                    stringResource(R.string.next_prayer_format, prayerName, prayerTime)
                 else
                     localizedString(R.string.no_upcoming_prayer),
             color = Theme.color.primary.primary,
@@ -68,7 +79,7 @@ fun UpComingPrayer(
                 .padding(horizontal = 16.dp),
             text =
                 if (state.nextPrayer.name != 0)
-                    stringResource(R.string.time_until, context.getString(state.nextPrayer.name))
+                    localizedString(R.string.time_until, localizedString(state.nextPrayer.name))
                 else
                     localizedString(R.string.no_remaining_time),
             color = Theme.color.secondary.secondaryText,

@@ -21,11 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
 import kotlin.time.ExperimentalTime
 
 @Composable
 fun TimerCounter(time : FullPrayerTimesUiState.TimeUiState, modifier: Modifier = Modifier) {
+    val language = LocalAppLocale.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -36,19 +39,19 @@ fun TimerCounter(time : FullPrayerTimesUiState.TimeUiState, modifier: Modifier =
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = time.hours,
+            text = time.hours.toLocalizedDigits(language),
             color = Theme.color.surfaces.surfaceHigh,
             style = Theme.textStyle.title.extraLarge
         )
         Dots(modifier = Modifier.padding(horizontal = 8.dp))
         Text(
-            text =  time.minutes,
+            text =  time.minutes.toLocalizedDigits(language),
             color = Theme.color.surfaces.surfaceHigh,
             style = Theme.textStyle.title.extraLarge
         )
         Dots(modifier = Modifier.padding(horizontal = 8.dp))
         Text(
-            text =  time.seconds,
+            text = time.seconds.toLocalizedDigits(language),
             color = Theme.color.surfaces.surfaceHigh,
             style = Theme.textStyle.title.extraLarge
         )

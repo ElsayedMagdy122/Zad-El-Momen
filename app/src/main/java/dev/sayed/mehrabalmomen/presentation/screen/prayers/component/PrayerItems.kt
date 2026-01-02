@@ -25,7 +25,10 @@ import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LinearProgress
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
 import kotlin.time.ExperimentalTime
@@ -57,7 +60,7 @@ fun PrayerItems(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(
-                bottom = 8.dp,
+                bottom = 16.dp,
                 start = 16.dp,
                 end = 16.dp
             )
@@ -79,6 +82,10 @@ fun PrayerItem(
     prayer: FullPrayerTimesUiState.PrayerUiState,
     modifier: Modifier = Modifier
 ) {
+    val language = LocalAppLocale.current
+    val localizedPrayerTime = prayer.time
+        .toLocalizedDigits(language)
+        .localizeAmPm(language)
     val backgroundItem =
         if (isUpComing) Theme.color.primary.primary else Theme.color.surfaces.surfaceHigh
     val prayerNameColor =
@@ -119,7 +126,7 @@ fun PrayerItem(
 
         Text(
             modifier = Modifier.padding(end = 8.dp),
-            text = prayer.time,
+            text =localizedPrayerTime,
             color = Theme.color.secondary.secondaryText,
             style = Theme.textStyle.title.small
         )
