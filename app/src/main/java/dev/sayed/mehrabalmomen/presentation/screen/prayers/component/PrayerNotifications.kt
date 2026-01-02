@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
@@ -57,12 +56,12 @@ fun PrayerNotifications(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(
-                bottom = 8.dp,
+                bottom = 16.dp,
                 start = 16.dp,
                 end = 16.dp
             )
         ) {
-            items(prayerNotifications) { state->
+            items(prayerNotifications) { state ->
                 NotificationItem(
                     prayerNotificationUiState = state,
                     onCheckedChange = { isChecked ->
@@ -77,8 +76,8 @@ fun PrayerNotifications(
     }
 }
 
-fun Int.toPrayerName(): Prayer.PrayerName{
-    return when(this){
+fun Int.toPrayerName(): Prayer.PrayerName {
+    return when (this) {
         R.string.fajr -> Prayer.PrayerName.FAJR
         R.string.dhuhr -> Prayer.PrayerName.ZUHR
         R.string.asr -> Prayer.PrayerName.ASR
@@ -108,7 +107,7 @@ fun NotificationItem(
             modifier = Modifier
                 .padding(end = 8.dp)
                 .weight(1f),
-            text = stringResource(prayerNotificationUiState.name),
+            text = localizedString(prayerNotificationUiState.name),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.small
         )
