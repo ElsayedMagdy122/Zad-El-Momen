@@ -54,9 +54,9 @@ fun rememberLocalizedContext(): Context {
     }
 }
 @Composable
-fun localizedString(@StringRes id: Int): String {
+fun localizedString(@StringRes id: Int, vararg args: Any): String {
     val context = rememberLocalizedContext()
-    return context.getString(id)
+    return context.getString(id, *args)
 }
 @Composable
 fun AppRoot(settingsRepository: SettingsRepository) {
@@ -81,5 +81,25 @@ fun AppRoot(settingsRepository: SettingsRepository) {
         ) {
             AppNavigation(settingsRepository)
         }
+    }
+}
+fun String.toLocalizedDigits(language: AppSettings.Language): String {
+    return if (language == AppSettings.Language.ARABIC) {
+        this.map {
+            when (it) {
+                in '0'..'9' -> '٠' + (it - '0')
+                else -> it
+            }
+        }.joinToString("")
+    } else {
+        this
+    }
+}
+
+fun String.localizeAmPm(language: AppSettings.Language): String {
+    return if (language == AppSettings.Language.ARABIC) {
+        this.replace("AM", "ص").replace("PM", "م")
+    } else {
+        this
     }
 }
