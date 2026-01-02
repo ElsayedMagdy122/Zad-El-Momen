@@ -59,16 +59,21 @@ class LocationViewModel(
                     LocationEffect.ShowToast(
                         title = "No Internet Connection",
                         message = "Please connect to the internet to continue",
-                        icon = R.drawable.check
+                        icon = R.drawable.ic_close_circle
                     )
                 )
+                updateState {
+                    it.copy(
+                      isSuccessToast = false
+                    )
+                }
                 onLocationDenied()
                 return@launch
             }
 
             tryToCall(
                 block = {
-                    val location = locationRepository.getCurrentLocation()
+                    val location = locationRepository.getLocation()
                     settingsRepository.saveLocation(location)
                 },
                 onSuccess = {

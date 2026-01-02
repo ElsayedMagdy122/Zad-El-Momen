@@ -30,20 +30,63 @@ class HomeViewModel(
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
     init {
-        getDailyPrayers()
-
+        observeLocationChanges()
     }
+    private fun observeLocationChanges() {
+        viewModelScope.launch {
+            settingsRepository.observePrayerSettings().collect { prayerSettings ->
+                updateLocationUi(prayerSettings.location)
+                refreshPrayersForLocation(prayerSettings.location)
+            }
+        }
+    }
+    private fun updateLocationUi(location: Location) {
+        updateState {
+            it.copy(
+                location = HomeUiState.LocationUiState(
+                    country = location.country,
+                    city = location.state
+                )
+            )
+        }
+    }
+    private fun refreshPrayersForLocation(location: Location) {
+        tryToCall(
+            block = {
+                val settings = settingsRepository
+                    .observeAppSettings()
+                    .first()
+                    .prayerSettings
 
+                val prayers = prayerRepository.getDailyPrayers(
+                    madhab = settings.madhab,
+                    calculationMethod = settings.calculationMethod,
+                    location = location,
+                    date = today
+                )
+
+                val zone = TimeZone.currentSystemDefault()
+                prayers.map { it.toPrayerUiState(zone) }
+            },
+            onSuccess = { prayerList ->
+                updateState {
+                    it.copy(prayers = prayerList)
+                }
+                getNextPrayer()
+            },
+            onError = {}
+        )
+    }
     private fun getLocation() {
         tryToCall(
             block = {
-                val location = locationRepository.getCountryAndState()
+                val location = settingsRepository.observeLocation().first()
                 location
             },
             onSuccess = {
                 val location = HomeUiState.LocationUiState(
-                    country = it.first,
-                    city = it.second
+                    country =it.country,
+                    city = it.state
                 )
                 updateState { state ->
                     state.copy(
@@ -58,25 +101,18 @@ class HomeViewModel(
         )
     }
 
-    fun Prayer.toAlarm(): PrayerAlarm {
-        return PrayerAlarm(
-            id = this.name.ordinal,
-            name = this.name,
-            timeMillis = time.toEpochMilliseconds(),
-            enabled = true
-        )
-    }
-
     private fun getDailyPrayers() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAppSettings().first()
+                val settings = settingsRepository.observeAppSettings().first().prayerSettings
                 val prayers = prayerRepository.getDailyPrayers(
                     madhab = settings.madhab,
                     calculationMethod = settings.calculationMethod,
                     location = Location(
-                        longitude = settings.longitude,
-                        latitude = settings.latitude
+                        longitude = settings.location.longitude,
+                        latitude = settings.location.latitude,
+                        country = "",
+                        state = ""
                     ),
                     date = today
                 )
@@ -99,14 +135,16 @@ class HomeViewModel(
     private fun getNextPrayer() {
         tryToCall(
             block = {
-                val settings = settingsRepository.observeAppSettings().first()
+                val settings = settingsRepository.observeAppSettings().first().prayerSettings
                 val nextPrayer = prayerRepository.getNextPrayer(
                     instant = Clock.System.now(),
                     madhab = settings.madhab,
                     calculationMethod = settings.calculationMethod,
                     location = Location(
-                        longitude = settings.longitude,
-                        latitude = settings.latitude
+                        longitude = settings.location.longitude,
+                        latitude = settings.location.latitude,
+                        country = "",
+                        state = ""
                     ),
                     date = today
                 )

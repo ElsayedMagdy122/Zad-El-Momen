@@ -34,7 +34,7 @@ val dataModule = module {
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
-    single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
+    single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
 
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }

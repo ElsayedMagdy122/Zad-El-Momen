@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mehrab Al Momen"
 include(":app")
- 
+include(":lint-rules")

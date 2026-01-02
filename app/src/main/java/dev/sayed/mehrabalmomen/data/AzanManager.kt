@@ -42,11 +42,16 @@ class AzanManager(
     }
 
     private suspend fun getDailyPrayers(today: LocalDate): List<Prayer> {
-        val settings = settingsRepository.observeAppSettings().first()
+        val settings = settingsRepository.observeAppSettings().first().prayerSettings
         return prayerRepository.getDailyPrayers(
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
-            location = Location(settings.latitude, settings.longitude),
+            location = Location(
+                latitude = settings.location.latitude,
+                longitude = settings.location.longitude,
+                country = "",
+                state = ""
+            ),
             date = today
         )
     }

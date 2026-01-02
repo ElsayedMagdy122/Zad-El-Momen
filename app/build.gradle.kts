@@ -18,7 +18,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.perf)
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("org.maplibre.compose:maplibre-compose:0.11.1")
+    implementation("com.google.android.play:review:2.0.1")
     val nav_version = "2.9.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.navigation:navigation-runtime-ktx:$nav_version")
@@ -76,4 +78,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+  //  lintChecks(project(":lint-rules"))
 }

@@ -12,6 +12,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8Calib
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationPermissionScreen
 import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabScreen
+import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
@@ -43,5 +44,6 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.MadhabScreen> { MadhabScreen(navController) }
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
         composable<Route.SettingsScreen> { SettingsScreen(navController) }
+        composable<Route.MapsScreen> { MapsScreen(navController) }
     }
 }

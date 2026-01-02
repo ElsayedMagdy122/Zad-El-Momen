@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -29,7 +30,7 @@ fun LocationCarousel(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = modifier.size(16.dp),
+            modifier = Modifier.size(16.dp),
             painter = painterResource(id = R.drawable.ic_location),
             tint = Theme.color.primary.primary,
             contentDescription = null
@@ -38,7 +39,9 @@ fun LocationCarousel(
             modifier = Modifier.padding(start = 4.dp),
             text = "${locationUiState.city}, ${locationUiState.country}",
             color = Theme.color.primary.shadePrimary,
-            style = Theme.textStyle.label.small
+            style = Theme.textStyle.label.small,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

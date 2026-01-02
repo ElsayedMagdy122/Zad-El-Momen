@@ -1,10 +1,10 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
 import dev.sayed.mehrabalmomen.domain.entity.Location
+import org.maplibre.android.geometry.LatLng
 
 interface LocationRepository {
-    suspend fun saveLocation(location: Location)
-    suspend fun getCountryAndState(): Pair<String, String>
-    suspend fun getCurrentLocation(): Location
-    suspend fun getSavedLocation(): Location
+    suspend fun getLocation(): Location
+    suspend fun getLocation(lat: Double, lng: Double): Location
+    suspend fun getCurrentDeviceLocation(): LatLng
 }
