@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
+import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
@@ -22,4 +23,5 @@ val presentationModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::MapsViewModel)
     viewModelOf(::AzkarViewModel)
+    viewModelOf(::AzkarDetailViewModel)
 }
