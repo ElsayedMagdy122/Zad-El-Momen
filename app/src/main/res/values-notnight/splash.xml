@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MehrabAlMomen.Starting" parent="Theme.AppCompat.DayNight">
-        <item name="windowSplashScreenBackground">#000000</item>-->
-        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="windowSplashScreenBackground">@color/splash_bg</item>-->
         <item name="postSplashScreenTheme">@style/Theme.MehrabAlMomen</item>-->
     </style>
 </resources>

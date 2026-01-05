@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.base
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -31,9 +33,12 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installSplashScreen()
+        }
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_MehrabAlMomen)
         enableEdgeToEdge()
-        installSplashScreen()
         setContent {
             AppRoot(settingsRepository = settingsRepository)
         }
