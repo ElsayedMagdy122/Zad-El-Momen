@@ -55,15 +55,15 @@ data class FeatureItem(
 @Composable
 private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener): List<FeatureItem> {
     return listOf(
-//        FeatureItem(
-//            title = "Nearby Mosques",
-//            icon = painterResource(R.drawable.mosque_02),
-//            onClick = { }
-//        ),
         FeatureItem(
             title = localizedString(R.string.qiblah_direction),
             icon = painterResource(R.drawable.kaaba_01),
             onClick = homeInteractionListener::onClickQiblaDirection
+        ),
+                FeatureItem(
+            title = localizedString(R.string.azkar),
+            icon = painterResource(R.drawable.ic_azkar),
+            onClick = homeInteractionListener::onClickAzkar
         ),
     )
 }

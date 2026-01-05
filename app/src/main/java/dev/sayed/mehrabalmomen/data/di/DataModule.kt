@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
 import dev.sayed.mehrabalmomen.data.AzanManager
+import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.AzanSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
@@ -12,6 +14,7 @@ import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
+import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
@@ -27,7 +30,7 @@ val Context.locationDataStore by preferencesDataStore(name = DATASTORE_NAME)
 val dataModule = module {
     // Context DataStore
     single { get<Context>().locationDataStore }
-
+    single { com.google.gson.Gson() }
     // Repositories
     single<PrayerRepository> { PrayerRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl() }
@@ -35,6 +38,8 @@ val dataModule = module {
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
+    single <AzkarRepository>{ AzkarRepositoryImpl(get()) }
+    single <AzkarLocalDataSource>{ AzkarLocalDataSource(get(),get()) }
 
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }

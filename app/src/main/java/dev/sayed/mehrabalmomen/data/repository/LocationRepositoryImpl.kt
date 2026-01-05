@@ -35,8 +35,6 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
                         Location(
                             latitude = loc.latitude,
                             longitude = loc.longitude,
-                            country = "Unknown",
-                            state = "Unknown"
                         )
                     ) else cont.resumeWithException(IllegalStateException("Location unavailable"))
                 }
@@ -44,7 +42,7 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
         }
 
         val (country, state) = withContext(Dispatchers.IO) {
-            val geocoder = Geocoder(context, Locale.getDefault())
+            val geocoder = Geocoder(context, appLocale(context))
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
             if (!addresses.isNullOrEmpty()) {
                 val addr = addresses[0]
@@ -68,7 +66,7 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
 
     override suspend fun getLocation(lat: Double, lng: Double): Location =
         withContext(Dispatchers.IO) {
-            val geocoder = Geocoder(context)
+            val geocoder = Geocoder(context, appLocale(context))
             val addresses = geocoder.getFromLocation(lat, lng, 1)
             val addr = addresses?.firstOrNull()
 
@@ -103,4 +101,8 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
                 }
             }.addOnFailureListener(cont::resumeWithException)
         }
+}
+
+private fun appLocale(context: Context): Locale {
+    return context.resources.configuration.locales[0]
 }

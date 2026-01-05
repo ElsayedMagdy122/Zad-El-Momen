@@ -31,4 +31,10 @@ sealed interface Route {
 
     @Serializable
     data object MapsScreen
+
+    @Serializable
+    data object AzkarScreen
+
+    @Serializable
+    data class AzkarDetailScreen(val title: String) : Route
 }

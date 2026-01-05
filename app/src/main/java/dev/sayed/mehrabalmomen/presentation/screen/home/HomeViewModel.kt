@@ -231,4 +231,8 @@ class HomeViewModel(
         sendEffect(HomeEffect.NavigateToCalibrateDevice)
     }
 
+    override fun onClickAzkar() {
+        sendEffect(HomeEffect.NavigateToAzkar)
+    }
+
 }
