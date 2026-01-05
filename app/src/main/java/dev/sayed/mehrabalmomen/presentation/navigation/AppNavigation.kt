@@ -6,7 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
+import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
@@ -45,5 +48,13 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
         composable<Route.SettingsScreen> { SettingsScreen(navController) }
         composable<Route.MapsScreen> { MapsScreen(navController) }
+        composable<Route.AzkarScreen> { AzkarScreen(navController) }
+        composable<Route.AzkarDetailScreen> { entry ->
+            val args = entry.toRoute<Route.AzkarDetailScreen>()
+            AzkarDetailScreen(
+                title = args.title,
+                navController = navController
+            )
+        }
     }
 }
