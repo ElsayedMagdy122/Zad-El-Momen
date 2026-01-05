@@ -115,4 +115,12 @@
     <string name="change_location">Change Location</string>
     <string name="next_prayer_format">%1$s – %2$s</string>
     <string name="azkar">Azkar</string>
+    <string name="azkar_morning">Morning Azkar</string>
+    <string name="azkar_evening">Evening Azkar</string>
+    <string name="azkar_after_prayer">After Prayer Azkar</string>
+    <string name="azkar_tasbih">Tasbih</string>
+    <string name="azkar_sleep">Before Sleep Azkar</string>
+    <string name="azkar_wake">Waking Up Azkar</string>
+    <string name="azkar_quran_dua">Quranic Duas</string>
+    <string name="azkar_prophets_dua">Prophets Duas</string>
 </resources>
