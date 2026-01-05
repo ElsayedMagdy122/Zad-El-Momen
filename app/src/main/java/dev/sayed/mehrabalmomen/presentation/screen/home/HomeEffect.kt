@@ -4,4 +4,6 @@ sealed interface HomeEffect {
     object NavigateToFullPrayersDetails : HomeEffect
     object NavigateToSettings : HomeEffect
     object NavigateToCalibrateDevice : HomeEffect
+
+    object NavigateToAzkar : HomeEffect
 }

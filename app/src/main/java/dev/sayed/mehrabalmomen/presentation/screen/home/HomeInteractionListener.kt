@@ -4,4 +4,5 @@ interface HomeInteractionListener {
     fun onClickViewAll()
     fun onClickSettings()
     fun onClickQiblaDirection()
+    fun onClickAzkar()
 }

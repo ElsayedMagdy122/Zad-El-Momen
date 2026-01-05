@@ -79,6 +79,10 @@ fun HomeScreen(
                 HomeEffect.NavigateToSettings -> {
                     navController.navigate(Route.SettingsScreen)
                 }
+
+                HomeEffect.NavigateToAzkar -> {
+                    navController.navigate(Route.AzkarScreen)
+                }
             }
         }
     }
