@@ -49,8 +49,6 @@ class AzanManager(
             location = Location(
                 latitude = settings.location.latitude,
                 longitude = settings.location.longitude,
-                country = "",
-                state = ""
             ),
             date = today
         )

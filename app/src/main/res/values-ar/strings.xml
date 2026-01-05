@@ -114,4 +114,13 @@
     <string name="prayer_notifications">اشعارات الصلاة</string>
     <string name="change_location">تغيير الموقع</string>
     <string name="next_prayer_format">%1$s – %2$s</string>
+    <string name="azkar">الأذكار</string>
+    <string name="azkar_morning">أذكار الصباح</string>
+    <string name="azkar_evening">أذكار المساء</string>
+    <string name="azkar_after_prayer">أذكار بعد الصلاة المفروضة</string>
+    <string name="azkar_tasbih">تسابيح</string>
+    <string name="azkar_sleep">أذكار النوم</string>
+    <string name="azkar_wake">أذكار الاستيقاظ</string>
+    <string name="azkar_quran_dua">أدعية قرآنية</string>
+    <string name="azkar_prophets_dua">أدعية الأنبياء</string>
 </resources>
