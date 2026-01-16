@@ -83,6 +83,10 @@ fun HomeScreen(
                 HomeEffect.NavigateToAzkar -> {
                     navController.navigate(Route.AzkarScreen)
                 }
+
+                HomeEffect.NavigateToQuran -> {
+                    navController.navigate(Route.SurahListScreen)
+                }
             }
         }
     }
