@@ -1,0 +1,120 @@
+package dev.sayed.mehrabalmomen.presentation.screen.quran.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
+
+@Composable
+fun SurahItem(
+    surahUiState: SurahUiState,
+    onClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(Theme.color.surfaces.surfaceLow)
+            .clickable { onClick(surahUiState.id) }
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AyahNumber(number = surahUiState.id)
+        SurahInfo(surahUiState)
+        SurahArabicName(surahUiState.surahImage)
+    }
+}
+
+@Composable
+private fun RowScope.SurahInfo(surahUiState: SurahUiState, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp)
+            .weight(1f)
+    ) {
+        Text(
+            text = surahUiState.name,
+            style = Theme.textStyle.label.medium,
+            color = Theme.color.primary.shadePrimary
+        )
+        Row(
+            modifier = Modifier
+                .padding(top = 2.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_quran),
+                tint = Theme.color.secondary.shadeSecondary,
+                contentDescription = null
+            )
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = "${surahUiState.ayahNumbers} Ayat",
+                style = Theme.textStyle.label.small,
+                color = Theme.color.secondary.shadeSecondary
+            )
+            Box(
+                modifier = Modifier
+                    .size(3.dp)
+                    .clip(CircleShape)
+                    .background(Theme.color.secondary.shadeSecondary)
+                    .padding(horizontal = 8.dp)
+            )
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = surahUiState.surahType,
+                style = Theme.textStyle.label.small,
+                color = Theme.color.secondary.shadeSecondary
+            )
+        }
+    }
+}
+
+@Composable
+private fun SurahArabicName(image: Int) {
+    Icon(
+        painter = painterResource(image),
+        modifier = Modifier.size(48.dp),
+        contentDescription = null,
+        tint = Theme.color.primary.shadePrimary
+    )
+}
+
+@Composable
+private fun AyahNumber(number: Int, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.size(36.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_sura_number),
+            contentDescription = null,
+            tint = Theme.color.secondary.secondary,
+        )
+        Text(
+            text = number.toString(),
+            style = Theme.textStyle.label.small,
+            color = Theme.color.secondary.secondary
+        )
+    }
+}

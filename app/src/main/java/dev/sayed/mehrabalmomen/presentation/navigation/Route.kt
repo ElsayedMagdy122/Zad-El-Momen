@@ -37,4 +37,10 @@ sealed interface Route {
 
     @Serializable
     data class AzkarDetailScreen(val title: String) : Route
+
+    @Serializable
+    data object SurahListScreen
+
+    @Serializable
+    data class SurahAyatScreen(val surahId :Int)
 }
