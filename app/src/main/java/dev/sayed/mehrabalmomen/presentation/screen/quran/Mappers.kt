@@ -9,7 +9,7 @@ fun Surah.toUiState() = SurahUiState(
     nameArabic = nameArabic,
     nameEnglish = nameEnglish,
     ayahNumbers = ayahCount,
-    suraqhType = type.name,
+    surahType = type.name,
     surahImage = getSurahImage(surahNumber)
 )
 

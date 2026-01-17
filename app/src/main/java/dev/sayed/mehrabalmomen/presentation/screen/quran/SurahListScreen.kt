@@ -32,7 +32,7 @@ fun SurahListScreen(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is SurahListEffect.NavigateToSurahAyat ->
-                    navController.navigate(Route.SurahAyatScreen(effect.surahId))
+                    navController.navigate(Route.SurahAyatScreen(effect.surahId,effect.surahName))
             }
         }
     }

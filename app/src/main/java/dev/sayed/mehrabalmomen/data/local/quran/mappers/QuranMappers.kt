@@ -3,12 +3,12 @@ package dev.sayed.mehrabalmomen.data.local.quran.mappers
 import dev.sayed.mehrabalmomen.data.local.quran.dto.AyahDto
 import dev.sayed.mehrabalmomen.domain.entity.Ayah
 
-fun AyahDto.toDomain(): Ayah {
+fun AyahDto.toDomain(surahNumber: Int): Ayah {
     return Ayah(
         id = this.id,
         ayahNumber = this.ayahNumber,
         juzNumber = this.juzNumber,
-        surahNumber = this.surahNumber,
+        surahNumber = surahNumber,
         text = this.text
     )
 }

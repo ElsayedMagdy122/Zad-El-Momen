@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
+import dev.sayed.mehrabalmomen.presentation.screen.QuranFlowScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
@@ -18,6 +19,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabScreen
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
@@ -39,6 +41,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         navController = navController,
         startDestination = startDestination
     ) {
+        composable<Route.SurahListScreen> { SurahListScreen(navController) }
         composable<Route.HomeScreen> { HomeScreen(navController) }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }
@@ -55,6 +58,10 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 title = args.title,
                 navController = navController
             )
+        }
+        composable<Route.SurahAyatScreen> { entry ->
+            val surah = entry.toRoute<Route.SurahAyatScreen>()
+            QuranFlowScreen(surahId = surah.surahId,surahName =surah.surahName)
         }
     }
 }

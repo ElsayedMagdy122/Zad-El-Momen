@@ -124,4 +124,6 @@
     <string name="azkar_quran_dua">Quranic Duas</string>
     <string name="azkar_prophets_dua">Prophets Duas</string>
     <string name="quran">Quran</string>
+    <string name="ayat">%1$d Ayat</string>
+    <string name="sur">Sur</string>
 </resources>
