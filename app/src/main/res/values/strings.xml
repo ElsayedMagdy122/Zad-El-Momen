@@ -123,7 +123,10 @@
     <string name="azkar_wake">Waking Up Azkar</string>
     <string name="azkar_quran_dua">Quranic Duas</string>
     <string name="azkar_prophets_dua">Prophets Duas</string>
-    <string name="quran">Quran</string>
+    <string name="quran">The Holy Qur’an</string>
     <string name="ayat">%1$d Ayat</string>
     <string name="sur">Sur</string>
+    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you’re offline.</string>
+    <string name="check_your_connection_and_try_again">Check your connection and try again</string>
+    <string name="re_try">Re-try</string>
 </resources>
