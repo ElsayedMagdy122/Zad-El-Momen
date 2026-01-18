@@ -8,6 +8,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import dev.sayed.mehrabalmomen.design_system.color.LocalMehrabColor
 import dev.sayed.mehrabalmomen.design_system.color.darkThemeColors
@@ -50,7 +51,7 @@ private fun UpdateStatusBarIconsForTheme() {
     }
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-        // WindowCompat.setDecorFitsSystemWindows(window, false)
+         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.navigationBarColor = Theme.color.surfaces.surface.toArgb()
     }
 }

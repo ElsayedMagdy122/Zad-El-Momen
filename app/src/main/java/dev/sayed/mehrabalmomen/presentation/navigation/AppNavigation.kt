@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
-import dev.sayed.mehrabalmomen.presentation.screen.QuranFlowScreen
+import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
@@ -61,7 +61,11 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         }
         composable<Route.SurahAyatScreen> { entry ->
             val surah = entry.toRoute<Route.SurahAyatScreen>()
-            QuranFlowScreen(surahId = surah.surahId,surahName =surah.surahName)
+            SurahAyatScreen(
+                navController=navController,
+                surahId = surah.surahId,
+                surahName = surah.surahName
+            )
         }
     }
 }
