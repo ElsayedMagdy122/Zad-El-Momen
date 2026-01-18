@@ -135,4 +135,7 @@
     <string name="please_connect_to_the_internet_to_continue">Please connect to the internet to continue</string>
     <string name="location_saved">Location Saved</string>
     <string name="your_location_has_been_saved_successfully">Your location has been saved successfully</string>
+    <string name="send">Send</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="copy">Copy</string>
 </resources>

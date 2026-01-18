@@ -5,6 +5,8 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
@@ -22,10 +24,11 @@ class SurahAyatViewModel(
     private fun loadSurahAyat() {
         tryToCall(
             onStart = {
-                updateState { it.copy(isLoading = true) }
+                updateState { state -> state.copy(isLoading = true) }
             },
             block = { quranRepository.getAyahs(surahId) },
             onSuccess = { ayat ->
+                delay(500)
                 updateState {
                     it.copy(
                         ayat = ayat.map { AyaUi(it.id, it.text)}, isLoading = false,surahName = surahName

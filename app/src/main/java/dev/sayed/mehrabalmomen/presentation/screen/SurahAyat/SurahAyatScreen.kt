@@ -80,6 +80,7 @@ fun SurahAyatScreen(
         } else {
             SurahAyatContent(
                 state = state,
+                surahId = surahId,
                 listener = viewModel
             )
         }
@@ -97,6 +98,7 @@ fun SurahAyatScreen(
 @Composable
 private fun SurahAyatContent(
     state: SurahAyatUiState,
+    surahId: Int,
     listener: SurahAyatInteractionListener
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -105,7 +107,11 @@ private fun SurahAyatContent(
                 SurahAppBarSection(surahName = state.surahName, onBack = listener::onClickBack)
             }
 
-            item { BismillahSection(color = Theme.color.primary.primary) }
+            if (surahId != 1 && surahId != 9) {
+                item {
+                    BismillahSection(color = Theme.color.primary.primary)
+                }
+            }
 
             item {
                 QuranTextSection(

@@ -134,4 +134,8 @@
     <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
     <string name="please_connect_to_the_internet_to_continue">يرجى الاتصال بالإنترنت للمتابعة</string>
     <string name="location_saved">تم حفظ الموقع</string>
-    <string name="your_location_has_been_saved_successfully">تم حفظ موقعك بنجاح</string></resources>
+    <string name="your_location_has_been_saved_successfully">تم حفظ موقعك بنجاح</string>
+    <string name="send">إرسال</string>
+    <string name="bookmark">حفظ الموضع</string>
+    <string name="copy">نسخ</string>
+</resources>

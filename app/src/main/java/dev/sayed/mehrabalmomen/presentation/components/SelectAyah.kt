@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -15,11 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 
 enum class AyahAction {
     SEND, BOOKMARK, COPY
@@ -33,17 +38,17 @@ fun AyahActions(
     val actions = listOf(
         ActionItem(
             icon = painterResource(R.drawable.ic_link_forward),
-            text = "Send",
+            text = localizedString(R.string.send),
             action = AyahAction.SEND
         ),
         ActionItem(
             icon = painterResource(R.drawable.ic_all_bookmark),
-            text = "Bookmark",
+            text = localizedString(R.string.bookmark),
             action = AyahAction.BOOKMARK
         ),
         ActionItem(
             icon = painterResource(R.drawable.ic_copy_01),
-            text = "Copy",
+            text = localizedString(R.string.copy),
             action = AyahAction.COPY
         )
     )
@@ -53,13 +58,21 @@ fun AyahActions(
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
             .padding(vertical = 12.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        actions.forEach { actionItem ->
+        actions.forEachIndexed { index, actionItem ->
             ActionButton(
                 actionItem = actionItem,
                 onClick = { onActionClick(actionItem.action) }
             )
+            if (index < actions.lastIndex) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 1.dp, height = 20.dp)
+                        .background(Color(0xFFEAECF0))
+                )
+            }
         }
     }
 }
