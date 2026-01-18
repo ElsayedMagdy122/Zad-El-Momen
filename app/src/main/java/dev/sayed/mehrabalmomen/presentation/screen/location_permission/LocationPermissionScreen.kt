@@ -143,11 +143,7 @@ fun LocationPermissionScreen(
                 }
 
                 is LocationEffect.ShowToast -> {
-                    toastData = ToastDetails(
-                        title = effect.title,
-                        message = effect.message,
-                        icon = effect.icon
-                    )
+                    toastData = effect.toast
                 }
             }
         }

@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
@@ -26,4 +27,5 @@ val presentationModule = module {
     viewModelOf(::AzkarViewModel)
     viewModelOf(::AzkarDetailViewModel)
     viewModelOf(::SurahListViewModel)
+    viewModelOf(::SurahAyatViewModel)
 }

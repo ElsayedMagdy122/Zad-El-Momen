@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 import SettingsUiState
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.AzanManager
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
-    private val azanManager: AzanManager
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -38,7 +38,7 @@ class SettingsViewModel(
                     )
                 }
                 rebuildSections()
-                azanManager.rescheduleTodayPrayerAlarms()
+                prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
             }
         }
     }
