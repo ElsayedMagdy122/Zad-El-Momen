@@ -25,6 +25,8 @@ import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTextSection
@@ -54,6 +56,16 @@ fun SurahAyatScreen(
 
             SurahAyatEffect.NavigateToBack -> {
                 navController.popBackStack()
+            }
+
+            is SurahAyatEffect.NavigateToSearch -> {
+                navController.navigate(
+                    Route.SearchAyahScreen(
+                        type = SearchType.SURAH,
+                        surahId = effect.surahId,
+                        surahName = effect.surahName
+                    )
+                )
             }
         }
 
@@ -104,7 +116,10 @@ private fun SurahAyatContent(
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             stickyHeader {
-                SurahAppBarSection(surahName = state.surahName, onBack = listener::onClickBack)
+                SurahAppBarSection(
+                    surahName = state.surahName,
+                    onBack = listener::onClickBack,
+                    onSearch =    listener::onClickSearch)
             }
 
             if (surahId != 1 && surahId != 9) {

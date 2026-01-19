@@ -5,4 +5,5 @@ interface SurahAyatInteractionListener {
     fun onClearSelection()
     fun onCopyAya()
     fun onClickBack()
+    fun onClickSearch()
 }
