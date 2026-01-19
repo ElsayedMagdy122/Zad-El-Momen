@@ -113,6 +113,7 @@ private fun SurahArabicName(image: Int) {
 @Composable
 private fun AyahNumber(number: Int, modifier: Modifier = Modifier) {
     val surahNumber = if (number <= 9) "0${number}" else number.toString()
+    val language = LocalAppLocale.current
     Box(
         modifier = modifier.size(36.dp),
         contentAlignment = Alignment.Center
@@ -123,7 +124,7 @@ private fun AyahNumber(number: Int, modifier: Modifier = Modifier) {
             tint = Theme.color.secondary.secondary,
         )
         Text(
-            text = surahNumber,
+            text =surahNumber.toLocalizedDigits(language),
             style = Theme.textStyle.label.small,
             color = Theme.color.secondary.secondary
         )

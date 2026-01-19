@@ -26,4 +26,8 @@ class SurahListViewModel(
     override fun onSurahClick(surahId: Int,surahName:String) {
         sendEffect(SurahListEffect.NavigateToSurahAyat(surahId,surahName))
     }
+
+    override fun onSearchClick() {
+        sendEffect(SurahListEffect.NavigateToQuranSearch)
+    }
 }

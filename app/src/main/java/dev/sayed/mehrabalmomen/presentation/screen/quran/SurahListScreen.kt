@@ -21,6 +21,8 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.navigation.Route.*
+import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.quran.components.SurahGrid
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
@@ -35,11 +37,19 @@ fun SurahListScreen(
         when (effect) {
             is SurahListEffect.NavigateToSurahAyat ->
                 navController.navigate(
-                    Route.SurahAyatScreen(
+                    SurahAyatScreen(
                         effect.surahId,
                         effect.surahName
                     )
                 )
+
+            SurahListEffect.NavigateToQuranSearch -> {
+                navController.navigate(
+                    Route.SearchAyahScreen(
+                        type = SearchType.QURAN
+                    )
+                )
+            }
         }
     }
 
@@ -66,11 +76,13 @@ private fun SurahListContent(
     ) {
         QuranAppBar(
             onBackClick = onBack,
+            titleColor = Theme.color.primary.shadePrimary,
             title = localizedString(R.string.quran), actions = listOf(
                 AppBarAction(
                     icon = painterResource(R.drawable.ic_search),
-                    onClick = {},
-
+                    onClick = {
+                        listener.onSearchClick()
+                    },
                     ),
                 AppBarAction(
                     icon = painterResource(R.drawable.ic_all_bookmark),
