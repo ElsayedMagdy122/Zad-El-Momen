@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.navigation
 
+import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import kotlinx.serialization.Serializable
 
 
@@ -43,4 +44,10 @@ sealed interface Route {
 
     @Serializable
     data class SurahAyatScreen(val surahId :Int,val surahName:String) : Route
+    @Serializable
+    data class SearchAyahScreen(
+        val type: SearchType,
+        val surahId: Int? = null,
+        val surahName: String? = null
+    ) : Route
 }

@@ -28,7 +28,7 @@ class SurahAyatViewModel(
             },
             block = { quranRepository.getAyahs(surahId) },
             onSuccess = { ayat ->
-                delay(500)
+                delay(100)
                 updateState {
                     it.copy(
                         ayat = ayat.map { AyaUi(it.id, it.text)}, isLoading = false,surahName = surahName
@@ -77,5 +77,14 @@ class SurahAyatViewModel(
 
     override fun onClickBack() {
         sendEffect(SurahAyatEffect.NavigateToBack)
+    }
+
+    override fun onClickSearch() {
+        sendEffect(
+            SurahAyatEffect.NavigateToSearch(
+                surahId = surahId,
+                surahName = screenState.value.surahName
+            )
+        )
     }
 }

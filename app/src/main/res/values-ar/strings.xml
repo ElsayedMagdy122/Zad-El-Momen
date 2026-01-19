@@ -138,4 +138,7 @@
     <string name="send">إرسال</string>
     <string name="bookmark">حفظ الموضع</string>
     <string name="copy">نسخ</string>
+    <string name="search_in_quran">بحث في القرآن الكريم...</string>
+    <string name="search_in_surah">بحث في سورة %1$s...</string>
+    <string name="ayah">آية</string>
 </resources>
