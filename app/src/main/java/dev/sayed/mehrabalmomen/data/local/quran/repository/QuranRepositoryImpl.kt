@@ -45,4 +45,25 @@ class QuranRepositoryImpl(private val context: Context, private val gson: Gson) 
             ayahDto.toDomain(surahNumber)
         } ?: emptyList()
     }
+
+    override suspend fun searchInQuran(query: String): List<Ayah> {
+        val allSurahs = getAllSurahsFromAsset()
+        val results = mutableListOf<Ayah>()
+
+        allSurahs.forEach { surahDto ->
+            val matchingAyahs = surahDto.verses.filter { ayahDto ->
+                ayahDto.textEmlaey.contains(query, ignoreCase = true)
+            }.map { it.toDomain(surahDto.id,surahDto.nameArabic,surahDto.nameEnglish) }
+
+            results.addAll(matchingAyahs)
+        }
+        return results
+    }
+
+    override suspend fun searchInSurah(surahNumber: Int, query: String): List<Ayah> {
+        val surah = getAllSurahsFromAsset().find { it.id == surahNumber }
+        return surah?.verses?.filter { ayahDto ->
+            ayahDto.textEmlaey.contains(query, ignoreCase = true)
+        }?.map { it.toDomain(surahNumber) } ?: emptyList()
+    }
 }

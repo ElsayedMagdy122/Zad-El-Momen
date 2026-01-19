@@ -10,6 +10,8 @@ data class AyahDto(
     val ayahNumber: Int,
     @SerializedName("text")
     val text: String,
+    @SerializedName("text_emlaey")
+    val textEmlaey: String,
     @SerializedName("page")
     val page: Int,
     @SerializedName("jozz")
