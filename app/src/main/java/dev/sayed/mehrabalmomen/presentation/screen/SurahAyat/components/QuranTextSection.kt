@@ -1,5 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,30 +33,58 @@ import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatUiState
 fun QuranTextSection(
     state: SurahAyatUiState,
     onAyaLongPressed: (Int, String) -> Unit,
-    onClearSelection: () -> Unit
+    onClearSelection: () -> Unit,
+    onCalculatedPosition: (Float) -> Unit
 ) {
     val color = Theme.color.primary.primary
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    val surahText = remember(state.ayat, state.selectedAyaId) {
+    val selectionAlpha by animateFloatAsState(
+        targetValue = if (state.selectedAyaId != null) 0.3f else 1f,
+        animationSpec = tween(durationMillis = 150),
+        label = "AyaSelectionAnimation"
+    )
+
+    val surahText = remember(state.ayat, state.selectedAyaId, selectionAlpha) {
         buildAnnotatedString {
             state.ayat.forEach { aya ->
                 val start = length
-                val alpha = if (state.selectedAyaId == null || state.selectedAyaId == aya.id) 1f else 0.3f
+                val isSelected = state.selectedAyaId == aya.id
 
-                withStyle(SpanStyle(color = color.copy(alpha = alpha))) {
+                val currentAlpha = if (isSelected) 1f else selectionAlpha
+
+                withStyle(SpanStyle(color = color.copy(alpha = currentAlpha))) {
                     append(aya.text)
                 }
                 append(" ")
                 val end = length
-                addStringAnnotation("AYA_ID", aya.id.toString(), start, end)
-                addStringAnnotation("AYA_TEXT", aya.text, start, end)
+                addStringAnnotation(AYA_ID, aya.id.toString(), start, end)
+                addStringAnnotation(AYA_TEXT, aya.text, start, end)
             }
         }
     }
 
     Text(
         text = surahText,
+        onTextLayout = { layout ->
+            textLayoutResult = layout
+
+            state.targetAyahId?.let { targetId ->
+
+                val index = state.ayat.indexOfFirst { it.id == targetId }
+                if (index != -1) {
+
+                    val annotations = surahText.getStringAnnotations(AYA_ID, 0, surahText.length)
+                    val target = annotations.getOrNull(index)
+
+                    target?.let {
+                        val line = layout.getLineForOffset(it.start)
+                        val yPosition = layout.getLineTop(line)
+                        onCalculatedPosition(yPosition)
+                    }
+                }
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -63,8 +93,10 @@ fun QuranTextSection(
                     onLongPress = { position ->
                         textLayoutResult?.let { layout ->
                             val offset = layout.getOffsetForPosition(position)
-                            val id = surahText.getStringAnnotations("AYA_ID", offset, offset).firstOrNull()?.item?.toInt()
-                            val text = surahText.getStringAnnotations("AYA_TEXT", offset, offset).firstOrNull()?.item
+                            val id = surahText.getStringAnnotations(AYA_ID, offset, offset)
+                                .firstOrNull()?.item?.toInt()
+                            val text = surahText.getStringAnnotations(AYA_TEXT, offset, offset)
+                                .firstOrNull()?.item
                             if (id != null && text != null) onAyaLongPressed(id, text)
                         }
                     },
@@ -79,6 +111,8 @@ fun QuranTextSection(
             textDirection = TextDirection.Rtl,
             platformStyle = PlatformTextStyle(includeFontPadding = false)
         ),
-        onTextLayout = { textLayoutResult = it }
     )
 }
+
+const val AYA_ID="AYA_ID"
+const val AYA_TEXT="AYA_TEXT"

@@ -68,7 +68,7 @@
         "id": 2,
         "name": "البَقَرَة",
         "transliteration": "Al-Baqarah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 286,
         "verses": [
             {
@@ -2365,7 +2365,7 @@
         "id": 3,
         "name": "آل عِمران",
         "transliteration": "Āl-‘Imrān",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 200,
         "verses": [
             {
@@ -3974,7 +3974,7 @@
         "id": 4,
         "name": "النِّسَاء",
         "transliteration": "An-Nisā’",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 176,
         "verses": [
             {
@@ -5391,7 +5391,7 @@
         "id": 5,
         "name": "المَائدة",
         "transliteration": "Al-Mā’idah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 120,
         "verses": [
             {
@@ -9346,7 +9346,7 @@
         "id": 8,
         "name": "الأنفَال",
         "transliteration": "Al-Anfāl",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 75,
         "verses": [
             {
@@ -9955,7 +9955,7 @@
         "id": 9,
         "name": "التوبَة",
         "transliteration": "At-Taubah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 129,
         "verses": [
             {
@@ -13767,7 +13767,7 @@
         "id": 13,
         "name": "الرَّعد",
         "transliteration": "Ar-Ra‘d",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 43,
         "verses": [
             {
@@ -20952,7 +20952,7 @@
         "id": 22,
         "name": "الحج",
         "transliteration": "Al-Ḥajj",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 78,
         "verses": [
             {
@@ -22538,7 +22538,7 @@
         "id": 24,
         "name": "النور",
         "transliteration": "An-Nūr",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 64,
         "verses": [
             {
@@ -28555,7 +28555,7 @@
         "id": 33,
         "name": "الأحزَاب",
         "transliteration": "Al-Aḥzāb",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 73,
         "verses": [
             {
@@ -36777,7 +36777,7 @@
         "id": 47,
         "name": "مُحمد",
         "transliteration": "Muḥammad",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 38,
         "verses": [
             {
@@ -37090,7 +37090,7 @@
         "id": 48,
         "name": "الفَتح",
         "transliteration": "Al-Fatḥ",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 29,
         "verses": [
             {
@@ -37331,7 +37331,7 @@
         "id": 49,
         "name": "الحُجُرَات",
         "transliteration": "Al-Ḥujurāt",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 18,
         "verses": [
             {
@@ -39697,7 +39697,7 @@
         "id": 55,
         "name": "الرَّحمٰن",
         "transliteration": "Ar-Raḥmān",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 78,
         "verses": [
             {
@@ -41107,7 +41107,7 @@
         "id": 57,
         "name": "الحدِيد",
         "transliteration": "Al-Ḥadīd",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 29,
         "verses": [
             {
@@ -41348,7 +41348,7 @@
         "id": 58,
         "name": "المُجَادلة",
         "transliteration": "Al-Mujādilah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 22,
         "verses": [
             {
@@ -41533,7 +41533,7 @@
         "id": 59,
         "name": "الحَشر",
         "transliteration": "Al-Ḥashr",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 24,
         "verses": [
             {
@@ -41734,7 +41734,7 @@
         "id": 60,
         "name": "المُمتَحنَة",
         "transliteration": "Al-Mumtaḥanah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 13,
         "verses": [
             {
@@ -41847,7 +41847,7 @@
         "id": 61,
         "name": "الصَّف",
         "transliteration": "Aṣ-Ṣaff",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 14,
         "verses": [
             {
@@ -41968,7 +41968,7 @@
         "id": 62,
         "name": "الجُمعَة",
         "transliteration": "Al-Jumu‘ah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 11,
         "verses": [
             {
@@ -42065,7 +42065,7 @@
         "id": 63,
         "name": "المُنَافِقُونَ",
         "transliteration": "Al-Munāfiqūn",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 11,
         "verses": [
             {
@@ -42162,7 +42162,7 @@
         "id": 64,
         "name": "التغَابُن",
         "transliteration": "At-Taghābun",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 18,
         "verses": [
             {
@@ -42315,7 +42315,7 @@
         "id": 65,
         "name": "الطَّلَاق",
         "transliteration": "Aṭ-Ṭalāq",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 12,
         "verses": [
             {
@@ -42420,7 +42420,7 @@
         "id": 66,
         "name": "التَّحرِيم",
         "transliteration": "At-Taḥrīm",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 12,
         "verses": [
             {
@@ -45406,7 +45406,7 @@
         "id": 76,
         "name": "الإنسَان",
         "transliteration": "Al-Insān",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 31,
         "verses": [
             {
@@ -49916,7 +49916,7 @@
         "id": 98,
         "name": "البَينَة",
         "transliteration": "Al-Bayyinah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 8,
         "verses": [
             {
@@ -49989,7 +49989,7 @@
         "id": 99,
         "name": "الزَّلزَلة",
         "transliteration": "Az-Zalzalah",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 8,
         "verses": [
             {
@@ -50688,7 +50688,7 @@
         "id": 110,
         "name": "النَّصر",
         "transliteration": "An-Naṣr",
-        "type": "meccan",
+        "type": "medinan",
         "total_verses": 3,
         "verses": [
             {

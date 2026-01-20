@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
 
 @Composable
@@ -91,7 +93,7 @@ private fun RowScope.SurahInfo(
             )
             Text(
                 modifier = Modifier.padding(start = 8.dp),
-                text = surahUiState.surahType,
+                text = localizedString(surahUiState.surahType.text),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.secondary.shadeSecondary
             )

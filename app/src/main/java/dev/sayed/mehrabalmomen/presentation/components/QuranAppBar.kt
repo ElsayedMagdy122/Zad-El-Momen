@@ -68,7 +68,8 @@ fun QuranAppBar(
                     value = searchText,
                     onValueChange = onSearchTextChange,
                     placeholder = placeholder,
-                    onClearClick = onSearchClose
+                    onClearClick = onSearchClose,
+                    isRtl = isRtl
                 )
             } else {
                 Text(
@@ -99,7 +100,8 @@ private fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
     onClearClick: () -> Unit,
-    placeholder: String
+    placeholder: String,
+    isRtl: Boolean
 ) {
     BasicTextField(
         value = value,
@@ -119,9 +121,13 @@ private fun SearchTextField(
                 Icon(
                     modifier = Modifier
                         .size(24.dp)
-                        .padding(end = 8.dp),
+                        .padding(end = 8.dp)
+                        .graphicsLayer {
+                            scaleX = if (isRtl) -1f else 1f
+                        },
                     painter = painterResource(R.drawable.ic_search),
                     contentDescription = null,
+                    tint = Theme.color.secondary.shadeSecondary
                 )
                 if (value.isEmpty()) {
                     Text(

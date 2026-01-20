@@ -3,7 +3,6 @@ package dev.sayed.mehrabalmomen.data.local.quran.repository
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dev.sayed.mehrabalmomen.data.local.quran.dto.AyahDto
 import dev.sayed.mehrabalmomen.data.local.quran.dto.SurahDto
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.Ayah

@@ -9,9 +9,16 @@ fun Surah.toUiState() = SurahUiState(
     nameArabic = nameArabic,
     nameEnglish = nameEnglish,
     ayahNumbers = ayahCount,
-    surahType = type.name,
+    surahType = type.toUiState(),
     surahImage = getSurahImage(surahNumber)
 )
+
+fun Surah.SurahType.toUiState(): SurahType {
+    return when (this) {
+        Surah.SurahType.MAKKI -> SurahType.MAKKI
+        Surah.SurahType.MADANI -> SurahType.MADANI
+    }
+}
 
 fun getSurahImage(surahId: Int): Int {
     return when (surahId) {

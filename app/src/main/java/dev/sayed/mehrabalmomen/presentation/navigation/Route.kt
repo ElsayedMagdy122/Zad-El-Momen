@@ -43,7 +43,12 @@ sealed interface Route {
     data object SurahListScreen
 
     @Serializable
-    data class SurahAyatScreen(val surahId :Int,val surahName:String) : Route
+    data class SurahAyatScreen(
+        val surahId: Int,
+        val surahName: String,
+        val targetAyahId: Int? = null
+    ) : Route
+
     @Serializable
     data class SearchAyahScreen(
         val type: SearchType,

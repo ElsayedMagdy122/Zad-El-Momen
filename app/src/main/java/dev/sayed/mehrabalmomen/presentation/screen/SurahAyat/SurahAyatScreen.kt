@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +35,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTex
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.SurahAppBarSection
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -93,7 +96,8 @@ fun SurahAyatScreen(
             SurahAyatContent(
                 state = state,
                 surahId = surahId,
-                listener = viewModel
+                listener = viewModel,
+                viewModel = viewModel
             )
         }
 
@@ -111,15 +115,20 @@ fun SurahAyatScreen(
 private fun SurahAyatContent(
     state: SurahAyatUiState,
     surahId: Int,
-    listener: SurahAyatInteractionListener
+    listener: SurahAyatInteractionListener,
+    viewModel: SurahAyatViewModel
 ) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val textSectionIndex = if (surahId != 1 && surahId != 9) 2 else 1
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             stickyHeader {
                 SurahAppBarSection(
                     surahName = state.surahName,
                     onBack = listener::onClickBack,
-                    onSearch =    listener::onClickSearch)
+                    onSearch = listener::onClickSearch
+                )
             }
 
             if (surahId != 1 && surahId != 9) {
@@ -132,7 +141,20 @@ private fun SurahAyatContent(
                 QuranTextSection(
                     state = state,
                     onAyaLongPressed = listener::onAyaLongPressed,
-                    onClearSelection = listener::onClearSelection
+                    onClearSelection = listener::onClearSelection,
+                    onCalculatedPosition = { yOffset ->
+                        if (state.targetAyahId != null) {
+                            scope.launch {
+                                val finalOffset = yOffset.toInt() - 80
+
+                                listState.animateScrollToItem(
+                                    index = textSectionIndex,
+                                    scrollOffset = if (finalOffset > 0) finalOffset else 0
+                                )
+                                viewModel.onScrolledToTarget()
+                            }
+                        }
+                    }
                 )
             }
         }

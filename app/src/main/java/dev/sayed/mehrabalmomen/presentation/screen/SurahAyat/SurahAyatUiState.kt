@@ -6,7 +6,9 @@ data class SurahAyatUiState(
     val selectedAyaId: Int? = null,
     val selectedAyaText: String = "",
     val showActions: Boolean = false,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val scrollToAyaId: Int? = null,
+    val targetAyahId: Int? = null,
 )
 
 data class AyaUi(

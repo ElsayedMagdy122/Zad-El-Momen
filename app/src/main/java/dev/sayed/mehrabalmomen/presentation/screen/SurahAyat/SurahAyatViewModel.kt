@@ -6,7 +6,6 @@ import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.seconds
 
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
@@ -17,10 +16,12 @@ class SurahAyatViewModel(
 
     private val surahId: Int = checkNotNull(savedStateHandle["surahId"])
     private val surahName: String = checkNotNull(savedStateHandle["surahName"])
+    private val targetAyahId: Int? = savedStateHandle["targetAyahId"]
 
     init {
         loadSurahAyat()
     }
+
     private fun loadSurahAyat() {
         tryToCall(
             onStart = {
@@ -31,12 +32,25 @@ class SurahAyatViewModel(
                 delay(100)
                 updateState {
                     it.copy(
-                        ayat = ayat.map { AyaUi(it.id, it.text)}, isLoading = false,surahName = surahName
+                        ayat = ayat.map { AyaUi(it.ayahNumber, it.text) },
+                        isLoading = false,
+                        surahName = surahName,
+                        selectedAyaId = targetAyahId,
+                        scrollToAyaId = targetAyahId,
+                        targetAyahId = targetAyahId,
                     )
                 }
             },
             onError = {}
         )
+    }
+    fun onScrolledToTarget() {
+        updateState {
+            it.copy(
+                targetAyahId = null,
+                scrollToAyaId = null
+            )
+        }
     }
 
     override fun onAyaLongPressed(id: Int, text: String) {
@@ -58,6 +72,7 @@ class SurahAyatViewModel(
             )
         }
     }
+
     override fun onCopyAya() {
         val text = screenState.value.selectedAyaText
         if (text.isBlank()) return
@@ -68,7 +83,7 @@ class SurahAyatViewModel(
             SurahAyatEffect.ShowToast(
                 ToastDetails(
                     title = R.string.success,
-                    message =R.string.copied_message_successfully,
+                    message = R.string.copied_message_successfully,
                     icon = R.drawable.ic_check_circle
                 )
             )

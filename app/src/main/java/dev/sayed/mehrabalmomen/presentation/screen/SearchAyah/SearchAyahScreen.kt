@@ -1,20 +1,22 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SearchAyah
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -38,6 +40,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -61,6 +64,16 @@ fun SearchAyahScreen(
         when (it) {
             SearchAyahEffect.NavigateBack ->
                 navController.popBackStack()
+
+            is SearchAyahEffect.NavigateToSurah -> {
+                navController.navigate(
+                    Route.SurahAyatScreen(
+                        surahId = it.surahId,
+                        surahName = it.surahName,
+                        targetAyahId = it.ayahId
+                    )
+                )
+            }
         }
     }
 
@@ -70,7 +83,8 @@ fun SearchAyahScreen(
         searchQuery = state.searchQuery,
         searchResults = state.results,
         onSearchQueryChange = viewModel::onSearchQueryChange,
-        onBackClick = viewModel::onBackClick
+        onBackClick = viewModel::onBackClick,
+        listener = viewModel
     )
 }
 
@@ -82,6 +96,7 @@ private fun SearchAyahContent(
     searchResults: List<AyahUi>,
     onSearchQueryChange: (String) -> Unit,
     onBackClick: () -> Unit,
+    listener: SearchAyahInteractionListener,
     modifier: Modifier = Modifier
 ) {
 
@@ -89,16 +104,21 @@ private fun SearchAyahContent(
         SearchType.QURAN -> localizedString(R.string.search_in_quran)
         SearchType.SURAH -> localizedString(R.string.search_in_surah, surahName ?: "")
     }
-    LazyVerticalGrid(
-        modifier = modifier.windowInsetsPadding(WindowInsets.systemBars),
-        columns = GridCells.Adaptive(320.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    LazyVerticalStaggeredGrid(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Theme.color.surfaces.surface)
+            .windowInsetsPadding(WindowInsets.systemBars),
+        columns = StaggeredGridCells.Adaptive(320.dp),
+        verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(
             horizontal = 16.dp
         )
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
+        item(
+            span = StaggeredGridItemSpan.FullLine
+        ) {
             QuranAppBar(
                 title = "",
                 onBackClick = onBackClick,
@@ -113,9 +133,11 @@ private fun SearchAyahContent(
 
 
         items(searchResults.size) { index ->
+            val ayah = searchResults[index]
             SearchResultItem(
                 ayahUi = searchResults[index],
-                showSurahName = searchType == SearchType.QURAN
+                showSurahName = searchType == SearchType.QURAN,
+                modifier = Modifier.clickable { listener.onAyahClick(ayah) }
             )
         }
     }

@@ -20,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -91,12 +90,13 @@ private fun ActionButton(
 ) {
     Column(
         modifier = modifier
-            .widthIn(78.dp)
+            .widthIn(min = 78.dp)
             .clickable(
                 onClick = onClick,
                 interactionSource = MutableInteractionSource(),
                 indication = null,
-            ),
+            )
+            .padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(

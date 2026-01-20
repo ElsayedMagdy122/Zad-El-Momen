@@ -96,4 +96,7 @@ class SearchAyahViewModel(
     override fun onBackClick() {
         sendEffect(SearchAyahEffect.NavigateBack)
     }
+    override fun onAyahClick(ayah: AyahUi) {
+        sendEffect(SearchAyahEffect.NavigateToSurah(ayah.surahId, ayah.surahName, ayah.id))
+    }
 }

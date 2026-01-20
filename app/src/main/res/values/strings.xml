@@ -141,4 +141,6 @@
     <string name="search_in_quran">Search in Quran...</string>
     <string name="search_in_surah">Search in %1$s...</string>
     <string name="ayah">Ayah</string>
+    <string name="mekki">Makki</string>
+    <string name="madani">Madani</string>
 </resources>
