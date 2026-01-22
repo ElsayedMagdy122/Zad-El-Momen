@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.util
+package dev.sayed.mehrabalmomen.presentation.utils
 
 object Constants {
     const val PRAYER_NAME_KEY = "PRAYER_NAME"

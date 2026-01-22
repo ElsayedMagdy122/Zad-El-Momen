@@ -1,9 +1,9 @@
-package dev.sayed.mehrabalmomen.data
+package dev.sayed.mehrabalmomen.domain.usecase
 
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
-import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
+import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -15,15 +15,15 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class AzanManager(
+class PrayerSchedulingUseCase(
     private val settingsRepository: SettingsRepository,
     private val prayerRepository: PrayerRepository,
-    private val schedulerRepository: AzanSchedulerRepository,
+    private val schedulerRepository: PrayerAlarmRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
 ) {
 
     suspend fun rescheduleTodayPrayerAlarms() {
-        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
 
         val prayers = getDailyPrayers(today)
 

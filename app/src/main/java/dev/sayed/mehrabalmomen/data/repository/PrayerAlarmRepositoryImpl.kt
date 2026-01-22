@@ -4,19 +4,19 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
-import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
-import dev.sayed.mehrabalmomen.data.reciver.AzanAlarmReceiver
-import dev.sayed.mehrabalmomen.data.reciver.MidnightRolloverReceiver
+import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
+import dev.sayed.mehrabalmomen.presentation.reciver.AzanAlarmReceiver
+import dev.sayed.mehrabalmomen.presentation.reciver.DailyRefreshReceiver
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
-import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
+import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
 import java.util.Calendar
 
-class AzanSchedulerRepositoryImpl(
+class PrayerAlarmRepositoryImpl(
     private val context: Context,
     private val alarmScheduler: AlarmScheduler
-) : AzanSchedulerRepository {
+) : PrayerAlarmRepository {
 
     override fun reschedule(prayers: List<PrayerAlarm>): RescheduleResult {
 
@@ -50,7 +50,7 @@ class AzanSchedulerRepositoryImpl(
     }
 
     private fun scheduleMidnight() {
-        val intent = Intent(context, MidnightRolloverReceiver::class.java)
+        val intent = Intent(context, DailyRefreshReceiver::class.java)
 
         alarmScheduler.scheduleExact(
             MIDNIGHT_ROLLOVER_REQUEST_CODE,

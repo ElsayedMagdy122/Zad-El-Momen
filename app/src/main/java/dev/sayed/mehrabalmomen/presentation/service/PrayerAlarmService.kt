@@ -1,5 +1,6 @@
-package dev.sayed.mehrabalmomen.data.service
+package dev.sayed.mehrabalmomen.presentation.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,15 +10,16 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.util.Constants
-import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_ID
-import dev.sayed.mehrabalmomen.data.util.Constants.AZAN_CHANNEL_NAME
-import dev.sayed.mehrabalmomen.data.util.Constants.PRAYER_NAME_KEY
+import dev.sayed.mehrabalmomen.presentation.utils.Constants
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_ID
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_NAME
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
 import dev.sayed.mehrabalmomen.presentation.base.MainActivity
 
-class AzanService : Service() {
+class PrayerAlarmService : Service() {
 
     private lateinit var mediaPlayer: MediaPlayer
 
@@ -59,6 +61,7 @@ class AzanService : Service() {
         }
     }
 
+    @SuppressLint("FullScreenIntentPolicy")
     private fun createNotification(prayerName: String): Notification {
         val openAppIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -68,7 +71,7 @@ class AzanService : Service() {
             this, 0, openAppIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val stopIntent = Intent(this, AzanService::class.java).apply {
+        val stopIntent = Intent(this, PrayerAlarmService::class.java).apply {
             action = Constants.ACTION_STOP_AZAN
         }
         val stopPendingIntent = PendingIntent.getService(
@@ -78,6 +81,8 @@ class AzanService : Service() {
         val bm = BitmapFactory.decodeResource(resources, R.drawable.night_mosque)
 
         return NotificationCompat.Builder(this, AZAN_CHANNEL_ID)
+            .setFullScreenIntent(openAppPendingIntent, true)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentTitle("أذان $prayerName")
             .setContentText("اضغط هنا لرؤية مواقيت الصلاة")
             .setSmallIcon(R.drawable.mosque_02)
@@ -92,7 +97,7 @@ class AzanService : Service() {
 
     private fun playAzan() {
         mediaPlayer = MediaPlayer().apply {
-            setWakeMode(this@AzanService, android.os.PowerManager.PARTIAL_WAKE_LOCK)
+            setWakeMode(this@PrayerAlarmService, PowerManager.PARTIAL_WAKE_LOCK)
             setDataSource(resources.openRawResourceFd(R.raw.azan))
             prepare()
             start()

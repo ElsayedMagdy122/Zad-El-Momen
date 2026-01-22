@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.util
+package dev.sayed.mehrabalmomen.presentation.utils
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
