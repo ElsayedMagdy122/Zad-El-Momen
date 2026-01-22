@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran
 
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.delay
 
 class SurahListViewModel(
     private val quranRepository: QuranRepository
@@ -15,9 +16,12 @@ class SurahListViewModel(
 
     private fun loadSurahs() {
         tryToCall(
+            onStart = { updateState { it.copy(isLoading = true) } },
             block = { quranRepository.getSurahs().map { it.toUiState() } },
             onSuccess = { surahs ->
                 updateState { it.copy(surahList = surahs) }
+                delay(100)
+                updateState { it.copy(isLoading = false) }
             },
             onError = {}
         )

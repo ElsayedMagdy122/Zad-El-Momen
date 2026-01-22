@@ -3,7 +3,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran
 import dev.sayed.mehrabalmomen.R
 
 data class SurahListUiState(
-    val surahList: List<SurahUiState> = emptyList()
+    val surahList: List<SurahUiState> = emptyList(),
+    val isLoading: Boolean = true
 )
 data class SurahUiState(
     val id:Int,

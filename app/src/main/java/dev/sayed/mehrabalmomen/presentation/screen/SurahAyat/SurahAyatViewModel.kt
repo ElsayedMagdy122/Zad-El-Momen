@@ -29,7 +29,7 @@ class SurahAyatViewModel(
             },
             block = { quranRepository.getAyahs(surahId) },
             onSuccess = { ayat ->
-                delay(100)
+                delay(200)
                 updateState {
                     it.copy(
                         ayat = ayat.map { AyaUi(it.ayahNumber, it.text) },

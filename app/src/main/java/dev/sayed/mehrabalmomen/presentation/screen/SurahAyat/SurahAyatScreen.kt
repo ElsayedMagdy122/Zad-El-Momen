@@ -1,5 +1,11 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -88,17 +94,27 @@ fun SurahAyatScreen(
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        if (state.isLoading) {
-            LoadingContainer(
-                modifier = Modifier.align(Alignment.Center)
-            )
-        } else {
-            SurahAyatContent(
-                state = state,
-                surahId = surahId,
-                listener = viewModel,
-                viewModel = viewModel
-            )
+        AnimatedContent(
+            targetState = state.isLoading,
+            transitionSpec = {
+
+                fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f) togetherWith
+                        fadeOut(animationSpec = tween(300))
+            },
+            label = "LoadingToContentAnimation"
+        ) { isLoading ->
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    LoadingContainer()
+                }
+            } else {
+                SurahAyatContent(
+                    state = state,
+                    surahId = surahId,
+                    listener = viewModel,
+                    viewModel = viewModel
+                )
+            }
         }
 
         toast?.let {

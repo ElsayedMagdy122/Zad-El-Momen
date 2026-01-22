@@ -1,6 +1,13 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +26,10 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
+import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import dev.sayed.mehrabalmomen.presentation.navigation.Route.*
+import dev.sayed.mehrabalmomen.presentation.navigation.Route.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.quran.components.SurahGrid
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
@@ -83,16 +91,32 @@ private fun SurahListContent(
                     onClick = {
                         listener.onSearchClick()
                     },
-                    ),
+                ),
                 AppBarAction(
                     icon = painterResource(R.drawable.ic_all_bookmark),
                     onClick = {},
                 )
             )
         )
-        SurahGrid(
-            sur = state.surahList,
-            onSurahClick = listener::onSurahClick
-        )
+        AnimatedContent(
+            targetState = state.isLoading,
+            transitionSpec = {
+
+                fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f) togetherWith
+                        fadeOut(animationSpec = tween(300))
+            },
+            label = "LoadingToContentAnimation"
+        ) { isLoading ->
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    LoadingContainer()
+                }
+            } else {
+                SurahGrid(
+                    sur = state.surahList,
+                    onSurahClick = listener::onSurahClick
+                )
+            }
+        }
     }
 }
