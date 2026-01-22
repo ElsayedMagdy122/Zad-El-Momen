@@ -231,6 +231,10 @@ class HomeViewModel(
         sendEffect(HomeEffect.NavigateToCalibrateDevice)
     }
 
+    override fun onClickQuran() {
+        sendEffect(HomeEffect.NavigateToQuran)
+    }
+
     override fun onClickAzkar() {
         sendEffect(HomeEffect.NavigateToAzkar)
     }

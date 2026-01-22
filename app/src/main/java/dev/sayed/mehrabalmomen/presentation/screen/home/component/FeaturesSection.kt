@@ -56,11 +56,16 @@ data class FeatureItem(
 private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener): List<FeatureItem> {
     return listOf(
         FeatureItem(
+            title = localizedString(R.string.quran),
+            icon = painterResource(R.drawable.ic_quran_section),
+            onClick = homeInteractionListener::onClickQuran
+        ),
+        FeatureItem(
             title = localizedString(R.string.qiblah_direction),
             icon = painterResource(R.drawable.kaaba_01),
             onClick = homeInteractionListener::onClickQiblaDirection
         ),
-                FeatureItem(
+        FeatureItem(
             title = localizedString(R.string.azkar),
             icon = painterResource(R.drawable.ic_azkar),
             onClick = homeInteractionListener::onClickAzkar

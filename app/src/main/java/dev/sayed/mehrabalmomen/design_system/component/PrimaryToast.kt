@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.design_system.component
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,8 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import kotlinx.coroutines.delay
 
 @Composable
@@ -75,12 +78,12 @@ fun PrimaryToast(
 
             Column {
                 Text(
-                    text = data.title,
+                    text = localizedString(data.title),
                     color = Theme.color.primary.shadePrimary,
                     style = Theme.textStyle.label.medium
                 )
                 Text(
-                    text = data.message,
+                    text = localizedString( data.message),
                     color = Theme.color.secondary.shadeSecondary,
                     style = Theme.textStyle.body.small
                 )
@@ -90,8 +93,8 @@ fun PrimaryToast(
 }
 
 data class ToastDetails(
-    val title: String,
-    val message: String,
+    @field:StringRes val title: Int,
+    @field:StringRes val message: Int,
     val icon: Int
 )
 
@@ -102,15 +105,15 @@ private fun ToastPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             PrimaryToast(
                 data = ToastDetails(
-                    title = "Success",
-                    message = "message description",
+                    title = R.string.success,
+                    message = R.string.copied_message_successfully,
                     icon = dev.sayed.mehrabalmomen.R.drawable.ic_check_circle
                 )
             )
             PrimaryToast(
                 data = ToastDetails(
-                    title = "Error",
-                    message = "message description",
+                    title = R.string.success,
+                    message = R.string.copied_message_successfully,
                     icon = dev.sayed.mehrabalmomen.R.drawable.ic_close_circle
                 ),
                 isSuccess = false

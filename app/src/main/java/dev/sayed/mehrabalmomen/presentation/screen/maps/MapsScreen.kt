@@ -91,11 +91,7 @@ private fun HandleMapsEffects(
 
                 is MapsEffect.ShowToast -> {
                     onShowToast(
-                        ToastDetails(
-                            title = effect.title,
-                            message = effect.message,
-                            icon = effect.icon
-                        )
+                       effect.toast
                     )
                 }
             }

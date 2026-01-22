@@ -5,7 +5,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.AzanManager
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
@@ -31,7 +31,7 @@ class FullPrayerTimesViewModel(
     private val prayerRepository: PrayerRepository,
     private val settingsRepository: SettingsRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
-    private val azanManager: AzanManager
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase
 ) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
     FullPrayerTimeInteractionListener {
     private var countdownJob: Job? = null
@@ -56,7 +56,7 @@ class FullPrayerTimesViewModel(
                 settings to notifications
             }
                 .collect {
-                    val result = azanManager.rescheduleTodayPrayerAlarms()
+                    val result = prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
                     Log.d("AZAN_DEBUG", "Reschedule triggered $result")
 
                     if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {

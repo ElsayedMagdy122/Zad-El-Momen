@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.location_permission
 
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -57,10 +58,11 @@ class LocationViewModel(
             if (!isConnected) {
                 sendEffect(
                     LocationEffect.ShowToast(
-                        title = "No Internet Connection",
-                        message = "Please connect to the internet to continue",
+                        ToastDetails(
+                        title =R.string.no_internet_connection,
+                        message =R.string.please_connect_to_the_internet_to_continue,
                         icon = R.drawable.ic_close_circle
-                    )
+                    ))
                 )
                 updateState {
                     it.copy(

@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.maps
 
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -42,9 +43,11 @@ class MapsViewModel(
             onError = {
                 sendEffect(
                     MapsEffect.ShowToast(
-                        title = "No Internet Connection",
-                        message = "Please connect to the internet to continue",
-                        icon = R.drawable.ic_close_circle
+                        ToastDetails(
+                            title = R.string.no_internet_connection,
+                            message = R.string.please_connect_to_the_internet_to_continue,
+                            icon = R.drawable.ic_close_circle
+                        )
                     )
                 )
                 updateState {
@@ -73,9 +76,11 @@ class MapsViewModel(
             onError = {
                 sendEffect(
                     MapsEffect.ShowToast(
-                        title = "No Internet Connection",
-                        message = "Please connect to the internet to continue",
-                        icon = R.drawable.ic_close_circle
+                        ToastDetails(
+                            title = R.string.no_internet_connection,
+                            message = R.string.please_connect_to_the_internet_to_continue,
+                            icon = R.drawable.ic_close_circle
+                        )
                     )
                 )
                 updateState {
@@ -110,9 +115,11 @@ class MapsViewModel(
             onError = {
                 sendEffect(
                     MapsEffect.ShowToast(
-                        title = "No Internet Connection",
-                        message = "Please connect to the internet to continue",
-                        icon = R.drawable.ic_close_circle
+                        ToastDetails(
+                            title = R.string.no_internet_connection,
+                            message = R.string.please_connect_to_the_internet_to_continue,
+                            icon = R.drawable.ic_close_circle
+                        )
                     )
                 )
                 updateState {
@@ -141,9 +148,11 @@ class MapsViewModel(
                 updateState { it.copy(isBottomSheetVisible = false, isSuccessToast = true) }
                 sendEffect(
                     MapsEffect.ShowToast(
-                        title = "Location Saved",
-                        message = "Your location has been saved successfully",
-                        icon = R.drawable.ic_check_circle
+                        ToastDetails(
+                            title = R.string.location_saved,
+                            message = R.string.your_location_has_been_saved_successfully,
+                            icon = R.drawable.ic_check_circle
+                        )
                     )
                 )
             },
