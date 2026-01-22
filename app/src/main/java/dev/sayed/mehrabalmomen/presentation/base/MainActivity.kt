@@ -2,7 +2,6 @@ package dev.sayed.mehrabalmomen.presentation.base
 
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -33,20 +32,26 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            installSplashScreen()
-        }
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_MehrabAlMomen)
+        var isSettingsLoaded = false
+
+        splashScreen.setKeepOnScreenCondition {
+            !isSettingsLoaded
+        }
+
         enableEdgeToEdge()
         setContent {
-            AppRoot(settingsRepository = settingsRepository)
+            AppRoot(settingsRepository = settingsRepository) {
+                isSettingsLoaded = true
+            }
         }
     }
 }
 
 
 val LocalAppLocale = compositionLocalOf { AppSettings.Language.ARABIC }
+
 @Composable
 fun rememberLocalizedContext(): Context {
     val baseContext = LocalContext.current
@@ -58,27 +63,39 @@ fun rememberLocalizedContext(): Context {
         baseContext.createConfigurationContext(config)
     }
 }
+
 @Composable
 fun localizedString(@StringRes id: Int, vararg args: Any): String {
     val context = rememberLocalizedContext()
     return context.getString(id, *args)
 }
-@Composable
-fun AppRoot(settingsRepository: SettingsRepository) {
-    val appSettings by settingsRepository.observeAppSettings()
-        .collectAsState(initial = AppSettings.default)
 
-    val layoutDirection = when (appSettings.language) {
+@Composable
+fun AppRoot(settingsRepository: SettingsRepository, onReady: () -> Unit) {
+    val appSettingsDelegate by settingsRepository.observeAppSettings()
+        .collectAsState(initial = null)
+
+    val currentSettings = appSettingsDelegate
+
+    LaunchedEffect(currentSettings) {
+        if (currentSettings != null) {
+            onReady()
+        }
+    }
+
+    if (currentSettings == null) return
+
+    val layoutDirection = when (currentSettings.language) {
         AppSettings.Language.ARABIC -> LayoutDirection.Rtl
         else -> LayoutDirection.Ltr
     }
 
     CompositionLocalProvider(
-        LocalAppLocale provides appSettings.language,
+        LocalAppLocale provides currentSettings.language,
         LocalLayoutDirection provides layoutDirection
     ) {
         MehrabTheme(
-            isDarkTheme = when (appSettings.theme) {
+            isDarkTheme = when (currentSettings.theme) {
                 AppSettings.Theme.SYSTEM -> isSystemInDarkTheme()
                 AppSettings.Theme.DARK -> true
                 AppSettings.Theme.LIGHT -> false
@@ -88,6 +105,7 @@ fun AppRoot(settingsRepository: SettingsRepository) {
         }
     }
 }
+
 fun String.toLocalizedDigits(language: AppSettings.Language): String {
     return if (language == AppSettings.Language.ARABIC) {
         this.map {

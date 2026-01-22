@@ -123,4 +123,24 @@
     <string name="azkar_wake">Waking Up Azkar</string>
     <string name="azkar_quran_dua">Quranic Duas</string>
     <string name="azkar_prophets_dua">Prophets Duas</string>
+    <string name="quran">Quran Kareem</string>
+    <string name="ayat">%1$d Ayat</string>
+    <string name="sur">Sur</string>
+    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you’re offline.</string>
+    <string name="check_your_connection_and_try_again">Check your connection and try again</string>
+    <string name="re_try">Re-try</string>
+    <string name="success">Success</string>
+    <string name="copied_message_successfully">Copied message successfully</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="please_connect_to_the_internet_to_continue">Please connect to the internet to continue</string>
+    <string name="location_saved">Location Saved</string>
+    <string name="your_location_has_been_saved_successfully">Your location has been saved successfully</string>
+    <string name="send">Send</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="copy">Copy</string>
+    <string name="search_in_quran">Search in Quran...</string>
+    <string name="search_in_surah">Search in %1$s...</string>
+    <string name="ayah">Ayah</string>
+    <string name="mekki">Makki</string>
+    <string name="madani">Madani</string>
 </resources>

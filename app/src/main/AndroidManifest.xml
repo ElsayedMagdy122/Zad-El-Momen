@@ -31,7 +31,7 @@
         </activity>
 
         <receiver
-            android:name=".data.reciver.BootReceiver"
+            android:name=".presentation.reciver.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -42,15 +42,15 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".data.service.AzanService"
+            android:name=".presentation.service.PrayerAlarmService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"/>
         <receiver
-            android:name=".data.reciver.MidnightRolloverReceiver"
+            android:name=".presentation.reciver.DailyRefreshReceiver"
             android:exported="true" />
 
         <receiver
-            android:name=".data.reciver.AzanAlarmReceiver"
+            android:name=".presentation.reciver.AzanAlarmReceiver"
             android:exported="false" />
 
     </application>

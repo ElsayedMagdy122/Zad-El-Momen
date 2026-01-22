@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -30,7 +31,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerNotif
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.ExperimentalTime
+import androidx.core.net.toUri
 
+@SuppressLint("BatteryLife")
 @ExperimentalTime
 @Composable
 fun FullPrayerTimesViewScreen(
@@ -52,13 +55,11 @@ fun FullPrayerTimesViewScreen(
                 }
 
                 FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        context.startActivity(
-                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                data = Uri.parse("package:${context.packageName}")
-                            }
-                        )
-                    }
+                    context.startActivity(
+                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                            data = "package:${context.packageName}".toUri()
+                        }
+                    )
                 }
 
                 FullPrayerTimesEffect.RequestXiaomiAutoStart -> {

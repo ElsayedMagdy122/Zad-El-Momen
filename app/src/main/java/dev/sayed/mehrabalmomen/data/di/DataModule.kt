@@ -2,25 +2,27 @@ package dev.sayed.mehrabalmomen.data.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import dev.sayed.mehrabalmomen.data.util.AlarmScheduler
-import dev.sayed.mehrabalmomen.data.AzanManager
 import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.data.local.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
-import dev.sayed.mehrabalmomen.data.repository.AzanSchedulerRepositoryImpl
-import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
-import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.PrayerNotificationsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
-import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
-import dev.sayed.mehrabalmomen.domain.repository.AzanSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
+import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
+import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -38,20 +40,21 @@ val dataModule = module {
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
-    single <AzkarRepository>{ AzkarRepositoryImpl(get()) }
-    single <AzkarLocalDataSource>{ AzkarLocalDataSource(get(),get()) }
+    single<AzkarRepository> { AzkarRepositoryImpl(get()) }
+    single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
+    single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
 
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }
 
     // Scheduler repository
-    single<AzanSchedulerRepository> {
-        AzanSchedulerRepositoryImpl(
+    single<PrayerAlarmRepository> {
+        PrayerAlarmRepositoryImpl(
             context = androidContext(),
             alarmScheduler = get()
         )
     }
 
     // Manager
-    single { AzanManager(get(), get(), get(),get()) }
+    single { PrayerSchedulingUseCase(get(), get(), get(), get()) }
 }
