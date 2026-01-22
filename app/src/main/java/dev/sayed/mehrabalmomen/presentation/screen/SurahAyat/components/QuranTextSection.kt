@@ -39,21 +39,15 @@ fun QuranTextSection(
     val color = Theme.color.primary.primary
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    val selectionAlpha by animateFloatAsState(
-        targetValue = if (state.selectedAyaId != null) 0.3f else 1f,
-        animationSpec = tween(durationMillis = 150),
-        label = "AyaSelectionAnimation"
-    )
-
-    val surahText = remember(state.ayat, state.selectedAyaId, selectionAlpha) {
+    val surahText = remember(state.ayat, state.selectedAyaId) {
         buildAnnotatedString {
             state.ayat.forEach { aya ->
                 val start = length
                 val isSelected = state.selectedAyaId == aya.id
 
-                val currentAlpha = if (isSelected) 1f else selectionAlpha
+                val alpha = if (state.selectedAyaId == null || isSelected) 1f else 0.3f
 
-                withStyle(SpanStyle(color = color.copy(alpha = currentAlpha))) {
+                withStyle(SpanStyle(color = color.copy(alpha = alpha))) {
                     append(aya.text)
                 }
                 append(" ")

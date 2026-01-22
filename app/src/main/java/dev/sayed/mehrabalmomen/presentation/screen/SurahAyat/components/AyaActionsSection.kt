@@ -32,8 +32,8 @@ fun BoxScope.AyaActionsSection(
             .align(Alignment.BottomCenter)
             .windowInsetsPadding(WindowInsets.navigationBars),
         visible = showActions,
-        enter = fadeIn(tween(200)),
-        exit = fadeOut(tween(200))
+        enter = fadeIn(tween(50)),
+        exit = fadeOut(tween(50))
     ) {
         AyahActions(
             modifier = Modifier.padding(bottom = 24.dp),
