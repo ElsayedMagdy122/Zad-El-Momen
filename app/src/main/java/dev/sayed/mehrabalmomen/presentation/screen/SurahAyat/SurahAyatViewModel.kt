@@ -44,6 +44,7 @@ class SurahAyatViewModel(
             onError = {}
         )
     }
+
     fun onScrolledToTarget() {
         updateState {
             it.copy(
@@ -90,6 +91,39 @@ class SurahAyatViewModel(
         )
     }
 
+    override fun onTafseer() {
+        val ayahId = screenState.value.selectedAyaId ?: return
+
+        tryToCall(
+            onStart = {
+                updateState { it.copy(showTafseerSheet = true) }
+            },
+            block = {
+                quranRepository.getAyahTafseer(surahId, ayahId)
+            },
+            onSuccess = { tafseer ->
+                updateState {
+                    it.copy(
+                        tafseerUi = TafseerUi(
+                            ayahUi = AyaUi(id = ayahId, text = screenState.value.selectedAyaText),
+                            text = tafseer
+                        )
+                    )
+                }
+            },
+            onError = {
+                updateState { it.copy(showTafseerSheet = false) }
+            }
+        )
+    }
+    fun onDismissTafseerSheet() {
+        updateState {
+            it.copy(
+                showTafseerSheet = false,
+                tafseerUi = null
+            )
+        }
+    }
     override fun onClickBack() {
         sendEffect(SurahAyatEffect.NavigateToBack)
     }
