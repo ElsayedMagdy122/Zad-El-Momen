@@ -26,7 +26,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 
 enum class AyahAction {
-    SEND, BOOKMARK, COPY
+    SEND, BOOKMARK, COPY,TAFSEER
 }
 
 @Composable
@@ -44,6 +44,11 @@ fun AyahActions(
             icon = painterResource(R.drawable.ic_all_bookmark),
             text = localizedString(R.string.bookmark),
             action = AyahAction.BOOKMARK
+        ),
+        ActionItem(
+            icon = painterResource(R.drawable.ic_quran_section),
+            text = localizedString(R.string.al_tafseer),
+            action = AyahAction.TAFSEER
         ),
         ActionItem(
             icon = painterResource(R.drawable.ic_copy_01),
@@ -101,6 +106,7 @@ private fun ActionButton(
     ) {
         Icon(
             painter = actionItem.icon,
+            modifier = Modifier.size(24.dp),
             tint = Theme.color.primary.primary,
             contentDescription = actionItem.text
         )

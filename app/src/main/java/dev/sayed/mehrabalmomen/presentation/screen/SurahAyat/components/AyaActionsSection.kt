@@ -23,7 +23,8 @@ fun BoxScope.AyaActionsSection(
     showActions: Boolean,
     selectedAyaText: String,
     onCopy: () -> Unit,
-    onBookmark: () -> Unit
+    onBookmark: () -> Unit,
+    onTafseer: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -49,6 +50,8 @@ fun BoxScope.AyaActionsSection(
                         }
                         context.startActivity(Intent.createChooser(shareIntent, "Share Aya"))
                     }
+
+                    AyahAction.TAFSEER -> onTafseer()
                 }
             }
         )

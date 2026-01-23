@@ -8,13 +8,17 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,9 +33,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
@@ -124,6 +131,13 @@ fun SurahAyatScreen(
                     .padding(top = 24.dp), data = it, isSuccess = true
             )
         }
+        state.showTafseerSheet.takeIf { it }?.let {
+            TafseerBottomSheet(
+                tafseerUi = state.tafseerUi,
+                surahName = state.surahName,
+                onDismiss = viewModel::onDismissTafseerSheet
+            )
+        }
     }
 }
 
@@ -179,10 +193,47 @@ private fun SurahAyatContent(
             showActions = state.showActions,
             selectedAyaText = state.selectedAyaText,
             onCopy = listener::onCopyAya,
-            onBookmark = { /* TODO */ }
+            onBookmark ={/* TODO */},
+            onTafseer =listener::onTafseer
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TafseerBottomSheet(
+    surahName: String,
+    tafseerUi: TafseerUi?,
+    onDismiss: () -> Unit
+) {
+    if (tafseerUi == null) return
 
+    BottomSheetDs(onDismiss = onDismiss) {
+
+        Text(
+            text = localizedString(R.string.al_tafseer),
+            style = Theme.textStyle.title.medium,
+            color = Theme.color.primary.primary
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+        tafseerUi.ayahUi?.let {
+            Text(
+                text = "سورة $surahName · ${localizedString(R.string.ayah)} ${it.id}",
+                style = Theme.textStyle.title.small,
+                color = Theme.color.semantic.shadeTertiary
+            )
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = tafseerUi.text.orEmpty(),
+            style = Theme.textStyle.title.small,
+            color = Theme.color.semantic.shadeTertiary
+        )
+    }
+}
 
