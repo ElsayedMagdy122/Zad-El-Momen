@@ -8,4 +8,5 @@ interface QuranRepository {
     suspend fun getAyahs(surahNumber: Int): List<Ayah>
     suspend fun searchInQuran(query: String): List<Ayah>
     suspend fun searchInSurah(surahNumber: Int, query: String): List<Ayah>
+    suspend fun getAyahTafseer(surahNumber: Int, ayahNumber: Int): String
 }

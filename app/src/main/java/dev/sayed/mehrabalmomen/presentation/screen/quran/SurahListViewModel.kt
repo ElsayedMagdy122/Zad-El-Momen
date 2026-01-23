@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran
 
+import android.annotation.SuppressLint
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -14,10 +15,14 @@ class SurahListViewModel(
         loadSurahs()
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun loadSurahs() {
         tryToCall(
             onStart = { updateState { it.copy(isLoading = true) } },
-            block = { quranRepository.getSurahs().map { it.toUiState() } },
+            block = {
+            val tafseer=    quranRepository.getAyahTafseer(114,1)
+                println("TAfseer : ${tafseer}")
+                quranRepository.getSurahs().map { it.toUiState() } },
             onSuccess = { surahs ->
                 updateState { it.copy(surahList = surahs) }
                 delay(100)
