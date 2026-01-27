@@ -144,4 +144,14 @@
     <string name="mekki">مكية</string>
     <string name="madani">مدنية</string>
     <string name="al_tafseer">التفسير</string>
+    <string name="surah">سورة %1$s · %2$s %3$s</string>
+
+    <string name="start_searching_subtitle_for_ayah">أدخل كلمة من آية معينة لعرضها.</string>
+    <string name="search_in_surah_hint">ابحث في %1$s...</string>
+    <string name="start_searching_title">ابدأ البحث!</string>
+    <string name="search_reciter">ابحث عن القارئ</string>
+    <string name="start_searching_subtitle_for_reciter">أدخل اسم قارئ معين لعرضه.</string>
+    <string name="no_results_found_title">لم يتم العثور على نتائج!</string>
+    <string name="no_results_found_subtitle">يرجى المحاولة مرة أخرى بكلمة بحث أخرى.</string>
+    <string name="search_icon">Search Icon</string>
 </resources>

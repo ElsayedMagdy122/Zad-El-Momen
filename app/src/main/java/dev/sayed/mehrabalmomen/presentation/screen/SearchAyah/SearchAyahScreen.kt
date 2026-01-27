@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -40,6 +39,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
+import dev.sayed.mehrabalmomen.presentation.components.SearchEmptyContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.serialization.Serializable
@@ -84,12 +84,14 @@ fun SearchAyahScreen(
         searchResults = state.results,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onBackClick = viewModel::onBackClick,
-        listener = viewModel
+        listener = viewModel,
+        state = state
     )
 }
 
 @Composable
 private fun SearchAyahContent(
+    state: SearchAyahUiState,
     searchType: SearchType,
     surahName: String? = null,
     searchQuery: String,
@@ -104,44 +106,83 @@ private fun SearchAyahContent(
         SearchType.QURAN -> localizedString(R.string.search_in_quran)
         SearchType.SURAH -> localizedString(R.string.search_in_surah, surahName ?: "")
     }
-    LazyVerticalStaggeredGrid(
+
+    val subTitle = when (searchType) {
+        SearchType.QURAN -> R.string.start_searching_subtitle_for_ayah
+        SearchType.SURAH -> R.string.start_searching_subtitle_for_reciter
+    }
+
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars),
-        columns = StaggeredGridCells.Adaptive(320.dp),
-        verticalItemSpacing = 8.dp,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(
-            horizontal = 16.dp
-        )
     ) {
-        item(
-            span = StaggeredGridItemSpan.FullLine
-        ) {
-            QuranAppBar(
-                title = "",
-                onBackClick = onBackClick,
-                isSearchMode = true,
-                searchText = searchQuery,
-                onSearchTextChange = onSearchQueryChange,
-                onSearchClose = { onSearchQueryChange("") },
-                placeholder = searchPlaceholder,
-                modifier = Modifier.fillMaxWidth()
-            )
+        QuranAppBar(
+            title = "",
+            onBackClick = onBackClick,
+            isSearchMode = true,
+            searchText = searchQuery,
+            onSearchTextChange = onSearchQueryChange,
+            onSearchClose = { onSearchQueryChange("") },
+            placeholder = searchPlaceholder,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+        )
+        if (state.searchQuery.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                SearchEmptyContainer(
+                    isStartState = true,
+                    isResultsState = false,
+                    subTitle,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+        } else {
+            if (state.results.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                SearchEmptyContainer(
+                    isStartState = false,
+                    isResultsState = true,
+                    subTitle,
+                    modifier = Modifier.align(Alignment.Center)
+                )}
+            } else {
+                LazyVerticalStaggeredGrid(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    columns = StaggeredGridCells.Adaptive(320.dp),
+                    verticalItemSpacing = 8.dp,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp
+                    )
+                ) {
+                    items(searchResults.size) { index ->
+                        val ayah = searchResults[index]
+                        SearchResultItem(
+                            ayahUi = searchResults[index],
+                            showSurahName = searchType == SearchType.QURAN,
+                            modifier = Modifier.clickable { listener.onAyahClick(ayah) }
+                        )
+                    }
+                }
+            }
         }
 
-
-        items(searchResults.size) { index ->
-            val ayah = searchResults[index]
-            SearchResultItem(
-                ayahUi = searchResults[index],
-                showSurahName = searchType == SearchType.QURAN,
-                modifier = Modifier.clickable { listener.onAyahClick(ayah) }
-            )
-        }
     }
 }
+
 
 @Composable
 fun SearchResultItem(

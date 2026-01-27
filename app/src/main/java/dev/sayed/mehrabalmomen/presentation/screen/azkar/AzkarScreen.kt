@@ -13,12 +13,11 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
@@ -26,30 +25,29 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.FeatureCard
+import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AzkarScreen(
     navController: NavController,
-    viewModel: AzkarViewModel= koinViewModel()
+    viewModel: AzkarViewModel = koinViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is AzkarEffect.NavigateToDetails ->
-                    navController.navigate(
-                        Route.AzkarDetailScreen(effect.type.domainTitle)
-                    )
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
+    CollectEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is AzkarEffect.NavigateToDetails ->
+                navController.navigate(
+                    Route.AzkarDetailScreen(effect.type.domainTitle)
+                )
 
-                is AzkarEffect.ShowError -> {
+            is AzkarEffect.ShowError -> {
 
-                }
+            }
 
-                AzkarEffect.NavigateToBack -> {
-                    navController.popBackStack()
-                }
+            AzkarEffect.NavigateToBack -> {
+                navController.popBackStack()
             }
         }
     }
@@ -67,7 +65,7 @@ fun AzkarScreen(
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             AppBar(
-                onBackClick =viewModel::onClickBack,
+                onBackClick = viewModel::onClickBack,
                 title = localizedString(R.string.azkar)
             )
         }
@@ -76,9 +74,9 @@ fun AzkarScreen(
             FeatureCard(
                 icon = painterResource(category.type.iconRes),
                 title = localizedString(category.type.titleRes),
-                    onClick = {
-                        viewModel.onClickCategory(category.type)
-                    }
+                onClick = {
+                    viewModel.onClickCategory(category.type)
+                }
             )
         }
     }

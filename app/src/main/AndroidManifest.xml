@@ -47,6 +47,7 @@
             android:foregroundServiceType="mediaPlayback"/>
         <receiver
             android:name=".presentation.reciver.DailyRefreshReceiver"
+            android:enabled="true"
             android:exported="true" />
 
         <receiver

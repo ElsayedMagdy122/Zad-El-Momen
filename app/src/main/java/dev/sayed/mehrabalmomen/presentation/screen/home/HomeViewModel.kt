@@ -4,16 +4,18 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -28,18 +30,22 @@ class HomeViewModel(
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    private val _countdownTime = MutableStateFlow(HomeUiState.TimeUiState("00", "00", "00"))
+    val countdownTime: StateFlow<HomeUiState.TimeUiState> = _countdownTime.asStateFlow()
 
     init {
         observeLocationChanges()
     }
+
     private fun observeLocationChanges() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.observePrayerSettings().collect { prayerSettings ->
                 updateLocationUi(prayerSettings.location)
                 refreshPrayersForLocation(prayerSettings.location)
             }
         }
     }
+
     private fun updateLocationUi(location: Location) {
         updateState {
             it.copy(
@@ -50,6 +56,7 @@ class HomeViewModel(
             )
         }
     }
+
     private fun refreshPrayersForLocation(location: Location) {
         tryToCall(
             block = {
@@ -77,6 +84,7 @@ class HomeViewModel(
             onError = {}
         )
     }
+
     private fun getLocation() {
         tryToCall(
             block = {
@@ -85,7 +93,7 @@ class HomeViewModel(
             },
             onSuccess = {
                 val location = HomeUiState.LocationUiState(
-                    country =it.country,
+                    country = it.country,
                     city = it.state
                 )
                 updateState { state ->
@@ -180,20 +188,20 @@ class HomeViewModel(
 
     private fun startCountdown(nextPrayerMillis: Long) {
         countdownJob?.cancel()
-
-        countdownJob = viewModelScope.launch {
+        countdownJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
                 val diff = getTimeDifference(nextPrayerMillis)
-
                 if (diff <= 0) {
-                    handleCountdownFinished()
+                    _countdownTime.value = HomeUiState.TimeUiState("00", "00", "00")
                     getNextPrayer()
                     break
                 }
-
                 val time = convertMillisToHMS(diff)
-                updateCountdownUi(time)
-
+                _countdownTime.value = HomeUiState.TimeUiState(
+                    hours = time.first,
+                    minutes = time.second,
+                    seconds = time.third
+                )
                 delay(1000)
             }
         }

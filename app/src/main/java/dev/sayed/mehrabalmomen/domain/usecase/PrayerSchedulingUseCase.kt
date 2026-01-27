@@ -24,19 +24,7 @@ class PrayerSchedulingUseCase(
 
     suspend fun rescheduleTodayPrayerAlarms() {
         val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
-
         val prayers = getDailyPrayers(today)
-
-//        val baseTime = System.currentTimeMillis() + 1_000L
-//
-//        val testAlarms = prayers.mapIndexed { index, prayer ->
-//            PrayerAlarm(
-//                id = prayer.name.ordinal,
-//                name = prayer.name,
-//                timeMillis = baseTime + (index * 5_000L),
-//                enabled = notifications[prayer.name] ?: true
-//            )
-//        }
         val alarms = setupAlarms(prayers)
         schedulerRepository.reschedule(alarms)
     }

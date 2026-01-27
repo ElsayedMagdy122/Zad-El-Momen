@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,14 +36,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.entity.AzkarItem
-import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
+import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun AzkarDetailScreen(
@@ -52,18 +51,18 @@ fun AzkarDetailScreen(
     navController: NavController,
     viewModel: AzkarDetailViewModel = koinViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(title) {
         viewModel.loadAzkar(title)
+    }
 
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                AzkarDetailEffect.NavigateBack ->
-                    navController.popBackStack()
+    CollectEffect(viewModel.effect) { effect ->
+        when (effect) {
+            AzkarDetailEffect.NavigateBack ->
+                navController.popBackStack()
 
-                is AzkarDetailEffect.ShowError -> {
-                }
+            is AzkarDetailEffect.ShowError -> {
             }
         }
     }
@@ -92,6 +91,7 @@ fun AzkarDetailScreen(
         }
     }
 }
+
 @Composable
 fun AzkarItemCard(item: AzkarItem, modifier: Modifier = Modifier) {
     Column(

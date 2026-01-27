@@ -33,6 +33,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun UpComingPrayerFullView(
     state: FullPrayerTimesUiState,
+    countdownTime: FullPrayerTimesUiState.TimeUiState,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -117,7 +118,7 @@ fun UpComingPrayerFullView(
             textAlign = TextAlign.Center
         )
         TimerCounter(
-            time = state.time,
+            time = countdownTime,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .padding(top = 4.dp, bottom = 8.dp),
