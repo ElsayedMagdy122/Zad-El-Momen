@@ -30,6 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -38,7 +41,9 @@ import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
@@ -193,8 +198,8 @@ private fun SurahAyatContent(
             showActions = state.showActions,
             selectedAyaText = state.selectedAyaText,
             onCopy = listener::onCopyAya,
-            onBookmark ={/* TODO */},
-            onTafseer =listener::onTafseer
+            onBookmark = {/* TODO */ },
+            onTafseer = listener::onTafseer
         )
     }
 }
@@ -218,10 +223,17 @@ fun TafseerBottomSheet(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        val language = LocalAppLocale.current
 
         tafseerUi.ayahUi?.let {
+            val ayahNumber = it.id.toString().toLocalizedDigits(language)
             Text(
-                text = "سورة $surahName · ${localizedString(R.string.ayah)} ${it.id}",
+                text = localizedString(
+                    R.string.surah,
+                    surahName,
+                    localizedString(R.string.ayah),
+                    ayahNumber
+                ),
                 style = Theme.textStyle.title.small,
                 color = Theme.color.semantic.shadeTertiary
             )
@@ -231,7 +243,11 @@ fun TafseerBottomSheet(
 
         Text(
             text = tafseerUi.text.orEmpty(),
-            style = Theme.textStyle.title.small,
+            style = Theme.textStyle.title.small.copy(
+                textAlign = TextAlign.Justify,
+                textDirection = TextDirection.Rtl,
+                platformStyle = PlatformTextStyle(includeFontPadding = false)
+            ),
             color = Theme.color.semantic.shadeTertiary
         )
     }

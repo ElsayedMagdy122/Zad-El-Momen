@@ -144,4 +144,5 @@
     <string name="mekki">Makki</string>
     <string name="madani">Madani</string>
     <string name="al_tafseer">Al Tafseer</string>
+    <string name="surah">Surah %1$s · %2$s %3$s</string>
 </resources>
