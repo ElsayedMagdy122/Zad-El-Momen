@@ -22,7 +22,7 @@ import kotlin.time.Instant
 class PrayerRepositoryImpl : PrayerRepository {
 
 
-    override suspend fun getDailyPrayers(
+    override  fun getDailyPrayers(
         madhab: Madhab,
         calculationMethod: dev.sayed.mehrabalmomen.domain.entity.CalculationMethod,
         location: Location,

@@ -9,7 +9,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 interface PrayerRepository {
-    suspend fun getDailyPrayers(
+     fun getDailyPrayers(
         madhab: Madhab,
         calculationMethod: CalculationMethod,
         location: Location,
