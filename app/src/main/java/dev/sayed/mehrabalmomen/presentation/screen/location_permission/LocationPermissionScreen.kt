@@ -24,8 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -52,6 +51,7 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.component.stepsCard
+import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -78,7 +78,7 @@ fun LocationPermissionScreen(
             )
         )
     }
-    val state by viewModel.screenState.collectAsState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -102,49 +102,48 @@ fun LocationPermissionScreen(
         }
     }
     var toastData by remember { mutableStateOf<ToastDetails?>(null) }
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                LocationEffect.RequestLocationPermission -> {
-                    launcher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
+
+    CollectEffect(viewModel.effect) { effect ->
+        when (effect) {
+            LocationEffect.RequestLocationPermission -> {
+                launcher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
                     )
+                )
+            }
+
+            LocationEffect.NavigateToHome -> {
+                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.HomeScreen) {
+                    popUpTo(Route.MadhabScreen) { inclusive = true }
                 }
+            }
 
-                LocationEffect.NavigateToHome -> {
-                    // navController.navigate(Route.HomeScreen)
-                    navController.navigate(Route.HomeScreen) {
-                        popUpTo(Route.MadhabScreen) { inclusive = true }
-                    }
-                }
+            LocationEffect.RequestEnableGps -> {
+                val locationRequest = LocationRequest
+                    .Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+                    .build()
 
-                LocationEffect.RequestEnableGps -> {
-                    val locationRequest = LocationRequest
-                        .Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
-                        .build()
+                val builder = LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest)
+                    .setAlwaysShow(true)
 
-                    val builder = LocationSettingsRequest.Builder()
-                        .addLocationRequest(locationRequest)
-                        .setAlwaysShow(true)
+                val client = LocationServices.getSettingsClient(context)
 
-                    val client = LocationServices.getSettingsClient(context)
-
-                    client.checkLocationSettings(builder.build())
-                        .addOnFailureListener { exception ->
-                            if (exception is ResolvableApiException) {
-                                enableGpsLauncher.launch(
-                                    IntentSenderRequest.Builder(exception.resolution).build()
-                                )
-                            }
+                client.checkLocationSettings(builder.build())
+                    .addOnFailureListener { exception ->
+                        if (exception is ResolvableApiException) {
+                            enableGpsLauncher.launch(
+                                IntentSenderRequest.Builder(exception.resolution).build()
+                            )
                         }
-                }
+                    }
+            }
 
-                is LocationEffect.ShowToast -> {
-                    toastData = effect.toast
-                }
+            is LocationEffect.ShowToast -> {
+                toastData = effect.toast
             }
         }
     }
@@ -198,7 +197,7 @@ fun LocationPermissionScreen(
         toastData?.let {
             PrimaryToast(
                 data = it,
-               isSuccess = state.isSuccessToast,
+                isSuccess = state.isSuccessToast,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 24.dp),

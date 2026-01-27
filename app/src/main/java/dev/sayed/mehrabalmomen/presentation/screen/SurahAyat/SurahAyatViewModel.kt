@@ -93,10 +93,17 @@ class SurahAyatViewModel(
 
     override fun onTafseer() {
         val ayahId = screenState.value.selectedAyaId ?: return
+        val ayaText = screenState.value.selectedAyaText
 
         tryToCall(
             onStart = {
-                updateState { it.copy(showTafseerSheet = true) }
+                updateState {
+                    it.copy(
+                        showTafseerSheet = true,
+                        tafseerUi = null,
+                        showActions = false
+                    )
+                }
             },
             block = {
                 quranRepository.getAyahTafseer(surahId, ayahId)
@@ -105,7 +112,7 @@ class SurahAyatViewModel(
                 updateState {
                     it.copy(
                         tafseerUi = TafseerUi(
-                            ayahUi = AyaUi(id = ayahId, text = screenState.value.selectedAyaText),
+                            ayahUi = AyaUi(id = ayahId, text = ayaText),
                             text = tafseer
                         )
                     )
@@ -120,7 +127,10 @@ class SurahAyatViewModel(
         updateState {
             it.copy(
                 showTafseerSheet = false,
-                tafseerUi = null
+                tafseerUi = null,
+                selectedAyaId = null,
+                selectedAyaText = "",
+                showActions = false
             )
         }
     }

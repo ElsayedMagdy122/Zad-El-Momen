@@ -144,4 +144,18 @@
     <string name="mekki">Makki</string>
     <string name="madani">Madani</string>
     <string name="al_tafseer">Al Tafseer</string>
+    <string name="surah">Surah %1$s · %2$s %3$s</string>
+
+
+    <!--  Search Section  -->
+
+
+    <string name="start_searching_subtitle_for_ayah">Enter a word from a specific Ayah to view it.</string>
+    <string name="search_in_surah_hint">Search in %1$s...</string>
+    <string name="start_searching_title">Start searching!</string>
+    <string name="search_reciter">Search reciters</string>
+    <string name="start_searching_subtitle_for_reciter">Enter a word from a specific reciter to choose it.</string>
+    <string name="no_results_found_title">No results found!</string>
+    <string name="no_results_found_subtitle">Please try again with another keyword.</string>
+    <string name="search_icon">Search Icon</string>
 </resources>

@@ -5,18 +5,22 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -41,6 +45,10 @@ class FullPrayerTimesViewModel(
     private var autoStartRequested = false
     private val isXiaomiDevice: Boolean
         get() = android.os.Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
+    private val _countdownTime =
+        MutableStateFlow(FullPrayerTimesUiState.TimeUiState("00", "00", "00"))
+    val countdownTime: StateFlow<FullPrayerTimesUiState.TimeUiState> = _countdownTime.asStateFlow()
+
     init {
         observePrayerNotifications()
         getDailyPrayers()
@@ -157,24 +165,25 @@ class FullPrayerTimesViewModel(
 
     private fun startCountdown(nextPrayerMillis: Long) {
         countdownJob?.cancel()
-
-        countdownJob = viewModelScope.launch {
+        countdownJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
                 val diff = getTimeDifference(nextPrayerMillis)
-
                 if (diff <= 0) {
-                    handleCountdownFinished()
+                    _countdownTime.value = FullPrayerTimesUiState.TimeUiState("00", "00", "00")
                     getNextPrayer()
                     break
                 }
-
                 val time = convertMillisToHMS(diff)
-                updateCountdownUi(time)
-
+                _countdownTime.value = FullPrayerTimesUiState.TimeUiState(
+                    hours = time.first,
+                    minutes = time.second,
+                    seconds = time.third
+                )
                 delay(1000)
             }
         }
     }
+
 
     private fun updateCountdownUi(time: Triple<String, String, String>) {
         updateState { current ->

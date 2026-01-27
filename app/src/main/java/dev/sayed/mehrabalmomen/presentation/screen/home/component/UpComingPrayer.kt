@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -24,19 +24,29 @@ import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun UpComingPrayer(
     state: HomeUiState,
+    countdownTime: HomeUiState.TimeUiState,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow),
     ) {
+        PrayerInfoSection(state)
+        CountdownDisplay(countdownTime)
+    }
+}
+
+@Composable
+private fun PrayerInfoSection(state: HomeUiState) {
+    key(state.nextPrayer) {
         Image(
             painter = painterResource(id = R.drawable.night_mosque),
             contentDescription = null,
@@ -65,11 +75,10 @@ fun UpComingPrayer(
         Text(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 4.dp),
-            text =
-                if (state.nextPrayer.name != 0)
-                    stringResource(R.string.next_prayer_format, prayerName, prayerTime)
-                else
-                    localizedString(R.string.no_upcoming_prayer),
+            text = if (state.nextPrayer.name != 0)
+                stringResource(R.string.next_prayer_format, prayerName, prayerTime)
+            else
+                localizedString(R.string.no_upcoming_prayer),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.large,
             textAlign = TextAlign.Center
@@ -77,20 +86,26 @@ fun UpComingPrayer(
         Text(
             modifier = Modifier
                 .padding(horizontal = 16.dp),
-            text =
-                if (state.nextPrayer.name != 0)
-                    localizedString(R.string.time_until, localizedString(state.nextPrayer.name))
-                else
-                    localizedString(R.string.no_remaining_time),
+            text = if (state.nextPrayer.name != 0)
+                localizedString(R.string.time_until, localizedString(state.nextPrayer.name))
+            else
+                localizedString(R.string.no_remaining_time),
             color = Theme.color.secondary.secondaryText,
             style = Theme.textStyle.label.medium,
             textAlign = TextAlign.Center
         )
-        CounterCard(
-            timeUiState = state.time,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .padding(top = 4.dp, bottom = 8.dp),
-        )
     }
+}
+
+@Composable
+private fun CountdownDisplay(
+    countdownTime: HomeUiState.TimeUiState,
+    modifier: Modifier = Modifier
+) {
+    CounterCard(
+        timeUiState = countdownTime,
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+            .padding(top = 4.dp, bottom = 8.dp)
+    )
 }
