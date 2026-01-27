@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -39,7 +40,7 @@ fun QiblahScreen(
     navController: NavController,
     viewModel: QiblahViewModel = koinViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val animatedDirection by animateFloatAsState(targetValue = state.direction)
 
     HandleCompassSensor(viewModel = viewModel)

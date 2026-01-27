@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -22,6 +22,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.components.LocationInfoB
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsFloatingButton
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsHeaderWithMap
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsToast
+import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -36,7 +37,7 @@ fun MapsScreen(
     navController: NavController,
     viewModel: MapsViewModel = koinViewModel()
 ) {
-    val state by viewModel.screenState.collectAsState()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val cameraState = rememberCameraState()
     var toastData by remember { mutableStateOf<ToastDetails?>(null) }
 
@@ -74,26 +75,25 @@ private fun HandleMapsEffects(
     onBack: () -> Unit,
     onShowToast: (ToastDetails) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is MapsEffect.NavigateToBack -> onBack()
 
-                is MapsEffect.MoveCamera -> {
-                    cameraState.animateTo(
-                        CameraPosition(
-                            target = Position(effect.lng, effect.lat),
-                            zoom = 15.0
-                        ),
-                        duration = 800.milliseconds
-                    )
-                }
+    CollectEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is MapsEffect.NavigateToBack -> onBack()
 
-                is MapsEffect.ShowToast -> {
-                    onShowToast(
-                       effect.toast
-                    )
-                }
+            is MapsEffect.MoveCamera -> {
+                cameraState.animateTo(
+                    CameraPosition(
+                        target = Position(effect.lng, effect.lat),
+                        zoom = 15.0
+                    ),
+                    duration = 800.milliseconds
+                )
+            }
+
+            is MapsEffect.ShowToast -> {
+                onShowToast(
+                    effect.toast
+                )
             }
         }
     }
