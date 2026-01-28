@@ -34,6 +34,12 @@ class MapsViewModel(
         )
     }
 
+    fun onMapStateChanged(state: MapsUiState.MapLoadState) {
+        updateState {
+            it.copy(mapLoadState = state)
+        }
+    }
+
     override fun onDetectLocationClicked() {
         tryToCall(
             block = { locationRepository.getCurrentDeviceLocation() },

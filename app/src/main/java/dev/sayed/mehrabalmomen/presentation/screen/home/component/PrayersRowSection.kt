@@ -4,13 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -65,6 +69,7 @@ fun ViewAllTodayPrayers(
     onClickViewAll: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -75,19 +80,27 @@ fun ViewAllTodayPrayers(
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.medium
         )
-        Box(
+        Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(Theme.color.primary.primary)
                 .clickable {
                     onClickViewAll()
                 }
-                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             Text(
                 text = localizedString(R.string.view_all),
-                color = Theme.color.surfaces.surfaceHigh,
+                color = Theme.color.primary.primary,
                 style = Theme.textStyle.label.medium
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                modifier = Modifier
+                    .graphicsLayer {
+                        scaleX = if (isRtl) 1f else -1f
+
+                    },
+                painter = painterResource(id = R.drawable.ic_arrow_left_01),
+                tint = Theme.color.primary.primary,
+                contentDescription = null,
             )
         }
     }
@@ -145,7 +158,7 @@ private fun PrayerItem(
         )
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text =  "${localizedString(prayerName)} $localizedTime",
+            text = "${localizedString(prayerName)} $localizedTime",
             color = textColor,
             style = Theme.textStyle.label.medium
         )
