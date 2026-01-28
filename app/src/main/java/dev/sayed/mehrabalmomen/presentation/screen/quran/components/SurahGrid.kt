@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
@@ -30,7 +31,7 @@ fun SurahGrid(
         ),
         modifier = Modifier.fillMaxSize()
     ) {
-        item {
+        item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
                 text = localizedString(R.string.sur),

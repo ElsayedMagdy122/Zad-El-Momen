@@ -13,11 +13,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
+import dev.sayed.mehrabalmomen.presentation.components.NoInternetContainer
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.LocationInfoBox
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsFloatingButton
 import dev.sayed.mehrabalmomen.presentation.screen.maps.components.MapsHeaderWithMap
@@ -64,7 +68,8 @@ fun MapsScreen(
         onMapClick = viewModel::onMapClicked,
         onDetectLocation = viewModel::onDetectLocationClicked,
         onConfirmLocation = viewModel::onConfirmLocation,
-        onDismissBottomSheet = viewModel::onDismissBottomSheet
+        onDismissBottomSheet = viewModel::onDismissBottomSheet,
+        viewModel = viewModel
     )
 }
 
@@ -105,6 +110,7 @@ private fun MapsContent(
     cameraState: CameraState,
     toastData: ToastDetails?,
     onBack: () -> Unit,
+    viewModel: MapsViewModel,
     onMapClick: (Double, Double) -> Unit,
     onDetectLocation: () -> Unit,
     onConfirmLocation: () -> Unit,
@@ -117,25 +123,42 @@ private fun MapsContent(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
 
+        val alpha = if (state.mapLoadState == MapsUiState.MapLoadState.Ready) 1f else 0.0f
+
         MapsHeaderWithMap(
+            modifier = Modifier.alpha(alpha),
             cameraState = cameraState,
             onBack = onBack,
-            onMapClick = onMapClick
+            onMapClick = onMapClick,
+            onMapStateChanged = viewModel::onMapStateChanged
         )
 
-        MapsFloatingButton(onDetectLocation)
+        when (state.mapLoadState) {
 
-        toastData?.let {
-            MapsToast(it, state.isSuccessToast)
-        }
+            MapsUiState.MapLoadState.Loading -> {
+                LoadingContainer(modifier = Modifier.align(Alignment.Center))
+            }
 
-        if (state.isBottomSheetVisible) {
-            LocationInfoBox(
-                placeName = state.placeName,
-                addressLine = state.addressLine,
-                onConfirm = onConfirmLocation,
-                onDismiss = onDismissBottomSheet
-            )
+            is MapsUiState.MapLoadState.Error -> {
+                NoInternetContainer(onRetryClick = {}, modifier = Modifier.align(Alignment.Center))
+            }
+
+            MapsUiState.MapLoadState.Ready -> {
+                MapsFloatingButton(onDetectLocation)
+
+                toastData?.let {
+                    MapsToast(it, state.isSuccessToast)
+                }
+
+                if (state.isBottomSheetVisible) {
+                    LocationInfoBox(
+                        placeName = state.placeName,
+                        addressLine = state.addressLine,
+                        onConfirm = onConfirmLocation,
+                        onDismiss = onDismissBottomSheet
+                    )
+                }
+            }
         }
     }
 }
