@@ -76,7 +76,7 @@ fun SettingsScreen(
             }
 
             SettingsEffect.NavigateToRateApp -> {
-                launchReview(context)
+                openStoreReview(context)
             }
 
 

@@ -40,13 +40,13 @@ fun AyahActions(
             text = localizedString(R.string.send),
             action = AyahAction.SEND
         ),
+//        ActionItem(
+//            icon = painterResource(R.drawable.ic_all_bookmark),
+//            text = localizedString(R.string.bookmark),
+//            action = AyahAction.BOOKMARK
+//        ),
         ActionItem(
-            icon = painterResource(R.drawable.ic_all_bookmark),
-            text = localizedString(R.string.bookmark),
-            action = AyahAction.BOOKMARK
-        ),
-        ActionItem(
-            icon = painterResource(R.drawable.ic_quran_section),
+            icon = painterResource(R.drawable.ic_quran02),
             text = localizedString(R.string.al_tafseer),
             action = AyahAction.TAFSEER
         ),

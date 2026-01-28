@@ -27,12 +27,12 @@ enum class AzkarType(
 ) {
     MORNING(
         R.string.azkar_morning,
-        R.drawable.shalat_zhuhur,
+        R.drawable.ic_morning,
         "أذكار الصباح"
     ),
     EVENING(
         R.string.azkar_evening,
-        R.drawable.shalat_isya,
+        R.drawable.ic_moon,
         "أذكار المساء"
     ),
     AFTER_PRAYER(
@@ -42,27 +42,27 @@ enum class AzkarType(
     ),
     TASBIH(
         R.string.azkar_tasbih,
-        R.drawable.ic_tasbih,
+        R.drawable.ic_tasbih1,
         "تسابيح"
     ),
     SLEEP(
         R.string.azkar_sleep,
-        R.drawable.ic_sleeping1,
+        R.drawable.ic_sleep,
         "أذكار النوم"
     ),
     WAKE(
         R.string.azkar_wake,
-        R.drawable.ic_rise,
+        R.drawable.ic_sunrise,
         "أذكار الاستيقاظ"
     ),
     QURAN_DUA(
         R.string.azkar_quran_dua,
-        R.drawable.ic_quran_dua,
+        R.drawable.ic_quran02,
         "أدعية قرآنية"
     ),
     PROPHETS_DUA(
         R.string.azkar_prophets_dua,
-        R.drawable.ic_dua_hands,
+        R.drawable.ic_dua,
         "أدعية الأنبياء"
     )
 }

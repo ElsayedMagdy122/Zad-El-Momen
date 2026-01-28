@@ -92,10 +92,11 @@ private fun SurahListContent(
                         listener.onSearchClick()
                     },
                 ),
-                AppBarAction(
-                    icon = painterResource(R.drawable.ic_all_bookmark),
-                    onClick = {},
-                )
+                // TODO enable bookmark in new version
+//                AppBarAction(
+//                    icon = painterResource(R.drawable.ic_all_bookmark),
+//                    onClick = {},
+//                )
             )
         )
         AnimatedContent(

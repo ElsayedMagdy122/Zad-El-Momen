@@ -8,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -15,11 +17,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
@@ -101,7 +105,12 @@ fun AppRoot(settingsRepository: SettingsRepository, onReady: () -> Unit) {
                 AppSettings.Theme.LIGHT -> false
             }
         ) {
-            AppNavigation(settingsRepository)
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Theme.color.surfaces.surface
+            ) {
+                AppNavigation(settingsRepository)
+            }
         }
     }
 }
