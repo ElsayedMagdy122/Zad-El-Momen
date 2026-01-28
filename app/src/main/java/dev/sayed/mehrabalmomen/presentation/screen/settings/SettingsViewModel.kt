@@ -92,7 +92,7 @@ class SettingsViewModel(
                 titleRes = R.string.support,
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_help,
+                        icon = R.drawable.ic_bug,
                         title = R.string.help_feedback,
                         action = SettingsUiState.SettingsAction.HELP_FEEDBACK
                     ),
