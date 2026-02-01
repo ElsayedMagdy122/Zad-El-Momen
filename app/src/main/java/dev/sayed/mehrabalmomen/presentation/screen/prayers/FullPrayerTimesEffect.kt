@@ -4,5 +4,6 @@ interface FullPrayerTimesEffect {
     object NavigateBack : FullPrayerTimesEffect
     object RequestExactAlarm : FullPrayerTimesEffect
     object RequestIgnoreBatteryOptimization : FullPrayerTimesEffect
+    object RequestNotificationPermission : FullPrayerTimesEffect
     object RequestXiaomiAutoStart : FullPrayerTimesEffect
 }

@@ -2,6 +2,7 @@
 
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
@@ -70,15 +71,6 @@ class FullPrayerTimesViewModel(
                     if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {
                         exactAlarmRequested = true
                         sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
-                    }
-                    if (!batteryOptRequested) {
-                        batteryOptRequested = true
-                        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
-                    }
-
-                    if (isXiaomiDevice && !autoStartRequested) {
-                        autoStartRequested = true
-                        sendEffect(FullPrayerTimesEffect.RequestXiaomiAutoStart)
                     }
                 }
         }
@@ -270,6 +262,9 @@ class FullPrayerTimesViewModel(
         prayerName: Prayer.PrayerName,
         isEnabled: Boolean
     ) {
+        if (isEnabled) {
+            checkPermissionsBeforeEnable()
+        }
         tryToCall(
             block = {
                 notificationsRepository.setPrayerEnabled(
@@ -281,5 +276,22 @@ class FullPrayerTimesViewModel(
             },
             onError = {}
         )
+    }
+    private fun checkPermissionsBeforeEnable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            sendEffect(FullPrayerTimesEffect.RequestNotificationPermission)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+            return
+        }
+
+        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
+
+        if (isXiaomiDevice) {
+            sendEffect(FullPrayerTimesEffect.RequestXiaomiAutoStart)
+        }
     }
 }

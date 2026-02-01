@@ -13,9 +13,14 @@ import org.koin.core.context.GlobalContext
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        val prayerSchedulingUseCase = GlobalContext.get().get<PrayerSchedulingUseCase>()
+        val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
-            prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+            try {
+                val useCase = GlobalContext.get().get<PrayerSchedulingUseCase>()
+                useCase.rescheduleTodayPrayerAlarms()
+            } finally {
+                pendingResult.finish()
+            }
         }
     }
 }

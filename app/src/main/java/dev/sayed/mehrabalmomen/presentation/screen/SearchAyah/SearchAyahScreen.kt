@@ -107,10 +107,7 @@ private fun SearchAyahContent(
         SearchType.SURAH -> localizedString(R.string.search_in_surah, surahName ?: "")
     }
 
-    val subTitle = when (searchType) {
-        SearchType.QURAN -> R.string.start_searching_subtitle_for_ayah
-        SearchType.SURAH -> R.string.start_searching_subtitle_for_reciter
-    }
+    val subTitle = R.string.start_searching_subtitle_for_ayah
 
     Column(
         modifier = modifier
@@ -151,12 +148,13 @@ private fun SearchAyahContent(
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                SearchEmptyContainer(
-                    isStartState = false,
-                    isResultsState = true,
-                    subTitle,
-                    modifier = Modifier.align(Alignment.Center)
-                )}
+                    SearchEmptyContainer(
+                        isStartState = false,
+                        isResultsState = true,
+                        subTitle,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             } else {
                 LazyVerticalStaggeredGrid(
                     modifier = modifier
