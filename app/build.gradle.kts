@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -32,6 +34,19 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val localProperties = Properties()
+        localProperties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField(
+            type = "String",
+            name = "SUPABASE_URL",
+            value = "\"${localProperties["SUPABASE_URL"] ?: ""}\""
+        )
+        buildConfigField(
+            type = "String",
+            name = "SUPABASE_KEY",
+            value = "\"${localProperties["SUPABASE_KEY"] ?: ""}\""
+        )
+
       ndk {
           abiFilters += listOf("armeabi-v7a", "arm64-v8a")
       }
@@ -56,6 +71,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -70,6 +86,15 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("org.maplibre.compose:maplibre-compose:0.11.1")
     implementation("com.google.android.play:review:2.0.1")
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4")) 
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+    implementation("io.github.jan-tennert.supabase:functions-kt")
+    implementation("io.ktor:ktor-client-android:3.4.0")
     val nav_version = "2.9.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.navigation:navigation-runtime-ktx:$nav_version")
@@ -92,5 +117,5 @@ dependencies {
 //    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-  //  lintChecks(project(":lint-rules"))
+    //  lintChecks(project(":lint-rules"))
 }
