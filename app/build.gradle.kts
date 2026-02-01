@@ -34,6 +34,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         val localProperties = Properties()
         localProperties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField(
@@ -86,7 +87,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("org.maplibre.compose:maplibre-compose:0.11.1")
     implementation("com.google.android.play:review:2.0.1")
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4")) 
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.4"))
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
