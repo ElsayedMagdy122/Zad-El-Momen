@@ -17,7 +17,7 @@ class BugReportRpcService(
             .rpc(
                 "get_daily_reports_count",
                 DailyReportCountDto(
-                    deviceId = deviceId,
+                    uid = deviceId,
                     dayStamp = dayStamp
                 )
             )

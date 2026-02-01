@@ -21,7 +21,6 @@ fun BugReportRequest.toInsertDto(
         createdAt = Clock.System.now().toString(),
         dayStamp = dayStamp,
         deviceName = "${Build.MANUFACTURER} ${Build.MODEL}",
-        device = deviceId,
         androidVersion = "${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})"
     )
 }

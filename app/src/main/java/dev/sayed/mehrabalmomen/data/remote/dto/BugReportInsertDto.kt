@@ -21,8 +21,6 @@ data class BugReportInsertDto(
     val dayStamp: Long,
     @SerialName("device_name")
     val deviceName: String,
-    @SerialName("device_id")
-    val device: String,
     @SerialName("android_version")
     val androidVersion: String
 )

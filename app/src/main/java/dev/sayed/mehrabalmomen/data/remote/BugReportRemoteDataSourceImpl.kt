@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import java.security.MessageDigest
 import java.time.Instant
 import java.time.ZoneOffset
 
@@ -40,7 +41,7 @@ class BugReportRemoteDataSourceImpl(
     ) {
         val count = rpcService.getDailyCount(deviceId, dayStamp)
         if (count >= DAILY_LIMIT) {
-            throw Exception("You have reached the daily limit of $DAILY_LIMIT reports")
+            throw DailyLimitExceededException("You have reached the daily limit of $DAILY_LIMIT reports")
         }
     }
 
@@ -61,12 +62,19 @@ class BugReportRemoteDataSourceImpl(
     }
 
     @SuppressLint("HardwareIds")
-    private fun getDeviceId(): String =
-        Settings.Secure.getString(
+    private fun getDeviceId(): String {
+        val androidId = Settings.Secure.getString(
             context.contentResolver,
             Settings.Secure.ANDROID_ID
         ) ?: error("Cannot get device ID")
-
+        return androidId.toSHA256()
+    }
+    fun String.toSHA256(): String {
+        val bytes = MessageDigest
+            .getInstance("SHA-256")
+            .digest(this.toByteArray(Charsets.UTF_8))
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
     private fun currentDayStamp(): Long =
         Instant.now()
             .atOffset(ZoneOffset.UTC)
@@ -74,7 +82,8 @@ class BugReportRemoteDataSourceImpl(
             .toEpochDay()
 
     private companion object {
-        const val DAILY_LIMIT = 80
+        const val DAILY_LIMIT = 10
         const val TABLE_REPORTS = "reports"
     }
 }
+class DailyLimitExceededException(message: String) : Exception(message)
