@@ -36,21 +36,32 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         val localProperties = Properties()
-        localProperties.load(project.rootProject.file("local.properties").inputStream())
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use {
+                localProperties.load(it)
+            }
+        }
+
+        fun getProp(key: String): String {
+            return localProperties.getProperty(key)
+                ?: System.getenv(key)
+                ?: error("Missing property: $key")
+        }
         buildConfigField(
-            type = "String",
-            name = "SUPABASE_URL",
-            value = "\"${localProperties["SUPABASE_URL"] ?: ""}\""
+            "String",
+            "SUPABASE_URL",
+            "\"${getProp("SUPABASE_URL")}\""
         )
         buildConfigField(
-            type = "String",
-            name = "SUPABASE_KEY",
-            value = "\"${localProperties["SUPABASE_KEY"] ?: ""}\""
+            "String",
+            "SUPABASE_KEY",
+            "\"${getProp("SUPABASE_KEY")}\""
         )
 
-      ndk {
-          abiFilters += listOf("armeabi-v7a", "arm64-v8a")
-      }
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     buildTypes {
@@ -118,5 +129,5 @@ dependencies {
 //    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    //  lintChecks(project(":lint-rules"))
+//  lintChecks(project(":lint-rules"))
 }
