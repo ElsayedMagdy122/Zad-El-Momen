@@ -257,7 +257,9 @@ class SettingsViewModel(
     }
 
     override fun onCalculationMethodClick() {}
-    override fun onHelpFeedbackClick() {}
+    override fun onHelpFeedbackClick() {
+        sendEffect(SettingsEffect.NavigateToHelpFeedback)
+    }
     override fun onRateAppClick() {
         sendEffect(SettingsEffect.NavigateToRateApp)
     }

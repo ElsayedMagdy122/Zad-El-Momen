@@ -55,4 +55,7 @@ sealed interface Route {
         val surahId: Int? = null,
         val surahName: String? = null
     ) : Route
+
+    @Serializable
+    data object ReportBugScreen
 }

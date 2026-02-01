@@ -4,7 +4,6 @@ import SettingsUiState
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -70,7 +70,10 @@ fun SettingsScreen(
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToAbout -> TODO()
-            SettingsEffect.NavigateToHelpFeedback -> TODO()
+            SettingsEffect.NavigateToHelpFeedback -> {
+                navController.navigate(Route.ReportBugScreen)
+            }
+
             SettingsEffect.NavigateToLocation -> {
                 navController.navigate(Route.MapsScreen)
             }
@@ -294,7 +297,7 @@ fun launchReview(context: Context) {
 }
 
 fun openStoreReview(context: Context) {
-    val uri = Uri.parse("market://details?id=${context.packageName}")
+    val uri = "market://details?id=${context.packageName}".toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(intent)

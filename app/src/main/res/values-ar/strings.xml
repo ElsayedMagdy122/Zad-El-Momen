@@ -13,6 +13,7 @@
     <string name="no_remaining_time">لا يوجد وقت متبقٍ</string>
     <string name="time_until">الوقت المتبقي حتى %1$s</string>
     <string name="qiblah">القبلة</string>
+    <string name="other">أخري</string>
     <string name="rotate_your_phone_to_align_with_the_qibla_direction">
     قم بتدوير هاتفك لمحاذاة اتجاه القبلة.
 </string>
@@ -154,4 +155,22 @@
     <string name="no_results_found_title">لم يتم العثور على نتائج!</string>
     <string name="no_results_found_subtitle">يرجى المحاولة مرة أخرى بكلمة بحث أخرى.</string>
     <string name="search_icon">Search Icon</string>
+    <string name="bug_title">عنوان المشكلة</string>
+    <string name="brief_summary_of_the_issue">ملخص قصير للمشكلة...</string>
+    <string name="description">الوصف</string>
+    <string name="please_describe_the_issue_and_steps_to_reproduce_it">يرجى وصف المشكلة وخطوات إعادة إنتاجها...</string>
+    <string name="sending">جاري الإرسال...</string>
+    <string name="submit_report">إرسال التقرير</string>
+    <string name="report_a_bug">الإبلاغ عن مشكلة</string>
+    <string name="feature_area">القسم المتعلق بالمشكلة</string>
+    <string name="attachments">الملفات المرفقة (اختياري)</string>
+    <string name="click_to_upload_image">اضغط لرفع صورة</string>
+
+    <string name="report_sent_successfully">تم إرسال التقرير بنجاح</string>
+    <string name="invalid_input">مدخلات غير صالحة</string>
+    <string name="please_fill_all_required_fields">يرجى ملء جميع الحقول المطلوبة</string>
+    <string name="daily_limit">تم الوصول للحد اليومي</string>
+    <string name="you_have_reached_the_daily_report_limit">لقد وصلت إلى الحد اليومي من التقارير</string>
+    <string name="error">خطأ</string>
+    <string name="failed_to_send_report">فشل في إرسال التقرير</string>
 </resources>
