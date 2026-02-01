@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.presentation.utils.Constants
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_ID
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_NAME
@@ -22,20 +23,23 @@ import dev.sayed.mehrabalmomen.presentation.base.MainActivity
 class PrayerAlarmService : Service() {
 
     private lateinit var mediaPlayer: MediaPlayer
-
     override fun onBind(intent: Intent?) = null
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
         if (intent?.action == Constants.ACTION_STOP_AZAN) {
             stopAzan()
+            return START_STICKY
+        }
+        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
             return START_NOT_STICKY
         }
-
         createChannel()
         val prayerName = intent?.getStringExtra(PRAYER_NAME_KEY) ?: return START_NOT_STICKY
-
-        startForeground(1, createNotification(prayerName))
+        val prayerEnum = Prayer.PrayerName.valueOf(intent.getStringExtra(PRAYER_NAME_KEY) ?: "FAJR")
+      //  val prayerNameLocalized = getString(prayerEnum.getDisplayNameRes())
+        startForeground(1, createNotification(prayerEnum.getDisplayNameRes()))
         playAzan()
 
         return START_NOT_STICKY
@@ -55,7 +59,10 @@ class PrayerAlarmService : Service() {
                 AZAN_CHANNEL_ID,
                 AZAN_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                setSound(null, null)
+                enableVibration(false)
+            }
             getSystemService(NotificationManager::class.java)
                 .createNotificationChannel(channel)
         }
@@ -108,11 +115,17 @@ class PrayerAlarmService : Service() {
             }
         }
     }
-
     override fun onDestroy() {
         if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
         super.onDestroy()
+    }
+    fun   Prayer.PrayerName.getDisplayNameRes(): String = when(this) {
+          Prayer.PrayerName.FAJR -> "الفجر"
+          Prayer.PrayerName.ZUHR -> "الظهر"
+          Prayer.PrayerName.ASR -> "العصر"
+          Prayer.PrayerName.MAGHRIB -> "المغرب"
+        Prayer.PrayerName.ISHA -> "العشاء"
     }
 }

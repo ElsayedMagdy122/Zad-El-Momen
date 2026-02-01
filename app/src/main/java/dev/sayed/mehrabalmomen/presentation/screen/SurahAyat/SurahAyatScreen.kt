@@ -51,6 +51,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActio
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTextSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.SurahAppBarSection
+import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.cleanAyahTextForCopy
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -70,8 +71,9 @@ fun SurahAyatScreen(
         when (effect) {
             is SurahAyatEffect.ShowToast -> toast = effect.toast
             is SurahAyatEffect.CopyAya -> {
+                val cleanedText = cleanAyahTextForCopy(effect.text)
                 clipboardManager.setText(
-                    AnnotatedString(effect.text)
+                    AnnotatedString(cleanedText)
                 )
             }
 

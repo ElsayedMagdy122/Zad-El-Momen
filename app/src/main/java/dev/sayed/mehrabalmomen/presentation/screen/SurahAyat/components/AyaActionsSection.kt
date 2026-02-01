@@ -43,7 +43,7 @@ fun BoxScope.AyaActionsSection(
                     AyahAction.COPY -> onCopy()
                     AyahAction.BOOKMARK -> onBookmark()
                     AyahAction.SEND -> {
-                        val cleanedText = selectedAyaText.trim().substringBeforeLast(" ").trim()
+                        val cleanedText = cleanAyahTextForCopy(selectedAyaText)
                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             putExtra(Intent.EXTRA_TEXT, cleanedText)
                             type = "text/plain"
@@ -56,4 +56,17 @@ fun BoxScope.AyaActionsSection(
             }
         )
     }
+}
+ fun cleanAyahTextForCopy(text: String): String {
+    var cleaned = text.trim()
+
+//    if (cleaned.isNotEmpty() && cleaned.last().code in 0xFBD0..0xFDFF || cleaned.last().code in 0xFE70..0xFEFF) {
+//        cleaned = cleaned.dropLast(1).trimEnd()
+//    }
+
+    cleaned = cleaned.filter {
+        it.isWhitespace() || it in '\u0600'..'\u06FF' || it in '\u0750'..'\u077F' || it in '\u08A0'..'\u08FF'
+    }
+
+    return cleaned
 }

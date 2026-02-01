@@ -101,11 +101,11 @@ class SettingsViewModel(
                         title = R.string.rate_app,
                         action = SettingsUiState.SettingsAction.RATE_APP
                     ),
-                    SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_help,
-                        title = R.string.about,
-                        action = SettingsUiState.SettingsAction.ABOUT
-                    )
+//                    SettingsUiState.SettingsItemUiState(
+//                        icon = R.drawable.ic_help,
+//                        title = R.string.about,
+//                        action = SettingsUiState.SettingsAction.ABOUT
+//                    )
                 )
             )
         )

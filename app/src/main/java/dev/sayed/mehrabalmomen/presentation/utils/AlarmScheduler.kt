@@ -42,5 +42,6 @@ class AlarmScheduler(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
     }
 }

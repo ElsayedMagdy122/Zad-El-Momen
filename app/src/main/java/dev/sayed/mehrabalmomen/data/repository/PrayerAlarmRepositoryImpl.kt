@@ -4,13 +4,13 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
-import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
-import dev.sayed.mehrabalmomen.presentation.reciver.AzanAlarmReceiver
-import dev.sayed.mehrabalmomen.presentation.reciver.DailyRefreshReceiver
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
+import dev.sayed.mehrabalmomen.presentation.reciver.AzanAlarmReceiver
+import dev.sayed.mehrabalmomen.presentation.reciver.DailyRefreshReceiver
+import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
 import java.util.Calendar
 
 class PrayerAlarmRepositoryImpl(
@@ -28,7 +28,8 @@ class PrayerAlarmRepositoryImpl(
         scheduleMidnight()
         return RescheduleResult.Success
     }
-   private fun hasExactAlarmPermission(): Boolean {
+
+    private fun hasExactAlarmPermission(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
         return context
             .getSystemService(AlarmManager::class.java)
