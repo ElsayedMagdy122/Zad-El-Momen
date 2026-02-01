@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.usecase
 
+import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.Location
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
@@ -46,11 +47,21 @@ class PrayerSchedulingUseCase(
         val notifications = notificationsRepository.observeAll().first()
         return prayers.map { prayer ->
             PrayerAlarm(
-                id = prayer.name.ordinal,
+                id = prayer.name.alarmId(),
                 name = prayer.name,
                 timeMillis = prayer.time.toEpochMilliseconds(),
                 enabled = notifications[prayer.name] ?: true
-            )
+            ).apply {
+                Log.d("AZAN_DEBUG", "PrayerAlarm: $this")
+            }
         }
+    }
+
+    private fun Prayer.PrayerName.alarmId(): Int = when (this) {
+        Prayer.PrayerName.FAJR -> 10
+        Prayer.PrayerName.ZUHR -> 20
+        Prayer.PrayerName.ASR -> 30
+        Prayer.PrayerName.MAGHRIB -> 40
+        Prayer.PrayerName.ISHA -> 50
     }
 }

@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.ComponentName
@@ -8,6 +9,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +20,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -45,9 +48,12 @@ fun FullPrayerTimesViewScreen(
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        checkAndRequestPermissions(context)
+    val notificationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
+        }
     }
 
     CollectEffect(viewModel.effect) { effect ->
@@ -59,6 +65,10 @@ fun FullPrayerTimesViewScreen(
                         Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                     )
                 }
+            }
+
+            FullPrayerTimesEffect.RequestNotificationPermission -> {
+                notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
 
             FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
