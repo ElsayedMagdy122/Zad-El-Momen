@@ -2,17 +2,25 @@ package dev.sayed.mehrabalmomen.data.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
+import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.data.local.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.data.remote.BugReportRemoteDataSource
+import dev.sayed.mehrabalmomen.data.remote.BugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.remote.BugReportRpcService
+import dev.sayed.mehrabalmomen.data.remote.BugReportStorageService
+import dev.sayed.mehrabalmomen.data.repository.BugReportRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
+import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
@@ -23,16 +31,24 @@ import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
+import io.github.jan.supabase.annotations.SupabaseInternal
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.storage.Storage
+import io.ktor.client.plugins.HttpTimeout
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 private const val DATASTORE_NAME = "location_prefs"
 
 val Context.locationDataStore by preferencesDataStore(name = DATASTORE_NAME)
+
+@OptIn(SupabaseInternal::class)
 val dataModule = module {
     // Context DataStore
     single { get<Context>().locationDataStore }
-    single { com.google.gson.Gson() }
+    single { Gson() }
     // Repositories
     single<PrayerRepository> { PrayerRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl() }
@@ -54,6 +70,54 @@ val dataModule = module {
             alarmScheduler = get()
         )
     }
+    // RPC
+    single {
+        BugReportRpcService(
+            supabase = get()
+        )
+    }
+
+    // Storage
+    single {
+        BugReportStorageService(
+            supabase = get()
+        )
+    }
+
+    // Remote DataSource
+    single<BugReportRemoteDataSource> {
+        BugReportRemoteDataSourceImpl(
+            rpcService = get(),
+            storageService = get(),
+            supabase = get(),
+            context = get()
+        )
+    }
+
+    single<BugReportRepository> {
+        BugReportRepositoryImpl(
+            get()
+        )
+    }
+    single {
+        val supabase = createSupabaseClient(
+            supabaseKey = BuildConfig.SUPABASE_KEY,
+            supabaseUrl = BuildConfig.SUPABASE_URL,
+        ) {
+            install(Realtime)
+            install(Postgrest)
+            install(Storage)
+            httpConfig {
+                install(HttpTimeout) {
+                    requestTimeoutMillis = 10_000
+                    connectTimeoutMillis = 15_000
+                    socketTimeoutMillis = 15_000
+                }
+            }
+        }
+        supabase
+    }
+
 
     // Manager
     single { PrayerSchedulingUseCase(get(), get(), get(), get()) }

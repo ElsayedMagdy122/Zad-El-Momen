@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
+import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
@@ -77,6 +78,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 surahName = args.surahName
             )
         }
-
+        composable<Route.ReportBugScreen> {
+            ReportBugScreen(navController = navController)
+        }
     }
 }

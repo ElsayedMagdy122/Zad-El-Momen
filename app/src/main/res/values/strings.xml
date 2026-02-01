@@ -12,6 +12,7 @@
     <string name="no_remaining_time">No remaining time</string>
     <string name="time_until">"Time until %1$s "</string>
     <string name="qiblah">Qiblah</string>
+    <string name="other">Other</string>
     <string name="rotate_your_phone_to_align_with_the_qibla_direction">Rotate your phone to align with the Qibla direction.</string>
     <string name="qibla_direction">Qibla Direction</string>
     <string name="hanafi">Hanafi</string>
@@ -158,4 +159,22 @@
     <string name="no_results_found_title">No results found!</string>
     <string name="no_results_found_subtitle">Please try again with another keyword.</string>
     <string name="search_icon">Search Icon</string>
+    <string name="bug_title">Bug Title</string>
+    <string name="brief_summary_of_the_issue">Brief summary of the issue...</string>
+    <string name="description">Description</string>
+    <string name="please_describe_the_issue_and_steps_to_reproduce_it">Please describe the issue and steps to reproduce it...</string>
+    <string name="sending">Sending...</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="report_a_bug">Report a Bug</string>
+    <string name="feature_area">Feature Area</string>
+    <string name="attachments">Attachments (Optional)</string>
+    <string name="click_to_upload_image">Click to upload image</string>
+
+    <string name="report_sent_successfully">Report sent successfully</string>
+    <string name="invalid_input">Invalid Input</string>
+    <string name="please_fill_all_required_fields">Please fill all required fields</string>
+    <string name="daily_limit">Daily Limit Reached</string>
+    <string name="you_have_reached_the_daily_report_limit">You have reached the daily report limit</string>
+    <string name="error">Error</string>
+    <string name="failed_to_send_report">Failed to send report</string>
 </resources>
