@@ -105,6 +105,7 @@ private fun SearchTextField(
 ) {
     BasicTextField(
         value = value,
+        singleLine = true,
         onValueChange = onValueChange,
         textStyle = Theme.textStyle.body.medium.copy(color = Theme.color.primary.shadePrimary),
         cursorBrush = SolidColor(Theme.color.primary.primary),
