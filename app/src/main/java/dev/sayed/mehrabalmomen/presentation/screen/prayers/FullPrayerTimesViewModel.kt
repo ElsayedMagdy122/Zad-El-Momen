@@ -2,6 +2,8 @@
 
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.app.AlarmManager
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -16,6 +18,7 @@ import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
+import dev.sayed.mehrabalmomen.presentation.utils.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,7 +39,8 @@ class FullPrayerTimesViewModel(
     private val prayerRepository: PrayerRepository,
     private val settingsRepository: SettingsRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
-    private val prayerSchedulingUseCase: PrayerSchedulingUseCase
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val context: Context
 ) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
     FullPrayerTimeInteractionListener {
     private var countdownJob: Job? = null
@@ -277,19 +281,24 @@ class FullPrayerTimesViewModel(
             onError = {}
         )
     }
+
     private fun checkPermissionsBeforeEnable() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
             sendEffect(FullPrayerTimesEffect.RequestNotificationPermission)
             return
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+                return
+            }
+        }
+        if (!isIgnoringBatteryOptimizations(context)) {
+            sendEffect(FullPrayerTimesEffect.ShowBatteryOptimizationDialog)
             return
         }
-
-        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
-
         if (isXiaomiDevice) {
             sendEffect(FullPrayerTimesEffect.RequestXiaomiAutoStart)
         }
