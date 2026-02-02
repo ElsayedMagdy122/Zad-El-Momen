@@ -70,9 +70,11 @@ class AzkarLocalDataSource(
 
     private fun cleanCount(value: String?): String =
         value?.trim()?.removePrefix("0").takeUnless { it.isNullOrEmpty() } ?: "1"
-
-    private fun cleanText(text: String): String =
-        text.replace(Regex("\\\\n|'|\""), "")
-            .replace(Regex("\\s+"), " ")
-            .trim()
+    private fun cleanText(raw: String): String {
+        var text = raw.trim()
+        text = text.replace(Regex("\\\\+"), "")
+        text = text.replace(Regex("[\\n\\r\\t\\u2028\\u2029]+"), " ")
+        text = text.replace(Regex("\\s{2,}"), " ")
+        return text.trim()
+    }
 }
