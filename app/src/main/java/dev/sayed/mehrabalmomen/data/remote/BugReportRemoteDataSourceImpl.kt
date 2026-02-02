@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
 import androidx.core.net.toUri
+import dev.sayed.mehrabalmomen.data.util.ImageCompressor
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -49,15 +50,29 @@ class BugReportRemoteDataSourceImpl(
         report: BugReportRequest,
         deviceId: String
     ): String? {
-        val uri = report.imageUrl ?: return null
-        val bytes = context.contentResolver
-            .openInputStream(uri.toUri())
-            ?.readBytes()
-            ?: error("Cannot read image bytes")
+        val imageUrlString = report.imageUrl ?: return null
+
+        val uri = try {
+            imageUrlString.toUri()
+        } catch (e: Exception) {
+            return null
+        }
+
+        val compressedBytes = try {
+            ImageCompressor.compressFromUri(
+                context = context,
+                uri = uri,
+                maxWidth = 1280,
+                maxHeight = 1280,
+                quality = 78
+            )
+        } catch (e: Exception) {
+            return null
+        }
 
         return storageService.uploadImage(
-            fileName = "${deviceId}_${System.currentTimeMillis()}.png",
-            bytes = bytes
+            fileName = "${deviceId}_${System.currentTimeMillis()}.jpg",
+            bytes = compressedBytes
         )
     }
 
@@ -69,12 +84,14 @@ class BugReportRemoteDataSourceImpl(
         ) ?: error("Cannot get device ID")
         return androidId.toSHA256()
     }
+
     fun String.toSHA256(): String {
         val bytes = MessageDigest
             .getInstance("SHA-256")
             .digest(this.toByteArray(Charsets.UTF_8))
         return bytes.joinToString("") { "%02x".format(it) }
     }
+
     private fun currentDayStamp(): Long =
         Instant.now()
             .atOffset(ZoneOffset.UTC)
@@ -86,4 +103,5 @@ class BugReportRemoteDataSourceImpl(
         const val TABLE_REPORTS = "reports"
     }
 }
+
 class DailyLimitExceededException(message: String) : Exception(message)

@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Keep kotlinx-datetime classes used by Supabase Auth
+-keep class kotlinx.datetime.** { *; }
+
+# Keep serialization classes (you already have this, but keep it)
+-keep class kotlinx.serialization.** { *; }
+
+# Optional: if you still get warnings, you can add these as fallback
+-dontwarn kotlinx.datetime.Clock$System
+-dontwarn kotlinx.datetime.Instant
+-dontwarn kotlinx.datetime.serializers.InstantIso8601Serializer
