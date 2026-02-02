@@ -99,7 +99,7 @@ class BugReportRemoteDataSourceImpl(
             .toEpochDay()
 
     private companion object {
-        const val DAILY_LIMIT = 10
+        const val DAILY_LIMIT = 5
         const val TABLE_REPORTS = "reports"
     }
 }

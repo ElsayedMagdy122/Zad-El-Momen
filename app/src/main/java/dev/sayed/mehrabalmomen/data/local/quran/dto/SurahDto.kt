@@ -1,18 +1,20 @@
 package dev.sayed.mehrabalmomen.data.local.quran.dto
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SurahDto(
-    @SerializedName("id")
+    @SerialName("id")
     val id: Int,
-    @SerializedName("name")
+    @SerialName("name")
     val nameArabic: String,
-    @SerializedName("transliteration")
+    @SerialName("transliteration")
     val nameEnglish: String,
-    @SerializedName("total_verses")
+    @SerialName("total_verses")
     val totalVerses: Int,
-    @SerializedName("type")
+    @SerialName("type")
     val type: String,
-    @SerializedName("verses")
+    @SerialName("verses")
     val verses: List<AyahDto>
 )

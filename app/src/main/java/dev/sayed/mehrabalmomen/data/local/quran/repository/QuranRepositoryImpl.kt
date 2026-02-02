@@ -1,38 +1,35 @@
 package dev.sayed.mehrabalmomen.data.local.quran.repository
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import dev.sayed.mehrabalmomen.data.local.quran.dto.SurahDto
 import dev.sayed.mehrabalmomen.data.local.quran.dto.TafseerDto
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.Ayah
 import dev.sayed.mehrabalmomen.domain.entity.Surah
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
+import kotlinx.serialization.json.Json
 
-class QuranRepositoryImpl(private val context: Context, private val gson: Gson) : QuranRepository {
+class QuranRepositoryImpl(private val context: Context, private val json: Json) : QuranRepository {
 
-    // https://cdn.jsdelivr.net/npm/quran-json@3.1.2/dist/quran_en.json
-    /*
-    *  edit quran file to support items and enhance performance
-    * */
-
-    private fun getAllTafseerFromAsset(): List<TafseerDto> {
+    private fun getAllSurahsFromAsset(): List<SurahDto> {
         return try {
-            val jsonString = context.assets.open("tafseer.json")
-                .bufferedReader().use { it.readText() }
-            val listType = object : TypeToken<List<TafseerDto>>() {}.type
-            gson.fromJson(jsonString, listType)
+            val jsonString = context.assets.open("quran_structured.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            json.decodeFromString<List<SurahDto>>(jsonString)
         } catch (e: Exception) {
             emptyList()
         }
     }
-    private fun getAllSurahsFromAsset(): List<SurahDto> {
+
+    private fun getAllTafseerFromAsset(): List<TafseerDto> {
         return try {
-            val jsonString = context.assets.open("quran_structured.json")
-                .bufferedReader().use { it.readText() }
-            val listType = object : TypeToken<List<SurahDto>>() {}.type
-            gson.fromJson(jsonString, listType)
+            val jsonString = context.assets.open("tafseer.json")
+                .bufferedReader()
+                .use { it.readText() }
+
+            json.decodeFromString<List<TafseerDto>>(jsonString)
         } catch (e: Exception) {
             emptyList()
         }
@@ -64,7 +61,7 @@ class QuranRepositoryImpl(private val context: Context, private val gson: Gson) 
         allSurahs.forEach { surahDto ->
             val matchingAyahs = surahDto.verses.filter { ayahDto ->
                 ayahDto.textEmlaey.contains(query, ignoreCase = true)
-            }.map { it.toDomain(surahDto.id,surahDto.nameArabic,surahDto.nameEnglish) }
+            }.map { it.toDomain(surahDto.id, surahDto.nameArabic, surahDto.nameEnglish) }
 
             results.addAll(matchingAyahs)
         }
@@ -77,10 +74,11 @@ class QuranRepositoryImpl(private val context: Context, private val gson: Gson) 
             ayahDto.textEmlaey.contains(query, ignoreCase = true)
         }?.map { it.toDomain(surahNumber) } ?: emptyList()
     }
+
     override suspend fun getAyahTafseer(surahNumber: Int, ayahNumber: Int): String {
         val allTafseer = getAllTafseerFromAsset()
         return allTafseer.find {
             it.surahNumber.toInt() == surahNumber && it.ayahNumber.toInt() == ayahNumber
-        }!!.text
+        }?.text ?: ""
     }
 }

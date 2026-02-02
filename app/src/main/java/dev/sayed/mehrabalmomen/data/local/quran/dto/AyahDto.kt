@@ -1,19 +1,20 @@
 package dev.sayed.mehrabalmomen.data.local.quran.dto
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class AyahDto(
-    @SerializedName("id")
+    @SerialName("id")
     val id: Int,
-    @SerializedName("aya_no")
+    @SerialName("aya_no")
     val ayahNumber: Int,
-    @SerializedName("text")
+    @SerialName("text")
     val text: String,
-    @SerializedName("text_emlaey")
+    @SerialName("text_emlaey")
     val textEmlaey: String,
-    @SerializedName("page")
+    @SerialName("page")
     val page: Int,
-    @SerializedName("jozz")
+    @SerialName("jozz")
     val juzNumber: Int
 )
