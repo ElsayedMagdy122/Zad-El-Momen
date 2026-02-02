@@ -30,7 +30,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 3
+        versionCode = 5
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -88,6 +88,7 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
     implementation("com.batoulapps.adhan:adhan2:0.0.6")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("androidx.datastore:datastore-preferences:1.2.0")
