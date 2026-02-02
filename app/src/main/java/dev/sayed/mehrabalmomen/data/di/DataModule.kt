@@ -37,6 +37,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
 import io.ktor.client.plugins.HttpTimeout
+import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -58,7 +59,7 @@ val dataModule = module {
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
-    single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
+    single<QuranRepository> { QuranRepositoryImpl(get(),get()) }
 
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }
@@ -118,6 +119,13 @@ val dataModule = module {
         supabase
     }
 
+    single {
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+            prettyPrint = false
+        }
+    }
 
     // Manager
     single { PrayerSchedulingUseCase(get(), get(), get(), get()) }

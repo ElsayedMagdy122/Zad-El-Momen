@@ -1,12 +1,14 @@
 package dev.sayed.mehrabalmomen.data.local.quran.dto
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TafseerDto(
-    @SerializedName("number")
+    @SerialName("number")
     val surahNumber: String,
-    @SerializedName("aya")
+    @SerialName("aya")
     val ayahNumber: String,
-    @SerializedName("text")
+    @SerialName("text")
     val text: String
 )
