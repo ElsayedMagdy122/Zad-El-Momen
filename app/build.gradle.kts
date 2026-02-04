@@ -30,7 +30,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
+        versionCode = 9
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -57,6 +57,21 @@ android {
             "String",
             "SUPABASE_KEY",
             "\"${getProp("SUPABASE_KEY")}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPPORT_5",
+            "\"${getProp("SUPPORT_5")}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPPORT_10",
+            "\"${getProp("SUPPORT_10")}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPPORT_25",
+            "\"${getProp("SUPPORT_25")}\""
         )
 
         ndk {
@@ -88,6 +103,7 @@ android {
 }
 
 dependencies {
+    implementation("com.android.billingclient:billing-ktx:8.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
     implementation("com.batoulapps.adhan:adhan2:0.0.6")
     implementation("com.google.android.gms:play-services-location:21.0.1")

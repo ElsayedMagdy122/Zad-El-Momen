@@ -19,6 +19,7 @@ import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
+import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
@@ -94,7 +95,9 @@ val dataModule = module {
             context = get()
         )
     }
-
+    single {
+        BillingManager(get())
+    }
     single<BugReportRepository> {
         BugReportRepositoryImpl(
             get()

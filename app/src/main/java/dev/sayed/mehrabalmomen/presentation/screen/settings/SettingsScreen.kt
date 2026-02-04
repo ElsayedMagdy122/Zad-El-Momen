@@ -1,9 +1,11 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,14 +55,18 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
+import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
 import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun SettingsScreen(
     navController: NavController,
@@ -67,9 +74,14 @@ fun SettingsScreen(
 ) {
     val state by settingsViewModel.screenState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var toast by remember { mutableStateOf<ToastDetails?>(null) }
+    val activity = LocalContext.current as Activity
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
-            SettingsEffect.NavigateToAbout -> TODO()
+            SettingsEffect.NavigateToAbout -> {
+
+            }
+
             SettingsEffect.NavigateToHelpFeedback -> {
                 navController.navigate(Route.ReportBugScreen)
             }
@@ -82,7 +94,20 @@ fun SettingsScreen(
                 openStoreReview(context)
             }
 
+            is SettingsEffect.LaunchDonation -> {
+                settingsViewModel.launchDonationFlow(activity, effect.productId)
+            }
 
+            is SettingsEffect.ShowToast ->{
+                       toast = effect.toast
+            }
+        }
+    }
+    LaunchedEffect(toast) {
+        toast?.let {
+            val current = it
+            delay(3000)
+            if (toast == current) toast = null
         }
     }
     state.dialog?.let { dialog ->
@@ -99,41 +124,55 @@ fun SettingsScreen(
         )
     }
 
-    LazyVerticalGrid(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Theme.color.surfaces.surface)
-            .windowInsetsPadding(WindowInsets.systemBars),
-        contentPadding = PaddingValues(
-            top = 24.dp,
-            start = 16.dp,
-            end = 16.dp
-        ),
-        columns = GridCells.Adaptive(320.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            AppBar(
-                onBackClick = { navController.popBackStack() },
-                title = localizedString(R.string.settings)
-            )
-        }
-        state.sections.forEach { section ->
 
+        LazyVerticalGrid(
+            contentPadding = PaddingValues(
+                top = 24.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            columns = GridCells.Adaptive(320.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    text = localizedString(section.titleRes),
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.primary.primary,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                AppBar(
+                    onBackClick = { navController.popBackStack() },
+                    title = localizedString(R.string.settings)
                 )
             }
+            state.sections.forEach { section ->
 
-            items(section.items) {
-                SettingsItem(it, listener = settingsViewModel)
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(
+                        text = localizedString(section.titleRes),
+                        style = Theme.textStyle.label.medium,
+                        color = Theme.color.primary.primary,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
+                }
+
+                items(section.items) {
+                    SettingsItem(it, listener = settingsViewModel)
+                }
             }
         }
+        toast?.let {
+            PrimaryToast(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 24.dp),
+                data = it,
+                isSuccess = true
+            )
+        }
+
     }
 }
 
@@ -194,7 +233,7 @@ fun SingleSelectionContent(
 ) {
     items.forEachIndexed { index, item ->
         CheckboxItem(
-            text = localizedString(item.text),
+            text = item.text?.let { localizedString(it) } ?: "",
             description = item.description,
             icon = item.icon?.let { painterResource(it) },
             isChecked = selectedIndex == index,

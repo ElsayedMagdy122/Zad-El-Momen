@@ -1,25 +1,68 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
+import android.app.Activity
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
+import dev.sayed.mehrabalmomen.data.util.BillingManager
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
-    private val prayerSchedulingUseCase: PrayerSchedulingUseCase
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val billingManager: BillingManager
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
+    private val supportProductIds = listOf(
+        BuildConfig.SUPPORT_5,
+        BuildConfig.SUPPORT_10,
+        BuildConfig.SUPPORT_25
+    )
+
     init {
         observeSettings()
+        observeBillingData()
+        billingManager.queryProducts(supportProductIds)
+    }
+
+    private fun observeBillingData() {
+        viewModelScope.launch {
+            billingManager.productDetails.collect { products ->
+                val available = products.isNotEmpty()
+                updateState {
+                    it.copy(isSupportAvailable = available)
+                }
+                rebuildSections()
+            }
+        }
+        viewModelScope.launch {
+            billingManager.purchaseSuccess.collect {
+                sendEffect(
+                    SettingsEffect.ShowToast(
+                        ToastDetails(
+                            title = R.string.success,
+                            message = R.string.thank_you_for_support,
+                            icon = R.drawable.ic_check_circle
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    fun launchDonationFlow(activity: Activity, productId: String) {
+        billingManager.launchBillingFlow(activity, productId)
     }
 
     private fun observeSettings() {
@@ -45,6 +88,27 @@ class SettingsViewModel(
 
     private fun rebuildSections() {
         val state = screenState.value
+        val supportItems = mutableListOf(
+            SettingsUiState.SettingsItemUiState(
+                icon = R.drawable.ic_bug,
+                title = R.string.help_feedback,
+                action = SettingsUiState.SettingsAction.HELP_FEEDBACK
+            ),
+            SettingsUiState.SettingsItemUiState(
+                icon = R.drawable.ic_star_rate,
+                title = R.string.rate_app,
+                action = SettingsUiState.SettingsAction.RATE_APP
+            )
+        )
+        if (state.isSupportAvailable) {
+            supportItems.add(
+                SettingsUiState.SettingsItemUiState(
+                    icon = R.drawable.ic_buy_coffee,
+                    title = R.string.support_developer,
+                    action = SettingsUiState.SettingsAction.ABOUT
+                )
+            )
+        }
         val sections = listOf(
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.general,
@@ -90,23 +154,7 @@ class SettingsViewModel(
             ),
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.support,
-                items = listOf(
-                    SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_bug,
-                        title = R.string.help_feedback,
-                        action = SettingsUiState.SettingsAction.HELP_FEEDBACK
-                    ),
-                    SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_star_rate,
-                        title = R.string.rate_app,
-                        action = SettingsUiState.SettingsAction.RATE_APP
-                    ),
-//                    SettingsUiState.SettingsItemUiState(
-//                        icon = R.drawable.ic_help,
-//                        title = R.string.about,
-//                        action = SettingsUiState.SettingsAction.ABOUT
-//                    )
-                )
+                items = supportItems
             )
         )
         updateState { it.copy(sections = sections) }
@@ -203,6 +251,15 @@ class SettingsViewModel(
             val selected = SettingsUiState.CalculationMethod.entries[index]
             saveCalculationMethod(selected.toDomain())
             updateState { it.copy(selectedCalculationMethod = selected) }
+        },
+        SettingsUiState.SelectionDialogType.SUPPORT to { index ->
+            val productId = when (index) {
+                0 -> BuildConfig.SUPPORT_5
+                1 -> BuildConfig.SUPPORT_10
+                2 -> BuildConfig.SUPPORT_25
+                else -> ""
+            }
+            sendEffect(SettingsEffect.LaunchDonation(productId))
         }
     )
 
@@ -235,8 +292,39 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.LOCATION -> sendEffect(SettingsEffect.NavigateToLocation)
             SettingsUiState.SettingsAction.HELP_FEEDBACK -> sendEffect(SettingsEffect.NavigateToHelpFeedback)
             SettingsUiState.SettingsAction.RATE_APP -> sendEffect(SettingsEffect.NavigateToRateApp)
-            SettingsUiState.SettingsAction.ABOUT -> sendEffect(SettingsEffect.NavigateToAbout)
+            SettingsUiState.SettingsAction.ABOUT -> {
+                showSupportBottomSheet()
+            }
             else -> {}
+        }
+    }
+
+    private fun showSupportBottomSheet() {
+        val products = billingManager.productDetails.value
+        val options = supportProductIds.map { id ->
+            val details = products.find { it.productId == id }
+            val price = details?.oneTimePurchaseOfferDetails?.formattedPrice ?: "N/A"
+            SelectionItem(
+                description = price,
+                text = getSupportName(id)
+            )
+        }
+        openDialog(
+            type = SettingsUiState.SelectionDialogType.SUPPORT,
+            titleRes = R.string.support_developer,
+            descriptionRes = R.string.support_description,
+            options = options,
+            selectedIndex = -1
+        )
+
+    }
+
+    private fun getSupportName(id: String): Int {
+        return when (id) {
+            BuildConfig.SUPPORT_5 -> R.string.support_coffee
+            BuildConfig.SUPPORT_10 -> R.string.support_meal
+            BuildConfig.SUPPORT_25 -> R.string.support_special
+            else -> 0
         }
     }
 
@@ -260,9 +348,12 @@ class SettingsViewModel(
     override fun onHelpFeedbackClick() {
         sendEffect(SettingsEffect.NavigateToHelpFeedback)
     }
+
     override fun onRateAppClick() {
         sendEffect(SettingsEffect.NavigateToRateApp)
     }
 
-    override fun onAboutClick() {}
+    override fun onAboutClick() {
+        showSupportBottomSheet()
+    }
 }
