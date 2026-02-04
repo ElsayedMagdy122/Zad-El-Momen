@@ -100,6 +100,7 @@
     <string name="help_feedback">الابلاغ عن مشكلة</string>
     <string name="rate_app">قيّم التطبيق</string>
     <string name="about">حول التطبيق</string>
+    <string name="suuport_developer">دعم المطور</string>
     <string name="confirm">تأكيد</string>
     <string name="choose_language">اختر اللغة</string>
     <string name="language_description">سيتم استخدام هذه اللغة في جميع أنحاء التطبيق.</string>
@@ -173,4 +174,9 @@
     <string name="you_have_reached_the_daily_report_limit">لقد وصلت إلى الحد اليومي من التقارير</string>
     <string name="error">خطأ</string>
     <string name="failed_to_send_report">فشل في إرسال التقرير</string>
+    <string name="support_developer">دعم المطور</string>
+    <string name="support_description">يساعد دعمك في الاستمرار بتطوير التطبيق وتحسينه</string>
+    <string name="support_coffee">دعم بسيط</string>
+    <string name="support_meal">دعم متوسط</string>
+    <string name="support_special">دعم مميز</string>
 </resources>
