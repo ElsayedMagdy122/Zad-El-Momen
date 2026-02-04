@@ -70,7 +70,7 @@ fun SingleSelectionDialog(
 
                 items.forEachIndexed { index, item ->
                     CheckboxItem(
-                        text = localizedString( item.text),
+                        text = item.text?.let { localizedString(it) } ?: "",
                         description = item.description,
                         icon = item.icon?.let { painterResource(it) },
                         isChecked = currentSelected == index,
@@ -118,7 +118,7 @@ fun SingleSelectionDialog(
 }
 
 data class SelectionItem(
-    val text: Int,
+    val text: Int? = null,
     val description: String? = null,
     val icon: Int? = null
 )

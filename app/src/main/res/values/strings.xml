@@ -85,6 +85,7 @@
     <string name="help_feedback">Report a bug</string>
     <string name="rate_app">Rate the App</string>
     <string name="about">About</string>
+    <string name="suuport_developer">Support Developer</string>
     <!-- عناوين الدايلوجات في الـ Settings -->
     <string name="select_language">Select Language</string>
     <string name="select_theme">Select Theme</string>
@@ -177,4 +178,10 @@
     <string name="you_have_reached_the_daily_report_limit">You have reached the daily report limit</string>
     <string name="error">Error</string>
     <string name="failed_to_send_report">Failed to send report</string>
+    <string name="support_developer">Support the Developer</string>
+    <string name="support_description">Your support helps continue developing and improving the app</string>
+    <string name="support_coffee">Small Support</string>
+    <string name="support_meal">Medium Support</string>
+    <string name="support_special">Premium Support</string>
+    <string name="thank_you_for_support">May Allah reward you for your support</string>
 </resources>
