@@ -4,13 +4,13 @@ import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 
 data class SettingsUiState(
     val sections: List<SettingsSectionUiState> = emptyList(),
-
     val selectedLanguage: Language = Language.ARABIC,
     val selectedTheme: ThemeState = ThemeState.SYSTEM,
     val selectedMadhab: MadhabState = MadhabState.SHAFI,
     val selectedCalculationMethod: CalculationMethod = CalculationMethod.EGYPTIAN,
     val location: LocationUiState = LocationUiState(),
-    val dialog: SelectionDialogUiState? = null
+    val dialog: SelectionDialogUiState? = null,
+    val isSupportAvailable: Boolean = false
 ) {
     data class LocationUiState(
         val country: String= "Unknown",
@@ -49,7 +49,8 @@ data class SettingsUiState(
         LANGUAGE,
         THEME,
         MADHAB,
-        CALCULATION_METHOD
+        CALCULATION_METHOD,
+        SUPPORT
     }
 
     data class SelectionDialogUiState(
