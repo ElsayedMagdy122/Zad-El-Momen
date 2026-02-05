@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.google.android.play.core.review.ReviewManagerFactory
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
@@ -98,8 +96,8 @@ fun SettingsScreen(
                 settingsViewModel.launchDonationFlow(activity, effect.productId)
             }
 
-            is SettingsEffect.ShowToast ->{
-                       toast = effect.toast
+            is SettingsEffect.ShowToast -> {
+                toast = effect.toast
             }
         }
     }
@@ -319,19 +317,6 @@ fun SettingsItem(
             )
         }
 
-    }
-}
-
-fun launchReview(context: Context) {
-    val activity = context as? Activity ?: return
-
-    val reviewManager = ReviewManagerFactory.create(context)
-    val request = reviewManager.requestReviewFlow()
-
-    request.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            reviewManager.launchReviewFlow(activity, task.result)
-        }
     }
 }
 
