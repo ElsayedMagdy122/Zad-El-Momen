@@ -27,7 +27,7 @@ fun DirectionCard(
     ) {
         Column {
             DirectionInfoSection(locationUiState = locationUiState, direction = direction)
-            DirectionInstruction()
+            DirectionInstruction(direction = direction)
         }
 
         LocationIndicator(
@@ -39,12 +39,14 @@ fun DirectionCard(
 }
 
 @Composable
-private fun ColumnScope.DirectionInstruction() {
+private fun ColumnScope.DirectionInstruction(direction: Float) {
+    val isAligned = kotlin.math.abs(direction) <= 5f
+    val text = if (isAligned) R.string.qiblah_aligned else R.string.rotate_your_phone_to_align_with_the_qibla_direction
     Text(
         modifier = Modifier
             .align(Alignment.CenterHorizontally)
             .padding(top = 16.dp),
-        text = localizedString(R.string.rotate_your_phone_to_align_with_the_qibla_direction),
+        text = localizedString(text),
         color = Theme.color.primary.primary,
         style = Theme.textStyle.label.medium,
         textAlign = TextAlign.Center

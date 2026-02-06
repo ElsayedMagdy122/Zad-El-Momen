@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
@@ -35,19 +36,22 @@ fun DirectionInfoSection(
         Text(
             text = localizedString(R.string.qibla_direction),
             color = Theme.color.secondary.secondaryText,
-            style = Theme.textStyle.label.medium
+            style = Theme.textStyle.label.medium,
+            textAlign = TextAlign.Center
         )
 
         Text(
             text = "${direction.roundToInt()}°",
             color = Theme.color.surfaces.surfaceLow,
-            style = Theme.textStyle.title.large
+            style = Theme.textStyle.title.large,
+            textAlign = TextAlign.Center
         )
 
         Text(
             text = "${locationUiState.city}, ${locationUiState.country}",
             color = Theme.color.surfaces.surfaceHigh,
-            style = Theme.textStyle.label.small
+            style = Theme.textStyle.label.small,
+            textAlign = TextAlign.Center
         )
     }
 }

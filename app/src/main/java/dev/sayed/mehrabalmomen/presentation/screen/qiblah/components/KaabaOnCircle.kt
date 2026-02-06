@@ -22,12 +22,13 @@ fun KaabaOnCircle(
     directionDegrees: Float,
     modifier: Modifier = Modifier
 ) {
+    val isAligned = kotlin.math.abs(directionDegrees) <= 5f
     Box(
         modifier = modifier
             .clip(CircleShape)
             .border(
                 width = 5.dp,
-                color = Theme.color.secondary.secondaryText,
+                color = if (isAligned) Theme.color.semantic.success else Theme.color.secondary.secondaryText,
                 shape = CircleShape
             )
             .background(Theme.color.surfaces.surface),
