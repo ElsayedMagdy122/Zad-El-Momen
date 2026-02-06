@@ -180,8 +180,11 @@
     <string name="failed_to_send_report">Failed to send report</string>
     <string name="support_developer">Support the Developer</string>
     <string name="support_description">Your support helps continue developing and improving the app</string>
-    <string name="support_coffee">Small Support</string>
-    <string name="support_meal">Medium Support</string>
-    <string name="support_special">Premium Support</string>
+    <string name="support_1">Symbolic Support</string>
+    <string name="support_2">Basic Support</string>
+    <string name="support_3">Medium Support</string>
+    <string name="support_4">Premium Support</string>
+    <string name="support_5">Major Support</string>
+    <string name="qiblah_aligned">You are now facing the correct Qibla direction</string>
     <string name="thank_you_for_support">May Allah reward you for your support</string>
 </resources>

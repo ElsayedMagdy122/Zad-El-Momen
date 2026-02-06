@@ -25,9 +25,11 @@ class SettingsViewModel(
     SettingsInteractionListener {
 
     private val supportProductIds = listOf(
+        BuildConfig.SUPPORT_1,
         BuildConfig.SUPPORT_5,
         BuildConfig.SUPPORT_10,
-        BuildConfig.SUPPORT_25
+        BuildConfig.SUPPORT_25,
+        BuildConfig.SUPPORT_100
     )
 
     init {
@@ -254,9 +256,11 @@ class SettingsViewModel(
         },
         SettingsUiState.SelectionDialogType.SUPPORT to { index ->
             val productId = when (index) {
-                0 -> BuildConfig.SUPPORT_5
-                1 -> BuildConfig.SUPPORT_10
-                2 -> BuildConfig.SUPPORT_25
+                0 -> BuildConfig.SUPPORT_1
+                1 -> BuildConfig.SUPPORT_5
+                2 -> BuildConfig.SUPPORT_10
+                3 -> BuildConfig.SUPPORT_25
+                4 -> BuildConfig.SUPPORT_100
                 else -> ""
             }
             sendEffect(SettingsEffect.LaunchDonation(productId))
@@ -321,9 +325,11 @@ class SettingsViewModel(
 
     private fun getSupportName(id: String): Int {
         return when (id) {
-            BuildConfig.SUPPORT_5 -> R.string.support_coffee
-            BuildConfig.SUPPORT_10 -> R.string.support_meal
-            BuildConfig.SUPPORT_25 -> R.string.support_special
+            BuildConfig.SUPPORT_1 -> R.string.support_1
+            BuildConfig.SUPPORT_5 -> R.string.support_2
+            BuildConfig.SUPPORT_10 -> R.string.support_3
+            BuildConfig.SUPPORT_25 -> R.string.support_4
+            BuildConfig.SUPPORT_100 -> R.string.support_5
             else -> 0
         }
     }
