@@ -17,7 +17,7 @@ android {
     }
     bundle {
         language {
-            enableSplit = true
+            enableSplit = false
         }
         density {
             enableSplit = true
@@ -30,7 +30,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 9
+        versionCode = 10
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -60,6 +60,11 @@ android {
         )
         buildConfigField(
             "String",
+            "SUPPORT_1",
+            "\"${getProp("SUPPORT_1")}\""
+        )
+        buildConfigField(
+            "String",
             "SUPPORT_5",
             "\"${getProp("SUPPORT_5")}\""
         )
@@ -72,6 +77,11 @@ android {
             "String",
             "SUPPORT_25",
             "\"${getProp("SUPPORT_25")}\""
+        )
+        buildConfigField(
+            "String",
+            "SUPPORT_100",
+            "\"${getProp("SUPPORT_100")}\""
         )
 
         ndk {
