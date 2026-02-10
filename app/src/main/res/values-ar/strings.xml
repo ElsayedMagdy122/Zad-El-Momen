@@ -183,4 +183,6 @@
     <string name="support_5">دعم كبير</string>
     <string name="thank_you_for_support">جزاك الله خيرًا على دعمك</string>
     <string name="qiblah_aligned">أنت الآن في اتجاه القبلة الصحيح</string>
+    <string name="tilawah">تلاوة</string>
+    <string name="continue_tilawah">استكمال التلاوة</string>
 </resources>

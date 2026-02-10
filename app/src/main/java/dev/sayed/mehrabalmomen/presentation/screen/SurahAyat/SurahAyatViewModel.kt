@@ -1,14 +1,19 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
+    private val continueTilawahRepository: ContinueTilawahRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
     SurahAyatUiState()
@@ -20,6 +25,15 @@ class SurahAyatViewModel(
 
     init {
         loadSurahAyat()
+    }
+
+    fun onAyahVisible(ayahId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            continueTilawahRepository.save(
+                surahId = surahId,
+                ayahId = ayahId
+            )
+        }
     }
 
     private fun loadSurahAyat() {
@@ -123,6 +137,7 @@ class SurahAyatViewModel(
             }
         )
     }
+
     fun onDismissTafseerSheet() {
         updateState {
             it.copy(
@@ -134,6 +149,7 @@ class SurahAyatViewModel(
             )
         }
     }
+
     override fun onClickBack() {
         sendEffect(SurahAyatEffect.NavigateToBack)
     }

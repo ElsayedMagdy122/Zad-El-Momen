@@ -179,6 +179,10 @@ private fun SurahAyatContent(
                     state = state,
                     onAyaLongPressed = listener::onAyaLongPressed,
                     onClearSelection = listener::onClearSelection,
+                    onAyaVisible = { ayahId ->
+                        viewModel.onAyahVisible(ayahId)
+                    },
+                    scrollState = listState,
                     onCalculatedPosition = { yOffset ->
                         if (state.targetAyahId != null) {
                             scope.launch {

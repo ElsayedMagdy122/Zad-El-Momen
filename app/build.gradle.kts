@@ -8,6 +8,9 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.firebase.perf)
+    id("androidx.room")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -88,7 +91,6 @@ android {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -109,6 +111,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
@@ -131,6 +136,11 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+
+    val room_version = "2.8.4"
+    implementation("androidx.room:room-runtime:$room_version")
+    implementation("androidx.room:room-ktx:${room_version}")
+    ksp("androidx.room:room-compiler:$room_version")
 
     // AndroidX
     implementation(libs.bundles.androidx.core)

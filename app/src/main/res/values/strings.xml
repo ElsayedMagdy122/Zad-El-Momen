@@ -187,4 +187,6 @@
     <string name="support_5">Major Support</string>
     <string name="qiblah_aligned">You are now facing the correct Qibla direction</string>
     <string name="thank_you_for_support">May Allah reward you for your support</string>
+    <string name="tilawah">Tilawah</string>
+    <string name="continue_tilawah">Continue Tilawah</string>
 </resources>

@@ -66,6 +66,12 @@ private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener):
             onClick = homeInteractionListener::onClickQiblaDirection
         ),
         FeatureItem(
+            title = localizedString(R.string.tilawah),
+            icon = painterResource(R.drawable.ic_tilawah),
+            onClick = {}
+        ),
+
+        FeatureItem(
             title = localizedString(R.string.azkar),
             icon = painterResource(R.drawable.ic_azkar),
             onClick = homeInteractionListener::onClickAzkar

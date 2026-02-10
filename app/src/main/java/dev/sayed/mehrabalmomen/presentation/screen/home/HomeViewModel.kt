@@ -4,8 +4,9 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
@@ -25,8 +26,9 @@ import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
     private val prayerRepository: PrayerRepository,
-    private val locationRepository: LocationRepository,
+    private val continueTilawahRepository: ContinueTilawahRepository,
     private val settingsRepository: SettingsRepository,
+    private val quranRepository: QuranRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -35,6 +37,7 @@ class HomeViewModel(
 
     init {
         observeLocationChanges()
+        observeContinueTilawah()
     }
 
     private fun observeLocationChanges() {
@@ -42,6 +45,30 @@ class HomeViewModel(
             settingsRepository.observePrayerSettings().collect { prayerSettings ->
                 updateLocationUi(prayerSettings.location)
                 refreshPrayersForLocation(prayerSettings.location)
+            }
+        }
+    }
+
+    private fun observeContinueTilawah() {
+        viewModelScope.launch(Dispatchers.IO) {
+            continueTilawahRepository.observe().collect { data ->
+                if (data == null) return@collect
+
+                val surah = quranRepository
+                    .getSurahs()
+                    .firstOrNull { it.surahNumber == data.surahId }
+                    ?: return@collect
+
+                updateState {
+                    it.copy(
+                        lastTilawahUi = HomeUiState.ContinueTilawahUi(
+                            surahId = data.surahId,
+                            nameArabic = surah.nameArabic,
+                            nameEnglish = surah.nameEnglish,
+                            ayahId = data.ayahId
+                        )
+                    )
+                }
             }
         }
     }
@@ -241,6 +268,10 @@ class HomeViewModel(
 
     override fun onClickQuran() {
         sendEffect(HomeEffect.NavigateToQuran)
+    }
+
+    override fun onClickTilawah() {
+        sendEffect(HomeEffect.NavigateToTilawah)
     }
 
     override fun onClickAzkar() {

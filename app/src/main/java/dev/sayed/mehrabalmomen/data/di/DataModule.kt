@@ -7,6 +7,7 @@ import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.data.local.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
+import dev.sayed.mehrabalmomen.data.local.repository.ContinueTilawahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
@@ -22,6 +23,7 @@ import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
+import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
@@ -60,7 +62,8 @@ val dataModule = module {
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
-    single<QuranRepository> { QuranRepositoryImpl(get(),get()) }
+    single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
+    single<ContinueTilawahRepository> { ContinueTilawahRepositoryImpl(get()) }
 
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }
