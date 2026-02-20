@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -52,7 +53,6 @@ import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActio
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTextSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.SurahAppBarSection
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.TilawahBox
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.cleanAyahTextForCopy
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
@@ -161,11 +161,13 @@ private fun SurahAyatContent(
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val textSectionIndex = if (surahId != 1 && surahId != 9) 2 else 1
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val surahName = if (isRtl) state.arabicName else state.englishName
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             stickyHeader {
                 SurahAppBarSection(
-                    surahName = state.arabicName,
+                    surahName = surahName,
                     onBack = listener::onClickBack,
                     onSearch = listener::onClickSearch
                 )
