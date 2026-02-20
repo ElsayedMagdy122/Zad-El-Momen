@@ -29,10 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -45,7 +47,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
-import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
@@ -60,7 +62,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SurahAyatScreen(
     surahId: Int,
-    surahName: String,
+    arabicName: String,
+    englishName: String,
     navController: NavController,
     viewModel: SurahAyatViewModel = koinViewModel()
 ) {
@@ -83,10 +86,10 @@ fun SurahAyatScreen(
 
             is SurahAyatEffect.NavigateToSearch -> {
                 navController.navigate(
-                    Route.SearchAyahScreen(
+                    SearchAyahScreen(
                         type = SearchType.SURAH,
                         surahId = effect.surahId,
-                        surahName = effect.surahName
+                        surahName = effect.arabicName
                     )
                 )
             }
@@ -141,7 +144,7 @@ fun SurahAyatScreen(
         state.showTafseerSheet.takeIf { it }?.let {
             TafseerBottomSheet(
                 tafseerUi = state.tafseerUi,
-                surahName = state.surahName,
+                surahName = state.arabicName,
                 onDismiss = viewModel::onDismissTafseerSheet
             )
         }
@@ -158,11 +161,13 @@ private fun SurahAyatContent(
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val textSectionIndex = if (surahId != 1 && surahId != 9) 2 else 1
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val surahName = if (isRtl) state.arabicName else state.englishName
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             stickyHeader {
                 SurahAppBarSection(
-                    surahName = state.surahName,
+                    surahName = surahName,
                     onBack = listener::onClickBack,
                     onSearch = listener::onClickSearch
                 )
@@ -175,14 +180,19 @@ private fun SurahAyatContent(
             }
 
             item {
+
                 QuranTextSection(
                     state = state,
                     onAyaLongPressed = listener::onAyaLongPressed,
                     onClearSelection = listener::onClearSelection,
+                    onAyaVisible = { ayahId ->
+                        viewModel.onAyahVisible(ayahId)
+                    },
+                    scrollState = listState,
                     onCalculatedPosition = { yOffset ->
                         if (state.targetAyahId != null) {
                             scope.launch {
-                                val finalOffset = yOffset.toInt() - 80
+                                val finalOffset = yOffset.toInt() - 140
 
                                 listState.animateScrollToItem(
                                     index = textSectionIndex,
@@ -200,7 +210,7 @@ private fun SurahAyatContent(
             showActions = state.showActions,
             selectedAyaText = state.selectedAyaText,
             onCopy = listener::onCopyAya,
-            onBookmark = {/* TODO */ },
+            onBookmark = listener::onBookmarkAya,
             onTafseer = listener::onTafseer
         )
     }

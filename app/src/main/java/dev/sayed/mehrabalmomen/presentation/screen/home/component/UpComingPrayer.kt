@@ -14,15 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
-import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
-import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 import kotlin.time.ExperimentalTime
 
@@ -48,7 +44,7 @@ fun UpComingPrayer(
 private fun PrayerInfoSection(state: HomeUiState) {
     key(state.nextPrayer) {
         Image(
-            painter = painterResource(id = R.drawable.night_mosque),
+            painter = painterResource(id = R.drawable.image_mosque_dark),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
@@ -58,40 +54,13 @@ private fun PrayerInfoSection(state: HomeUiState) {
         Text(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = 16.dp),
-            text = localizedString(R.string.upcoming_prayer),
-            color = Theme.color.secondary.secondaryText,
-            style = Theme.textStyle.label.medium,
-            textAlign = TextAlign.Center
-        )
-        val language = LocalAppLocale.current
-        val prayerTime = state.nextPrayer.time
-            .toLocalizedDigits(language)
-            .localizeAmPm(language)
-        val prayerName = if (state.nextPrayer.name != 0)
-            localizedString(state.nextPrayer.name)
-        else
-            localizedString(R.string.no_upcoming_prayer)
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            text = if (state.nextPrayer.name != 0)
-                stringResource(R.string.next_prayer_format, prayerName, prayerTime)
-            else
-                localizedString(R.string.no_upcoming_prayer),
-            color = Theme.color.primary.primary,
-            style = Theme.textStyle.title.large,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp),
+                .padding(top = 8.dp),
             text = if (state.nextPrayer.name != 0)
                 localizedString(R.string.time_until, localizedString(state.nextPrayer.name))
             else
                 localizedString(R.string.no_remaining_time),
-            color = Theme.color.secondary.secondaryText,
-            style = Theme.textStyle.label.medium,
+            color = Theme.color.primary.primary,
+            style = Theme.textStyle.title.medium,
             textAlign = TextAlign.Center
         )
     }

@@ -14,7 +14,6 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(

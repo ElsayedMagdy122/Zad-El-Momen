@@ -20,22 +20,4 @@ data class AppSettings(
         ENGLISH("en"),
         ARABIC("ar")
     }
-
-    companion object {
-        val default = AppSettings(
-            prayerSettings = PrayerSettings(
-                madhab = Madhab.SHAFI,
-                calculationMethod = CalculationMethod.EGYPTIAN,
-                location = Location(
-                    latitude = 0.0,
-                    longitude = 0.0,
-                    country = "Unknown",
-                    state = "Unknown"
-                )
-            ),
-            alarmsScheduled = false,
-            theme = Theme.SYSTEM,
-            language = Language.ARABIC
-        )
-    }
 }

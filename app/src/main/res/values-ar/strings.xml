@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 <!--    <string name="app_name">Mehrab Al Momen</string>-->
     <string name="app_name">زاد المؤمن</string>
     <string name="fajr">الفجر</string>
@@ -133,6 +133,7 @@
     <string name="re_try">إعادة المحاولة</string>
     <string name="success">تم بنجاح</string>
     <string name="copied_message_successfully">تم نسخ الرسالة بنجاح</string>
+    <string name="ayah_bookmarked_message_successfully">تم حفظ الآية بنجاح</string>
     <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
     <string name="please_connect_to_the_internet_to_continue">يرجى الاتصال بالإنترنت للمتابعة</string>
     <string name="location_saved">تم حفظ الموقع</string>
@@ -183,4 +184,64 @@
     <string name="support_5">دعم كبير</string>
     <string name="thank_you_for_support">جزاك الله خيرًا على دعمك</string>
     <string name="qiblah_aligned">أنت الآن في اتجاه القبلة الصحيح</string>
+    <string name="tilawah">تلاوة</string>
+    <string name="continue_tilawah">استكمال التلاوة</string>
+    <string name="bookmarks">العلامات المرجعية</string>
+
+    <string name="just_now">الآن</string>
+    <string name="listen">استماع</string>
+    <string name="remove_aya">إزالة الآية</string>
+    <string name="are_you_sure_you_want_to_remove_this_aya_from_bookmarks">
+هل أنت متأكد أنك تريد إزالة هذه الآية من العلامات المرجعية؟
+</string>
+    <string name="remove">إزالة</string>
+    <string name="no_ayah_saved_yet">لا توجد آيات محفوظة بعد!</string>
+    <string name="start_your_tilawah_and_bookmark_the_ayah_you_want_to_return_to_later">
+ابدأ تلاوتك وأضف إشارة مرجعية للآية التي تريد العودة إليها لاحقًا.
+</string>
+    <string name="start_tilawah">ابدأ التلاوة</string>
+    <plurals name="minutes_ago">
+        <item quantity="zero">الآن</item>
+        <item quantity="one">منذ دقيقة</item>
+        <item quantity="two">منذ دقيقتين</item>
+        <item quantity="few">منذ %d دقائق</item>
+        <item quantity="many">منذ %d دقيقة</item>
+        <item quantity="other">منذ %d دقيقة</item>
+    </plurals>
+
+    <plurals name="hours_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">منذ ساعة</item>
+        <item quantity="two">منذ ساعتين</item>
+        <item quantity="few">منذ %d ساعات</item>
+        <item quantity="many">منذ %d ساعة</item>
+        <item quantity="other">منذ %d ساعة</item>
+    </plurals>
+
+    <plurals name="days_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">منذ يوم</item>
+        <item quantity="two">منذ يومين</item>
+        <item quantity="few">منذ %d أيام</item>
+        <item quantity="many">منذ %d يومًا</item>
+        <item quantity="other">منذ %d يوم</item>
+    </plurals>
+
+    <plurals name="months_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">منذ شهر</item>
+        <item quantity="two">منذ شهرين</item>
+        <item quantity="few">منذ %d أشهر</item>
+        <item quantity="many">منذ %d شهرًا</item>
+        <item quantity="other">منذ %d شهر</item>
+    </plurals>
+
+    <plurals name="years_ago" tools:ignore="MissingQuantity">
+        <item quantity="one">منذ سنة</item>
+        <item quantity="two">منذ سنتين</item>
+        <item quantity="few">منذ %d سنوات</item>
+        <item quantity="many">منذ %d سنة</item>
+        <item quantity="other">منذ %d سنة</item>
+    </plurals>
+    <plurals name="seconds_ago">
+        <item quantity="one">ثانية واحدة</item>
+        <item quantity="other">%s ثواني</item>
+    </plurals>
 </resources>

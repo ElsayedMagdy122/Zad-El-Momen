@@ -7,7 +7,8 @@ sealed interface SurahAyatEffect {
     data object NavigateToBack : SurahAyatEffect
     data class NavigateToSearch(
         val surahId: Int,
-        val surahName: String
+        val arabicName: String,
+        val englishName: String,
     ) : SurahAyatEffect
 
     data class ShowToast(val toast: ToastDetails) : SurahAyatEffect
