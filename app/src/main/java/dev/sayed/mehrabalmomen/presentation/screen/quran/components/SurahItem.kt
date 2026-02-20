@@ -32,7 +32,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
 @Composable
 fun SurahItem(
     surahUiState: SurahUiState,
-    onClick: (Int, String) -> Unit,
+    onClick: (Int, String,String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
@@ -42,7 +42,7 @@ fun SurahItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable { onClick(surahUiState.id, surahName) }
+            .clickable { onClick(surahUiState.id, surahUiState.nameArabic,surahUiState.nameEnglish) }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
