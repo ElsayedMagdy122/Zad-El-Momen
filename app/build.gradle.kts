@@ -160,5 +160,4 @@ dependencies {
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)
-//  lintChecks(project(":lint-rules"))
 }
