@@ -35,7 +35,9 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPPORT_1: ${{ secrets.SUPPORT_1 }}
           SUPPORT_5: ${{ secrets.SUPPORT_5 }}
           SUPPORT_10: ${{ secrets.SUPPORT_10 }}
           SUPPORT_25: ${{ secrets.SUPPORT_25 }}
+          SUPPORT_100: ${{ secrets.SUPPORT_100 }}
         run: ./gradlew assembleDebug --build-cache
