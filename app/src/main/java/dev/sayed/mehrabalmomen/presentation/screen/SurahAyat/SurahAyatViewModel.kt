@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.entity.Bookmark
+import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -14,13 +16,15 @@ import kotlinx.coroutines.launch
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
     private val continueTilawahRepository: ContinueTilawahRepository,
+    private val bookmarkRepository: BookmarkRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
     SurahAyatUiState()
 ), SurahAyatInteractionListener {
 
     private val surahId: Int = checkNotNull(savedStateHandle["surahId"])
-    private val surahName: String = checkNotNull(savedStateHandle["surahName"])
+    private val arabicName: String = checkNotNull(savedStateHandle["arabicName"])
+    private val englishName: String = checkNotNull(savedStateHandle["englishName"])
     private val targetAyahId: Int? = savedStateHandle["targetAyahId"]
 
     init {
@@ -48,7 +52,8 @@ class SurahAyatViewModel(
                     it.copy(
                         ayat = ayat.map { AyaUi(it.ayahNumber, it.text) },
                         isLoading = false,
-                        surahName = surahName,
+                       arabicName = arabicName,
+                        englishName = englishName,
                         selectedAyaId = targetAyahId,
                         scrollToAyaId = targetAyahId,
                         targetAyahId = targetAyahId,
@@ -105,6 +110,42 @@ class SurahAyatViewModel(
         )
     }
 
+        override fun onBookmarkAya() {
+            val ayahId = screenState.value.selectedAyaId ?: return
+            val ayahText = screenState.value.selectedAyaText
+            if (ayahText.isBlank()) return
+
+            tryToCall(
+                onStart = {
+                    updateState { it.copy(  showActions = false) }
+                },
+                block = {
+                    bookmarkRepository.addBookmark(
+                        Bookmark(
+                            surahId = surahId,
+                            ayahId = ayahId,
+                            arabicName = arabicName,
+                            englishName = englishName,
+                            text = ayahText
+                        )
+                    )
+                },
+                onSuccess = {
+                    onClearSelection()
+                    sendEffect(
+                        SurahAyatEffect.ShowToast(
+                            ToastDetails(
+                                title = R.string.success,
+                                message = R.string.ayah_bookmarked_message_successfully,
+                                icon = R.drawable.ic_check_circle
+                            )
+                        )
+                    )
+                },
+                onError = {}
+            )
+        }
+
     override fun onTafseer() {
         val ayahId = screenState.value.selectedAyaId ?: return
         val ayaText = screenState.value.selectedAyaText
@@ -158,7 +199,8 @@ class SurahAyatViewModel(
         sendEffect(
             SurahAyatEffect.NavigateToSearch(
                 surahId = surahId,
-                surahName = screenState.value.surahName
+                arabicName = screenState.value.arabicName,
+                englishName = screenState.value.englishName
             )
         )
     }

@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -45,12 +46,13 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
-import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTextSection
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.SurahAppBarSection
+import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.TilawahBox
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.cleanAyahTextForCopy
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
@@ -60,7 +62,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SurahAyatScreen(
     surahId: Int,
-    surahName: String,
+    arabicName: String,
+    englishName: String,
     navController: NavController,
     viewModel: SurahAyatViewModel = koinViewModel()
 ) {
@@ -83,10 +86,10 @@ fun SurahAyatScreen(
 
             is SurahAyatEffect.NavigateToSearch -> {
                 navController.navigate(
-                    Route.SearchAyahScreen(
+                    SearchAyahScreen(
                         type = SearchType.SURAH,
                         surahId = effect.surahId,
-                        surahName = effect.surahName
+                        surahName = effect.arabicName
                     )
                 )
             }
@@ -141,7 +144,7 @@ fun SurahAyatScreen(
         state.showTafseerSheet.takeIf { it }?.let {
             TafseerBottomSheet(
                 tafseerUi = state.tafseerUi,
-                surahName = state.surahName,
+                surahName = state.arabicName,
                 onDismiss = viewModel::onDismissTafseerSheet
             )
         }
@@ -162,7 +165,7 @@ private fun SurahAyatContent(
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             stickyHeader {
                 SurahAppBarSection(
-                    surahName = state.surahName,
+                    surahName = state.arabicName,
                     onBack = listener::onClickBack,
                     onSearch = listener::onClickSearch
                 )
@@ -175,6 +178,7 @@ private fun SurahAyatContent(
             }
 
             item {
+
                 QuranTextSection(
                     state = state,
                     onAyaLongPressed = listener::onAyaLongPressed,
@@ -186,7 +190,7 @@ private fun SurahAyatContent(
                     onCalculatedPosition = { yOffset ->
                         if (state.targetAyahId != null) {
                             scope.launch {
-                                val finalOffset = yOffset.toInt() - 80
+                                val finalOffset = yOffset.toInt() - 140
 
                                 listState.animateScrollToItem(
                                     index = textSectionIndex,
@@ -204,7 +208,7 @@ private fun SurahAyatContent(
             showActions = state.showActions,
             selectedAyaText = state.selectedAyaText,
             onCopy = listener::onCopyAya,
-            onBookmark = {/* TODO */ },
+            onBookmark = listener::onBookmarkAya,
             onTafseer = listener::onTafseer
         )
     }

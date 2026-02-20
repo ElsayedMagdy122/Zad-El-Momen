@@ -69,7 +69,8 @@ fun SearchAyahScreen(
                 navController.navigate(
                     Route.SurahAyatScreen(
                         surahId = it.surahId,
-                        surahName = it.surahName,
+                        arabicName = it.surahName,
+                        englishName = it.surahName,
                         targetAyahId = it.ayahId
                     )
                 )

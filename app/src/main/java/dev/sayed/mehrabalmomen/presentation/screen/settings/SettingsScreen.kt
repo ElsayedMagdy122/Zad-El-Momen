@@ -58,7 +58,6 @@ import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
-import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
@@ -242,7 +241,11 @@ fun SingleSelectionContent(
         )
     }
 }
-
+data class SelectionItem(
+    val text: Int? = null,
+    val description: String? = null,
+    val icon: Int? = null
+)
 @Composable
 fun SettingsItem(
     item: SettingsUiState.SettingsItemUiState,

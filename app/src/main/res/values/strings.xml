@@ -133,6 +133,7 @@
     <string name="re_try">Re-try</string>
     <string name="success">Success</string>
     <string name="copied_message_successfully">Copied message successfully</string>
+    <string name="ayah_bookmarked_message_successfully">Ayah saved successfully</string>
     <string name="no_internet_connection">No Internet Connection</string>
     <string name="please_connect_to_the_internet_to_continue">Please connect to the internet to continue</string>
     <string name="location_saved">Location Saved</string>
@@ -189,4 +190,43 @@
     <string name="thank_you_for_support">May Allah reward you for your support</string>
     <string name="tilawah">Tilawah</string>
     <string name="continue_tilawah">Continue Tilawah</string>
+    <string name="bookmarks">Bookmarks</string>
+
+    <string name="just_now">Just now</string>
+    <string name="listen">Listen</string>
+    <string name="remove_aya">Remove Aya</string>
+    <string name="are_you_sure_you_want_to_remove_this_aya_from_bookmarks">Are you sure you want to remove this aya from bookmarks?</string>
+    <string name="remove">Remove</string>
+    <string name="no_ayah_saved_yet">No ayah saved yet!</string>
+    <string name="start_your_tilawah_and_bookmark_the_ayah_you_want_to_return_to_later">Start your tilawah and bookmark the ayah you want to return to later.</string>
+    <string name="start_tilawah">Start Tilawah</string>
+
+    <plurals name="minutes_ago">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+
+    <plurals name="hours_ago">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+
+    <plurals name="days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+
+    <plurals name="months_ago">
+        <item quantity="one">%d month ago</item>
+        <item quantity="other">%d months ago</item>
+    </plurals>
+
+    <plurals name="years_ago">
+        <item quantity="one">%d year ago</item>
+        <item quantity="other">%d years ago</item>
+    </plurals>
+    <plurals name="seconds_ago">
+        <item quantity="one">%s second ago</item>
+        <item quantity="other">%s seconds ago</item>
+    </plurals>
 </resources>

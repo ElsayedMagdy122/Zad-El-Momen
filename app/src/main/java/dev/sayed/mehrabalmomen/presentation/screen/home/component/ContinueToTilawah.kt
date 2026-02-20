@@ -22,7 +22,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 
 @Composable
@@ -33,12 +36,13 @@ fun ContinueToTilawah(
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val surahName = if (isRtl) surahUiState.nameArabic else surahUiState.nameEnglish
-
+    val language = LocalAppLocale.current
     Column(modifier = modifier) {
         TilawahTitle()
         TilawahRow(
             surahName = surahName,
             ayahId = surahUiState.ayahId,
+            language = language,
             onClick = onClick,
             isRtl = isRtl
         )
@@ -58,6 +62,7 @@ private fun TilawahTitle() {
 private fun TilawahRow(
     surahName: String,
     ayahId: Int,
+    language: AppSettings.Language,
     onClick: () -> Unit,
     isRtl: Boolean
 ) {
@@ -83,7 +88,7 @@ private fun TilawahRow(
                 style = Theme.textStyle.label.medium
             )
             Text(
-                text = ayahId.toString(),
+                text = ayahId.toString().toLocalizedDigits(language = language),
                 color = Theme.color.secondary.shadeSecondary,
                 style = Theme.textStyle.label.small
             )

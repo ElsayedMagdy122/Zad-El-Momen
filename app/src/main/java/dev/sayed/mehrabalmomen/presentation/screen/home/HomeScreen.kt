@@ -89,7 +89,8 @@ fun HomeScreen(
                     navController.navigate(
                         Route.SurahAyatScreen(
                             surahId = state.lastTilawahUi.surahId,
-                            surahName = surahName,
+                            arabicName = state.lastTilawahUi.nameArabic,
+                            englishName = state.lastTilawahUi.nameEnglish,
                             targetAyahId = state.lastTilawahUi.ayahId
                         )
                     )

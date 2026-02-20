@@ -1,10 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +33,8 @@ fun QuranTextSection(
     state: SurahAyatUiState,
     onAyaLongPressed: (Int, String) -> Unit,
     onClearSelection: () -> Unit,
+    onAyaVisible: (Int) -> Unit,
+    scrollState: LazyListState,
     onCalculatedPosition: (Float) -> Unit
 ) {
     val color = Theme.color.primary.primary
@@ -44,7 +45,6 @@ fun QuranTextSection(
             state.ayat.forEach { aya ->
                 val start = length
                 val isSelected = state.selectedAyaId == aya.id
-
                 val alpha = if (state.selectedAyaId == null || isSelected) 1f else 0.3f
 
                 withStyle(SpanStyle(color = color.copy(alpha = alpha))) {
@@ -58,19 +58,36 @@ fun QuranTextSection(
         }
     }
 
+    LaunchedEffect(scrollState, textLayoutResult) {
+        androidx.compose.runtime.snapshotFlow {
+            scrollState.firstVisibleItemScrollOffset
+        }.collect { offset ->
+            textLayoutResult?.let { layout ->
+                val line = layout.getLineForVerticalPosition(offset.toFloat())
+                val charOffset = layout.getLineStart(line)
+
+                val visibleAyahId = surahText
+                    .getStringAnnotations(AYA_ID, charOffset, charOffset)
+                    .firstOrNull()
+                    ?.item
+                    ?.toInt()
+
+                visibleAyahId?.let {
+                    onAyaVisible(it)
+                }
+            }
+        }
+    }
+
     Text(
         text = surahText,
         onTextLayout = { layout ->
             textLayoutResult = layout
-
             state.targetAyahId?.let { targetId ->
-
                 val index = state.ayat.indexOfFirst { it.id == targetId }
                 if (index != -1) {
-
                     val annotations = surahText.getStringAnnotations(AYA_ID, 0, surahText.length)
                     val target = annotations.getOrNull(index)
-
                     target?.let {
                         val line = layout.getLineForOffset(it.start)
                         val yPosition = layout.getLineTop(line)
@@ -108,5 +125,5 @@ fun QuranTextSection(
     )
 }
 
-const val AYA_ID="AYA_ID"
-const val AYA_TEXT="AYA_TEXT"
+const val AYA_ID = "AYA_ID"
+const val AYA_TEXT = "AYA_TEXT"
