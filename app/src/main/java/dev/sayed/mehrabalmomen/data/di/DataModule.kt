@@ -2,9 +2,12 @@ package dev.sayed.mehrabalmomen.data.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
 import com.google.gson.Gson
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.data.local.quran.AppDatabase
+import dev.sayed.mehrabalmomen.data.local.quran.repository.BookmarkRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.ContinueTilawahRepositoryImpl
@@ -22,6 +25,7 @@ import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
+import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
@@ -39,7 +43,11 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -64,7 +72,11 @@ val dataModule = module {
     single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
     single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
     single<ContinueTilawahRepository> { ContinueTilawahRepositoryImpl(get()) }
-
+    single<BookmarkRepository> {
+        BookmarkRepositoryImpl(
+            dao = get()
+        )
+    }
     // Scheduler dependencies
     single { AlarmScheduler(androidContext()) }
 
@@ -132,6 +144,18 @@ val dataModule = module {
             prettyPrint = false
         }
     }
+// Room Database
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "mehrab_database"
+        ).build()
+    }
+
+// DAO
+    single { get<AppDatabase>().bookmarkDao() }
+
 
     // Manager
     single { PrayerSchedulingUseCase(get(), get(), get(), get()) }
