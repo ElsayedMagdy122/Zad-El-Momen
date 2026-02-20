@@ -8,4 +8,6 @@ plugins {
     alias(libs.plugins.google.firebase.firebase.perf) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    id("androidx.room") version "2.8.4" apply false
+    id("com.google.devtools.ksp") version "2.3.4" apply false
 }

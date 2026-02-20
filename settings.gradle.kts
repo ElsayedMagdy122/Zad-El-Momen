@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mehrab Al Momen"
+rootProject.name = "Zad El Momen"
 include(":app")
-include(":lint-rules")

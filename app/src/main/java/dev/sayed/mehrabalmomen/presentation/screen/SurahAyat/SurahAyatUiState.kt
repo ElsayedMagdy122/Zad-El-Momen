@@ -1,11 +1,11 @@
 package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
 
-import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.AyahUi
 
 data class SurahAyatUiState(
     val ayat: List<AyaUi> = emptyList(),
     val tafseerUi: TafseerUi? = TafseerUi(),
-    val surahName: String = "",
+   val arabicName:String = "",
+   val englishName:String = "",
     val selectedAyaId: Int? = null,
     val selectedAyaText: String = "",
     val showActions: Boolean = false,

@@ -29,6 +29,7 @@ import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.quran.components.SurahGrid
@@ -47,16 +48,21 @@ fun SurahListScreen(
                 navController.navigate(
                     SurahAyatScreen(
                         effect.surahId,
-                        effect.surahName
+                        effect.arabicName,
+                        effect.englishName
                     )
                 )
 
             SurahListEffect.NavigateToQuranSearch -> {
                 navController.navigate(
-                    Route.SearchAyahScreen(
+                    SearchAyahScreen(
                         type = SearchType.QURAN
                     )
                 )
+            }
+
+            SurahListEffect.NavigateToBookmarksList -> {
+                navController.navigate(Route.BookmarksListScreen)
             }
         }
     }
@@ -92,11 +98,10 @@ private fun SurahListContent(
                         listener.onSearchClick()
                     },
                 ),
-                // TODO enable bookmark in new version
-//                AppBarAction(
-//                    icon = painterResource(R.drawable.ic_all_bookmark),
-//                    onClick = {},
-//                )
+                AppBarAction(
+                    icon = painterResource(R.drawable.ic_all_bookmark),
+                    onClick = { listener.onBookmarksClick() },
+                )
             )
         )
         AnimatedContent(

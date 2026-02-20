@@ -55,21 +55,21 @@ fun CounterCard(
             Text(
                 textAlign = TextAlign.Center,
                 text = localizedString(R.string.hours),
-                color = Theme.color.secondary.secondaryText,
+                color = Theme.color.primary.primary,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)
             )
             Text(
                 textAlign = TextAlign.Center,
                 text = localizedString(R.string.minutes),
-                color = Theme.color.secondary.secondaryText,
+                color = Theme.color.primary.primary,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)
             )
             Text(
                 textAlign = TextAlign.Center,
                 text = localizedString(R.string.seconds),
-                color = Theme.color.secondary.secondaryText,
+                color = Theme.color.primary.primary,
                 style = Theme.textStyle.label.medium,
                 modifier = Modifier.weight(1f)
             )
@@ -87,14 +87,14 @@ private fun CounterCard(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceHigh)
-            .padding(vertical = 16.dp, horizontal = 24.dp),
+            .padding(12.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = text,
             color = Theme.color.primary.primary,
-            style = Theme.textStyle.title.large
+            style = Theme.textStyle.title.medium
         )
     }
 }

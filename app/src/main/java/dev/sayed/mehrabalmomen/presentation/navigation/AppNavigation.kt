@@ -13,6 +13,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
+import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
@@ -66,7 +67,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
             SurahAyatScreen(
                 navController = navController,
                 surahId = surah.surahId,
-                surahName = surah.surahName
+                arabicName = surah.arabicName,
+                englishName = surah.englishName
             )
         }
         composable<Route.SearchAyahScreen> { entry ->
@@ -80,6 +82,9 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         }
         composable<Route.ReportBugScreen> {
             ReportBugScreen(navController = navController)
+        }
+        composable<Route.BookmarksListScreen> {
+            BookmarksListScreen(navController = navController)
         }
     }
 }

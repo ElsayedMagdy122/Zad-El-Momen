@@ -45,7 +45,8 @@ sealed interface Route {
     @Serializable
     data class SurahAyatScreen(
         val surahId: Int,
-        val surahName: String,
+        val arabicName: String,
+        val englishName: String,
         val targetAyahId: Int? = null
     ) : Route
 
@@ -58,4 +59,7 @@ sealed interface Route {
 
     @Serializable
     data object ReportBugScreen
+
+    @Serializable
+    data object BookmarksListScreen
 }

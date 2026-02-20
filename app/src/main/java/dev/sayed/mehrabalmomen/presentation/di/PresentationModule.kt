@@ -5,6 +5,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookMarkListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationViewModel
@@ -32,4 +33,5 @@ val presentationModule = module {
     viewModelOf(::SurahAyatViewModel)
     viewModelOf(::SearchAyahViewModel)
     viewModelOf(::ReportBugViewModel)
+    viewModelOf(::BookMarkListViewModel)
 }

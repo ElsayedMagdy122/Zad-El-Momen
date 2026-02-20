@@ -1,5 +1,5 @@
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.presentation.components.SelectionItem
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
 
 
 data class SettingsUiState(

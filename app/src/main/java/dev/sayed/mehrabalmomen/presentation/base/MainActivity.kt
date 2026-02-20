@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,6 +73,11 @@ fun rememberLocalizedContext(): Context {
 fun localizedString(@StringRes id: Int, vararg args: Any): String {
     val context = rememberLocalizedContext()
     return context.getString(id, *args)
+}
+@Composable
+fun localizedPlural(@PluralsRes id: Int, quantity: Int, vararg args: Any): String {
+    val context = rememberLocalizedContext()
+    return context.resources.getQuantityString(id, quantity, *args)
 }
 
 @Composable

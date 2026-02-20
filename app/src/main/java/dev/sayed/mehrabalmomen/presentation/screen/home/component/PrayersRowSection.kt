@@ -78,13 +78,14 @@ fun ViewAllTodayPrayers(
             modifier = Modifier.weight(1f),
             text = localizedString(R.string.today_s_prayers),
             color = Theme.color.primary.primary,
-            style = Theme.textStyle.title.medium
+            style = Theme.textStyle.title.small
         )
         Row(
             modifier = Modifier
                 .clickable {
                     onClickViewAll()
-                }
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = localizedString(R.string.view_all),
@@ -94,6 +95,7 @@ fun ViewAllTodayPrayers(
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
                 modifier = Modifier
+                    .size(16.dp)
                     .graphicsLayer {
                         scaleX = if (isRtl) 1f else -1f
 

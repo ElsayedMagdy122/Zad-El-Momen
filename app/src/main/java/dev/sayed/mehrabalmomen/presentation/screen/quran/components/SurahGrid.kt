@@ -20,7 +20,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
 @Composable
 fun SurahGrid(
     sur: List<SurahUiState>,
-    onSurahClick: (Int, String) -> Unit
+    onSurahClick: (Int, String,String) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(320.dp),
