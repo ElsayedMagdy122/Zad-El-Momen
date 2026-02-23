@@ -157,6 +157,7 @@ dependencies {
 
     // Others (domain specific)
     implementation(libs.bundles.others)
+    implementation(libs.firebase.messaging)
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)
