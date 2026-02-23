@@ -1,5 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,10 +12,9 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -32,8 +35,8 @@ fun HomeScreen(
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    val surahName = if (isRtl) state.lastTilawahUi.nameArabic else state.lastTilawahUi.nameEnglish
+    RequestNotificationPermission()
+
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             HomeEffect.NavigateToFullPrayersDetails -> {
@@ -102,5 +105,24 @@ fun HomeScreen(
             )
         }
         item { FeaturesSection(homeInteractionListener = viewModel) }
+    }
+}
+
+@Composable
+fun RequestNotificationPermission() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+
+            } else {
+
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 }
