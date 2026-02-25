@@ -44,7 +44,7 @@ fun UpComingPrayer(
 private fun PrayerInfoSection(state: HomeUiState) {
     key(state.nextPrayer) {
         Image(
-            painter = painterResource(id = R.drawable.image_mosque_dark),
+            painter = painterResource(id = R.drawable.night_mosque),
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
