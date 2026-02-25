@@ -200,6 +200,7 @@
     <string name="no_ayah_saved_yet">No ayah saved yet!</string>
     <string name="start_your_tilawah_and_bookmark_the_ayah_you_want_to_return_to_later">Start your tilawah and bookmark the ayah you want to return to later.</string>
     <string name="start_tilawah">Start Tilawah</string>
+    <string name="home">Home</string>
 
     <plurals name="minutes_ago">
         <item quantity="one">%d minute ago</item>

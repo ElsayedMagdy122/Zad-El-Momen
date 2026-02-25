@@ -37,7 +37,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
     if (onboardingComplete == null) return
 
     val startDestination =
-        if (onboardingComplete == true) Route.HomeScreen
+       // if (onboardingComplete == true) Route.HomeScreen
+        if (onboardingComplete == true) Route.AppRoute
         else Route.MadhabScreen
 
     NavHost(
@@ -45,7 +46,10 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         startDestination = startDestination
     ) {
         composable<Route.SurahListScreen> { SurahListScreen(navController) }
-        composable<Route.HomeScreen> { HomeScreen(navController) }
+       // composable<Route.HomeScreen> { HomeScreen(navController) }
+        composable<Route.AppRoute> {
+            MainContainer(rootNavController = navController)
+        }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }
         composable<Route.QiblahScreen> { QiblahScreen(navController) }

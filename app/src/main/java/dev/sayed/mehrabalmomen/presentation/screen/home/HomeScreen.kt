@@ -85,7 +85,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
-        item { PrayersRowSection(state.prayers, homeInteractionListener = viewModel) }
+      //  item { PrayersRowSection(state.prayers, homeInteractionListener = viewModel) }
         item {
             ContinueToTilawah(
                 onClick = {
