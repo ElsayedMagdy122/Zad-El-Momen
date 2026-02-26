@@ -55,13 +55,19 @@ fun BottomNavigationBar(
             label = ""
         )
 
-        Row(Modifier.fillMaxWidth().background(Theme.color.surfaces.surfaceLow)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                 .background(Theme.color.surfaces.surfaceLow)
+             //   .background(Theme.color.surfaces.surface)
+        ) {
             items.forEachIndexed { index, item ->
 
                 val isSelected = index == selectedIndex
                 val iconTint by animateColorAsState(
                     targetValue = if (isSelected)
-                        Theme.color.brand.brand
+                     //Theme.color.brand.brand
+                        Theme.color.primary.primary
                     else
                         Theme.color.secondary.shadeSecondary,
                     label = ""
@@ -93,7 +99,8 @@ fun BottomNavigationBar(
                         Text(
                             text = item.title,
                             style = Theme.textStyle.label.medium,
-                            color = Theme.color.brand.brand,
+                           // color = Theme.color.brand.brand,
+                            color = Theme.color.primary.primary,
                             modifier = Modifier.padding(top = 4.dp)
                         )
                     }
@@ -111,7 +118,8 @@ fun BottomNavigationBar(
                         bottomEnd = 12.dp
                     )
                 )
-                .background(Theme.color.brand.brand)
+              //  .background(Theme.color.brand.brand)
+                .background(  color = Theme.color.primary.primary)
                 .size(indicatorWidth, 4.dp)
         )
     }

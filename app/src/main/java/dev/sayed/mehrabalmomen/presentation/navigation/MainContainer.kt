@@ -39,6 +39,8 @@ fun MainContainer(
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
+        Route.QiblahScreen,
+        Route.QiblahScreen,
         Route.QiblahScreen
     )
 
@@ -52,6 +54,16 @@ fun MainContainer(
             title = localizedString(R.string.prayer_times),
             selectedIcon = painterResource(R.drawable.ic_prayer_times_selected),
             unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
+        ),
+        NavItem(
+            title = "Radio",
+            selectedIcon = painterResource(R.drawable.ic_radio_selected),
+            unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
+        ),
+        NavItem(
+            title = "Radio",
+            selectedIcon = painterResource(R.drawable.ic_radio_selected),
+            unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
         ),
         NavItem(
             title = "Radio",
@@ -90,6 +102,12 @@ fun MainContainer(
                 FullPrayerTimesViewScreen(rootNavController)
             }
 
+            composable<Route.QiblahScreen> {
+                QiblahScreen(rootNavController)
+            }
+            composable<Route.QiblahScreen> {
+                QiblahScreen(rootNavController)
+            }
             composable<Route.QiblahScreen> {
                 QiblahScreen(rootNavController)
             }
