@@ -4,12 +4,16 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 data class MehrabColors(
+    val brand: Brand,
     val primary: Primary,
     val surfaces: Surfaces,
     val secondary: Secondary,
     val semantic : Semantic
 )
 
+data class Brand(
+    val brand: Color,
+)
 data class Primary(
     val primary: Color,
     val onPrimary: Color,

@@ -282,7 +282,7 @@ fun SettingsItem(
                 .padding(4.dp), contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(20.dp),
                 painter = painterResource(item.icon),
                 contentDescription = null,
                 tint = Theme.color.primary.onPrimary
