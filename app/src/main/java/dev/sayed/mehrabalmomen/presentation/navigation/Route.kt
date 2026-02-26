@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Route {
     @Serializable
+    data object AppRoute
+    @Serializable
     data object HomeScreen
 
     @Serializable

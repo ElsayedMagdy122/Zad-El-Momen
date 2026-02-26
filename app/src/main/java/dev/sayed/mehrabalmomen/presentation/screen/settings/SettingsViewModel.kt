@@ -127,7 +127,7 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.THEME
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_location,
+                        icon = R.drawable.ic_map_location,
                         title = R.string.location,
                         action = SettingsUiState.SettingsAction.LOCATION,
                         descriptionText = state.location.country.plus(", ")
@@ -146,7 +146,7 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.CALCULATION_METHOD
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_madhab,
+                        icon = R.drawable.mosque_02,
                         title = R.string.madhab,
                         description = state.selectedMadhab.value,
                         action = SettingsUiState.SettingsAction.MADHAB

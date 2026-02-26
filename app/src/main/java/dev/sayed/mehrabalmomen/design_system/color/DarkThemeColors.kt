@@ -3,6 +3,9 @@ package dev.sayed.mehrabalmomen.design_system.color
 import androidx.compose.ui.graphics.Color
 
 val darkThemeColors = MehrabColors(
+    brand = Brand(
+        brand = Color(0xFF415470),
+    ),
     primary = Primary(
         primary = Color(0xFFFFFFFF),
         onPrimary = Color(0xFF12141C),
