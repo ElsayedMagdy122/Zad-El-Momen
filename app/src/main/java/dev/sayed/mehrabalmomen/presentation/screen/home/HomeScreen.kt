@@ -23,8 +23,7 @@ import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.ContinueToTilawah
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.FeaturesSection
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.HomeAppBar
-import dev.sayed.mehrabalmomen.presentation.screen.home.component.PrayersRowSection
-import dev.sayed.mehrabalmomen.presentation.screen.home.component.UpComingPrayer
+import dev.sayed.mehrabalmomen.presentation.screen.home.component.PrayerTimesCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 
@@ -79,13 +78,11 @@ fun HomeScreen(
             )
         }
         item {
-            UpComingPrayer(
-                state = state,
-                countdownTime = countdownTime,
-                modifier = Modifier.padding(horizontal = 16.dp)
+            PrayerTimesCard(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                prayerTimesUiState = state,
             )
         }
-      //  item { PrayersRowSection(state.prayers, homeInteractionListener = viewModel) }
         item {
             ContinueToTilawah(
                 onClick = {
