@@ -201,6 +201,8 @@
 </string>
     <string name="start_tilawah">ابدأ التلاوة</string>
     <string name="home">الرئيسية</string>
+    <string name="am">صباحا</string>
+    <string name="pm">مساء</string>
     <plurals name="minutes_ago">
         <item quantity="zero">الآن</item>
         <item quantity="one">منذ دقيقة</item>

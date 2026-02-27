@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
 
 val LocalAppLocale = compositionLocalOf { AppSettings.Language.ARABIC }
-
+val LocalIsDarkTheme = compositionLocalOf {  false }
 @Composable
 fun rememberLocalizedContext(): Context {
     val baseContext = LocalContext.current
@@ -99,17 +99,18 @@ fun AppRoot(settingsRepository: SettingsRepository, onReady: () -> Unit) {
         AppSettings.Language.ARABIC -> LayoutDirection.Rtl
         else -> LayoutDirection.Ltr
     }
-
+val isDark =  when (currentSettings.theme) {
+    AppSettings.Theme.SYSTEM -> isSystemInDarkTheme()
+    AppSettings.Theme.DARK -> true
+    AppSettings.Theme.LIGHT -> false
+}
     CompositionLocalProvider(
         LocalAppLocale provides currentSettings.language,
-        LocalLayoutDirection provides layoutDirection
+        LocalLayoutDirection provides layoutDirection,
+        LocalIsDarkTheme provides isDark
     ) {
         MehrabTheme(
-            isDarkTheme = when (currentSettings.theme) {
-                AppSettings.Theme.SYSTEM -> isSystemInDarkTheme()
-                AppSettings.Theme.DARK -> true
-                AppSettings.Theme.LIGHT -> false
-            }
+            isDarkTheme = isDark
         ) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
