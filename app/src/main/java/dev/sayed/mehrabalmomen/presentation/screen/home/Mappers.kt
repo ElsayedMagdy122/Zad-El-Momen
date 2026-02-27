@@ -11,9 +11,11 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 fun Prayer.toPrayerUiState(zone: TimeZone): HomeUiState.PrayerUiState{
+    val formatted = format(instant = this.time, zone = zone)
     return HomeUiState.PrayerUiState(
         name = this.toUiName(this.name),
-        time = format(instant = this.time, zone = zone),
+        time = formatted.time,
+        isAm = formatted.isAm,
         icon = this.toUiIcon(this.name)
     )
 }

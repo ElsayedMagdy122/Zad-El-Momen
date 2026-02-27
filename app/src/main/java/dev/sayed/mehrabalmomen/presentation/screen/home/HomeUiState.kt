@@ -21,6 +21,7 @@ data class HomeUiState(
         val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,
         val icon: Int = 0,
+        val isAm : Boolean = false
     )
 
     data class TimeUiState(
