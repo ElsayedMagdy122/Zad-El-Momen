@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,9 +33,8 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItems
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerNotifications
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.UpComingPrayerFullView
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerCard
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -99,6 +99,7 @@ fun FullPrayerTimesViewScreen(
     ) {
         item {
             AppBar(
+                isBackEnabled = false,
                 onBackClick = viewModel::onClickBack,
                 title = localizedString(R.string.prayer_times),
                 modifier = Modifier.padding(
@@ -107,23 +108,22 @@ fun FullPrayerTimesViewScreen(
             )
         }
         item {
-            UpComingPrayerFullView(
+            NextPrayerCard(
                 state = state,
                 countdownTime = countdownTime,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
-        item {
-            PrayerItems(
-                prayers = state.prayers,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
-        item {
-            PrayerNotifications(
-                prayerNotifications = state.prayerNotifications,
-                listener = viewModel,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        items(state.prayers) {
+            PrayerItem(
+                prayerNameResource = it.name,
+                prayerTime = it.time.time,
+                isAm = it.time.isAm,
+                isNextPrayer = it.isUpComing,
+                isNotificationEnabled =it.isNotificationEnabled,
+                onNotificationClick = { prayerName, enabled ->
+                    viewModel.onClickEnablePrayer(prayerName, enabled)
+                }
+
             )
         }
     }

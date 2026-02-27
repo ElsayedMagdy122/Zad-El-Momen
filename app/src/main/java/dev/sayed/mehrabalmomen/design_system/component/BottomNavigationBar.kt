@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -99,11 +100,13 @@ fun BottomNavigationBar(
                         Text(
                             text = item.title,
                             style = Theme.textStyle.label.medium,
-                           // color = Theme.color.brand.brand,
                             color = Theme.color.primary.primary,
-                            modifier = Modifier.padding(top = 4.dp)
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            softWrap = false
                         )
                     }
+
                 }
             }
         }

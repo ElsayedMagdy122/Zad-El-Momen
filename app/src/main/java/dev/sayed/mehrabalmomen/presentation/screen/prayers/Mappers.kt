@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 fun Prayer.toPrayerUiState(zone: TimeZone): FullPrayerTimesUiState.PrayerUiState {
     return FullPrayerTimesUiState.PrayerUiState(
         name = this.toUiName(this.name),
-        time = format1(instant = this.time, zone = zone),
+        time = format(instant = this.time, zone = zone),
         icon = this.toUiIcon(this.name),
         instantTime = this.time
     )

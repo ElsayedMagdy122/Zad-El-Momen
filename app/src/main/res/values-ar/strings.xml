@@ -247,4 +247,5 @@
         <item quantity="one">ثانية واحدة</item>
         <item quantity="other">%s ثواني</item>
     </plurals>
+    <string name="next_prayer_in">الصلاة القادمة %1$s بعد :</string>
 </resources>

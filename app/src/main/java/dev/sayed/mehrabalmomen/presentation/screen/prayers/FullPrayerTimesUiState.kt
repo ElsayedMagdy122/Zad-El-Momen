@@ -1,8 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import androidx.annotation.StringRes
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState.PrayerNotificationUiState
+import dev.sayed.mehrabalmomen.presentation.utils.FormattedTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -16,11 +15,12 @@ data class FullPrayerTimesUiState(
     data class PrayerUiState(
         @param:StringRes
         val name: Int = 0,
-        val time: String = "00 : 00 : 00",
+        val time: FormattedTime = FormattedTime(time = "00:00",isAm = false),
         val isUpComing: Boolean = false,
         val progress: Float = 100.0f,
         val icon: Int = 0,
-        val instantTime: Instant? = null
+        val instantTime: Instant? = null,
+        val isNotificationEnabled: Boolean = false
     )
 
     data class TimeUiState(

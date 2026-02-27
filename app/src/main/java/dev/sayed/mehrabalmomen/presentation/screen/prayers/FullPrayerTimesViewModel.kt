@@ -16,6 +16,7 @@ import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import dev.sayed.mehrabalmomen.presentation.utils.isIgnoringBatteryOptimizations
@@ -205,13 +206,15 @@ class FullPrayerTimesViewModel(
         viewModelScope.launch {
             notificationsRepository.observeAll().collect { map ->
                 updateState { current ->
+                    val updatedPrayers = current.prayers.map { prayer ->
+                        val prayerName = prayer.name.toPrayerName()
+                        prayer.copy(
+                            isNotificationEnabled = map[prayerName] ?: false
+                        )
+                    }
+
                     current.copy(
-                        prayerNotifications = map.map { (prayer, enabled) ->
-                            FullPrayerTimesUiState.PrayerNotificationUiState(
-                                name = prayer.toStringRes(),
-                                isEnabled = enabled
-                            )
-                        }
+                        prayers = updatedPrayers
                     )
                 }
             }
