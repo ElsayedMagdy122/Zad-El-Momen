@@ -26,7 +26,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
-import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
 import org.koin.android.ext.android.inject
 import java.util.Locale

@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran
 
 import android.annotation.SuppressLint
-import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.delay
 

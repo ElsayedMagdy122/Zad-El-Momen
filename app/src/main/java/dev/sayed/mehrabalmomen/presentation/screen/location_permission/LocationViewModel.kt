@@ -3,9 +3,9 @@ package dev.sayed.mehrabalmomen.presentation.screen.location_permission
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
-import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
-import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 

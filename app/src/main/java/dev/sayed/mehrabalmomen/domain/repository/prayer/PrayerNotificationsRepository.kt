@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.repository
+package dev.sayed.mehrabalmomen.domain.repository.prayer
 
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import kotlinx.coroutines.flow.Flow

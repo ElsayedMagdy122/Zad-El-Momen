@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
 
 class NetworkConnectionRepositoryImpl(private val context: Context) : NetworkConnectionRepository {
     private val connectivityManager = context.getSystemService(ConnectivityManager::class.java)

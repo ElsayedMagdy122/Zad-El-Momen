@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.SearchAyah
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

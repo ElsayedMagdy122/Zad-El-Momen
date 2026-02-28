@@ -4,7 +4,7 @@ import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.data.local.dto.AzkarCategoryDto
 import dev.sayed.mehrabalmomen.data.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarCategory
-import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
+import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 
 class AzkarRepositoryImpl(
     private val localDataSource: AzkarLocalDataSource

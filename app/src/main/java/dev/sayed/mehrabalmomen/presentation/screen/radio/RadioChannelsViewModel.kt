@@ -3,8 +3,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
-import dev.sayed.mehrabalmomen.domain.repository.RadioRepository
+import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 

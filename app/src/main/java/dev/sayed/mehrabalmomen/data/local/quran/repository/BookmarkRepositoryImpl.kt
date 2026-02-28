@@ -4,7 +4,7 @@ import dev.sayed.mehrabalmomen.data.local.quran.BookmarkDao
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toDomain
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toEntity
 import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
-import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
 
 class BookmarkRepositoryImpl(
     private val dao: BookmarkDao

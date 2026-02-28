@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails
 
-import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
+import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 
 class AzkarDetailViewModel(
