@@ -1,5 +1,7 @@
 package dev.sayed.mehrabalmomen.domain.model
 
+import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
+
 data class AppSettings(
     val prayerSettings: PrayerSettings,
     val alarmsScheduled: Boolean,

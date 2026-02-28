@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.domain.usecase
 import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
+import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
