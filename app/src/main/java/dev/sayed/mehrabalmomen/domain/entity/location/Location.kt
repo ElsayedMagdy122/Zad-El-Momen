@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity
+package dev.sayed.mehrabalmomen.domain.entity.location
 
 data class Location(
     val latitude: Double,

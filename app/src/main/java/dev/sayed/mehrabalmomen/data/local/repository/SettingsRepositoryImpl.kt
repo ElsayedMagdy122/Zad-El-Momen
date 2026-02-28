@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.sayed.mehrabalmomen.data.local.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.PrayerSettings

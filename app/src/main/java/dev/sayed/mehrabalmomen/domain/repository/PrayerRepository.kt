@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
 import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.Madhab
 import dev.sayed.mehrabalmomen.domain.entity.Prayer
 import kotlinx.datetime.LocalDate
