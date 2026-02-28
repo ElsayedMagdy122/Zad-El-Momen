@@ -41,7 +41,7 @@ import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.domain.entity.AzkarItem
+import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 

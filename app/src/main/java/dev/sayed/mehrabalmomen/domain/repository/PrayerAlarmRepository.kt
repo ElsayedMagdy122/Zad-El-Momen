@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
 
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
+import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 
 interface PrayerAlarmRepository {

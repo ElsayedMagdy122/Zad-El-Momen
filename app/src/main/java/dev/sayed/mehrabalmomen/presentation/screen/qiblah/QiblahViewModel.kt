@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.qiblah
 
-import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository

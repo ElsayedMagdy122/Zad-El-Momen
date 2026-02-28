@@ -9,9 +9,10 @@ import dev.sayed.mehrabalmomen.data.mappers.toAdhanParams
 import dev.sayed.mehrabalmomen.data.mappers.toDomainName
 import dev.sayed.mehrabalmomen.data.mappers.toPrayerList
 import dev.sayed.mehrabalmomen.data.mappers.toPrayerTime
-import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
@@ -24,7 +25,7 @@ class PrayerRepositoryImpl : PrayerRepository {
 
     override  fun getDailyPrayers(
         madhab: Madhab,
-        calculationMethod: dev.sayed.mehrabalmomen.domain.entity.CalculationMethod,
+        calculationMethod: CalculationMethod,
         location: Location,
         date: LocalDate
     ): List<Prayer> {
@@ -40,7 +41,7 @@ class PrayerRepositoryImpl : PrayerRepository {
     override fun getNextPrayer(
         instant: Instant,
         madhab: Madhab,
-        calculationMethod: dev.sayed.mehrabalmomen.domain.entity.CalculationMethod,
+        calculationMethod: CalculationMethod,
         location: Location,
         date: LocalDate
     ): Prayer {
@@ -62,7 +63,7 @@ class PrayerRepositoryImpl : PrayerRepository {
         location: Location,
         date: LocalDate,
         madhab: Madhab,
-        calculationMethod: dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
+        calculationMethod: CalculationMethod
     ): PrayerTimes {
 
         val coordinates = Coordinates(location.latitude, location.longitude)

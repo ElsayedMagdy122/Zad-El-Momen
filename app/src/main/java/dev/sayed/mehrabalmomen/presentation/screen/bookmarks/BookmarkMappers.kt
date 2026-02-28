@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.bookmarks
 
 import androidx.compose.runtime.Composable
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Bookmark
+import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedPlural
 import dev.sayed.mehrabalmomen.presentation.base.localizedString

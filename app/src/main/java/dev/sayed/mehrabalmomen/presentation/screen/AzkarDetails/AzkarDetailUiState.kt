@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails
 
-import dev.sayed.mehrabalmomen.domain.entity.AzkarItem
+import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 
 data class AzkarDetailUiState(
     val isLoading: Boolean = true,

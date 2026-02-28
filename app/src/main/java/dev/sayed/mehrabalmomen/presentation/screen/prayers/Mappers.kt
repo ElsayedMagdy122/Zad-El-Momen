@@ -1,8 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.utils.format
-import dev.sayed.mehrabalmomen.presentation.utils.format1
 import dev.sayed.mehrabalmomen.presentation.utils.toUiIcon
 import dev.sayed.mehrabalmomen.presentation.utils.toUiName
 import kotlinx.datetime.TimeZone

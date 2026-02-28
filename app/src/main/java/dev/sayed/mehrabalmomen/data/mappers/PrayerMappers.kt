@@ -3,7 +3,7 @@
 package dev.sayed.mehrabalmomen.data.mappers
 
 import com.batoulapps.adhan2.PrayerTimes
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

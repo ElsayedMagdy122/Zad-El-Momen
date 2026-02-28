@@ -7,7 +7,7 @@ import dev.sayed.mehrabalmomen.data.mappers.toDomainList
 import dev.sayed.mehrabalmomen.data.remote.dto.RadioChannelDto
 import dev.sayed.mehrabalmomen.data.util.safeCall
 import dev.sayed.mehrabalmomen.data.util.safeFlow
-import dev.sayed.mehrabalmomen.domain.entity.RadioChannel
+import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
 import dev.sayed.mehrabalmomen.domain.repository.RadioRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from

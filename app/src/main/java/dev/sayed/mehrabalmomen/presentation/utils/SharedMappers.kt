@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.utils
 
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 
 fun Prayer.toUiIcon(prayerName: Prayer.PrayerName):Int{
     return when(prayerName){

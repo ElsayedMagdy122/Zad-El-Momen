@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.data.repository
 
 import com.batoulapps.adhan2.Coordinates
 import com.batoulapps.adhan2.Qibla
-import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
 
 class QiblahRepositoryImpl: QiblahRepository {
