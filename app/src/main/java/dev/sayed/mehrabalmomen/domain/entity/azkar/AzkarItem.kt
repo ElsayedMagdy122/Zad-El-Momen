@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity
+package dev.sayed.mehrabalmomen.domain.entity.azkar
 
 data class AzkarItem(
     val content: String,
