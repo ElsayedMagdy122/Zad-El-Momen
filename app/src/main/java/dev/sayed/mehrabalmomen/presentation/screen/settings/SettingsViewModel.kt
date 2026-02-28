@@ -2,14 +2,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase

@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.sayed.mehrabalmomen.data.local.SettingsKeys
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

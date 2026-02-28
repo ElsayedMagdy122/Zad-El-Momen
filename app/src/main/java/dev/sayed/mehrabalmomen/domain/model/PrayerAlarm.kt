@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.model
 
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 
 data class PrayerAlarm(
     val id: Int,

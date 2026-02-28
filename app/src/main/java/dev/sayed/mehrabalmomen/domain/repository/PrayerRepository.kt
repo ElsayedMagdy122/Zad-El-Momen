@@ -1,9 +1,9 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

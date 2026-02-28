@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.data.mappers
 
 import dev.sayed.mehrabalmomen.data.remote.dto.RadioChannelDto
-import dev.sayed.mehrabalmomen.domain.entity.RadioChannel
+import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
