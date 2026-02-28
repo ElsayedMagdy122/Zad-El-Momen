@@ -277,15 +277,16 @@ fun SettingsItem(
     ) {
         Box(
             modifier = Modifier
+                .size(40.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Theme.color.primary.primary)
-                .padding(4.dp), contentAlignment = Alignment.Center
+                .background(Theme.color.surfaces.surfaceHigh),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(item.icon),
                 contentDescription = null,
-                tint = Theme.color.primary.onPrimary
+                tint = Theme.color.primary.primary
             )
         }
 

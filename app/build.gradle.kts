@@ -92,6 +92,16 @@ android {
         }
     }
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+
+            firebaseCrashlytics {
+                mappingFileUploadEnabled=false
+                nativeSymbolUploadEnabled=false
+            }
+
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -99,6 +109,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            firebaseCrashlytics {
+                mappingFileUploadEnabled=true
+                nativeSymbolUploadEnabled=true
+            }
         }
     }
     compileOptions {
@@ -158,6 +172,7 @@ dependencies {
     // Others (domain specific)
     implementation(libs.bundles.others)
     implementation(libs.firebase.messaging)
+    implementation(libs.androidx.media3.exoplayer)
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)

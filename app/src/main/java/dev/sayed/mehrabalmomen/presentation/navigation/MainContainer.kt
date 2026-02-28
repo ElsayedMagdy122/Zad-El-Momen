@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,6 +27,7 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -39,7 +41,7 @@ fun MainContainer(
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
-        Route.QiblahScreen,
+        Route.RadioScreen,
         Route.QiblahScreen,
         Route.QiblahScreen
     )
@@ -56,17 +58,7 @@ fun MainContainer(
             unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
         ),
         NavItem(
-            title = "Radio",
-            selectedIcon = painterResource(R.drawable.ic_radio_selected),
-            unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
-        ),
-        NavItem(
-            title = "Radio",
-            selectedIcon = painterResource(R.drawable.ic_radio_selected),
-            unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
-        ),
-        NavItem(
-            title = "Radio",
+            title = localizedString(R.string.quran_radio),
             selectedIcon = painterResource(R.drawable.ic_radio_selected),
             unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
         )
@@ -102,14 +94,8 @@ fun MainContainer(
                 FullPrayerTimesViewScreen(rootNavController)
             }
 
-            composable<Route.QiblahScreen> {
-                QiblahScreen(rootNavController)
-            }
-            composable<Route.QiblahScreen> {
-                QiblahScreen(rootNavController)
-            }
-            composable<Route.QiblahScreen> {
-                QiblahScreen(rootNavController)
+            composable<Route.RadioScreen> {
+                RadioScreen(rootNavController)
             }
         }
 

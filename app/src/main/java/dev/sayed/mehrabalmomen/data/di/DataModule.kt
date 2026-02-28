@@ -23,6 +23,7 @@ import dev.sayed.mehrabalmomen.data.repository.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.QiblahRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.RadioRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
@@ -35,6 +36,7 @@ import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.RadioRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.utils.AlarmScheduler
@@ -72,6 +74,7 @@ val dataModule = module {
     single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
     single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
     single<ContinueTilawahRepository> { ContinueTilawahRepositoryImpl(get()) }
+    single <RadioRepository>{ RadioRepositoryImpl(get()) }
     single<BookmarkRepository> {
         BookmarkRepositoryImpl(
             dao = get()
