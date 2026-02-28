@@ -11,9 +11,9 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
-import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
-import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
-import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
+import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName

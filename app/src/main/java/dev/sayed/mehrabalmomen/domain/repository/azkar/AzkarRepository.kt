@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.repository
+package dev.sayed.mehrabalmomen.domain.repository.azkar
 
 import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarCategory
 

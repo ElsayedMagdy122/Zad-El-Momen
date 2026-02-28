@@ -13,7 +13,7 @@ import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
-import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
 import kotlin.time.ExperimentalTime

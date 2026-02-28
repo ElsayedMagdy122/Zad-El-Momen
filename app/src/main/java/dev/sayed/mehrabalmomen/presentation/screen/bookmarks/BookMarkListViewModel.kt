@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.bookmarks
 
-import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 
 class BookMarkListViewModel(

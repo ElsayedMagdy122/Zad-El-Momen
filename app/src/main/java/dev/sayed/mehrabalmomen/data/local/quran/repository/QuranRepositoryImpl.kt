@@ -6,7 +6,7 @@ import dev.sayed.mehrabalmomen.data.local.quran.dto.TafseerDto
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
 import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
-import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import kotlinx.serialization.json.Json
 
 class QuranRepositoryImpl(private val context: Context, private val json: Json) : QuranRepository {

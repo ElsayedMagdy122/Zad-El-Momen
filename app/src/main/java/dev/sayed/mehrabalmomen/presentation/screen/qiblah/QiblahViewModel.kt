@@ -1,9 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.qiblah
 
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
-import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
-import dev.sayed.mehrabalmomen.domain.repository.QiblahRepository
-import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.qiblah.QiblahRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.first
 
