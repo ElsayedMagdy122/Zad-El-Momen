@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.domain.entity.Bookmark
+import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
 import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository

@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity
+package dev.sayed.mehrabalmomen.domain.entity.quran
 
 data class Ayah(
     val id: Int,
