@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.repository
+package dev.sayed.mehrabalmomen.domain.repository.quran
 
 import dev.sayed.mehrabalmomen.domain.entity.quran.ReadingProgress
 import kotlinx.coroutines.flow.Flow

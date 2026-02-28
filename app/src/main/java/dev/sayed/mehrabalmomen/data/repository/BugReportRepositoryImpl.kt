@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.data.repository
 
 import dev.sayed.mehrabalmomen.data.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
-import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
+import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 
 class BugReportRepositoryImpl(
     private val remoteDataSource: BugReportRemoteDataSource

@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.madhab
 
-import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 
 class MadhabViewModel(

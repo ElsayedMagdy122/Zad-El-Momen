@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.repository
+package dev.sayed.mehrabalmomen.domain.repository.bugReport
 
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 
