@@ -4,8 +4,8 @@ import android.content.Context
 import dev.sayed.mehrabalmomen.data.local.quran.dto.SurahDto
 import dev.sayed.mehrabalmomen.data.local.quran.dto.TafseerDto
 import dev.sayed.mehrabalmomen.data.local.quran.mappers.toDomain
-import dev.sayed.mehrabalmomen.domain.entity.Ayah
-import dev.sayed.mehrabalmomen.domain.entity.Surah
+import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
+import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import kotlinx.serialization.json.Json
 

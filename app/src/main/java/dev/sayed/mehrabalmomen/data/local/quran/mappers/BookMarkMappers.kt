@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.data.local.quran.mappers
 
 import dev.sayed.mehrabalmomen.data.local.quran.dto.BookmarkEntity
-import dev.sayed.mehrabalmomen.domain.entity.Bookmark
+import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
 
 fun Bookmark.toEntity(): BookmarkEntity {
     return BookmarkEntity(

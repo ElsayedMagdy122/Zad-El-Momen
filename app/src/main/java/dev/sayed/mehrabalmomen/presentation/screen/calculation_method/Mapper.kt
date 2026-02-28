@@ -1,17 +1,19 @@
 package dev.sayed.mehrabalmomen.presentation.screen.calculation_method
 
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
+
 fun CalculationMethodUiState.CalculationMethod.toDomain():
-        dev.sayed.mehrabalmomen.domain.entity.CalculationMethod {
+        CalculationMethod {
     return when (this) {
-        CalculationMethodUiState.CalculationMethod.MUSLIM_WORLD_LEAGUE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.MUSLIM_WORLD_LEAGUE
-        CalculationMethodUiState.CalculationMethod.EGYPTIAN -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.EGYPTIAN
-        CalculationMethodUiState.CalculationMethod.KARACHI -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.KARACHI
-        CalculationMethodUiState.CalculationMethod.UMM_AL_QURA -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.UMM_AL_QURA
-        CalculationMethodUiState.CalculationMethod.DUBAI -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.DUBAI
-        CalculationMethodUiState.CalculationMethod.QATAR -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.QATAR
-        CalculationMethodUiState.CalculationMethod.KUWAIT -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.KUWAIT
-        CalculationMethodUiState.CalculationMethod.MOONSIGHTING_COMMITTEE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.MOONSIGHTING_COMMITTEE
-        CalculationMethodUiState.CalculationMethod.SINGAPORE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.SINGAPORE
-        CalculationMethodUiState.CalculationMethod.NORTH_AMERICA -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.NORTH_AMERICA
+        CalculationMethodUiState.CalculationMethod.MUSLIM_WORLD_LEAGUE -> CalculationMethod.MUSLIM_WORLD_LEAGUE
+        CalculationMethodUiState.CalculationMethod.EGYPTIAN -> CalculationMethod.EGYPTIAN
+        CalculationMethodUiState.CalculationMethod.KARACHI -> CalculationMethod.KARACHI
+        CalculationMethodUiState.CalculationMethod.UMM_AL_QURA -> CalculationMethod.UMM_AL_QURA
+        CalculationMethodUiState.CalculationMethod.DUBAI -> CalculationMethod.DUBAI
+        CalculationMethodUiState.CalculationMethod.QATAR -> CalculationMethod.QATAR
+        CalculationMethodUiState.CalculationMethod.KUWAIT -> CalculationMethod.KUWAIT
+        CalculationMethodUiState.CalculationMethod.MOONSIGHTING_COMMITTEE -> CalculationMethod.MOONSIGHTING_COMMITTEE
+        CalculationMethodUiState.CalculationMethod.SINGAPORE -> CalculationMethod.SINGAPORE
+        CalculationMethodUiState.CalculationMethod.NORTH_AMERICA -> CalculationMethod.NORTH_AMERICA
     }
 }

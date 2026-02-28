@@ -2,9 +2,8 @@ package dev.sayed.mehrabalmomen.data.local
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 
 object SettingsKeys {
     val LATITUDE_KEY = doublePreferencesKey("latitude")

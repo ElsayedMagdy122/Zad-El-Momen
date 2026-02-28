@@ -10,7 +10,7 @@ import dev.sayed.mehrabalmomen.data.local.quran.AppDatabase
 import dev.sayed.mehrabalmomen.data.local.quran.repository.BookmarkRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.AzkarRepositoryImpl
-import dev.sayed.mehrabalmomen.data.local.repository.ContinueTilawahRepositoryImpl
+import dev.sayed.mehrabalmomen.data.local.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.local.repository.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.network.NetworkConnectionRepositoryImpl
@@ -28,7 +28,7 @@ import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.domain.repository.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.BugReportRepository
-import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
+import dev.sayed.mehrabalmomen.domain.repository.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
@@ -45,11 +45,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -73,7 +69,7 @@ val dataModule = module {
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
     single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
-    single<ContinueTilawahRepository> { ContinueTilawahRepositoryImpl(get()) }
+    single<ReadingProgressRepository> { ReadingProgressRepositoryImpl(get()) }
     single <RadioRepository>{ RadioRepositoryImpl(get()) }
     single<BookmarkRepository> {
         BookmarkRepositoryImpl(

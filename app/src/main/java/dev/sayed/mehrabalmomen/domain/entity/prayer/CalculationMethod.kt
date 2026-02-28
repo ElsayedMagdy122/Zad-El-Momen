@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity
+package dev.sayed.mehrabalmomen.domain.entity.prayer
 
 enum class CalculationMethod {
     MUSLIM_WORLD_LEAGUE,

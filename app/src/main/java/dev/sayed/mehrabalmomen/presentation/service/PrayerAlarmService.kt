@@ -13,7 +13,7 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.utils.Constants
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_ID
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_NAME

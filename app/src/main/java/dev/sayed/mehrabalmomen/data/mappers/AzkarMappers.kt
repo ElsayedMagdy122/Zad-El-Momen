@@ -2,8 +2,8 @@ package dev.sayed.mehrabalmomen.data.mappers
 
 import dev.sayed.mehrabalmomen.data.local.dto.AzkarCategoryDto
 import dev.sayed.mehrabalmomen.data.local.dto.AzkarItemDto
-import dev.sayed.mehrabalmomen.domain.entity.AzkarCategory
-import dev.sayed.mehrabalmomen.domain.entity.AzkarItem
+import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarCategory
+import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 
 fun AzkarItemDto.toDomain() = AzkarItem(
     content = content,

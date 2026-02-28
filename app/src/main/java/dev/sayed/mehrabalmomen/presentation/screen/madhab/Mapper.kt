@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.madhab
 
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 
 fun MadhabUiState.MadhabState.toDomain():
        Madhab {

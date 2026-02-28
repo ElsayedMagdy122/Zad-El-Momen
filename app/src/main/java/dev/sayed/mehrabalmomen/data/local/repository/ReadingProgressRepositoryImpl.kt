@@ -4,14 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import dev.sayed.mehrabalmomen.domain.model.ContinueTilawah
-import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
+import dev.sayed.mehrabalmomen.domain.entity.quran.ReadingProgress
+import dev.sayed.mehrabalmomen.domain.repository.ReadingProgressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class ContinueTilawahRepositoryImpl(
+class ReadingProgressRepositoryImpl(
     private val dataStore: DataStore<Preferences>
-) : ContinueTilawahRepository {
+) : ReadingProgressRepository {
 
     override suspend fun save(surahId: Int, ayahId: Int) {
         dataStore.edit {
@@ -20,14 +20,14 @@ class ContinueTilawahRepositoryImpl(
         }
     }
 
-    override fun observe(): Flow<ContinueTilawah?> =
+    override fun observe(): Flow<ReadingProgress?> =
         dataStore.data.map { prefs ->
             val surahId = prefs[ContinueTilawahKeys.SURAH_ID]
             val ayahId = prefs[ContinueTilawahKeys.AYAH_ID]
 
             if (surahId != null && ayahId != null) {
-                ContinueTilawah(surahId, ayahId)
-            } else  ContinueTilawah(1, 1)
+                ReadingProgress(surahId, ayahId)
+            } else  ReadingProgress(1, 1)
         }
 
     object ContinueTilawahKeys {

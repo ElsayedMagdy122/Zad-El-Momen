@@ -1,8 +1,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 
 fun AppSettings.Language.toUi(): SettingsUiState.Language = when (this) {
@@ -41,16 +41,16 @@ fun SettingsUiState.MadhabState.toDomain(): Madhab = when (this) {
 
 fun SettingsUiState.CalculationMethod.toDomain(): CalculationMethod {
     return when (this) {
-        SettingsUiState.CalculationMethod.MUSLIM_WORLD_LEAGUE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.MUSLIM_WORLD_LEAGUE
-        SettingsUiState.CalculationMethod.EGYPTIAN -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.EGYPTIAN
-        SettingsUiState.CalculationMethod.KARACHI -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.KARACHI
-        SettingsUiState.CalculationMethod.UMM_AL_QURA -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.UMM_AL_QURA
-        SettingsUiState.CalculationMethod.DUBAI -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.DUBAI
-        SettingsUiState.CalculationMethod.QATAR -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.QATAR
-        SettingsUiState.CalculationMethod.KUWAIT -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.KUWAIT
-        SettingsUiState.CalculationMethod.MOONSIGHTING_COMMITTEE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.MOONSIGHTING_COMMITTEE
-        SettingsUiState.CalculationMethod.SINGAPORE -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.SINGAPORE
-        SettingsUiState.CalculationMethod.NORTH_AMERICA -> dev.sayed.mehrabalmomen.domain.entity.CalculationMethod.NORTH_AMERICA
+        SettingsUiState.CalculationMethod.MUSLIM_WORLD_LEAGUE -> CalculationMethod.MUSLIM_WORLD_LEAGUE
+        SettingsUiState.CalculationMethod.EGYPTIAN -> CalculationMethod.EGYPTIAN
+        SettingsUiState.CalculationMethod.KARACHI -> CalculationMethod.KARACHI
+        SettingsUiState.CalculationMethod.UMM_AL_QURA -> CalculationMethod.UMM_AL_QURA
+        SettingsUiState.CalculationMethod.DUBAI -> CalculationMethod.DUBAI
+        SettingsUiState.CalculationMethod.QATAR -> CalculationMethod.QATAR
+        SettingsUiState.CalculationMethod.KUWAIT -> CalculationMethod.KUWAIT
+        SettingsUiState.CalculationMethod.MOONSIGHTING_COMMITTEE -> CalculationMethod.MOONSIGHTING_COMMITTEE
+        SettingsUiState.CalculationMethod.SINGAPORE -> CalculationMethod.SINGAPORE
+        SettingsUiState.CalculationMethod.NORTH_AMERICA -> CalculationMethod.NORTH_AMERICA
     }
 }
 

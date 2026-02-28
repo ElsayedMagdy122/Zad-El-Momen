@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.Ayah
-import dev.sayed.mehrabalmomen.domain.entity.Surah
+import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
+import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
 
 interface QuranRepository {
     suspend fun getSurahs(): List<Surah>

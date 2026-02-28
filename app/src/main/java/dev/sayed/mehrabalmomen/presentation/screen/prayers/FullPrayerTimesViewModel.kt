@@ -8,8 +8,8 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository

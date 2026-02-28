@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.data.mappers
 
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 
 fun Madhab.toAdhanMadhab(): com.batoulapps.adhan2.Madhab {
     return when (this) {

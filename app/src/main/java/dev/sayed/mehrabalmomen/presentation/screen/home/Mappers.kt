@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.utils.format
 import dev.sayed.mehrabalmomen.presentation.utils.toUiIcon
 import dev.sayed.mehrabalmomen.presentation.utils.toUiName

@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity
+package dev.sayed.mehrabalmomen.domain.entity.prayer
 
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

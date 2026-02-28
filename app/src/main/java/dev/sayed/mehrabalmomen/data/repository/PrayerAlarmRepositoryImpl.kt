@@ -4,7 +4,7 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import dev.sayed.mehrabalmomen.domain.model.PrayerAlarm
+import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.presentation.reciver.AzanAlarmReceiver

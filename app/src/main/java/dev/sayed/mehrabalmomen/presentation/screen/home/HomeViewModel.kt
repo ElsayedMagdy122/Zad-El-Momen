@@ -3,8 +3,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.repository.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.SettingsRepository
@@ -26,7 +26,7 @@ import kotlin.time.ExperimentalTime
 
 class HomeViewModel(
     private val prayerRepository: PrayerRepository,
-    private val continueTilawahRepository: ContinueTilawahRepository,
+    private val readingProgressRepository: ReadingProgressRepository,
     private val settingsRepository: SettingsRepository,
     private val quranRepository: QuranRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
@@ -51,7 +51,7 @@ class HomeViewModel(
 
     private fun observeContinueTilawah() {
         viewModelScope.launch(Dispatchers.IO) {
-            continueTilawahRepository.observe().collect { data ->
+            readingProgressRepository.observe().collect { data ->
                 if (data == null) return@collect
 
                 val surah = quranRepository

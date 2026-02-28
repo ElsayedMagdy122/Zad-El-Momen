@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.Location
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import org.maplibre.android.geometry.LatLng
 
 interface LocationRepository {

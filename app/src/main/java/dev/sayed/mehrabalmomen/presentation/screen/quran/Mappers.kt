@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran
 
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.Surah
+import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
 
 fun Surah.toUiState() = SurahUiState(
     id = surahNumber,

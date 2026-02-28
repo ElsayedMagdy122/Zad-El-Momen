@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.Prayer
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import kotlinx.coroutines.flow.Flow
 
 interface PrayerNotificationsRepository {

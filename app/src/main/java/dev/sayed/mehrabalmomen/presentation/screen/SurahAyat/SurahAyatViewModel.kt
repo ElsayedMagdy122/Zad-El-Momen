@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.domain.entity.Bookmark
+import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
 import dev.sayed.mehrabalmomen.domain.repository.BookmarkRepository
-import dev.sayed.mehrabalmomen.domain.repository.ContinueTilawahRepository
+import dev.sayed.mehrabalmomen.domain.repository.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
-    private val continueTilawahRepository: ContinueTilawahRepository,
+    private val readingProgressRepository: ReadingProgressRepository,
     private val bookmarkRepository: BookmarkRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
@@ -33,7 +33,7 @@ class SurahAyatViewModel(
 
     fun onAyahVisible(ayahId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            continueTilawahRepository.save(
+            readingProgressRepository.save(
                 surahId = surahId,
                 ayahId = ayahId
             )

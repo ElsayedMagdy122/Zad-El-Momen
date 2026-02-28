@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.azkar
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.AzkarCategory
+import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarCategory
 
 
 data class AzkarUiState(

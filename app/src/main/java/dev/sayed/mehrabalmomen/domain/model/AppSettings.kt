@@ -1,8 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.model
 
-import dev.sayed.mehrabalmomen.domain.entity.CalculationMethod
-import dev.sayed.mehrabalmomen.domain.entity.Location
-import dev.sayed.mehrabalmomen.domain.entity.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
 
 data class AppSettings(
     val prayerSettings: PrayerSettings,
