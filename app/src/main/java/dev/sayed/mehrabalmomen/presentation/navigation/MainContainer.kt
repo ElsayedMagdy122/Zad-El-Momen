@@ -26,6 +26,7 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -39,7 +40,7 @@ fun MainContainer(
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
-        Route.QiblahScreen,
+        Route.RadioScreen,
         Route.QiblahScreen,
         Route.QiblahScreen
     )
@@ -102,8 +103,8 @@ fun MainContainer(
                 FullPrayerTimesViewScreen(rootNavController)
             }
 
-            composable<Route.QiblahScreen> {
-                QiblahScreen(rootNavController)
+            composable<Route.RadioScreen> {
+                RadioScreen(rootNavController)
             }
             composable<Route.QiblahScreen> {
                 QiblahScreen(rootNavController)

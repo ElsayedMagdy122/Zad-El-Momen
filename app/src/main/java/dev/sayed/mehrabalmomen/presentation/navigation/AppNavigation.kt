@@ -90,8 +90,5 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.BookmarksListScreen> {
             BookmarksListScreen(navController = navController)
         }
-        composable<Route.RadioScreen> {
-            RadioScreen(navController = navController)
-        }
     }
 }
