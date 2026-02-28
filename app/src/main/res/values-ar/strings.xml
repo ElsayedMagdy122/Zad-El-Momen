@@ -248,4 +248,5 @@
         <item quantity="other">%s ثواني</item>
     </plurals>
     <string name="next_prayer_in">الصلاة القادمة %1$s بعد :</string>
+    <string name="quran_radio">إذاعة القرآن</string>
 </resources>

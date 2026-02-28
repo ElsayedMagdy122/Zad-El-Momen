@@ -64,4 +64,7 @@ sealed interface Route {
 
     @Serializable
     data object BookmarksListScreen
+
+    @Serializable
+    data object RadioScreen
 }

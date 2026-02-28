@@ -16,13 +16,13 @@ import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
-import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationPermissionScreen
 import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabScreen
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListScreen
+import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
@@ -37,7 +37,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
     if (onboardingComplete == null) return
 
     val startDestination =
-       // if (onboardingComplete == true) Route.HomeScreen
+        // if (onboardingComplete == true) Route.HomeScreen
         if (onboardingComplete == true) Route.AppRoute
         else Route.MadhabScreen
 
@@ -46,7 +46,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         startDestination = startDestination
     ) {
         composable<Route.SurahListScreen> { SurahListScreen(navController) }
-       // composable<Route.HomeScreen> { HomeScreen(navController) }
+        // composable<Route.HomeScreen> { HomeScreen(navController) }
         composable<Route.AppRoute> {
             MainContainer(rootNavController = navController)
         }
