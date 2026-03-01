@@ -6,6 +6,7 @@ import com.google.firebase.messaging.messaging
 import com.google.firebase.perf.performance
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.data.di.dataModule
+import dev.sayed.mehrabalmomen.domain.di.domainModule
 import dev.sayed.mehrabalmomen.presentation.di.presentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -17,7 +18,7 @@ class MehrabApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MehrabApplication)
-            modules(presentationModule, dataModule)
+            modules(presentationModule, domainModule, *dataModule.toTypedArray())
         }
         val language = Locale.getDefault().language
         Firebase.messaging.subscribeToTopic("lang_$language")
