@@ -1,0 +1,85 @@
+package dev.sayed.mehrabalmomen.data.prayer.repository
+
+
+import com.batoulapps.adhan2.Coordinates
+import com.batoulapps.adhan2.PrayerTimes
+import com.batoulapps.adhan2.data.DateComponents
+import dev.sayed.mehrabalmomen.data.prayer.mapper.toAdhanMadhab
+import dev.sayed.mehrabalmomen.data.prayer.mapper.toAdhanParams
+import dev.sayed.mehrabalmomen.data.prayer.mapper.toDomainName
+import dev.sayed.mehrabalmomen.data.prayer.mapper.toPrayerList
+import dev.sayed.mehrabalmomen.data.prayer.mapper.toPrayerTime
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
+class PrayerRepositoryImpl : PrayerRepository {
+
+
+    override  fun getDailyPrayers(
+        madhab: Madhab,
+        calculationMethod: CalculationMethod,
+        location: Location,
+        date: LocalDate
+    ): List<Prayer> {
+        val prayerTimes = getPrayerTimes(
+            location = location,
+            date = date,
+            madhab = madhab,
+            calculationMethod = calculationMethod
+        )
+        return prayerTimes.toPrayerList()
+    }
+
+    override fun getNextPrayer(
+        instant: Instant,
+        madhab: Madhab,
+        calculationMethod: CalculationMethod,
+        location: Location,
+        date: LocalDate
+    ): Prayer {
+        val prayerTimes = getPrayerTimes(
+            location = location,
+            date = date,
+            madhab = madhab,
+            calculationMethod = calculationMethod
+        )
+        val nextAdhanPrayer = prayerTimes.nextPrayer(instant)
+        val domainPrayerName = nextAdhanPrayer.toDomainName()
+        return Prayer(
+            name = domainPrayerName,
+            time = prayerTimes.toPrayerTime(domainPrayerName)
+        )
+    }
+
+    private fun getPrayerTimes(
+        location: Location,
+        date: LocalDate,
+        madhab: Madhab,
+        calculationMethod: CalculationMethod
+    ): PrayerTimes {
+
+        val coordinates = Coordinates(location.latitude, location.longitude)
+
+        val dateComponents = DateComponents(
+            date.year,
+            date.month.number,
+            date.day
+        )
+
+        val baseParams = calculationMethod.toAdhanParams()
+        val params = baseParams.copy(madhab = madhab.toAdhanMadhab())
+        return PrayerTimes(
+            coordinates = coordinates,
+            dateComponents = dateComponents,
+            calculationParameters = params
+        )
+    }
+}
