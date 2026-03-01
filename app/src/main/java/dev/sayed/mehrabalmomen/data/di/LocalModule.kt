@@ -3,8 +3,8 @@ package dev.sayed.mehrabalmomen.data.di
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
-import dev.sayed.mehrabalmomen.data.local.AzkarLocalDataSource
-import dev.sayed.mehrabalmomen.data.local.quran.AppDatabase
+import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 private const val DATASTORE_NAME = "location_prefs"

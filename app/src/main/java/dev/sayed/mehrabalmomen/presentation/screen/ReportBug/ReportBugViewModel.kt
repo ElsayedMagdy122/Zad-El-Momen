@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.ReportBug
 
 import android.util.Log
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.remote.DailyLimitExceededException
+import dev.sayed.mehrabalmomen.data.bugReport.remote.DailyLimitExceededException
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
