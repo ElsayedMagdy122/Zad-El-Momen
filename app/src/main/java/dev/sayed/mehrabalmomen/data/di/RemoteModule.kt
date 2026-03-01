@@ -1,10 +1,10 @@
 package dev.sayed.mehrabalmomen.data.di
 
 import dev.sayed.mehrabalmomen.BuildConfig
-import dev.sayed.mehrabalmomen.data.remote.BugReportRemoteDataSource
-import dev.sayed.mehrabalmomen.data.remote.BugReportRemoteDataSourceImpl
-import dev.sayed.mehrabalmomen.data.remote.BugReportRpcService
-import dev.sayed.mehrabalmomen.data.remote.BugReportStorageService
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRpcService
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportStorageService
 import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
