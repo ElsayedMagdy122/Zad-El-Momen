@@ -14,10 +14,12 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.radio.MediaRepository
-import dev.sayed.mehrabalmomen.presentation.screen.radio.MediaRepositoryImpl
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerManager
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerService
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -38,5 +40,7 @@ val presentationModule = module {
     viewModelOf(::ReportBugViewModel)
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::RadioChannelsViewModel)
-    single<MediaRepository>{ MediaRepositoryImpl(get()) }
+    single{ AudioPlayerManager(get()) }
+    single<PlayerController> { AudioPlayerManager(androidContext()) }
+    single { AudioPlayerService() }
 }
