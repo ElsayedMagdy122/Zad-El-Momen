@@ -44,6 +44,24 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
                     override fun onPlayerError(error: PlaybackException) {
                         onError?.invoke(error)
                     }
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+
+                        when (playbackState) {
+
+                            Player.STATE_BUFFERING -> {
+                                updateState(false, currentUrl)
+                            }
+
+                            Player.STATE_IDLE,
+                            Player.STATE_ENDED -> {
+                                updateState(false, currentUrl)
+                            }
+
+                            Player.STATE_READY -> {
+                                updateState(player?.isPlaying == true, currentUrl)
+                            }
+                        }
+                    }
                 })
             }
         }
