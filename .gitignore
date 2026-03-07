@@ -1,10 +1,64 @@
-*.iml
-.gradle
-/local.properties
+# Android Studio / IntelliJ
 .idea/
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+*.iml
+*.iws
+.gradle/
 local.properties
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/gradle.xml
+/.idea/assetWizardSettings.xml
+/.idea/libraries/
+/.externalNativeBuild/
+/.cxx/
+
+# Build outputs & generated files
+build/
+app/build/
+captures/
+release/
+outputs/
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.jar
+*.aar
+app/release/
+output-metadata.json
+baselineProfiles/
+
+# Gradle & cache
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# Sensitive / secret files (NEVER commit these)
+google-services.json
+GoogleService-Info.plist
+keystore.properties
+keystore.jks
+*.keystore
+*.jks
+signingConfigs/
+secrets.properties
+firebase.json
+crashlytics.properties
+
+# Logs, crashes & temporary files
+*.log
+hs_err_pid*.log
+replay_pid*.log
+crashreports/
+
+# macOS junk
+.DS_Store
+
+# Other common Android junk
+.navigation/
+proguard-rules.pro  # ← احذف هذا السطر لو عايز تتبعه
+lint-results*.xml
+lint-results*.html
+test_output/
