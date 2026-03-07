@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
 import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -18,6 +19,7 @@ class RadioChannelsViewModel(
     private val playerController: PlayerController
 ) : BaseViewModel<RadioUiState, RadioChannelsEffect>(RadioUiState()),
     RadioChannelsInteractionListener {
+    private var lastUrl: String? = null
     private var wasPlaying = false
     init {
         getRadioChannels()
@@ -29,7 +31,13 @@ class RadioChannelsViewModel(
         viewModelScope.launch {
             playerController.playerState.collectLatest { serviceState ->
 
-                if (wasPlaying && !serviceState.isPlaying && serviceState.currentUrl != null) {
+                val stoppedUnexpectedly =
+                    wasPlaying &&
+                            !serviceState.isPlaying &&
+                            serviceState.currentUrl != null &&
+                            serviceState.currentUrl == lastUrl
+
+                if (stoppedUnexpectedly) {
                     sendEffect(
                         RadioChannelsEffect.ShowToast(
                             ToastDetails(
@@ -41,6 +49,7 @@ class RadioChannelsViewModel(
                     )
                 }
 
+                lastUrl = serviceState.currentUrl
                 wasPlaying = serviceState.isPlaying
 
                 updateUiBasedOnServiceState(serviceState)
@@ -62,7 +71,7 @@ class RadioChannelsViewModel(
         }
     }
 
-    fun getRadioChannels() {
+    fun getRadioChannels1() {
         tryToCall(
             onStart = {
                 updateState {
@@ -84,21 +93,21 @@ class RadioChannelsViewModel(
                                 )
                             }}
                         .collectLatest { channels ->
-                        updateState {
-                            it.copy(
-                                channels = channels.map { channel ->
-                                    RadioUiState.RadioChannelUiState(
-                                        id = channel.id,
-                                        nameAr = channel.nameAr,
-                                        nameEn = channel.nameEn,
-                                        streamUrl = channel.streamUrl
-                                    )
-                                },
-                                isLoading = false,
-                                isNoInternet = false
-                            )
+                            updateState {
+                                it.copy(
+                                    channels = channels.map { channel ->
+                                        RadioUiState.RadioChannelUiState(
+                                            id = channel.id,
+                                            nameAr = channel.nameAr,
+                                            nameEn = channel.nameEn,
+                                            streamUrl = channel.streamUrl
+                                        )
+                                    },
+                                    isLoading = false,
+                                    isNoInternet = false
+                                )
+                            }
                         }
-                    }
                 }
             },
             onError = { error ->
@@ -106,7 +115,57 @@ class RadioChannelsViewModel(
             }
         )
     }
-
+    fun getRadioChannels() {
+        tryToCall(
+            onStart = { handleLoadingState() },
+            block = { radioRepository.getAllChannels() },
+            onSuccess = { flow -> collectChannels(flow) },
+            onError = { handleChannelsError() }
+        )
+    }
+    private fun handleLoadingState() {
+        updateState {
+            it.copy(
+                isLoading = screenState.value.channels.isEmpty(),
+                isNoInternet = false
+            )
+        }
+    }
+    private fun collectChannels(flow: kotlinx.coroutines.flow.Flow<List<RadioChannel>>) {
+        viewModelScope.launch {
+            flow
+                .catch { handleChannelsError() }
+                .collectLatest { channels ->
+                    updateState {
+                        it.copy(
+                            channels = mapChannelsToUiState(channels),
+                            isLoading = false,
+                            isNoInternet = false
+                        )
+                    }
+                }
+        }
+    }
+    private fun mapChannelsToUiState(
+        channels: List<RadioChannel>
+    ): List<RadioUiState.RadioChannelUiState> {
+        return channels.map { channel ->
+            RadioUiState.RadioChannelUiState(
+                id = channel.id,
+                nameAr = channel.nameAr,
+                nameEn = channel.nameEn,
+                streamUrl = channel.streamUrl
+            )
+        }
+    }
+    private fun handleChannelsError() {
+        updateState {
+            it.copy(
+                isNoInternet = true,
+                isLoading = false
+            )
+        }
+    }
     override fun onPlayClick(id: Int) {
         val channel = screenState.value.channels.firstOrNull { it.id == id } ?: return
         sendEffect(RadioChannelsEffect.PlaySound(channel.streamUrl, channel.nameAr))
