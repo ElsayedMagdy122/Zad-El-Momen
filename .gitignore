@@ -58,7 +58,7 @@ crashreports/
 
 # Other common Android junk
 .navigation/
-proguard-rules.pro  # ← احذف هذا السطر لو عايز تتبعه
+proguard-rules.pro  #
 lint-results*.xml
 lint-results*.html
 test_output/
