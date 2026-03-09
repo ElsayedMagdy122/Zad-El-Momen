@@ -1,8 +1,9 @@
-package dev.sayed.mehrabalmomen.data.settings
+package dev.sayed.mehrabalmomen.data.settings.repositiory
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import dev.sayed.mehrabalmomen.data.settings.SettingsKeys
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
