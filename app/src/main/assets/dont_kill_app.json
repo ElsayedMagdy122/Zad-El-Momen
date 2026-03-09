@@ -1,0 +1,526 @@
+{
+  "brands": [
+    {
+      "manufacturer": "huawei",
+      "name": "Huawei",
+      "dialog": {
+        "ar": {
+          "title": "السماح بتشغيل التطبيق في الخلفية",
+          "message": "بعض أجهزة هواوي قد تمنع تشغيل تطبيق زاد المؤمن في الخلفية مما قد يؤثر على الأذان والتنبيهات.",
+          "steps": [
+            "الإعدادات ← البطارية ← تشغيل التطبيقات (App launch)",
+            "قم بإيقاف (الإدارة التلقائية)",
+            "اختر تطبيق زاد المؤمن",
+            "فعّل الخيارات التالية:",
+            "تشغيل تلقائي",
+            "تشغيل ثانوي",
+            "تشغيل في الخلفية",
+            "الإعدادات ← البطارية ← تحسين البطارية",
+            "ابحث عن زاد المؤمن واختر (عدم السماح بالتحسين)"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "Some Huawei devices may stop Zad Al-Momen from running in the background which can affect prayer notifications.",
+          "steps": [
+            "Settings → Battery → App launch",
+            "Disable Manage automatically",
+            "Select Zad Al-Momen",
+            "Enable the following options:",
+            "Auto launch",
+            "Secondary launch",
+            "Run in background",
+            "Settings → Battery → Battery optimization",
+            "Find Zad Al-Momen and choose Don't allow"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "xiaomi",
+      "name": "Xiaomi",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "في بعض أجهزة شاومي قد يقوم نظام MIUI بإيقاف تطبيق زاد المؤمن في الخلفية مما قد يمنع الأذان والتنبيهات من العمل.",
+          "steps": [
+            "الإعدادات ← التطبيقات ← زاد المؤمن",
+            "البطارية ← اختر (بدون قيود)",
+            "الإعدادات ← التطبيقات ← الأذونات",
+            "فعّل (التشغيل التلقائي)",
+            "افتح التطبيقات الحديثة Recent Apps",
+            "اضغط مطولاً على زاد المؤمن واختر رمز القفل 🔒",
+            "افتح تطبيق Security ← البطارية ← App battery saver",
+            "اختر زاد المؤمن ← No restrictions"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Xiaomi devices MIUI may stop Zad Al-Momen from running in the background which can affect prayer notifications.",
+          "steps": [
+            "Settings → Apps → Zad Al-Momen",
+            "Battery → Select (No restrictions)",
+            "Settings → Apps → Permissions",
+            "Enable Background Autostart",
+            "Open Recent Apps",
+            "Long press Zad Al-Momen and enable the lock icon",
+            "Open Security app → Battery → App battery saver",
+            "Select Zad Al-Momen → No restrictions"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "oneplus",
+      "name": "OnePlus",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام OxygenOS في أجهزة OnePlus بإيقاف تطبيق زاد المؤمن في الخلفية مما قد يؤثر على الأذان والتنبيهات.",
+          "steps": [
+            "الإعدادات ← التطبيقات ← زاد المؤمن",
+            "البطارية ← تعطيل (تحسين البطارية)",
+            "الإعدادات ← البطارية ← تحسين البطارية",
+            "اختر زاد المؤمن ← لا تقم بالتحسين",
+            "الإعدادات ← البطارية ← التحسين المتقدم (Advanced optimization)",
+            "قم بإيقاف Deep optimization أو Adaptive Battery",
+            "افتح التطبيقات الحديثة Recent Apps",
+            "اضغط مطولاً على زاد المؤمن واختر رمز القفل 🔒"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some OnePlus devices OxygenOS may stop Zad Al-Momen in the background which can affect prayer notifications.",
+          "steps": [
+            "Settings → Apps → Zad Al-Momen",
+            "Battery → Disable Battery optimization",
+            "Settings → Battery → Battery optimization",
+            "Select Zad Al-Momen → Don't optimize",
+            "Settings → Battery → Advanced optimization",
+            "Disable Deep optimization or Adaptive Battery",
+            "Open Recent Apps",
+            "Long press Zad Al-Momen and enable the lock icon"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "samsung",
+      "name": "Samsung",
+      "dialog": {
+        "ar": {
+          "title": "إلغاء قيود البطارية",
+          "message": "قد يقوم نظام Samsung بإيقاف تطبيق زاد المؤمن في الخلفية مما قد يمنع الأذان والتنبيهات من العمل بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← التطبيقات ← زاد المؤمن",
+            "البطارية ← اختر (غير مقيّد) أو (السماح بالنشاط في الخلفية)",
+            "الإعدادات ← البطارية والعناية بالجهاز ← البطارية",
+            "حدود الاستخدام في الخلفية ← التطبيقات النائمة",
+            "احذف زاد المؤمن من Sleeping apps و Deep sleeping apps",
+            "أضف زاد المؤمن إلى قائمة Never sleeping apps",
+            "الإعدادات ← البطارية ← إعدادات إضافية",
+            "قم بإيقاف Adaptive battery",
+            "افتح التطبيقات الحديثة Recent Apps",
+            "اضغط مطولاً على زاد المؤمن واختر قفل التطبيق"
+          ]
+        },
+        "en": {
+          "title": "Remove battery restrictions",
+          "message": "Samsung may stop Zad Al-Momen from running in the background which can affect prayer notifications and alarms.",
+          "steps": [
+            "Settings → Apps → Zad Al-Momen",
+            "Battery → Select Unrestricted or Allow background activity",
+            "Settings → Battery and device care → Battery",
+            "Background usage limits → Sleeping apps",
+            "Remove Zad Al-Momen from Sleeping apps and Deep sleeping apps",
+            "Add Zad Al-Momen to Never sleeping apps",
+            "Settings → Battery → More battery settings",
+            "Disable Adaptive battery",
+            "Open Recent Apps",
+            "Long press Zad Al-Momen and lock the app"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "meizu",
+      "name": "Meizu",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام Flyme في أجهزة Meizu بإيقاف تطبيق زاد المؤمن في الخلفية مما قد يمنع الأذان والتنبيهات من العمل.",
+          "steps": [
+            "الإعدادات ← الإعدادات المتقدمة ← مدير البطارية",
+            "اختر خطة الطاقة ← Performance",
+            "الإعدادات ← الإعدادات المتقدمة ← مدير البطارية",
+            "التطبيقات المحمية Protected apps ← فعّل زاد المؤمن",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← البطارية",
+            "فعّل Power-intensive prompt",
+            "فعّل Keep running after screen off",
+            "Security ← Permissions ← Background processes",
+            "اسمح لتطبيق زاد المؤمن بالعمل في الخلفية"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "Flyme OS on some Meizu devices may stop Zad Al-Momen in the background which can affect prayer notifications.",
+          "steps": [
+            "Settings → Advanced settings → Battery manager",
+            "Set Power plan to Performance",
+            "Settings → Advanced settings → Battery manager",
+            "Protected apps → Enable Zad Al-Momen",
+            "Settings → Apps → Zad Al-Momen → Battery",
+            "Enable Power-intensive prompt",
+            "Enable Keep running after screen off",
+            "Security → Permissions → Background processes",
+            "Allow Zad Al-Momen to run in background"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "asus",
+      "name": "ASUS",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام ASUS بإيقاف تطبيق زاد المؤمن في الخلفية مما قد يمنع الأذان والتنبيهات من العمل بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← البطارية ← إدارة البطارية",
+            "اختر (حر) أو (غير مقيّد) لتطبيق زاد المؤمن",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← الأذونات",
+            "السماح للتطبيق بالعمل في الخلفية وحتى في وضع الخمول",
+            "إذا كان هناك خيار (عدم تحسين البطارية) قم بتفعيله لزاد المؤمن"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "ASUS may stop Zad Al-Momen from running in the background which can affect prayer notifications and alarms.",
+          "steps": [
+            "Settings → Battery → Battery management",
+            "Select (Free) or (Unrestricted) for Zad Al-Momen",
+            "Settings → Apps → Zad Al-Momen → Permissions",
+            "Allow background activity and idle mode",
+            "If available, enable (Don’t optimize) for Zad Al-Momen"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "wiko",
+      "name": "Wiko",
+      "dialog": {
+        "ar": {
+          "title": "إعدادات البطارية للسماح بالخلفية",
+          "message": "قد يقوم نظام Wiko بحظر تشغيل تطبيق زاد المؤمن في الخلفية بسبب وضع توفير الطاقة، مما قد يمنع الأذان والتنبيهات من العمل بشكل صحيح.",
+          "steps": [
+            "افتح Phone Assistant / Manager ← البطارية ← أوقف Eco Mode",
+            "في Battery أو Power Saver ابحث عن Optimized mode",
+            "قم بإيقاف (Optimized mode) أو أضف زاد المؤمن إلى القائمة البيضاء",
+            "في Power Saver ← الإعدادات المتقدمة ← Background apps whitelist",
+            "تأكد أن زاد المؤمن موجود في القائمة البيضاء للسماح بالخلفية",
+            "في إعدادات البطارية، قم بإيقاف Power saving و User Battery manager",
+            "ضمن إعدادات بطارية التطبيق:",
+            "App optimization → App optimized ← تعطيل",
+            "Standby wakeup optimization ← No optimize",
+            "Standby sleep optimization ← No optimize",
+            "Standby network data ← No optimize",
+            "Auto launch management → فعّل Auto‑launch و Secondary‑launch لزاد المؤمن"
+          ]
+        },
+        "en": {
+          "title": "Battery settings to allow background",
+          "message": "Wiko may block Zad Al‑Momen running in the background due to aggressive power saving which can affect prayer alarms and notifications.",
+          "steps": [
+            "Open Phone Assistant / Manager → Battery → turn off Eco Mode",
+            "In Battery or Power Saver find Optimized mode",
+            "Disable Optimized mode or whitelist Zad Al‑Momen",
+            "In Power Saver → Advanced settings → Background apps whitelist",
+            "Ensure Zad Al‑Momen is on the whitelist for background",
+            "In battery settings disable Power saving and User Battery manager",
+            "Under App’s battery settings:",
+            "App optimization → App optimized → disable",
+            "Standby wakeup optimization → No optimize",
+            "Standby sleep optimization → No optimize",
+            "Standby network data → No optimize",
+            "Auto launch management → enable Auto‑launch and Secondary‑launch for Zad Al‑Momen"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "lenovo",
+      "name": "Lenovo",
+      "dialog": {
+        "ar": {
+          "title": "تشغيل التطبيق في الخلفية",
+          "message": "في بعض أجهزة Lenovo، قد يتم قتل تطبيق زاد المؤمن عند السحب من شاشة التطبيقات الأخيرة مما يمنع الأذان والتنبيهات من العمل.",
+          "steps": [
+            "افتح شاشة التطبيقات الحديثة (Recent Apps)",
+            "اضغط مطولاً على زاد المؤمن",
+            "قم بتمكين رمز «🔒» لقفل التطبيق",
+            "تأكد من عدم سحب التطبيق بعيدًا من شاشة التطبيقات الحديثة لأن ذلك قد يوقفه فورًا"
+          ]
+        },
+        "en": {
+          "title": "Keep app running in background",
+          "message": "On some Lenovo devices, apps like Zad Al‑Momen are killed when swiped away from Recent Apps which can stop prayer alarms and background services.",
+          "steps": [
+            "Open the Recent Apps screen",
+            "Long‑press on Zad Al‑Momen",
+            "Enable the lock icon to lock the app",
+            "Avoid swiping the app away from Recent Apps as it may be killed"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "oppo",
+      "name": "Oppo",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "في بعض أجهزة Oppo قد يقوم النظام بقتل الخدمات في الخلفية عند إطفاء الشاشة مما قد يمنع الأذان والتنبيهات في تطبيق زاد المؤمن من العمل بشكل صحيح.",
+          "steps": [
+            "افتح شاشة التطبيقات الحديثة (Recent Apps) وثبّت زاد المؤمن هناك (Pin) حتى لا يتم قتله عند إغلاق الشاشة.",
+            "افتح تطبيق Security / مدير الأمان ← Startup Manager وفعّل Auto‑start لزاد المؤمن.",
+            "افتح قائمة التطبيقات ← اختر زاد المؤمن ← البطارية ← شغّل Allow background activity أو Run in background.",
+            "قم بإيقاف تحسينات البطارية (Battery optimization) للتطبيق.",
+            "إذا كان لديك خدمة تعمل في الخلفية استخدم Foreground Service مع إشعار ثابت."
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Oppo devices the system may kill background services when the screen is turned off, which can prevent prayer alarms and notifications in Zad Al‑Momen from working correctly.",
+          "steps": [
+            "Open Recent Apps and Pin Zad Al‑Momen so it isn’t killed when the screen turns off.",
+            "Open the Security / Safety app → Startup Manager and enable Auto‑start for Zad Al‑Momen.",
+            "Go to App list → Zad Al‑Momen → Battery → Enable Allow background activity or Run in background.",
+            "Turn off Battery optimization for the app.",
+            "If using a background service, use a Foreground Service with a persistent notification."
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "vivo",
+      "name": "Vivo",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام Vivo في بعض الأجهزة بوقف تشغيل تطبيق زاد المؤمن في الخلفية مما قد يؤثر على الأذان والتنبيهات.",
+          "steps": [
+            "افتح الإعدادات ← البطارية ← استهلاك البطارية في الخلفية.",
+            "قم بتفعيل (السماح بتشغيل التطبيقات في الخلفية) لتطبيق زاد المؤمن.",
+            "قم بإيقاف تحسينات البطارية (Battery optimization) من إعدادات البطارية للتطبيق.",
+            "إذا كان هناك خيار (السماح بالإطلاق التلقائي) أو (Auto‑start)، فعّله لتطبيق زاد المؤمن.",
+            "افتح التطبيقات الحديثة Recent Apps وثبّت (Pin) تطبيق زاد المؤمن حتى لا يتم قتله."
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Vivo devices the system may stop Zad Al‑Momen from running in the background which can affect prayer alarms and notifications.",
+          "steps": [
+            "Open Settings → Battery → Background battery usage.",
+            "Enable (Allow app to run in background) for Zad Al‑Momen.",
+            "Turn off Battery optimization for the app in battery settings.",
+            "If available, enable Auto‑start for Zad Al‑Momen.",
+            "Open Recent Apps and Pin Zad Al‑Momen so it isn’t killed."
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "realme",
+      "name": "Realme",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام Realme / ColorOS بإيقاف تطبيق زاد المؤمن في الخلفية أو تحسين البطارية بشكل عدواني، مما قد يمنع الأذان والتنبيهات من العمل بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← البطارية ← تحسين البطارية",
+            "ابحث عن تطبيق زاد المؤمن في القائمة",
+            "اختر (عدم تحسين) أو (لا تقم بتحسين البطارية) لـ زاد المؤمن",
+            "الإعدادات ← التطبيقات ← مدير التطبيقات",
+            "اختر زاد المؤمن ← البطارية ← السماح بالتشغيل في الخلفية",
+            "افتح التطبيقات الحديثة (Recent Apps)",
+            "اضغط مطولاً على زاد المؤمن واختر رمز القفل 🔒 حتى لا يتم قتله"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Realme / ColorOS devices the system may aggressively optimize battery and stop Zad Al‑Momen in the background which can affect prayer alarms and notifications.",
+          "steps": [
+            "Settings → Battery → Battery optimization",
+            "Find Zad Al‑Momen in the list",
+            "Select Don’t optimize or No battery optimization for Zad Al‑Momen",
+            "Settings → Apps → App management",
+            "Select Zad Al‑Momen → Battery → Allow background activity",
+            "Open Recent Apps",
+            "Long‑press Zad Al‑Momen and enable the lock icon so it isn’t killed"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "motorola",
+      "name": "Motorola",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "في بعض أجهزة Motorola قد تطبق قيود بطارية قد تمنع تشغيل تطبيق زاد المؤمن في الخلفية مما يؤثر على الأذان والتنبيهات.",
+          "steps": [
+            "الإعدادات ← البطارية ← تحسين البطارية",
+            "ابحث عن تطبيق زاد المؤمن في القائمة",
+            "اختر (عدم التحسين) أو (عدم تحسين البطارية) لـ زاد المؤمن",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← البطارية",
+            "فعّل (السماح بالنشاط في الخلفية)",
+            "افتح التطبيقات الحديثة Recent Apps وقم بقفل زاد المؤمن حتى لا يتم قتله عند السحب"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Motorola devices battery restrictions may stop Zad Al‑Momen from running in the background, affecting prayer alarms and notifications.",
+          "steps": [
+            "Settings → Battery → Battery optimization",
+            "Find Zad Al‑Momen in the list",
+            "Select Don’t optimize or No battery optimization for Zad Al‑Momen",
+            "Settings → Apps → Zad Al‑Momen → Battery",
+            "Enable Allow background activity",
+            "Open Recent Apps and lock Zad Al‑Momen so it isn’t killed when swiped away"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "blackview",
+      "name": "Blackview",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "في بعض أجهزة Blackview قد يتم قتل التطبيقات في الخلفية حتى بعد تعطيل تحسين البطارية، مما قد يمنع الأذان والتنبيهات في تطبيق زاد المؤمن من العمل بشكل صحيح.",
+          "steps": [
+            "افتح شاشة التطبيقات الحديثة (Recent Apps)",
+            "اضغط على ثلاث نقاط أو اضغط مطولاً على زاد المؤمن ثم اختر (Lock) أو رمز القفل 🔒 لمنع النظام من قتله.",
+            "افتح مدير النظام System Manager (إذا وجد) ← App Management أو Background management",
+            "فعّل السماح بالتشغيل التلقائي (Auto‑start) و السماح للخدمات في الخلفية (Allow background activity) لتطبيق زاد المؤمن.",
+            "في إعدادات البطارية ← اختر زاد المؤمن ← Background activity restrictions ← قم بإيقاف القيود (Off)",
+            "تأكد من تعطيل أي خيار لتحسين البطارية (Battery optimization) للتطبيق."
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Blackview devices apps may be killed in the background even after disabling battery optimizations, which can prevent prayer notifications and alarms in Zad Al‑Momen from working correctly.",
+          "steps": [
+            "Open the Recent Apps screen",
+            "Tap the three dots on Zad Al‑Momen or long‑press it and select (Lock) or the lock icon 🔒 so the system won’t kill it.",
+            "Open System Manager (if present) → App Management or Background management",
+            "Enable Auto‑start and Allow background activity for Zad Al‑Momen.",
+            "In Battery settings → select Zad Al‑Momen → Background activity restrictions → turn Off",
+            "Ensure you disable any Battery optimization for the app."
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "tecno",
+      "name": "Tecno",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "قد يقوم نظام Tecno/HiOS بقتل التطبيقات في الخلفية بسبب تحسينات البطارية، مما قد يمنع عمل الأذان والتنبيهات في تطبيق زاد المؤمن.",
+          "steps": [
+            "الإعدادات ← البطارية ← إدارة الطاقة (Power management أو Battery optimization).",
+            "اختر تطبيق زاد المؤمن من القائمة.",
+            "قم بتعطيل تحسين البطارية (Don’t optimize أو No battery optimization) لزاد المؤمن.",
+            "الإعدادات ← التطبيقات ← App info أو Application manager.",
+            "اختر زاد المؤمن ← البطارية ← السماح بالتشغيل في الخلفية (Allow background activity).",
+            "افتح شاشة التطبيقات الحديثة (Recent Apps).",
+            "اضغط مطولاً على زاد المؤمن واختر رمز القفل 🔒 حتى لا يتم قتله عند السحب."
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Tecno/HiOS devices the system may kill apps in the background due to battery optimization which can affect prayer alarms and notifications in Zad Al‑Momen.",
+          "steps": [
+            "Settings → Battery → Power management or Battery optimization.",
+            "Select Zad Al‑Momen in the list.",
+            "Disable battery optimization (Don’t optimize or No battery optimization) for Zad Al‑Momen.",
+            "Settings → Apps → App info or Application manager.",
+            "Select Zad Al‑Momen → Battery → Allow background activity.",
+            "Open Recent Apps screen.",
+            "Long‑press Zad Al‑Momen and enable the lock icon 🔒 so it isn’t killed when swiped away."
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "sony",
+      "name": "Sony",
+      "dialog": {
+        "ar": {
+          "title": "إعدادات البطارية ونظام STAMINA",
+          "message": "على بعض أجهزة Sony، نظام STAMINA أو خيار تحسين البطارية قد يوقف التطبيقات في الخلفية مثل زاد المؤمن، مما قد يمنع الأذان والتنبيهات من العمل بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← البطارية ← STAMINA mode",
+            "إذا كان STAMINA mode قيد التشغيل، قم بإيقافه (Off)",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← البطارية",
+            "قم بإيقاف تحسين البطارية (Battery optimization) لزاد المؤمن",
+            "الإعدادات ← التطبيقات & الإشعارات ← وصول خاص ← Power‑saving feature",
+            "أضف زاد المؤمن إلى القائمة الاستثنائية (Excepted / Don’t optimize)",
+            "تأكد أن Adaptive Battery في إعدادات البطارية مُعطّل"
+          ]
+        },
+        "en": {
+          "title": "Battery & STAMINA settings",
+          "message": "On some Sony devices, STAMINA mode or aggressive battery optimizations can stop background apps like Zad Al‑Momen, which can affect prayer alarms and notifications.",
+          "steps": [
+            "Settings → Battery → STAMINA mode",
+            "If STAMINA mode is on, turn it Off",
+            "Settings → Apps → Zad Al‑Momen → Battery",
+            "Turn off Battery optimization for Zad Al‑Momen",
+            "Settings → Apps & notifications → Advanced → Special app access → Power‑saving feature",
+            "Add Zad Al‑Momen to Excepted / Don’t optimize",
+            "Ensure Adaptive Battery (if present) is disabled in Battery settings"
+          ]
+        }
+      }
+    },
+    {
+      "manufacturer": "unihertz",
+      "name": "Unihertz",
+      "dialog": {
+        "ar": {
+          "title": "السماح للتطبيق بالعمل في الخلفية",
+          "message": "في بعض أجهزة Unihertz مثل Atom L/XL وJelly 2 وJelly Star، يوجد نظام لحظر التطبيقات في الخلفية قد يمنع عمل تطبيق زاد المؤمن بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← Intelligent assistance ← App blocker",
+            "ابحث عن زاد المؤمن في قائمة App blocker",
+            "افتح إعدادات App blocker لتطبيق زاد المؤمن",
+            "قم بإيقاف القواعد التالية إذا وجدت:",
+            "Boot blocker",
+            "Start blocker",
+            "Background blocker",
+            "Background cleanup",
+            "إذا لم يظهر App blocker في Intelligent assistance، استخدم شريط البحث في الإعدادات للعثور عليه"
+          ]
+        },
+        "en": {
+          "title": "Allow background activity",
+          "message": "On some Unihertz devices like Atom L/XL, Jelly 2, and Jelly Star, a built‑in app blocker can prevent background tasks, which may stop Zad Al‑Momen from working correctly.",
+          "steps": [
+            "Settings → Intelligent assistance → App blocker",
+            "Find Zad Al‑Momen in the App blocker list",
+            "Open App blocker settings for Zad Al‑Momen",
+            "Turn off the following if present:",
+            "Boot blocker",
+            "Start blocker",
+            "Background blocker",
+            "Background cleanup",
+            "If App blocker is not visible under Intelligent assistance, use Settings search to find it"
+          ]
+        }
+      }
+    }
+  ]
+}
