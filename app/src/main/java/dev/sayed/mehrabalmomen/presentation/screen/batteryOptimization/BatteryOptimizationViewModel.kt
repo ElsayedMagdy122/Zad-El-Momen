@@ -1,9 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import java.util.Locale
 
 class BatteryOptimizationViewModel(
     private val batteryOptimizationRepository: BatteryOptimizationRepository
@@ -12,7 +10,7 @@ class BatteryOptimizationViewModel(
         BatteryOptimizationUiState()
     ), BatteryOptimizationInteractionListener {
 
-    fun loadInstructions(manufacturer: String,isArabic: Boolean) {
+    fun loadInstructions(manufacturer: String, isArabic: Boolean) {
         tryToCall(
             block = { batteryOptimizationRepository.getBrandInstructions(manufacturer, isArabic) },
             onSuccess = { instructions ->
@@ -32,5 +30,9 @@ class BatteryOptimizationViewModel(
 
     override fun onBackClicked() {
         sendEffect(BatteryOptimizationEffect.NavigateBack)
+    }
+
+    override fun onLearnMoreClick() {
+        sendEffect(BatteryOptimizationEffect.NavigateToLearnMore)
     }
 }
