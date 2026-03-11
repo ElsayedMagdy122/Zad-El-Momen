@@ -521,6 +521,30 @@
           ]
         }
       }
+    },
+    {
+      "manufacturer": "default",
+      "name": "Default",
+      "dialog": {
+        "ar": {
+          "title": "تحقق من إعدادات التطبيق",
+          "message": "جهازك قد لا يكون مدعومًا مباشرة، تأكد من إعدادات البطارية وتشغيل تطبيق زاد المؤمن في الخلفية لضمان عمله بشكل صحيح.",
+          "steps": [
+            "الإعدادات ← البطارية ← تحسين البطارية",
+            "ابحث عن تطبيق زاد المؤمن واختر (عدم السماح بالتحسين)",
+            "تأكد من السماح لتطبيق زاد المؤمن بالتشغيل في الخلفية"
+          ]
+        },
+        "en": {
+          "title": "Check App Settings",
+          "message": "Your device may not be directly supported. Make sure battery settings allow Zad Al-Momen to run in the background.",
+          "steps": [
+            "Settings → Battery → Battery optimization",
+            "Find Zad Al-Momen and choose Don't allow",
+            "Make sure background activity is allowed for Zad Al-Momen"
+          ]
+        }
+      }
     }
   ]
 }

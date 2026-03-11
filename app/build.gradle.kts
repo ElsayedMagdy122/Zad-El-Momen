@@ -150,6 +150,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.androidx.compose.foundation)
 
     val room_version = "2.8.4"
     implementation("androidx.room:room-runtime:$room_version")
