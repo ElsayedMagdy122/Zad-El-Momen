@@ -254,4 +254,5 @@
     <string name="battery_optimization">تحسين البطارية</string>
     <string name="open_settings">فتح الإعدادات</string>
     <string name="skip_for_now">تخطي الآن</string>
+    <string name="more">معرفة المزيد</string>
 </resources>
