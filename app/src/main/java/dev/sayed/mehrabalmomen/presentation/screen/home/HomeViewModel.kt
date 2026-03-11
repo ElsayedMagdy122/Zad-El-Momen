@@ -3,6 +3,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.util.Calendar
+import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -83,7 +86,39 @@ class HomeViewModel(
             )
         }
     }
+     fun getHijriDate(isRtl:Boolean) {
+        val calendar = UmmalquraCalendar()
 
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        val locale = Locale.getDefault()
+
+        val monthsAr = listOf(
+            "محرم","صفر","ربيع الأول","ربيع الآخر",
+            "جمادى الأولى","جمادى الآخرة",
+            "رجب","شعبان","رمضان",
+            "شوال","ذو القعدة","ذو الحجة"
+        )
+
+        val monthsEn = listOf(
+            "Muharram","Safar","Rabi Al-Awwal","Rabi Al-Thani",
+            "Jumada Al-Awwal","Jumada Al-Thani",
+            "Rajab","Shaban","Ramadan",
+            "Shawwal","Dhul Qadah","Dhul Hijjah"
+        )
+
+        val monthName =
+            if (isRtl) monthsAr[month]
+            else monthsEn[month]
+
+        val date = "$day $monthName $year"
+
+        updateState {
+            it.copy(hijriDate = date)
+        }
+    }
     private fun refreshPrayersForLocation(location: Location) {
         tryToCall(
             block = {

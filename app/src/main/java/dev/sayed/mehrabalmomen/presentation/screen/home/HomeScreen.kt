@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -33,9 +35,11 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
-    val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
     RequestNotificationPermission()
-
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    LaunchedEffect(Unit) {
+        viewModel.getHijriDate(isRtl)
+    }
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             HomeEffect.NavigateToFullPrayersDetails -> {
@@ -73,8 +77,7 @@ fun HomeScreen(
         item {
             HomeAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                locationUiState = state.location,
-                onClickSettings = viewModel::onClickSettings
+                state = state,
             )
         }
         item {
