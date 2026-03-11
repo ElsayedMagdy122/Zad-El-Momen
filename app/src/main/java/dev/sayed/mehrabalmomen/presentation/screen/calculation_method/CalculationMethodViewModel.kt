@@ -23,7 +23,7 @@ class CalculationMethodViewModel (
                 settingsRepository.saveCalculationMethod(screenState.value.selectedMethod.toDomain())
             },
             onSuccess = {
-                sendEffect(CalculationMethodEffect.NavigateToLocationScreen)
+                sendEffect(CalculationMethodEffect.NavigateToBatteryOptimizationScreen)
             },
             onError = {}
         )

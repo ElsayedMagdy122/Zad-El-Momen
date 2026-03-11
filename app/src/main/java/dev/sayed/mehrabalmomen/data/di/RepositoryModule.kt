@@ -5,7 +5,7 @@ import dev.sayed.mehrabalmomen.data.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.azkar.repository.AzkarRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.repository.ReadingProgressRepositoryImpl
-import dev.sayed.mehrabalmomen.data.settings.SettingsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
 import dev.sayed.mehrabalmomen.data.bugReport.repository.BugReportRepositoryImpl
 import dev.sayed.mehrabalmomen.data.location.LocationRepositoryImpl
@@ -13,6 +13,7 @@ import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.qiblah.QiblahRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
+import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
@@ -25,6 +26,7 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -37,7 +39,7 @@ val repositoryModule = module {
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
-
+single<BatteryOptimizationRepository> { BatteryOptimizationRepositoryImpl(get(),get()) }
     single<QuranRepository> { QuranRepositoryImpl(get(), get()) }
     single<ReadingProgressRepository> { ReadingProgressRepositoryImpl(get()) }
     single <RadioRepository>{ RadioRepositoryImpl(get()) }
