@@ -70,6 +70,7 @@
 </string>
     <string name="qiblah_direction">اتجاه القبلة</string>
     <string name="prayer_times">مواقيت الصلاة</string>
+    <string name="prayer">الصلاة</string>
     <string name="today_s_prayers">صلوات اليوم</string>
     <string name="view_all">عرض الكل</string>
     <string name="hours">ساعات</string>
@@ -255,4 +256,5 @@
     <string name="open_settings">فتح الإعدادات</string>
     <string name="skip_for_now">تخطي الآن</string>
     <string name="more">معرفة المزيد</string>
+    <string name="ayah_number">آية رقم %1$s</string>
 </resources>
