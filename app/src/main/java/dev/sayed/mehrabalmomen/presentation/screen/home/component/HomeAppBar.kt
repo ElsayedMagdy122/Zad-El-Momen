@@ -20,7 +20,7 @@ fun HomeAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(top = 16.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         LocationCarousel(modifier = Modifier.padding(end = 8.dp), locationUiState = state.location)
         Spacer(modifier = Modifier.weight(1f))
