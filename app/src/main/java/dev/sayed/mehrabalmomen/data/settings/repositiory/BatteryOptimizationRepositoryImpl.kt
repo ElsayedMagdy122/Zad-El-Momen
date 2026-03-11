@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.data.settings.repositiory
 
 import android.content.Context
+import android.util.Log
 import dev.sayed.mehrabalmomen.data.settings.dto.DeviceBrand
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import kotlinx.serialization.json.Json
@@ -28,9 +29,12 @@ class BatteryOptimizationRepositoryImpl(private val context: Context, private va
     }
 
     override fun getBrandInstructions(manufacturer: String, isArabic: Boolean): List<String> {
-        val brand = loadBrands().find { it.manufacturer.equals(manufacturer, ignoreCase = true) }
+        val brands = loadBrands()
+        val brand = brands.find { it.manufacturer.equals(manufacturer, ignoreCase = true) }
+            ?: brands.find { it.manufacturer.equals("default", ignoreCase = true) }
+
         return brand?.batterySettings?.let {
-            if (isArabic) it.arabic.instructions else it.english.instructions
+            if (isArabic) it.arabic.steps else it.english.steps
         } ?: emptyList()
     }
 }
