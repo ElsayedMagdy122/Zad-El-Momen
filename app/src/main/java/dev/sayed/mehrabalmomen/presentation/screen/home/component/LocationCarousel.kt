@@ -24,7 +24,7 @@ fun LocationCarousel(
     locationUiState: HomeUiState.LocationUiState,
     modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
+        modifier = modifier.wrapContentWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
             .padding(horizontal = 8.dp, vertical = 4.dp),

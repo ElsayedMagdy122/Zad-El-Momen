@@ -51,6 +51,7 @@
     <string name="to_improve_accuracy_rotate_your_device_slowly_in_a_figure_8_motion_three_times">To improve accuracy, rotate your device slowly in a figure-8 motion three times.</string>
     <string name="qiblah_direction">Qiblah Direction</string>
     <string name="prayer_times">Prayer Times</string>
+    <string name="prayer">Prayer</string>
     <string name="today_s_prayers">Today\'s Prayers</string>
     <string name="view_all">View All</string>
     <string name="hours">Hours</string>
@@ -241,4 +242,5 @@
     <string name="open_settings">Open Settings</string>
     <string name="skip_for_now">skip for now</string>
     <string name="more">Learn more</string>
+    <string name="ayah_number">Ayah number %1$s</string>
 </resources>

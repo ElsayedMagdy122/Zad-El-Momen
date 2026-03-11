@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -80,7 +81,8 @@ private fun TilawahRow(
         Column(
             modifier = Modifier
                 .padding(start = 8.dp)
-                .weight(1f)
+                .weight(1f),
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = surahName,
@@ -88,7 +90,10 @@ private fun TilawahRow(
                 style = Theme.textStyle.label.medium
             )
             Text(
-                text = ayahId.toString().toLocalizedDigits(language = language),
+                text = localizedString(
+                    R.string.ayah_number,
+                    ayahId.toString().toLocalizedDigits(language)
+                ),
                 color = Theme.color.secondary.shadeSecondary,
                 style = Theme.textStyle.label.small
             )

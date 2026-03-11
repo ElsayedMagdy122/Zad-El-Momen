@@ -7,7 +7,8 @@ data class HomeUiState(
     val lastTilawahUi: ContinueTilawahUi = ContinueTilawahUi(),
     val time: TimeUiState = TimeUiState(),
     val prayers: List<PrayerUiState> = emptyList(),
-    val nextPrayer: PrayerUiState = PrayerUiState()
+    val nextPrayer: PrayerUiState = PrayerUiState(),
+    val hijriDate: String = ""
 ) {
     data class LocationUiState(
         val country: String = "",

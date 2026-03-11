@@ -59,15 +59,13 @@ fun BottomNavigationBar(
         Row(
             Modifier
                 .fillMaxWidth()
-                 .background(Theme.color.surfaces.surfaceLow)
-             //   .background(Theme.color.surfaces.surface)
+                .background(Theme.color.surfaces.surfaceLow)
         ) {
             items.forEachIndexed { index, item ->
 
                 val isSelected = index == selectedIndex
                 val iconTint by animateColorAsState(
                     targetValue = if (isSelected)
-                     //Theme.color.brand.brand
                         Theme.color.primary.primary
                     else
                         Theme.color.secondary.shadeSecondary,
@@ -121,8 +119,7 @@ fun BottomNavigationBar(
                         bottomEnd = 12.dp
                     )
                 )
-              //  .background(Theme.color.brand.brand)
-                .background(  color = Theme.color.primary.primary)
+                .background(color = Theme.color.primary.primary)
                 .size(indicatorWidth, 4.dp)
         )
     }
@@ -142,8 +139,8 @@ private fun PreviewBottomNavigationBar() {
         val items = listOf(
             NavItem(
                 title = "Home",
-                selectedIcon = painterResource(R.drawable.ic_prayer_rug_selected),
-                unselectedIcon = painterResource(R.drawable.ic_prayer_rug_not_selected)
+                selectedIcon = painterResource(R.drawable.ic_home_selected),
+                unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
             ),
             NavItem(
                 title = "Prayer Times",

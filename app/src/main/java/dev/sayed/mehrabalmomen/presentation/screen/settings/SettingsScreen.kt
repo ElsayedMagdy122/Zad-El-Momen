@@ -132,7 +132,8 @@ fun SettingsScreen(
             contentPadding = PaddingValues(
                 top = 24.dp,
                 start = 16.dp,
-                end = 16.dp
+                end = 16.dp,
+                bottom = 16.dp
             ),
             columns = GridCells.Adaptive(320.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -140,6 +141,7 @@ fun SettingsScreen(
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 AppBar(
+                    isBackEnabled = false,
                     onBackClick = { navController.popBackStack() },
                     title = localizedString(R.string.settings)
                 )

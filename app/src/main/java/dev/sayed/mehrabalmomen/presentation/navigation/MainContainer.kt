@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,10 +23,11 @@ import dev.sayed.mehrabalmomen.design_system.component.BottomNavigationBar
 import dev.sayed.mehrabalmomen.design_system.component.NavItem
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
-import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -41,26 +41,36 @@ fun MainContainer(
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
+        Route.AzkarScreen,
         Route.RadioScreen,
-        Route.QiblahScreen,
-        Route.QiblahScreen
+        Route.SettingsScreen
     )
 
     val bottomItems = listOf(
         NavItem(
             title = localizedString(R.string.home),
-            selectedIcon = painterResource(R.drawable.ic_prayer_rug_selected),
-            unselectedIcon = painterResource(R.drawable.ic_prayer_rug_not_selected)
+            selectedIcon = painterResource(R.drawable.ic_home_selected),
+            unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.prayer_times),
+            title = localizedString(R.string.prayer),
             selectedIcon = painterResource(R.drawable.ic_prayer_times_selected),
             unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
+        ),
+        NavItem(
+            title = localizedString(R.string.azkar),
+            selectedIcon = painterResource(R.drawable.ic_azkar_selected),
+            unselectedIcon = painterResource(R.drawable.ic_azkar_not_selected)
         ),
         NavItem(
             title = localizedString(R.string.quran_radio),
             selectedIcon = painterResource(R.drawable.ic_radio_selected),
             unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
+        ),
+        NavItem(
+            title = localizedString(R.string.settings),
+            selectedIcon = painterResource(R.drawable.ic_settings_selected),
+            unselectedIcon = painterResource(R.drawable.ic_settings_not_selected)
         )
     )
 
@@ -93,9 +103,14 @@ fun MainContainer(
             composable<Route.FullPrayerTimeView> {
                 FullPrayerTimesViewScreen(rootNavController)
             }
-
+            composable<Route.AzkarScreen> {
+                AzkarScreen(rootNavController)
+            }
             composable<Route.RadioScreen> {
                 RadioScreen(rootNavController)
+            }
+            composable<Route.SettingsScreen> {
+                SettingsScreen(rootNavController)
             }
         }
 

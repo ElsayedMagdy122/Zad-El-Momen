@@ -3,12 +3,15 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
-import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.util.Calendar
+import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -81,6 +86,41 @@ class HomeViewModel(
                     city = location.state
                 )
             )
+        }
+    }
+
+    fun getHijriDate(language: AppSettings.Language) {
+        val calendar = UmmalquraCalendar()
+
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        val monthsAr = listOf(
+            "محرم","صفر","ربيع الأول","ربيع الآخر",
+            "جمادى الأولى","جمادى الآخرة",
+            "رجب","شعبان","رمضان",
+            "شوال","ذو القعدة","ذو الحجة"
+        )
+
+        val monthsEn = listOf(
+            "Muharram","Safar","Rabi Al-Awwal","Rabi Al-Thani",
+            "Jumada Al-Awwal","Jumada Al-Thani",
+            "Rajab","Shaban","Ramadan",
+            "Shawwal","Dhul Qadah","Dhul Hijjah"
+        )
+
+        val monthName =
+            if (language == AppSettings.Language.ARABIC) monthsAr[month]
+            else monthsEn[month]
+
+        val dayStr = day.toString().toLocalizedDigits(language)
+        val yearStr = year.toString().toLocalizedDigits(language)
+
+        val date = "$dayStr $monthName $yearStr"
+
+        updateState {
+            it.copy(hijriDate = date)
         }
     }
 
@@ -272,10 +312,6 @@ class HomeViewModel(
 
     override fun onClickTilawah() {
         sendEffect(HomeEffect.NavigateToTilawah)
-    }
-
-    override fun onClickAzkar() {
-        sendEffect(HomeEffect.NavigateToAzkar)
     }
 
 }

@@ -65,6 +65,7 @@ fun AzkarScreen(
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             AppBar(
+                isBackEnabled = false,
                 onBackClick = viewModel::onClickBack,
                 title = localizedString(R.string.azkar)
             )
