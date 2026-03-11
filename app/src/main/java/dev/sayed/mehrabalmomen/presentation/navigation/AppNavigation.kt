@@ -13,6 +13,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
+import dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization.BatteryOptimizationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
@@ -90,5 +91,9 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.BookmarksListScreen> {
             BookmarksListScreen(navController = navController)
         }
+        composable<Route.BatteryOptimizationScreen> {
+            BatteryOptimizationScreen(navController = navController)
+        }
+
     }
 }

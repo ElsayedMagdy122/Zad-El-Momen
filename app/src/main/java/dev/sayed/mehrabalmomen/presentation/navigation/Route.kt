@@ -67,4 +67,7 @@ sealed interface Route {
 
     @Serializable
     data object RadioScreen
+
+    @Serializable
+    data object BatteryOptimizationScreen
 }

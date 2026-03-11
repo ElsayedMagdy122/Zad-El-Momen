@@ -5,6 +5,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization.BatteryOptimizationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookMarkListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
@@ -40,6 +41,7 @@ val presentationModule = module {
     viewModelOf(::ReportBugViewModel)
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::RadioChannelsViewModel)
+    viewModelOf(::BatteryOptimizationViewModel)
     single{ AudioPlayerManager(get()) }
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { AudioPlayerService() }
