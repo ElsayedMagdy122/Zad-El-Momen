@@ -2,5 +2,6 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio.player
 
 data class PlayerState(
     val isPlaying: Boolean = false,
-    val currentUrl: String? = null
+    val currentUrl: String? = null,
+    val isError: Boolean = false
 )
