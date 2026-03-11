@@ -26,40 +26,24 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
     private fun initPlayer() {
         if (player == null) {
             player = ExoPlayer.Builder(context).build().apply {
-
                 addListener(object : Player.Listener {
-
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        updateState(isPlaying, currentUrl)
-                    }
-
-                    override fun onMediaItemTransition(
-                        mediaItem: MediaItem?,
-                        reason: Int
-                    ) {
-                        currentUrl = mediaItem?.localConfiguration?.uri?.toString()
-                        updateState(isPlaying, currentUrl)
+                        updateState(isPlaying, currentUrl, isError = false)
                     }
 
                     override fun onPlayerError(error: PlaybackException) {
+                        scope.launch {
+                            _playerState.value = _playerState.value.copy(
+                                isPlaying = false,
+                                isError = true
+                            )
+                        }
                         onError?.invoke(error)
                     }
+
                     override fun onPlaybackStateChanged(playbackState: Int) {
-
-                        when (playbackState) {
-
-                            Player.STATE_BUFFERING -> {
-                                updateState(false, currentUrl)
-                            }
-
-                            Player.STATE_IDLE,
-                            Player.STATE_ENDED -> {
-                                updateState(false, currentUrl)
-                            }
-
-                            Player.STATE_READY -> {
-                                updateState(player?.isPlaying == true, currentUrl)
-                            }
+                        if (playbackState == Player.STATE_ENDED) {
+                            stop()
                         }
                     }
                 })
@@ -69,17 +53,13 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
 
     override fun play(url: String) {
         initPlayer()
-
         try {
-            if (player?.currentMediaItem == null || currentUrl != url) {
+            if (currentUrl != url) {
                 currentUrl = url
                 player?.setMediaItem(MediaItem.fromUri(url))
                 player?.prepare()
             }
-
             player?.play()
-            updateState(isPlaying = true, currentUrl = url)
-
         } catch (e: Exception) {
             onError?.invoke(e)
         }
@@ -87,28 +67,28 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
 
     override fun pause() {
         player?.pause()
-        updateState(isPlaying = false)
     }
 
     override fun stop() {
         player?.stop()
-        updateState(isPlaying = false, currentUrl = null)
+        currentUrl = null
+        updateState(false, null, false)
     }
 
     override fun release() {
         player?.release()
         player = null
         currentUrl = null
-        updateState(false, null)
+        updateState(false, null, false)
     }
 
     override fun setOnErrorListener(onError: (Throwable) -> Unit) {
         this.onError = onError
     }
 
-    private fun updateState(isPlaying: Boolean, currentUrl: String? = this.currentUrl) {
+    private fun updateState(isPlaying: Boolean, url: String?, isError: Boolean) {
         scope.launch {
-            _playerState.value = PlayerState(isPlaying, currentUrl)
+            _playerState.value = PlayerState(isPlaying, url, isError)
         }
     }
 }
