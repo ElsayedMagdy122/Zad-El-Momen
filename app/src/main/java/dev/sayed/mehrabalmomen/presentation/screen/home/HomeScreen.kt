@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.ContinueToTilawah
 import dev.sayed.mehrabalmomen.presentation.screen.home.component.FeaturesSection
@@ -36,9 +37,9 @@ fun HomeScreen(
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     RequestNotificationPermission()
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val language = LocalAppLocale.current
     LaunchedEffect(Unit) {
-        viewModel.getHijriDate(isRtl)
+        viewModel.getHijriDate(language)
     }
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
@@ -52,10 +53,6 @@ fun HomeScreen(
 
             HomeEffect.NavigateToSettings -> {
                 navController.navigate(Route.SettingsScreen)
-            }
-
-            HomeEffect.NavigateToAzkar -> {
-                navController.navigate(Route.AzkarScreen)
             }
 
             HomeEffect.NavigateToQuran -> {

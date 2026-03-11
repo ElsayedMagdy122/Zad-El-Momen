@@ -53,7 +53,7 @@ fun MainContainer(
             unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.prayer_times),
+            title = localizedString(R.string.prayer),
             selectedIcon = painterResource(R.drawable.ic_prayer_times_selected),
             unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
         ),

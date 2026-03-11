@@ -5,11 +5,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 import androidx.lifecycle.viewModelScope
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
-import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Dispatchers
@@ -86,14 +88,13 @@ class HomeViewModel(
             )
         }
     }
-     fun getHijriDate(isRtl:Boolean) {
+
+    fun getHijriDate(language: AppSettings.Language) {
         val calendar = UmmalquraCalendar()
 
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
         val year = calendar.get(Calendar.YEAR)
-
-        val locale = Locale.getDefault()
 
         val monthsAr = listOf(
             "محرم","صفر","ربيع الأول","ربيع الآخر",
@@ -110,15 +111,19 @@ class HomeViewModel(
         )
 
         val monthName =
-            if (isRtl) monthsAr[month]
+            if (language == AppSettings.Language.ARABIC) monthsAr[month]
             else monthsEn[month]
 
-        val date = "$day $monthName $year"
+        val dayStr = day.toString().toLocalizedDigits(language)
+        val yearStr = year.toString().toLocalizedDigits(language)
+
+        val date = "$dayStr $monthName $yearStr"
 
         updateState {
             it.copy(hijriDate = date)
         }
     }
+
     private fun refreshPrayersForLocation(location: Location) {
         tryToCall(
             block = {
@@ -307,10 +312,6 @@ class HomeViewModel(
 
     override fun onClickTilawah() {
         sendEffect(HomeEffect.NavigateToTilawah)
-    }
-
-    override fun onClickAzkar() {
-        sendEffect(HomeEffect.NavigateToAzkar)
     }
 
 }
