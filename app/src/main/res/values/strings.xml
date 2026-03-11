@@ -235,4 +235,9 @@
 
     <string name="next_prayer_in">Next prayer %1$s in :</string>
     <string name="quran_radio">Quran Radio</string>
+    <string name="please_follow_the_instructions_below_to_ensure_that_adhan_notifications_are_received">Please follow the instructions below to ensure that Adhan notifications are received.</string>
+    <string name="settings_steps">Settings Steps</string>
+    <string name="battery_optimization">Battery Optimization</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="skip_for_now">skip for now</string>
 </resources>

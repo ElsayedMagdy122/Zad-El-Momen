@@ -249,4 +249,9 @@
     </plurals>
     <string name="next_prayer_in">الصلاة القادمة %1$s بعد :</string>
     <string name="quran_radio">إذاعة القرآن</string>
+    <string name="please_follow_the_instructions_below_to_ensure_that_adhan_notifications_are_received">يرجى اتباع التعليمات الموضحة أدناه لضمان وصول إشعارات الأذان</string>
+    <string name="settings_steps">خطوات الإعدادات</string>
+    <string name="battery_optimization">تحسين البطارية</string>
+    <string name="open_settings">فتح الإعدادات</string>
+    <string name="skip_for_now">تخطي الآن</string>
 </resources>
