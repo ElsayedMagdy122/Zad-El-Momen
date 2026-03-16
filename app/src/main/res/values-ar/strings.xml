@@ -257,4 +257,29 @@
     <string name="skip_for_now">تخطي الآن</string>
     <string name="more">معرفة المزيد</string>
     <string name="ayah_number">آية رقم %1$s</string>
+    <string name="moazen" >المؤذن</string>
+    <string name="text_font">حجم الخط</string>
+    <string name="choose_moazen_description">اختر المؤذن المفضل ليتم تشغيل الأذان بصوته عند دخول وقت الصلاة</string>
+    <string name="small">صغير</string>
+    <string name="medium">متوسط</string>
+    <string name="large">كبير</string>
+    <string name="extra_large">كبير جدًا</string>
+    <string name="choose_font_size">حجم خط القرآن الكريم</string>
+    <string name="font_size_description">تحكم في حجم خط الآيات القرآنية للحصول على تجربة قراءة مريحة ومناسبة لك.</string>
+    <string name="choose_moazen">اختر المؤذن</string>
+    <string name="moazen_description">اختر المؤذن الذي تريد أن يُستخدم للأذان</string>
+
+    <string name="mozan_abed_albaset">عبد الباسط عبد الصمد</string>
+    <string name="mozan_makkah">مكة المكرمة</string>
+    <string name="mozan_mansoor_alzahrani">منصور الزهراني</string>
+    <string name="mozan_mishary_alafasi">مشاري العفاسي</string>
+    <string name="mozan_mohammed_almenshawy">محمد المنشاوي</string>
+    <string name="mozan_nasser_alqatami">ناصر القطامي</string>
+    <string name="mozan_suhaib_khatba">صهيب خطبا</string>
+    <string name="tafseer_mokhtasar">المختصر في تفسير القرآن الكريم</string>
+    <string name="tafseer_moyasser">الميسر</string>
+    <string name="choose_tafseer">اختر التفسير</string>
+    <string name="tafseer_description">اختر التفسير الذي تريد عرضه مع القرآن</string>
+    <string name="v">%1$s %2$s</string>
+    <string name="version">الإصدار</string>
 </resources>

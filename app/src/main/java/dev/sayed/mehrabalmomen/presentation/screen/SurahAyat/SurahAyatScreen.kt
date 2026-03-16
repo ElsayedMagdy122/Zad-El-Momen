@@ -221,47 +221,58 @@ private fun SurahAyatContent(
 fun TafseerBottomSheet(
     surahName: String,
     tafseerUi: TafseerUi?,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     if (tafseerUi == null) return
 
-    BottomSheetDs(onDismiss = onDismiss) {
+    BottomSheetDs(onDismiss = onDismiss, modifier = modifier) {
 
-        Text(
-            text = localizedString(R.string.al_tafseer),
-            style = Theme.textStyle.title.medium,
-            color = Theme.color.primary.primary
-        )
+        LazyColumn() {
 
-        Spacer(modifier = Modifier.height(8.dp))
+            item {
+                Text(
+                    text = localizedString(R.string.al_tafseer),
+                    style = Theme.textStyle.title.medium,
+                    color = Theme.color.primary.primary
+                )
+            }
 
-        val language = LocalAppLocale.current
+            item { Spacer(modifier = Modifier.height(8.dp)) }
 
-        tafseerUi.ayahUi?.let {
-            val ayahNumber = it.id.toString().toLocalizedDigits(language)
-            Text(
-                text = localizedString(
-                    R.string.surah,
-                    surahName,
-                    localizedString(R.string.ayah),
-                    ayahNumber
-                ),
-                style = Theme.textStyle.title.small,
-                color = Theme.color.semantic.shadeTertiary
-            )
+            item {
+                val language = LocalAppLocale.current
+
+                tafseerUi.ayahUi?.let {
+                    val ayahNumber = it.id.toString().toLocalizedDigits(language)
+
+                    Text(
+                        text = localizedString(
+                            R.string.surah,
+                            surahName,
+                            localizedString(R.string.ayah),
+                            ayahNumber
+                        ),
+                        style = Theme.textStyle.title.small,
+                        color = Theme.color.semantic.shadeTertiary
+                    )
+                }
+            }
+
+            item { Spacer(modifier = Modifier.height(12.dp)) }
+
+            item {
+                Text(
+                    text = tafseerUi.text.orEmpty(),
+                    style = Theme.textStyle.title.small.copy(
+                        textAlign = TextAlign.Justify,
+                        textDirection = TextDirection.Rtl,
+                        platformStyle = PlatformTextStyle(includeFontPadding = false)
+                    ),
+                    color = Theme.color.semantic.shadeTertiary
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = tafseerUi.text.orEmpty(),
-            style = Theme.textStyle.title.small.copy(
-                textAlign = TextAlign.Justify,
-                textDirection = TextDirection.Rtl,
-                platformStyle = PlatformTextStyle(includeFontPadding = false)
-            ),
-            color = Theme.color.semantic.shadeTertiary
-        )
     }
 }
 

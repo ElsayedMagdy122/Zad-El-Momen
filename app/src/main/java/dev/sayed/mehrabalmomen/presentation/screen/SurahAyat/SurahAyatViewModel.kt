@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
 import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -17,6 +18,7 @@ class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
     private val readingProgressRepository: ReadingProgressRepository,
     private val bookmarkRepository: BookmarkRepository,
+    private val settingsRepository: SettingsRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
     SurahAyatUiState()
@@ -29,6 +31,7 @@ class SurahAyatViewModel(
 
     init {
         loadSurahAyat()
+        observeFontSize()
     }
 
     fun onAyahVisible(ayahId: Int) {
@@ -39,7 +42,20 @@ class SurahAyatViewModel(
             )
         }
     }
+    private fun observeFontSize() {
+        viewModelScope.launch {
+            settingsRepository.observeQuranFontSize().collect { size ->
 
+                val font = QuranFontSize.entries
+                    .firstOrNull { it.sizeSp == size }
+                    ?: QuranFontSize.MEDIUM
+
+                updateState {
+                    it.copy(fontSize = font)
+                }
+            }
+        }
+    }
     private fun loadSurahAyat() {
         tryToCall(
             onStart = {

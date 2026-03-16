@@ -16,5 +16,6 @@ enum class FeatureArea(
     QURAN(R.string.quran),
     QIBLA(R.string.qiblah),
     ADHKAR(R.string.azkar),
+    RADIO(R.string.quran_radio),
     OTHER(R.string.other)
 }

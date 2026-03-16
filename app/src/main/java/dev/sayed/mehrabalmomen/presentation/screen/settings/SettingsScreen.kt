@@ -43,12 +43,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
@@ -73,6 +75,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     var toast by remember { mutableStateOf<ToastDetails?>(null) }
     val activity = LocalContext.current as Activity
+    val versionNumber = BuildConfig.VERSION_NAME
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToAbout -> {
@@ -109,15 +112,20 @@ fun SettingsScreen(
     }
     state.dialog?.let { dialog ->
         SettingsBottomSheet(
+            settingsViewModel = settingsViewModel,
+            isMoazen = dialog.type == SettingsUiState.SelectionDialogType.MOAZEN,
             items = dialog.options,
             title = localizedString(dialog.titleRes),
             description = dialog.descriptionRes?.let { localizedString(it) } ?: "",
             selectedIndex = dialog.selectedIndex,
             onConfirm = { index ->
+                settingsViewModel.stopPreview()
                 settingsViewModel.onDialogConfirm(index)
-
             },
-            onDismiss = { settingsViewModel.onDialogDismiss() }
+            onDismiss = {
+                settingsViewModel.stopPreview()
+                settingsViewModel.onDialogDismiss()
+            }
         )
     }
 
@@ -130,7 +138,6 @@ fun SettingsScreen(
 
         LazyVerticalGrid(
             contentPadding = PaddingValues(
-                top = 24.dp,
                 start = 16.dp,
                 end = 16.dp,
                 bottom = 16.dp
@@ -161,6 +168,20 @@ fun SettingsScreen(
                     SettingsItem(it, listener = settingsViewModel)
                 }
             }
+            item(span = { GridItemSpan(maxLineSpan) }) {
+
+                Text(
+                    text = stringResource(
+                        R.string.v,
+                        localizedString(R.string.version),
+                        versionNumber
+                    ),
+                    style = Theme.textStyle.label.small,
+                    color = Theme.color.secondary.shadeSecondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
         }
         toast?.let {
             PrimaryToast(
@@ -178,14 +199,17 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
+    settingsViewModel: SettingsViewModel,
     items: List<SelectionItem>,
     title: String,
     description: String,
     selectedIndex: Int,
     onConfirm: (Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    isMoazen: Boolean = false,
 ) {
     var currentSelected by remember { mutableStateOf(selectedIndex) }
+    val context = LocalContext.current
     BottomSheetDs(onDismiss = onDismiss) {
         Text(
             text = title,
@@ -202,13 +226,28 @@ fun SettingsBottomSheet(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            SingleSelectionContent(
-                items = items,
-                selectedIndex = currentSelected,
-                onItemSelected = { index ->
-                    currentSelected = index
-                }
-            )
+            if (isMoazen) {
+                SingleSelectionContentWithPreview(
+                    items = items,
+                    selectedIndex = currentSelected,
+                    onItemSelected = { index -> currentSelected = index },
+                    playSound = { index ->
+                        settingsViewModel.playPreview(
+                            index,
+                            context
+                        )
+                    },
+                    stopSound = { settingsViewModel.stopPreview() }
+                )
+            } else {
+                SingleSelectionContent(
+                    items = items,
+                    selectedIndex = currentSelected,
+                    onItemSelected = { index -> currentSelected = index }
+                )
+            }
+
+
             Spacer(modifier = Modifier.height(16.dp))
 
             PrimaryButton(
@@ -223,6 +262,68 @@ fun SettingsBottomSheet(
     }
 }
 
+@Composable
+fun SingleSelectionContentWithPreview(
+    items: List<SelectionItem>,
+    selectedIndex: Int,
+    onItemSelected: (Int) -> Unit,
+    playSound: (Int) -> Unit,
+    stopSound: () -> Unit
+) {
+    var currentlyPlayingIndex by remember { mutableStateOf<Int?>(null) }
+
+    items.forEachIndexed { index, item ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Theme.color.surfaces.surfaceLow)
+                .clickable { onItemSelected(index) }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Theme.color.surfaces.surfaceHigh)
+                    .clickable {
+                        if (currentlyPlayingIndex == index) {
+                            stopSound()
+                            currentlyPlayingIndex = null
+                        } else {
+                            stopSound()
+                            playSound(index)
+                            currentlyPlayingIndex = index
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if (currentlyPlayingIndex == index) R.drawable.ic_pause else R.drawable.ic_play
+                    ),
+                    contentDescription = null,
+                    tint = Theme.color.primary.primary,
+                    modifier = Modifier
+                        .size(24.dp)
+
+                )
+            }
+            CheckboxItem(
+                modifier = Modifier.weight(1f),
+                text = item.text?.let { localizedString(it) } ?: "",
+                description = item.description,
+                icon = item.icon?.let { painterResource(it) },
+                isChecked = selectedIndex == index,
+                onCheckedChange = { checked ->
+                    if (checked) onItemSelected(index)
+                },
+                backgroundColor = Color.Transparent
+            )
+        }
+    }
+}
 
 @Composable
 fun SingleSelectionContent(
@@ -243,11 +344,14 @@ fun SingleSelectionContent(
         )
     }
 }
+
 data class SelectionItem(
     val text: Int? = null,
     val description: String? = null,
-    val icon: Int? = null
+    val icon: Int? = null,
+    val resId: Int? = null
 )
+
 @Composable
 fun SettingsItem(
     item: SettingsUiState.SettingsItemUiState,
@@ -268,29 +372,25 @@ fun SettingsItem(
                         item.action
                     )
 
+                    SettingsUiState.SettingsAction.MOAZEN -> listener.onItemClick(item.action)
                     SettingsUiState.SettingsAction.LOCATION -> listener.onLocationClick()
                     SettingsUiState.SettingsAction.HELP_FEEDBACK -> listener.onHelpFeedbackClick()
                     SettingsUiState.SettingsAction.RATE_APP -> listener.onRateAppClick()
                     SettingsUiState.SettingsAction.ABOUT -> listener.onAboutClick()
+                    SettingsUiState.SettingsAction.TEXT_FONT -> listener.onItemClick(item.action)
+                    SettingsUiState.SettingsAction.TAFSEER -> listener.onItemClick(item.action)
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Theme.color.surfaces.surfaceHigh),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(item.icon),
-                contentDescription = null,
-                tint = Theme.color.primary.primary
-            )
-        }
+
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(item.icon),
+            contentDescription = null,
+            tint = Theme.color.primary.primary
+        )
 
         Text(
             modifier = Modifier
