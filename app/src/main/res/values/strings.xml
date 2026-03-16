@@ -262,4 +262,10 @@
     <string name="mozan_mohammed_almenshawy">Mohammed Al-Menshawy</string>
     <string name="mozan_nasser_alqatami">Nasser Al-Qatami</string>
     <string name="mozan_suhaib_khatba">Suhaib Khatba</string>
+    <string name="tafseer_mokhtasar">The Concise Interpretation of the Quran</string>
+    <string name="tafseer_moyasser">The Simplified</string>
+    <string name="choose_tafseer">Choose Tafseer</string>
+    <string name="tafseer_description">Select the tafseer you want to display with the Quran</string>
+    <string name="v">%1$s (v%2$s)</string>
+    <string name="version">Version</string>
 </resources>
