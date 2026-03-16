@@ -18,5 +18,11 @@ interface SettingsRepository {
     fun observeLocation(): Flow<Location>
     fun observeOnboardingComplete(): Flow<Boolean>
     fun observePrayerSettings(): Flow<PrayerSettings>
+    suspend fun saveQuranFontSize(size: Int)
+    fun observeQuranFontSize(): Flow<Int>
+    suspend fun saveSelectedMoazen(fileName: String)
+    fun observeSelectedMoazen(): Flow<String>
+    suspend fun saveTafseer(type: String)
+    fun observeTafseer(): Flow<String>
     fun observeAppSettings(): Flow<AppSettings>
 }
