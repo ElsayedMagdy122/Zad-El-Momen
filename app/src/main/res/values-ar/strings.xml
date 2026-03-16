@@ -280,6 +280,6 @@
     <string name="tafseer_moyasser">الميسر</string>
     <string name="choose_tafseer">اختر التفسير</string>
     <string name="tafseer_description">اختر التفسير الذي تريد عرضه مع القرآن</string>
-    <string name="v">%1$s (v%2$s)</string>
+    <string name="v">%1$s %2$s</string>
     <string name="version">الإصدار</string>
 </resources>

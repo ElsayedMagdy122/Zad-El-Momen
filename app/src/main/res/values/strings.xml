@@ -266,6 +266,6 @@
     <string name="tafseer_moyasser">The Simplified</string>
     <string name="choose_tafseer">Choose Tafseer</string>
     <string name="tafseer_description">Select the tafseer you want to display with the Quran</string>
-    <string name="v">%1$s (v%2$s)</string>
+    <string name="v">%1$s %2$s</string>
     <string name="version">Version</string>
 </resources>
