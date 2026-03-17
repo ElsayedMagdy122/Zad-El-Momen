@@ -12,7 +12,7 @@
 
 The app also features Muslim Azkar, Azan alerts, Al Quran Al-Kareem Radio and customizable settings for calculation methods and school of thought (Mathhab), providing a personalized and comfortable user experience through a simple and smooth interface.
 
-## 🚀 Features
+##  Features
 
 ### 📖 **Holy Quran & Tafsir**
 - **Complete Quran**: Full access to the Holy Quran.
@@ -26,46 +26,49 @@ The app also features Muslim Azkar, Azan alerts, Al Quran Al-Kareem Radio and cu
 - **Qibla Finder**: Easily locate the direction of the Kaaba from anywhere in the world.
 - **Azkar**: A comprehensive collection of morning, evening, and daily supplications.
 
-### ⚙️ **Personalized Experience**
+###  **Personalized Experience**
 - **Localization Support**: Full support for both **Arabic** and **English** languages.
 - **Quran Font Size Control**: Easily adjust the Holy Quran text size for comfortable reading.
 - **Customizable Settings**: Adjust calculation methods and schools of thought (Mathhab) to suit your preferences.
 - **Modern UI**: A simple, smooth, and responsive interface built with Jetpack Compose.
 - **Dark/Light Theme**: Support for system-wide theme preferences.
 
-### 🔐 **Technical Excellence**
+###  **Technical Excellence**
 - **Offline Support**: Access essential features and previously loaded content without an internet connection.
 - **Supabase Backend**: Robust data management and services.
 - **Firebase Integration**: Real-time analytics, crash reporting, and cloud messaging.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Language**: Kotlin
 - **UI Framework**: Jetpack Compose
 - **Architecture**: MVVM + Clean Architecture
 - **Dependency Injection**: Koin
-- **Backend**: Supabase
-- **Local Database**: Room
-- **Media**: ExoPlayer for audio content
-- **Calendar**: Umm al-Qura Calendar library
-- **Networking**: Ktor / Retrofit (via Supabase SDK)
-- **Image Loading**: Coil
-- **Maps & Location**: Google Maps & Location services
+- **Backend**: Supabase (PostgREST, Realtime, Storage, Functions)
+- **Local Database**: Room + DataStore Preferences
+- **Networking**: Ktor (via Supabase SDK)
+- **Asynchronous**: Kotlin Coroutines & Flow
+- **Media**: Media3 ExoPlayer (audio playback)
+- **Notifications**: Firebase Cloud Messaging (FCM)
+- **Analytics & Monitoring**: Firebase Crashlytics + Performance
+- **Maps & Location**: MapLibre Compose + Google Location Services
+- **Calendar**: Umm al-Qura Calendar
+- **Billing**: Google Play Billing
 
-## 🏗️ App Architecture
+##  App Architecture
 The app follows **Clean Architecture** principles with **MVVM** pattern, organized into layers:
 
 - **Presentation**: Jetpack Compose UI, ViewModels, and State management.
 - **Domain**: Pure business logic, Use Cases, and Repository interfaces.
-- **Data**: Repository implementation, Supabase API, and Room database.
+- **Data**: Repository implementations, Remote (Supabase) and Local (Room) data sources, and mappers.
 - **Design System**: Reusable UI components and design tokens.
 
-## 🔧 Setup Instructions
+##  Setup Instructions
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/sayed-dev/Zad-El-Momen.git
+git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
 cd Zad-El-Momen
 ```
 
