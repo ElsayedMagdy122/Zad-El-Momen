@@ -6,6 +6,8 @@
   <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-orange.svg" alt="UI">
   <img src="https://img.shields.io/badge/Architecture-MVVM-red.svg" alt="Architecture">
   <img src="https://img.shields.io/badge/DI-Koin-yellow.svg" alt="DI">
+  <a href='https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen&pcampaignid=web_share'><img alt='Get it on Google Play' src='https://img.shields.io/badge/Google%20Play-Get%20it%20on-black?logo=google-play&logoColor=white' vertical-align='middle' /></a>
+
 </div>
 
 **Zad El Momen** is an Islamic application providing everything a Muslim needs to perform worship easily and accurately. It offers the complete Holy Quran with Tafsir, highly accurate daily prayer times based on your geographical location, and a Qibla finder to facilitate prayer anywhere.
