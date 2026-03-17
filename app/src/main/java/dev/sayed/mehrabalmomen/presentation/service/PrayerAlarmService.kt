@@ -11,18 +11,24 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.PowerManager
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.utils.Constants
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_ID
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_NAME
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
 import dev.sayed.mehrabalmomen.presentation.base.MainActivity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.inject
 
 class PrayerAlarmService : Service() {
 
     private lateinit var mediaPlayer: MediaPlayer
+    private val settingsRepository: SettingsRepository by inject()
     override fun onBind(intent: Intent?) = null
 
 
@@ -38,7 +44,6 @@ class PrayerAlarmService : Service() {
         createChannel()
         val prayerName = intent?.getStringExtra(PRAYER_NAME_KEY) ?: return START_NOT_STICKY
         val prayerEnum = Prayer.PrayerName.valueOf(intent.getStringExtra(PRAYER_NAME_KEY) ?: "FAJR")
-      //  val prayerNameLocalized = getString(prayerEnum.getDisplayNameRes())
         startForeground(1, createNotification(prayerEnum.getDisplayNameRes()))
         playAzan()
 
@@ -102,19 +107,27 @@ class PrayerAlarmService : Service() {
             .build()
     }
 
-    private fun playAzan() {
-        mediaPlayer = MediaPlayer().apply {
-            setWakeMode(this@PrayerAlarmService, PowerManager.PARTIAL_WAKE_LOCK)
-            setDataSource(resources.openRawResourceFd(R.raw.azan))
-            prepare()
-            start()
+private fun playAzan() {
+    val selectedMoazenFileName = runBlocking {
+        settingsRepository.observeSelectedMoazen().first()
+    }.removeSuffix(".mp3")
+    val resId = resources.getIdentifier(selectedMoazenFileName, "raw", packageName)
+    val audioResId = if (resId != 0) resId else R.raw.azan_makkah
 
-            setOnCompletionListener {
-                stopForeground(true)
-                stopSelf()
-            }
+    val assetFileDescriptor = resources.openRawResourceFd(audioResId)
+
+    mediaPlayer = MediaPlayer().apply {
+        setWakeMode(this@PrayerAlarmService, PowerManager.PARTIAL_WAKE_LOCK)
+        setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
+        prepare()
+        start()
+        setOnCompletionListener {
+            stopForeground(true)
+            stopSelf()
         }
     }
+    assetFileDescriptor.close()
+}
     override fun onDestroy() {
         if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()

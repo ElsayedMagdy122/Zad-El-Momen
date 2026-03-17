@@ -45,15 +45,16 @@ class RadioChannelsViewModel(
 
     private fun updateUiBasedOnServiceState(serviceState: PlayerState) {
         updateState { oldState ->
-            oldState.copy(
-                channels = oldState.channels.map { channel ->
-                    val isSelected = channel.streamUrl == serviceState.currentUrl
-                    channel.copy(
-                        isPlaying = serviceState.isPlaying && isSelected,
-                        selected = isSelected
-                    )
+            val updatedChannels = oldState.channels.map { channel ->
+                val isSelected = channel.streamUrl == serviceState.currentUrl
+                val newIsPlaying = serviceState.isPlaying && isSelected
+                if (channel.isPlaying != newIsPlaying || channel.selected != isSelected) {
+                    channel.copy(isPlaying = newIsPlaying, selected = isSelected)
+                } else {
+                    channel
                 }
-            )
+            }
+            oldState.copy(channels = updatedChannels)
         }
     }
 
@@ -76,7 +77,7 @@ class RadioChannelsViewModel(
         )
     }
 
-    private fun mapChannelsToUiState(channels: List<RadioChannel>) = channels.map {
+    private fun mapChannelsToUiState(channels: List<RadioChannel>) = channels.shuffled().map {
         RadioUiState.RadioChannelUiState(it.id, it.nameAr, it.nameEn, it.streamUrl)
     }
 

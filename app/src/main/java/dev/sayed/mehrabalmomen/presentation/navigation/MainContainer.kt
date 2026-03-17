@@ -77,9 +77,7 @@ fun MainContainer(
     val currentBackStack by bottomNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
 
-    val selectedIndex = navItems.indexOfFirst {
-        it::class.qualifiedName == currentRoute
-    }.coerceAtLeast(0)
+    val selectedIndex = navItems.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
 
     Box(
         modifier = modifier
@@ -90,41 +88,32 @@ fun MainContainer(
 
         NavHost(
             navController = bottomNavController,
-            startDestination = Route.HomeScreen,
+            startDestination = Route.HomeScreen.route,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = 74.dp)
         ) {
-
-            composable<Route.HomeScreen> {
-                HomeScreen(rootNavController)
-            }
-
-            composable<Route.FullPrayerTimeView> {
-                FullPrayerTimesViewScreen(rootNavController)
-            }
-            composable<Route.AzkarScreen> {
-                AzkarScreen(rootNavController)
-            }
-            composable<Route.RadioScreen> {
-                RadioScreen(rootNavController)
-            }
-            composable<Route.SettingsScreen> {
-                SettingsScreen(rootNavController)
-            }
+            composable(Route.HomeScreen.route) { HomeScreen(rootNavController) }
+            composable(Route.FullPrayerTimeView.route) { FullPrayerTimesViewScreen(rootNavController) }
+            composable(Route.AzkarScreen.route) { AzkarScreen(rootNavController) }
+            composable(Route.RadioScreen.route) { RadioScreen(rootNavController) }
+            composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }
         }
 
         BottomNavigationBar(
             items = bottomItems,
             selectedIndex = selectedIndex,
             onItemSelected = { index ->
-                bottomNavController.navigate(navItems[index]) {
-                    popUpTo(navItems.first())
+                val route = navItems[index].route
+                bottomNavController.navigate(route) {
+                    popUpTo(bottomNavController.graph.startDestinationId) {
+                        saveState = true
+                    }
                     launchSingleTop = true
+                    restoreState = true
                 }
             },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 }

@@ -88,7 +88,7 @@ class AudioPlayerService : Service() {
         val channelId = CHANNEL_ID
         val artworkBitmap: Bitmap? = BitmapFactory.decodeResource(
             resources,
-            R.drawable.night_mosque
+            R.drawable.image_mosque_dark
         )
 
         val stopIntent = Intent(this, AudioPlayerService::class.java).apply {
@@ -111,6 +111,7 @@ class AudioPlayerService : Service() {
                 "إيقاف",
                 stopPendingIntent
             )
+            .setOnlyAlertOnce(true)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(0)

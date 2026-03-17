@@ -7,10 +7,15 @@ import dev.sayed.mehrabalmomen.data.quran.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
 import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 
-class QuranRepositoryImpl(private val context: Context, private val json: Json) : QuranRepository {
-
+class QuranRepositoryImpl(
+    private val context: Context,
+    private val json: Json,
+    private val settingsRepository: SettingsRepository
+) : QuranRepository {
     private fun getAllSurahsFromAsset(): List<SurahDto> {
         return try {
             val jsonString = context.assets.open("quran_structured.json")
@@ -23,9 +28,11 @@ class QuranRepositoryImpl(private val context: Context, private val json: Json) 
         }
     }
 
-    private fun getAllTafseerFromAsset(): List<TafseerDto> {
+    private suspend fun getAllTafseerFromAsset(): List<TafseerDto> {
         return try {
-            val jsonString = context.assets.open("tafseer.json")
+            val fileName = settingsRepository.observeTafseer().first()
+
+            val jsonString = context.assets.open(fileName)
                 .bufferedReader()
                 .use { it.readText() }
 
