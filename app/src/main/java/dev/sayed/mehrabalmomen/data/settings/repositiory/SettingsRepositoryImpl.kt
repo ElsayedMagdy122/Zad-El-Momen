@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.sayed.mehrabalmomen.data.settings.SettingsKeys
+import dev.sayed.mehrabalmomen.data.settings.SettingsKeys.SELECTED_MOAZEN
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
@@ -76,6 +77,41 @@ class SettingsRepositoryImpl(
                 )
             )
         }
+
+    override suspend fun saveQuranFontSize(size: Int) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.QURAN_FONT_SIZE] = size
+        }
+    }
+
+    override fun observeQuranFontSize(): Flow<Int> =
+        dataStore.data.map { prefs ->
+            prefs[SettingsKeys.QURAN_FONT_SIZE] ?: 20
+        }
+
+    override suspend fun saveSelectedMoazen(fileName: String) {
+        dataStore.edit { prefs ->
+            prefs[SELECTED_MOAZEN] = fileName
+        }
+    }
+    override fun observeSelectedMoazen(): Flow<String> {
+        return dataStore.data
+            .map { prefs ->
+                prefs[SELECTED_MOAZEN] ?: SettingsUiState.Moazen.AZAN_MAKKAH.fileName
+            }
+    }
+
+    override suspend fun saveTafseer(type: String) {
+        dataStore.edit {
+            it[SettingsKeys.TAFSEER_TYPE] = type
+        }
+    }
+
+    override fun observeTafseer(): Flow<String> {
+        return dataStore.data.map {
+            it[SettingsKeys.TAFSEER_TYPE] ?: "tf_ab_mokhtasar_ar.json"
+        }
+    }
 
     override fun observeAppSettings(): Flow<AppSettings> =
         dataStore.data.map { prefs ->

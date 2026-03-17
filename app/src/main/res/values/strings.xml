@@ -243,4 +243,29 @@
     <string name="skip_for_now">skip for now</string>
     <string name="more">Learn more</string>
     <string name="ayah_number">Ayah number %1$s</string>
+    <string name="moazen">Moazen</string>
+    <string name="text_font">Font Size</string>
+    <string name="choose_moazen_description">Choose your preferred Moazen to play the Azan in their voice when it is time for prayer.</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="extra_large">Extra Large</string>
+    <string name="choose_font_size">Quran Font Size</string>
+    <string name="font_size_description">Adjust the size of the Quranic text for a more comfortable reading experience.</string>
+    <string name="choose_moazen">Choose Moazen</string>
+    <string name="moazen_description">Select the Adhan voice you want to use</string>
+
+    <string name="mozan_abed_albaset">Abed Al-Baset</string>
+    <string name="mozan_makkah">Makkah</string>
+    <string name="mozan_mansoor_alzahrani">Mansoor Al-Zahrani</string>
+    <string name="mozan_mishary_alafasi">Mishary Alafasy</string>
+    <string name="mozan_mohammed_almenshawy">Mohammed Al-Menshawy</string>
+    <string name="mozan_nasser_alqatami">Nasser Al-Qatami</string>
+    <string name="mozan_suhaib_khatba">Suhaib Khatba</string>
+    <string name="tafseer_mokhtasar">The Concise Interpretation of the Quran</string>
+    <string name="tafseer_moyasser">The Simplified</string>
+    <string name="choose_tafseer">Choose Tafseer</string>
+    <string name="tafseer_description">Select the tafseer you want to display with the Quran</string>
+    <string name="v">%1$s %2$s</string>
+    <string name="version">Version</string>
 </resources>

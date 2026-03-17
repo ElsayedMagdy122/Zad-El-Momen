@@ -2,6 +2,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import SettingsUiState
 import android.app.Activity
+import android.content.Context
+import android.media.MediaPlayer
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
@@ -13,6 +15,7 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -29,12 +32,58 @@ class SettingsViewModel(
         BuildConfig.SUPPORT_25,
         BuildConfig.SUPPORT_100
     )
+    private val moazenResMap = mapOf(
+        SettingsUiState.Moazen.AZAN_ABED_ALBASET to R.raw.azan_abed_albaset,
+        SettingsUiState.Moazen.AZAN_MAKKAH to R.raw.azan_makkah,
+        SettingsUiState.Moazen.AZAN_MANSOOR_AL_ZAHRANI to R.raw.azan_mansoor_al_zahrani,
+        SettingsUiState.Moazen.AZAN_MISHARY_ALAFASI to R.raw.azan_mishary_alafasi,
+        SettingsUiState.Moazen.AZAN_MOHAMMED_ALMENSHWY to R.raw.azan_mohammed_almenshawy,
+        SettingsUiState.Moazen.AZAN_NASSER_ALQATAMI to R.raw.azan_nasser_alqatami,
+        SettingsUiState.Moazen.AZAN_SUHAIB_KHATBA to R.raw.azan_suhaib_khatba
+    )
 
     init {
         observeSettings()
         observeBillingData()
+        observeQuranFont()
+        observeTafseer()
+        observeSelectedMoazen()
         billingManager.queryProducts(supportProductIds)
     }
+
+    private var previewPlayer: MediaPlayer? = null
+
+
+    fun playPreview(index: Int, context: Context) {
+        stopPreview()
+
+        val moazen = SettingsUiState.Moazen.values().getOrNull(index)
+        if (moazen == null) {
+            return
+        }
+
+        val resId = moazenResMap[moazen]
+        if (resId == null) {
+            return
+        }
+
+        try {
+            previewPlayer = MediaPlayer.create(context.applicationContext, resId)
+            previewPlayer?.setOnCompletionListener { stopPreview() }
+            previewPlayer?.start()
+        } catch (e: Exception) {
+        }
+    }
+
+    fun stopPreview() {
+        try {
+            previewPlayer?.stop()
+            previewPlayer?.release()
+        } catch (_: Exception) {
+        }
+        previewPlayer = null
+    }
+
 
     private fun observeBillingData() {
         viewModelScope.launch {
@@ -86,6 +135,44 @@ class SettingsViewModel(
         }
     }
 
+    private fun observeQuranFont() {
+        viewModelScope.launch {
+            settingsRepository.observeQuranFontSize().collect { size ->
+                val fontSize = SettingsUiState.QuranFontSize.entries
+                    .firstOrNull { it.sizeSp == size }
+                    ?: SettingsUiState.QuranFontSize.MEDIUM
+
+                updateState { it.copy(selectedFontSize = fontSize) }
+                rebuildSections()
+            }
+        }
+    }
+
+    private fun observeTafseer() {
+        viewModelScope.launch {
+            settingsRepository.observeTafseer().collect { fileName ->
+                val tafseer = SettingsUiState.TafseerType.entries
+                    .firstOrNull { it.fileName == fileName }
+                    ?: SettingsUiState.TafseerType.MOKHTASAR
+
+                updateState { it.copy(selectedTafseer = tafseer) }
+                rebuildSections()
+            }
+        }
+    }
+
+    private fun observeSelectedMoazen() {
+        viewModelScope.launch {
+            settingsRepository.observeSelectedMoazen().collect { fileName ->
+                val moazen = SettingsUiState.Moazen.entries.firstOrNull { it.fileName == fileName }
+                    ?: SettingsUiState.Moazen.AZAN_MAKKAH
+
+                updateState { it.copy(selectedMoazen = moazen) }
+                rebuildSections()
+            }
+        }
+    }
+
     private fun rebuildSections() {
         val state = screenState.value
         val supportItems = mutableListOf(
@@ -126,7 +213,7 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.THEME
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_map_location,
+                        icon = R.drawable.ic_location,
                         title = R.string.location,
                         action = SettingsUiState.SettingsAction.LOCATION,
                         descriptionText = state.location.country.plus(", ")
@@ -136,7 +223,7 @@ class SettingsViewModel(
                 )
             ),
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.prayer_times,
+                titleRes = R.string.prayer,
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_calculation_method,
@@ -145,12 +232,36 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.CALCULATION_METHOD
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.mosque_02,
+                        icon = R.drawable.ic_mosque_02,
                         title = R.string.madhab,
                         description = state.selectedMadhab.value,
                         action = SettingsUiState.SettingsAction.MADHAB
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_moazen,
+                        title = R.string.moazen,
+                        description = getMoazenName(state.selectedMoazen),
+                        action = SettingsUiState.SettingsAction.MOAZEN
                     )
                 )
+            ),
+            SettingsUiState.SettingsSectionUiState(
+                titleRes = R.string.quran,
+                items = listOf(
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_text_font,
+                        title = R.string.text_font,
+                        description = state.selectedFontSize.value,
+                        action = SettingsUiState.SettingsAction.TEXT_FONT
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_tafseer,
+                        title = R.string.al_tafseer,
+                        description = getTafseerName(state.selectedTafseer),
+                        action = SettingsUiState.SettingsAction.TAFSEER
+                    )
+                )
+
             ),
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.support,
@@ -164,8 +275,44 @@ class SettingsViewModel(
         SettingsUiState.SettingsAction.LANGUAGE to { openLanguageDialog() },
         SettingsUiState.SettingsAction.THEME to { openThemeDialog() },
         SettingsUiState.SettingsAction.MADHAB to { openMadhabDialog() },
-        SettingsUiState.SettingsAction.CALCULATION_METHOD to { openCalculationMethodDialog() }
+        SettingsUiState.SettingsAction.CALCULATION_METHOD to { openCalculationMethodDialog() },
+        SettingsUiState.SettingsAction.TEXT_FONT to { openFontSizeDialog() }
     )
+
+    private fun getTafseerName(type: SettingsUiState.TafseerType): Int {
+        return when (type) {
+            SettingsUiState.TafseerType.MOKHTASAR -> R.string.tafseer_mokhtasar
+            SettingsUiState.TafseerType.MOYASSAR -> R.string.tafseer_moyasser
+        }
+    }
+
+    private fun openTafseerDialog() {
+        val state = screenState.value
+
+        openDialog(
+            type = SettingsUiState.SelectionDialogType.TAFSEER,
+            titleRes = R.string.choose_tafseer,
+            descriptionRes = R.string.tafseer_description,
+            options = SettingsUiState.TafseerType.entries.map {
+                SelectionItem(it.value)
+            },
+            selectedIndex = SettingsUiState.TafseerType.entries.indexOf(state.selectedTafseer)
+        )
+    }
+
+    private fun openFontSizeDialog() {
+        val state = screenState.value
+
+        openDialog(
+            type = SettingsUiState.SelectionDialogType.FONT_SIZE,
+            titleRes = R.string.choose_font_size,
+            descriptionRes = R.string.font_size_description,
+            options = SettingsUiState.QuranFontSize.entries.map {
+                SelectionItem(it.value)
+            },
+            selectedIndex = SettingsUiState.QuranFontSize.entries.indexOf(state.selectedFontSize)
+        )
+    }
 
     private fun openLanguageDialog() {
         val state = screenState.value
@@ -262,6 +409,33 @@ class SettingsViewModel(
                 else -> ""
             }
             sendEffect(SettingsEffect.LaunchDonation(productId))
+        },
+        SettingsUiState.SelectionDialogType.FONT_SIZE to { index ->
+            val selected = SettingsUiState.QuranFontSize.entries[index]
+            viewModelScope.launch(Dispatchers.IO) {
+                settingsRepository.saveQuranFontSize(selected.sizeSp)
+                updateState { it.copy(selectedFontSize = selected) }
+                rebuildSections()
+            }
+        },
+        SettingsUiState.SelectionDialogType.MOAZEN to { index ->
+            val selected = SettingsUiState.Moazen.values()[index]
+            updateState { it.copy(selectedMoazen = selected) }
+            viewModelScope.launch {
+                settingsRepository.saveSelectedMoazen(selected.fileName)
+            }
+            rebuildSections()
+        },
+        SettingsUiState.SelectionDialogType.TAFSEER to { index ->
+
+            val selected = SettingsUiState.TafseerType.entries[index]
+
+            updateState { it.copy(selectedTafseer = selected) }
+
+            viewModelScope.launch {
+                settingsRepository.saveTafseer(selected.fileName)
+            }
+
         }
     )
 
@@ -297,8 +471,27 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.ABOUT -> {
                 showSupportBottomSheet()
             }
+
+            SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
+            SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
             else -> {}
         }
+    }
+
+    private fun openMoazenDialog() {
+        val state = screenState.value
+        openDialog(
+            type = SettingsUiState.SelectionDialogType.MOAZEN,
+            titleRes = R.string.choose_moazen,
+            descriptionRes = R.string.moazen_description,
+            options = SettingsUiState.Moazen.entries.map { moazen ->
+                SelectionItem(
+                    text = getMoazenName(moazen),
+                    resId = moazenResMap[moazen]
+                )
+            },
+            selectedIndex = SettingsUiState.Moazen.entries.indexOf(state.selectedMoazen)
+        )
     }
 
     private fun showSupportBottomSheet() {

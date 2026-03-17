@@ -116,7 +116,7 @@ fun QuranTextSection(
                 )
             },
         style = TextStyle(
-            fontSize = 20.sp,
+            fontSize = state.fontSize.sizeSp.sp,
             fontFamily = FontFamily(Font(R.font.hafs)),
             lineHeight = 46.sp,
             textAlign = TextAlign.Justify,

@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.radio
 
 import android.content.Intent
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,13 +41,11 @@ fun RadioScreen(
         toast = null
     }
 
-    Crossfade(targetState = state) { state ->
-        RadioContent(
-            state = state,
-            viewModel = viewModel,
-            toast = toast
-        )
-    }
+    RadioContent(
+        state = state,
+        viewModel = viewModel,
+        toast = toast
+    )
 }
 
 @Composable
