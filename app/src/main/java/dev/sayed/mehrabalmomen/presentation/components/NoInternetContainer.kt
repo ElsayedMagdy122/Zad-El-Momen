@@ -1,12 +1,13 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,9 +25,12 @@ fun NoInternetContainer(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDark = Theme.isDark
+    val icon = if (isDark) R.drawable.no_internet_dark else R.drawable.ic_no_internet
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-            painter = painterResource(R.drawable.ic_no_internet),
+        Image(
+            modifier = Modifier.size(height = 100.dp, width = 120.dp),
+            painter = painterResource(icon),
             contentDescription = null,
         )
         Text(
