@@ -45,19 +45,35 @@ class RadioChannelsViewModel(
 
     private fun updateUiBasedOnServiceState(serviceState: PlayerState) {
         updateState { oldState ->
+
             val updatedChannels = oldState.channels.map { channel ->
+
                 val isSelected = channel.streamUrl == serviceState.currentUrl
-                val newIsPlaying = serviceState.isPlaying && isSelected
-                if (channel.isPlaying != newIsPlaying || channel.selected != isSelected) {
-                    channel.copy(isPlaying = newIsPlaying, selected = isSelected)
-                } else {
+                val isPlaying = serviceState.isPlaying && isSelected
+
+                val isLoading =
+                    if (!isSelected) false
+                    else if (isPlaying) false
+                    else channel.isLoading || serviceState.isBuffering
+
+                if (
+                    channel.isPlaying == isPlaying &&
+                    channel.selected == isSelected &&
+                    channel.isLoading == isLoading
+                ) {
                     channel
+                } else {
+                    channel.copy(
+                        isPlaying = isPlaying,
+                        selected = isSelected,
+                        isLoading = isLoading
+                    )
                 }
             }
+
             oldState.copy(channels = updatedChannels)
         }
     }
-
     fun getRadioChannels() {
         tryToCall(
             onStart = { updateState { it.copy(isLoading = it.channels.isEmpty()) } },
@@ -90,6 +106,14 @@ class RadioChannelsViewModel(
     }
 
     override fun onPauseClick(id: Int) {
+        updateState { old ->
+            old.copy(
+                channels = old.channels.map {
+                    if (it.id == id) it.copy(isPlaying = false)
+                    else it
+                }
+            )
+        }
         sendEffect(RadioChannelsEffect.PauseSound)
     }
 }

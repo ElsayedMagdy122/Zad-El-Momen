@@ -11,6 +11,7 @@ data class RadioUiState(
         val nameEn: String,
         val streamUrl: String,
         val selected: Boolean = false,
-        val isPlaying: Boolean = false
+        val isPlaying: Boolean = false,
+        val isLoading: Boolean = false
     )
 }

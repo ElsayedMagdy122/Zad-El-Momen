@@ -42,8 +42,29 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
-                        if (playbackState == Player.STATE_ENDED) {
-                            stop()
+                        when (playbackState) {
+
+                            Player.STATE_BUFFERING -> {
+                                updateState(
+                                    isPlaying = false,
+                                    url = currentUrl,
+                                    isError = false,
+                                    isBuffering = true
+                                )
+                            }
+
+                            Player.STATE_READY -> {
+                                updateState(
+                                    isPlaying = player?.isPlaying == true,
+                                    url = currentUrl,
+                                    isError = false,
+                                    isBuffering = false
+                                )
+                            }
+
+                            Player.STATE_ENDED -> {
+                                stop()
+                            }
                         }
                     }
                 })
@@ -86,9 +107,19 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
         this.onError = onError
     }
 
-    private fun updateState(isPlaying: Boolean, url: String?, isError: Boolean) {
+    private fun updateState(
+        isPlaying: Boolean,
+        url: String?,
+        isError: Boolean,
+        isBuffering: Boolean = false
+    ) {
         scope.launch {
-            _playerState.value = PlayerState(isPlaying, url, isError)
+            _playerState.value = PlayerState(
+                isPlaying = isPlaying,
+                currentUrl = url,
+                isError = isError,
+                isBuffering = isBuffering
+            )
         }
     }
 }

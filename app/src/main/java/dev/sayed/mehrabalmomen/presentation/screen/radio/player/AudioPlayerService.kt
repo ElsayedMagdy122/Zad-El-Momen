@@ -41,7 +41,7 @@ class AudioPlayerService : Service() {
 
             AudioPlayerAction.PAUSE -> {
                 playerController.pause()
-                updateForegroundNotification( titleText)
+                stopForeground(STOP_FOREGROUND_REMOVE)
             }
 
             AudioPlayerAction.STOP -> {
@@ -57,7 +57,7 @@ class AudioPlayerService : Service() {
             stopSelf()
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun updateForegroundNotification(titleText: String) {
