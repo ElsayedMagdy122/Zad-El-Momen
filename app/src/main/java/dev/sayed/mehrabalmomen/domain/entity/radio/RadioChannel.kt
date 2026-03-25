@@ -9,5 +9,6 @@ data class RadioChannel(
     val nameAr: String,
     val nameEn: String,
     val streamUrl: String,
-    val createdAt: Instant
+    val createdAt: Instant,
+    val categoryId: String
 )

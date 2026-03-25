@@ -1,10 +1,12 @@
 package dev.sayed.mehrabalmomen.data.radio.repository
 
+import dev.sayed.mehrabalmomen.data.radio.dto.CategoryDto
 import dev.sayed.mehrabalmomen.data.radio.dto.RadioChannelDto
 import dev.sayed.mehrabalmomen.data.radio.mapper.toDomain
 import dev.sayed.mehrabalmomen.data.radio.mapper.toDomainList
 import dev.sayed.mehrabalmomen.data.util.helpers.safeCall
 import dev.sayed.mehrabalmomen.data.util.helpers.safeFlow
+import dev.sayed.mehrabalmomen.domain.entity.radio.Category
 import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import io.github.jan.supabase.SupabaseClient
@@ -38,4 +40,25 @@ class RadioRepositoryImpl(
                 .decodeSingleOrNull<RadioChannelDto>()
             dto?.toDomain()
         }
+    override suspend fun getChannelsByCategory(categoryId: String): Flow<List<RadioChannel>> = flow {
+        val channelsDto: List<RadioChannelDto> = supabaseClient
+            .from("radio_channels")
+            .select {
+                filter {
+                    eq("category_id", categoryId)
+                }
+            }
+            .decodeList<RadioChannelDto>()
+
+        emit(channelsDto.toDomainList())
+    }.safeFlow()
+
+    override suspend fun getCategories(): Flow<List<Category>> = flow {
+        val result = supabaseClient
+            .from("categories")
+            .select()
+            .decodeList<CategoryDto>()
+
+        emit(result.map { it.toDomain() })
+    }.safeFlow()
 }
