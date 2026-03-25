@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -44,7 +45,9 @@ fun QiblahScreen(
     val animatedDirection by animateFloatAsState(targetValue = state.direction)
 
     HandleCompassSensor(viewModel = viewModel)
-
+    LaunchedEffect(Unit) {
+        viewModel.onScreenOpened()
+    }
     QiblahScreenContent(
         navController = navController,
        state = state
