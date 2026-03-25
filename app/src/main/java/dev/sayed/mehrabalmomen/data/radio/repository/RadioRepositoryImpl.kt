@@ -22,7 +22,7 @@ class RadioRepositoryImpl(
 
     override fun getAllChannels(): Flow<List<RadioChannel>> = flow {
         val channelsDto: List<RadioChannelDto> = supabaseClient
-            .from("radio_channels")
+            .from(RADIO_CHANNELS_TABLE)
             .select()
             .decodeList<RadioChannelDto>()
         emit(channelsDto.toDomainList())
@@ -31,7 +31,7 @@ class RadioRepositoryImpl(
     override suspend fun getChannelById(id: Int) =
         safeCall {
             val dto: RadioChannelDto? = supabaseClient
-                .from("radio_channels")
+                .from(RADIO_CHANNELS_TABLE)
                 .select {
                     filter {
                         eq("id", id)
@@ -42,7 +42,7 @@ class RadioRepositoryImpl(
         }
     override suspend fun getChannelsByCategory(categoryId: String): Flow<List<RadioChannel>> = flow {
         val channelsDto: List<RadioChannelDto> = supabaseClient
-            .from("radio_channels")
+            .from(RADIO_CHANNELS_TABLE)
             .select {
                 filter {
                     eq("category_id", categoryId)
@@ -55,10 +55,15 @@ class RadioRepositoryImpl(
 
     override suspend fun getCategories(): Flow<List<Category>> = flow {
         val result = supabaseClient
-            .from("categories")
+            .from(CATEGORIES_TABLE)
             .select()
             .decodeList<CategoryDto>()
 
         emit(result.map { it.toDomain() })
     }.safeFlow()
+
+    private companion object{
+        const val RADIO_CHANNELS_TABLE = "radio_channels"
+        const val CATEGORIES_TABLE = "categories"
+    }
 }
