@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -63,7 +64,7 @@ fun MainContainer(
             unselectedIcon = painterResource(R.drawable.ic_azkar_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.quran_radio),
+            title = localizedString(R.string.radio),
             selectedIcon = painterResource(R.drawable.ic_radio_selected),
             unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
         ),
