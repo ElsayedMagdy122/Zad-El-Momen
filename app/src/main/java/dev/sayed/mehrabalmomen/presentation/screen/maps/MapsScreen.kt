@@ -60,6 +60,9 @@ fun MapsScreen(
             }
         }
     }
+    LaunchedEffect(Unit) {
+        viewModel.onScreenOpened()
+    }
     MapsContent(
         state = state,
         cameraState = cameraState,

@@ -6,15 +6,19 @@ import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 
 class MapsViewModel(
     private val settingsRepository: SettingsRepository,
     private val locationRepository: LocationRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : BaseViewModel<MapsUiState, MapsEffect>(MapsUiState()), MapsInteractionListener {
     init {
         loadUserCurrentLocation()
     }
-
+    fun onScreenOpened() {
+        analyticsHelper.logScreen("maps")
+    }
     private fun loadUserCurrentLocation() {
         tryToCall(
             block = { locationRepository.getLocation() },

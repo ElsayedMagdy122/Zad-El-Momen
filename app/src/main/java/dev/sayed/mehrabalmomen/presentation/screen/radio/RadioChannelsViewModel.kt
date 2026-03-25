@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerState
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class RadioChannelsViewModel(
     private val radioRepository: RadioRepository,
-    private val playerController: PlayerController
+    private val playerController: PlayerController,
+    private val analyticsHelper: AnalyticsHelper
 ) : BaseViewModel<RadioUiState, RadioChannelsEffect>(RadioUiState()),
     RadioChannelsInteractionListener {
 
@@ -74,6 +76,7 @@ class RadioChannelsViewModel(
             oldState.copy(channels = updatedChannels)
         }
     }
+
     private fun loadCategories() {
         tryToCall(
             block = { radioRepository.getCategories() },
@@ -99,7 +102,14 @@ class RadioChannelsViewModel(
             onError = {}
         )
     }
+
     private fun getChannelsByCategory(categoryId: String) {
+        analyticsHelper.logEvent(
+            name = "on click category",
+            params = mapOf(
+                "category_id" to categoryId
+            )
+        )
         tryToCall(
             onStart = { updateState { it.copy(isLoading = true) } },
             block = { radioRepository.getChannelsByCategory(categoryId) },
@@ -116,13 +126,15 @@ class RadioChannelsViewModel(
                     }
                 }
             },
-            onError = {}
+            onError = { handleChannelsError() }
         )
     }
+
     fun onCategorySelected(categoryId: String) {
         updateState { it.copy(selectedCategoryId = categoryId) }
         getChannelsByCategory(categoryId)
     }
+
     fun getRadioChannels() {
         tryToCall(
             onStart = { updateState { it.copy(isLoading = it.channels.isEmpty()) } },
@@ -151,6 +163,12 @@ class RadioChannelsViewModel(
 
     override fun onPlayClick(id: Int) {
         val channel = screenState.value.channels.firstOrNull { it.id == id } ?: return
+        analyticsHelper.logEvent(
+            name = "on click play",
+            params = mapOf(
+                "channel_name" to channel.nameAr
+            )
+        )
         sendEffect(RadioChannelsEffect.PlaySound(channel.streamUrl, channel.nameAr))
     }
 
