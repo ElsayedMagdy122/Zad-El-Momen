@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
+import com.google.firebase.analytics.FirebaseAnalytics
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
@@ -20,6 +21,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerServi
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -45,4 +47,6 @@ val presentationModule = module {
     single{ AudioPlayerManager(get()) }
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { AudioPlayerService() }
+    single { FirebaseAnalytics.getInstance(get()) }
+    single { AnalyticsHelper(get()) }
 }
