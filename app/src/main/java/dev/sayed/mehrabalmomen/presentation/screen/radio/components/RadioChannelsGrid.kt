@@ -45,7 +45,7 @@ fun RadioChannelsGrid(
 
             state.isNoInternet -> {
                 NoInternetContainer(
-                    onRetryClick = { viewModel.getRadioChannels() },
+                    onRetryClick = { viewModel.loadCategories() },
                     modifier = Modifier.align(Alignment.Center)
                 )
             }

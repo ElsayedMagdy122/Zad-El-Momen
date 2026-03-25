@@ -77,29 +77,33 @@ class RadioChannelsViewModel(
         }
     }
 
-    private fun loadCategories() {
+    fun loadCategories() {
+        updateState { it.copy(isNoInternet = false, isLoading = true) }
+
         tryToCall(
             block = { radioRepository.getCategories() },
             onSuccess = { flow ->
                 viewModelScope.launch {
-                    flow.collectLatest { categories ->
+                    flow.catch { handleChannelsError() }
+                        .collectLatest { categories ->
 
-                        val default = categories.firstOrNull {
-                            it.nameEn == "Quran"
-                        }?.toUi()
+                            val default = categories.firstOrNull {
+                                it.nameEn == "Quran"
+                            }?.toUi()
 
-                        updateState {
-                            it.copy(
-                                categories = categories.map { it.toUi() },
-                                selectedCategoryId = default?.id
-                            )
+                            default?.id?.let { getChannelsByCategory(it) }
+
+                            updateState {
+                                it.copy(
+                                    categories = categories.map { it.toUi() },
+                                    selectedCategoryId = default?.id,
+                                    isNoInternet = false
+                                )
+                            }
                         }
-
-                        default?.id?.let { getChannelsByCategory(it) }
-                    }
                 }
             },
-            onError = {}
+            onError = { handleChannelsError() }
         )
     }
 
@@ -115,7 +119,8 @@ class RadioChannelsViewModel(
             block = { radioRepository.getChannelsByCategory(categoryId) },
             onSuccess = { flow ->
                 viewModelScope.launch {
-                    flow.collectLatest { channels ->
+                    flow.catch { handleChannelsError() }
+                    .collectLatest { channels ->
                         updateState {
                             it.copy(
                                 channels = mapChannelsToUiState(channels),
