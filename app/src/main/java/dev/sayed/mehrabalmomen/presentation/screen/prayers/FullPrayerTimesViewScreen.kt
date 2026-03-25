@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -53,6 +54,7 @@ fun FullPrayerTimesViewScreen(
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
+
         if (!granted) {
             Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
         }
@@ -90,6 +92,9 @@ fun FullPrayerTimesViewScreen(
             }
 
         }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.onScreenOpened()
     }
     LazyColumn(
         modifier = Modifier
