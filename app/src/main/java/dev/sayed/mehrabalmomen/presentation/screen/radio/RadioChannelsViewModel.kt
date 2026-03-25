@@ -20,7 +20,7 @@ class RadioChannelsViewModel(
     RadioChannelsInteractionListener {
 
     init {
-        getRadioChannels()
+        loadCategories()
         observePlayerState()
     }
 
@@ -73,6 +73,55 @@ class RadioChannelsViewModel(
 
             oldState.copy(channels = updatedChannels)
         }
+    }
+    private fun loadCategories() {
+        tryToCall(
+            block = { radioRepository.getCategories() },
+            onSuccess = { flow ->
+                viewModelScope.launch {
+                    flow.collectLatest { categories ->
+
+                        val default = categories.firstOrNull {
+                            it.nameEn == "Quran"
+                        }?.toUi()
+
+                        updateState {
+                            it.copy(
+                                categories = categories.map { it.toUi() },
+                                selectedCategoryId = default?.id
+                            )
+                        }
+
+                        default?.id?.let { getChannelsByCategory(it) }
+                    }
+                }
+            },
+            onError = {}
+        )
+    }
+    private fun getChannelsByCategory(categoryId: String) {
+        tryToCall(
+            onStart = { updateState { it.copy(isLoading = true) } },
+            block = { radioRepository.getChannelsByCategory(categoryId) },
+            onSuccess = { flow ->
+                viewModelScope.launch {
+                    flow.collectLatest { channels ->
+                        updateState {
+                            it.copy(
+                                channels = mapChannelsToUiState(channels),
+                                isLoading = false
+                            )
+                        }
+                        updateUiBasedOnServiceState(playerController.playerState.value)
+                    }
+                }
+            },
+            onError = {}
+        )
+    }
+    fun onCategorySelected(categoryId: String) {
+        updateState { it.copy(selectedCategoryId = categoryId) }
+        getChannelsByCategory(categoryId)
     }
     fun getRadioChannels() {
         tryToCall(
