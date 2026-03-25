@@ -18,5 +18,7 @@ data class RadioChannelDto(
     val streamUrl: String,
 
     @SerialName("created_at")
-    val createdAt: String
+    val createdAt: String,
+    @SerialName("category_id")
+    val categoryId: String
 )
