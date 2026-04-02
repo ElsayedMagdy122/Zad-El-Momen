@@ -64,9 +64,6 @@ fun HomeScreen(
             }
         }
     }
-    LaunchedEffect(Unit) {
-        viewModel.onScreenOpened()
-    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
