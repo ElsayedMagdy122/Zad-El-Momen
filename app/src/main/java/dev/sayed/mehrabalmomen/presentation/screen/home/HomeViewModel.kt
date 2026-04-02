@@ -46,9 +46,7 @@ class HomeViewModel(
         observeContinueTilawah()
     }
 
-    fun onScreenOpened() {
-        analyticsHelper.logScreen("home")
-    }
+
 
     private fun observeLocationChanges() {
         viewModelScope.launch(Dispatchers.IO) {
