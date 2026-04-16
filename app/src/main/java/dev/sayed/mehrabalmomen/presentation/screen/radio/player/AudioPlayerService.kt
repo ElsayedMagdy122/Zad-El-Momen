@@ -18,11 +18,17 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.MEDIA_FOREGROUND_ID
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.NOTIFICATION_TITLE
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.STREAM_URL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class AudioPlayerService : Service() {
 
     private val playerController: PlayerController by inject()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -35,8 +41,10 @@ class AudioPlayerService : Service() {
 
         when (action) {
             AudioPlayerAction.PLAY -> url?.let {
-                playerController.play(it)
-                updateForegroundNotification( titleText)
+                showForegroundNotification(titleText)
+                serviceScope.launch {
+                    playerController.play(it)
+                }
             }
 
             AudioPlayerAction.PAUSE -> {
@@ -60,37 +68,30 @@ class AudioPlayerService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun updateForegroundNotification(titleText: String) {
-        val notification = buildNotification(titleText)
+    private fun showForegroundNotification(titleText: String) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannel(channel)
         }
 
+        val notification = buildNotification(titleText)
         startForeground(MEDIA_FOREGROUND_ID, notification)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        serviceScope.cancel()
         playerController.stop()
         playerController.release()
     }
 
-    private fun buildNotification(
-        titleText: String
-    ): Notification {
-        val channelId = CHANNEL_ID
-        val artworkBitmap: Bitmap? = BitmapFactory.decodeResource(
-            resources,
-            R.drawable.image_mosque_dark
-        )
-
+    private fun buildNotification(titleText: String): Notification {
         val stopIntent = Intent(this, AudioPlayerService::class.java).apply {
             putExtra(ACTION_SENDED, AudioPlayerAction.STOP.name)
         }
@@ -100,24 +101,17 @@ class AudioPlayerService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val builder = NotificationCompat.Builder(this, channelId)
+        return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("اذاعة القران الكريم")
             .setContentText(titleText)
             .setSmallIcon(R.drawable.ic_radio_selected)
-            .setLargeIcon(artworkBitmap)
             .setOngoing(true)
-            .addAction(
-                R.drawable.ic_stop,
-                "إيقاف",
-                stopPendingIntent
-            )
+            .addAction(R.drawable.ic_stop, "إيقاف", stopPendingIntent)
             .setOnlyAlertOnce(true)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(0)
             )
-
-        return builder.build()
+            .build()
     }
-
 }
