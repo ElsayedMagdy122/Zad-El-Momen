@@ -27,9 +27,11 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Create google-services.json
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
         run: |
           mkdir -p app/
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > app/google-services.json
 
       - name: Build Release
         env:
@@ -50,12 +52,13 @@ jobs:
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          keyPassword: ${{ ${{ secrets.KEY_PASSWORD }} }}
+          buildToolsVersion: "35.0.0"
 
       - name: Get version name
         id: version
         run: |
-          VERSION_NAME=$(grep versionName app/build.gradle | head -1 | awk -F '"' '{print $2}')
+          VERSION_NAME=$(grep "versionName =" app/build.gradle.kts | head -1 | awk -F '"' '{print $2}')
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       - name: Create GitHub Release
