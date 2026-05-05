@@ -26,15 +26,17 @@ jobs:
       - name: Grant Permission to Gradle
         run: chmod +x ./gradlew
 
-      - name: Create google-services.json
-        env:
-          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+      - name: Create Configuration Files
+
         run: |
           mkdir -p app/
-          echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > app/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+        
+          echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > app/keystore.jks
 
-      - name: Build Release
+      - name: Build Release APK (Signed via Gradle)
         env:
+
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           SUPPORT_1: ${{ secrets.SUPPORT_1 }}
@@ -42,23 +44,14 @@ jobs:
           SUPPORT_10: ${{ secrets.SUPPORT_10 }}
           SUPPORT_25: ${{ secrets.SUPPORT_25 }}
           SUPPORT_100: ${{ secrets.SUPPORT_100 }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          ALIAS: ${{ secrets.ALIAS }}
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-          buildToolsVersion: "35.0.0"
-
       - name: Get version name
-        id: version
         run: |
-          VERSION_NAME=$(grep "versionName =" app/build.gradle.kts | head -1 | awk -F '"' '{print $2}')
+          VERSION_NAME=$(grep 'versionName =' app/build.gradle.kts | head -1 | awk -F '"' '{print $2}')
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       - name: Create GitHub Release
@@ -66,6 +59,6 @@ jobs:
         with:
           tag_name: v${{ env.VERSION_NAME }}-${{ github.run_number }}
           name: Release v${{ env.VERSION_NAME }}
-          files: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          files: app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
