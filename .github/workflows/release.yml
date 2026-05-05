@@ -52,7 +52,7 @@ jobs:
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ ${{ secrets.KEY_PASSWORD }} }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: "35.0.0"
 
       - name: Get version name
