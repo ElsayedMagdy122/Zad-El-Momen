@@ -1,64 +1,58 @@
-name: Auto Release
 
-on:
-  push:
-    branches:
-      - main
+  name: Auto Release on Merge
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
+  on:
+    push:
+      branches:
+        - main
 
-    permissions:
-      contents: write
+  jobs:
+    publish-release:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+        - name: Setup JDK 17
+          uses: actions/setup-java@v4
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+            cache: gradle
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
+        - name: Grant Permission to Gradle
+          run: chmod +x ./gradlew
 
-      - name: Grant Permission to Gradle
-        run: chmod +x ./gradlew
+        - name: Create google-services.json
+          run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
 
-      - name: Create Configuration Files
+        - name: Build Release APK
+          env:
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+            SUPPORT_1: ${{ secrets.SUPPORT_1 }}
+            SUPPORT_5: ${{ secrets.SUPPORT_5 }}
+            SUPPORT_10: ${{ secrets.SUPPORT_10 }}
+            SUPPORT_25: ${{ secrets.SUPPORT_25 }}
+            SUPPORT_100: ${{ secrets.SUPPORT_100 }}
+          run: ./gradlew assembleRelease
 
-        run: |
-          mkdir -p app/
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
-        
-          echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > app/keystore.jks
+        - name: Sign APK
+          uses: r0adkll/sign-android-release@v1
+          id: sign_app
+          with:
+            releaseDirectory: app/build/outputs/apk/release
+            signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+            alias: ${{ secrets.ALIAS }}
+            keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+            keyPassword: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Build Release APK (Signed via Gradle)
-        env:
-
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          SUPPORT_1: ${{ secrets.SUPPORT_1 }}
-          SUPPORT_5: ${{ secrets.SUPPORT_5 }}
-          SUPPORT_10: ${{ secrets.SUPPORT_10 }}
-          SUPPORT_25: ${{ secrets.SUPPORT_25 }}
-          SUPPORT_100: ${{ secrets.SUPPORT_100 }}
-          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          ALIAS: ${{ secrets.ALIAS }}
-        run: ./gradlew assembleRelease --stacktrace
-
-      - name: Get version name
-        run: |
-          VERSION_NAME=$(grep 'versionName =' app/build.gradle.kts | head -1 | awk -F '"' '{print $2}')
-          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ env.VERSION_NAME }}-${{ github.run_number }}
-          name: Release v${{ env.VERSION_NAME }}
-          files: app/build/outputs/apk/release/*.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v1
+          with:
+            tag_name: v1.0.${{ github.run_number }}
+            name: "Release v1.0.${{ github.run_number }}"
+            files: ${{ steps.sign_app.outputs.signedReleaseFile }}
+            generate_release_notes: true
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
