@@ -14,6 +14,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("keystore.jks")
+            storePassword = System.getenv("KEY_STORE_PASSWORD")
+            keyAlias = System.getenv("ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
     namespace = "dev.sayed.mehrabalmomen"
     compileSdk {
         version = release(36)
