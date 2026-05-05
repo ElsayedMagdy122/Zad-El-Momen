@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.PlatformTextStyle
@@ -28,6 +29,10 @@ import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatUiState
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun QuranTextSection(
@@ -36,6 +41,7 @@ fun QuranTextSection(
     onClearSelection: () -> Unit,
     onAyaVisible: (Int) -> Unit,
     scrollState: LazyListState,
+    textSectionIndex: Int,
     onCalculatedPosition: (Float) -> Unit
 ) {
     val color = Theme.color.primary.primary
@@ -58,28 +64,37 @@ fun QuranTextSection(
             }
         }
     }
-
     LaunchedEffect(scrollState, textLayoutResult) {
-        androidx.compose.runtime.snapshotFlow {
-            scrollState.firstVisibleItemScrollOffset
-        }.collect { offset ->
-            textLayoutResult?.let { layout ->
-                val line = layout.getLineForVerticalPosition(offset.toFloat())
-                val charOffset = layout.getLineStart(line)
+        snapshotFlow {
+            scrollState.layoutInfo.visibleItemsInfo
+        }
+            .map { visibleItems ->
 
-                val visibleAyahId = surahText
-                    .getStringAnnotations(AYA_ID, charOffset, charOffset)
-                    .firstOrNull()
-                    ?.item
-                    ?.toInt()
+                val textItem = visibleItems.firstOrNull { it.index == textSectionIndex }
+                textItem?.let { item ->
 
-                visibleAyahId?.let {
-                    onAyaVisible(it)
+                    textLayoutResult?.let { layout ->
+
+                        val relativeTop = -item.offset.toFloat()
+
+                        val line = layout.getLineForVerticalPosition(relativeTop)
+                        val charOffset = layout.getLineStart(line)
+
+                        surahText
+                            .getStringAnnotations(AYA_ID, charOffset, charOffset)
+                            .firstOrNull()
+                            ?.item
+                            ?.toInt()
+                    }
                 }
             }
-        }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .debounce(300)
+            .collect { ayahId ->
+                onAyaVisible(ayahId)
+            }
     }
-
     Text(
         text = surahText,
         onTextLayout = { layout ->

@@ -33,7 +33,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 12
+        versionCode = 14
         versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -151,6 +151,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.firebase.analytics)
 
     val room_version = "2.8.4"
     implementation("androidx.room:room-runtime:$room_version")

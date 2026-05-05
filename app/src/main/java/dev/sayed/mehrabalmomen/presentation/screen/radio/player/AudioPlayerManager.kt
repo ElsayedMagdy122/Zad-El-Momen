@@ -2,6 +2,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio.player
 
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -18,12 +20,14 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
     private var player: ExoPlayer? = null
     private var onError: ((Throwable) -> Unit)? = null
     private var currentUrl: String? = null
+    private var pendingUrl: String? = null
 
     private val scope = CoroutineScope(Dispatchers.Main)
+    private val mainHandler = Handler(Looper.getMainLooper())
     private val _playerState = MutableStateFlow(PlayerState())
     override val playerState: StateFlow<PlayerState> = _playerState.asStateFlow()
 
-    private fun initPlayer() {
+    private fun ensurePlayerInitialized() {
         if (player == null) {
             player = ExoPlayer.Builder(context).build().apply {
                 addListener(object : Player.Listener {
@@ -42,8 +46,28 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
                     }
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
-                        if (playbackState == Player.STATE_ENDED) {
-                            stop()
+                        when (playbackState) {
+                            Player.STATE_BUFFERING -> {
+                                updateState(
+                                    isPlaying = false,
+                                    url = currentUrl,
+                                    isError = false,
+                                    isBuffering = true
+                                )
+                            }
+
+                            Player.STATE_READY -> {
+                                updateState(
+                                    isPlaying = player?.isPlaying == true,
+                                    url = currentUrl,
+                                    isError = false,
+                                    isBuffering = false
+                                )
+                            }
+
+                            Player.STATE_ENDED -> {
+                                stop()
+                            }
                         }
                     }
                 })
@@ -52,16 +76,23 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
     }
 
     override fun play(url: String) {
-        initPlayer()
-        try {
-            if (currentUrl != url) {
-                currentUrl = url
-                player?.setMediaItem(MediaItem.fromUri(url))
-                player?.prepare()
+        updateState(isPlaying = false, url = url, isError = false, isBuffering = true)
+        pendingUrl = url
+        
+        mainHandler.post {
+            try {
+                ensurePlayerInitialized()
+                val urlToPlay = pendingUrl ?: return@post
+                if (currentUrl != urlToPlay) {
+                    currentUrl = urlToPlay
+                    player?.setMediaItem(MediaItem.fromUri(urlToPlay))
+                    player?.prepare()
+                }
+                player?.play()
+            } catch (e: Exception) {
+                updateState(isPlaying = false, url = url, isError = true, isBuffering = false)
+                onError?.invoke(e)
             }
-            player?.play()
-        } catch (e: Exception) {
-            onError?.invoke(e)
         }
     }
 
@@ -72,6 +103,7 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
     override fun stop() {
         player?.stop()
         currentUrl = null
+        pendingUrl = null
         updateState(false, null, false)
     }
 
@@ -79,6 +111,7 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
         player?.release()
         player = null
         currentUrl = null
+        pendingUrl = null
         updateState(false, null, false)
     }
 
@@ -86,9 +119,19 @@ class AudioPlayerManager(private val context: Context) : PlayerController {
         this.onError = onError
     }
 
-    private fun updateState(isPlaying: Boolean, url: String?, isError: Boolean) {
+    private fun updateState(
+        isPlaying: Boolean,
+        url: String?,
+        isError: Boolean,
+        isBuffering: Boolean = false
+    ) {
         scope.launch {
-            _playerState.value = PlayerState(isPlaying, url, isError)
+            _playerState.value = PlayerState(
+                isPlaying = isPlaying,
+                currentUrl = url,
+                isError = isError,
+                isBuffering = isBuffering
+            )
         }
     }
 }

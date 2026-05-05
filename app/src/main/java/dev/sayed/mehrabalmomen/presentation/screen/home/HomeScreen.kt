@@ -64,7 +64,6 @@ fun HomeScreen(
             }
         }
     }
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
