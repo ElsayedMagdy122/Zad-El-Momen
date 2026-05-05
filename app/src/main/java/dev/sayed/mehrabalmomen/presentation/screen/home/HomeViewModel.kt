@@ -12,6 +12,7 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.util.Calendar
-import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -33,7 +33,8 @@ class HomeViewModel(
     private val prayerRepository: PrayerRepository,
     private val readingProgressRepository: ReadingProgressRepository,
     private val settingsRepository: SettingsRepository,
-    private val quranRepository: QuranRepository
+    private val quranRepository: QuranRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -44,6 +45,8 @@ class HomeViewModel(
         observeLocationChanges()
         observeContinueTilawah()
     }
+
+
 
     private fun observeLocationChanges() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -97,17 +100,17 @@ class HomeViewModel(
         val year = calendar.get(Calendar.YEAR)
 
         val monthsAr = listOf(
-            "محرم","صفر","ربيع الأول","ربيع الآخر",
-            "جمادى الأولى","جمادى الآخرة",
-            "رجب","شعبان","رمضان",
-            "شوال","ذو القعدة","ذو الحجة"
+            "محرم", "صفر", "ربيع الأول", "ربيع الآخر",
+            "جمادى الأولى", "جمادى الآخرة",
+            "رجب", "شعبان", "رمضان",
+            "شوال", "ذو القعدة", "ذو الحجة"
         )
 
         val monthsEn = listOf(
-            "Muharram","Safar","Rabi Al-Awwal","Rabi Al-Thani",
-            "Jumada Al-Awwal","Jumada Al-Thani",
-            "Rajab","Shaban","Ramadan",
-            "Shawwal","Dhul Qadah","Dhul Hijjah"
+            "Muharram", "Safar", "Rabi Al-Awwal", "Rabi Al-Thani",
+            "Jumada Al-Awwal", "Jumada Al-Thani",
+            "Rajab", "Shaban", "Ramadan",
+            "Shawwal", "Dhul Qadah", "Dhul Hijjah"
         )
 
         val monthName =
@@ -307,10 +310,16 @@ class HomeViewModel(
     }
 
     override fun onClickQuran() {
+        analyticsHelper.logEvent(
+            name = "on click surah list"
+        )
         sendEffect(HomeEffect.NavigateToQuran)
     }
 
     override fun onClickTilawah() {
+        analyticsHelper.logEvent(
+            name = "on click continue to tilawah"
+        )
         sendEffect(HomeEffect.NavigateToTilawah)
     }
 

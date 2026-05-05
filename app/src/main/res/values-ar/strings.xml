@@ -249,7 +249,7 @@
         <item quantity="other">%s ثواني</item>
     </plurals>
     <string name="next_prayer_in">الصلاة القادمة %1$s بعد :</string>
-    <string name="quran_radio">إذاعة القرآن</string>
+    <string name="quran_radio">إذاعات إسلامية</string>
     <string name="please_follow_the_instructions_below_to_ensure_that_adhan_notifications_are_received">يرجى اتباع التعليمات الموضحة أدناه لضمان وصول إشعارات الأذان</string>
     <string name="settings_steps">خطوات الإعدادات</string>
     <string name="battery_optimization">تحسين البطارية</string>
@@ -282,4 +282,5 @@
     <string name="tafseer_description">اختر التفسير الذي تريد عرضه مع القرآن</string>
     <string name="v">%1$s %2$s</string>
     <string name="version">الإصدار</string>
+    <string name="radio">إذاعة</string>
 </resources>

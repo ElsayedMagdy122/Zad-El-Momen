@@ -4,21 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RadioChannelDto(
+data class CategoryDto(
     @SerialName("id")
-    val id: Int,
+    val id: String,
 
     @SerialName("name_ar")
     val nameAr: String,
 
     @SerialName("name_en")
-    val nameEn: String,
-
-    @SerialName("stream_url")
-    val streamUrl: String,
-
-    @SerialName("created_at")
-    val createdAt: String,
-    @SerialName("category_id")
-    val categoryId: String
+    val nameEn: String
 )

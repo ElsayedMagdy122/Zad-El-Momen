@@ -5,12 +5,14 @@ import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import kotlinx.coroutines.flow.first
 
 class QiblahViewModel(
     private val qiblahRepository: QiblahRepository,
     private val settingsRepository: SettingsRepository,
-    private val locationRepository: LocationRepository
+    private val locationRepository: LocationRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) :
     BaseViewModel<QiblahUiState, QiblahEffect>(QiblahUiState()) {
     var fixedQiblaDirection: Float = Float.NaN
@@ -20,7 +22,9 @@ class QiblahViewModel(
         getQiblahDirection()
         getLocation()
     }
-
+    fun onScreenOpened() {
+        analyticsHelper.logScreen("qiblah")
+    }
     private fun getQiblahDirection() {
         tryToCall(
             block = {

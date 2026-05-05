@@ -17,6 +17,7 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
+import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import dev.sayed.mehrabalmomen.presentation.utils.isIgnoringBatteryOptimizations
@@ -41,6 +42,7 @@ class FullPrayerTimesViewModel(
     private val settingsRepository: SettingsRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val analyticsHelper: AnalyticsHelper,
     private val context: Context
 ) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
     FullPrayerTimeInteractionListener {
@@ -80,7 +82,9 @@ class FullPrayerTimesViewModel(
                 }
         }
     }
-
+    fun onScreenOpened() {
+        analyticsHelper.logScreen("Prayer times")
+    }
     private fun getDailyPrayers() {
         tryToCall(
             block = ::getDailyPrayersBlock,

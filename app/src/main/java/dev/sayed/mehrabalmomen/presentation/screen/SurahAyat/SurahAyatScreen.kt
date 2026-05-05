@@ -183,6 +183,7 @@ private fun SurahAyatContent(
 
                 QuranTextSection(
                     state = state,
+                    textSectionIndex = textSectionIndex,
                     onAyaLongPressed = listener::onAyaLongPressed,
                     onClearSelection = listener::onClearSelection,
                     onAyaVisible = { ayahId ->
