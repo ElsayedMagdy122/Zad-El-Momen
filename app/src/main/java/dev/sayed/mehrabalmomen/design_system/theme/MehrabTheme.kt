@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -35,27 +34,6 @@ fun MehrabTheme(
 }
 
 internal val LocalIsDark = staticCompositionLocalOf { true }
-
-@Composable
-private fun UpdateStatusBarIconsForTheme1() {
-    val view = LocalView.current
-    val window = (view.context as? ComponentActivity)?.window ?: return
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        window.setNavigationBarContrastEnforced(false)
-    }
-
-    WindowInsetsControllerCompat(window, view).apply {
-        0
-        isAppearanceLightStatusBars = !Theme.isDark
-        isAppearanceLightNavigationBars = !Theme.isDark
-    }
-
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.navigationBarColor = Theme.color.surfaces.surface.toArgb()
-    }
-}
 @Composable
 private fun UpdateStatusBarIconsForTheme() {
     val view = LocalView.current

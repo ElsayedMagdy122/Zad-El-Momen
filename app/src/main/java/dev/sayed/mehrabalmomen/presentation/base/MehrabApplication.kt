@@ -25,7 +25,7 @@ class MehrabApplication : Application() {
         Firebase.messaging.subscribeToTopic("lang_$language")
         MapLibre.getInstance(this)
         if (BuildConfig.DEBUG) {
-            setupStrictMode()
+        //    setupStrictMode()
             Firebase.performance.isPerformanceCollectionEnabled = false
         } else {
 
