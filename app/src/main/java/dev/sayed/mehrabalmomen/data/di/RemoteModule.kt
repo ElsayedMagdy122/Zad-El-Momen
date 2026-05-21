@@ -6,11 +6,16 @@ import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceIm
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRpcService
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportStorageService
 import io.github.jan.supabase.annotations.SupabaseInternal
+import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -24,6 +29,7 @@ val remoteModule = module {
             install(Realtime)
             install(Postgrest)
             install(Storage)
+            install(Auth)
             httpConfig {
                 install(HttpTimeout) {
                     requestTimeoutMillis = 10_000
@@ -34,7 +40,22 @@ val remoteModule = module {
         }
         supabase
     }
+    single<HttpClient> {
 
+        HttpClient(Android) {
+
+            expectSuccess = true
+
+            install(ContentNegotiation) {
+                json(get<Json>())
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 120_000
+                connectTimeoutMillis = 15_000
+            }
+        }
+    }
     single {
         Json {
             ignoreUnknownKeys = true

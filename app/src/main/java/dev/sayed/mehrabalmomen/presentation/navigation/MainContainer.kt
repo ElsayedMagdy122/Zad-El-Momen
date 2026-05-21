@@ -28,6 +28,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
+import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
@@ -44,7 +45,8 @@ fun MainContainer(
         Route.FullPrayerTimeView,
         Route.AzkarScreen,
         Route.RadioScreen,
-        Route.SettingsScreen
+        Route.SettingsScreen,
+        Route.Reels
     )
 
     val bottomItems = listOf(
@@ -72,6 +74,11 @@ fun MainContainer(
             title = localizedString(R.string.settings),
             selectedIcon = painterResource(R.drawable.ic_settings_selected),
             unselectedIcon = painterResource(R.drawable.ic_settings_not_selected)
+        ),
+        NavItem(
+            title = localizedString(R.string.settings),
+            selectedIcon = painterResource(R.drawable.ic_reels_selected),
+            unselectedIcon = painterResource(R.drawable.ic_reels_not_selected)
         )
     )
 
@@ -99,6 +106,7 @@ fun MainContainer(
             composable(Route.AzkarScreen.route) { AzkarScreen(rootNavController) }
             composable(Route.RadioScreen.route) { RadioScreen(rootNavController) }
             composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }
+            composable(Route.Reels.route){ReelsScreen(rootNavController)}
         }
 
         BottomNavigationBar(

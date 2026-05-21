@@ -69,10 +69,13 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
 postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt" }
+auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3Exoplayer" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -99,7 +102,7 @@ navigation-compose = ["androidx-navigation-compose", "androidx-navigation-runtim
 koin = ["koin-core", "koin-android", "koin-androidx-compose", "koin-compose", "koin-compose-viewmodel", ]
 
 #Supabase
-supabase = ["postgrest-kt", "realtime-kt", "storage-kt", "functions-kt"]
+supabase = ["postgrest-kt", "realtime-kt", "storage-kt", "auth-kt", "functions-kt"]
 
 #Firebase (Crashlytics + Performance)
 firebase = ["firebase-crashlytics", "firebase-perf", ]

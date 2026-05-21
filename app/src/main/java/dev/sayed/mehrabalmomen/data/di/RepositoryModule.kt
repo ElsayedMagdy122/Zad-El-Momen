@@ -11,9 +11,11 @@ import dev.sayed.mehrabalmomen.data.quran.repository.BookmarkRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
+import dev.sayed.mehrabalmomen.data.reels.FakeReelsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
@@ -43,6 +45,7 @@ val repositoryModule = module {
     single<QuranRepository> { QuranRepositoryImpl(get(), get(),get()) }
     single<ReadingProgressRepository> { ReadingProgressRepositoryImpl(get()) }
     single<RadioRepository> { RadioRepositoryImpl(get()) }
+    single<ReelsRepository> { FakeReelsRepositoryImpl(get(),get(),get(),get()) }
     single<BookmarkRepository> {
         BookmarkRepositoryImpl(
             dao = get()

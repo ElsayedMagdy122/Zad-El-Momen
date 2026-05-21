@@ -17,6 +17,7 @@ data class Brand(
 data class Primary(
     val primary: Color,
     val onPrimary: Color,
+    val onPrimaryHint:Color,
     val shadePrimary: Color,
 )
 

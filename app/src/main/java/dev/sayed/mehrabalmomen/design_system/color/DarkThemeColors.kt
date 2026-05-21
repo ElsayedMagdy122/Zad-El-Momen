@@ -10,6 +10,7 @@ val darkThemeColors = MehrabColors(
         primary = Color(0xFFFFFFFF),
         onPrimary = Color(0xFF12141C),
         shadePrimary = Color(0xFFF8FAFC),
+        onPrimaryHint = Color(0xFFBEC0CC),
     ),
     surfaces = Surfaces(
         surface = Color(0xFF000000),

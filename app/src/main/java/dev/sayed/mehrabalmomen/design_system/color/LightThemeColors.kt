@@ -11,6 +11,7 @@ val lightThemeColors: MehrabColors
             primary = Color(0xFF000000),
             onPrimary = Color(0xFFFFFFFF),
             shadePrimary = Color(0xFF0E1017),
+            onPrimaryHint = Color(0xFFFFFFFF).copy(alpha =38f ),
         ), surfaces = Surfaces(
             surface = Color(0xFFF2F4F7),
             surfaceLow = Color(0xFFFFFFFF),
