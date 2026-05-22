@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.utils.blendMode
 
 @Composable
 fun ReelsAyah(ayah : String, modifier: Modifier = Modifier) {
@@ -26,13 +29,14 @@ fun ReelsAyah(ayah : String, modifier: Modifier = Modifier) {
                 color = Theme.color.primary.primary.copy(.1f),
                 shape = RoundedCornerShape(12.dp)
             ).padding(16.dp)
-    )
+    ,
+        contentAlignment = Alignment.TopStart)
     {
         Text(
             text = ayah,
             style = Theme.textStyle.body.medium,
-            color = Theme.color.secondary.secondaryText,
-
+            color = Theme.color.primary.primary,
+            modifier = Modifier.blendMode(BlendMode.Difference)
         )
     }
 

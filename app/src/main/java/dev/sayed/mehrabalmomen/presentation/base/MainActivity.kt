@@ -27,7 +27,6 @@ import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
-import dev.sayed.mehrabalmomen.presentation.AnonymousAuthViewModel
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
 import org.koin.android.ext.android.inject
 import java.util.Locale
@@ -35,7 +34,6 @@ import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
-private val anonymousAuthViewModel: AnonymousAuthViewModel by inject()
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

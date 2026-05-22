@@ -31,7 +31,6 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelItemUiState
 import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsInteractionListener
-import kotlin.text.ifEmpty
 
 @Composable
 fun ReelItemCard(
@@ -44,7 +43,6 @@ fun ReelItemCard(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
 
-        // ── Video surface ──────────────────────────────────────────────────────
         if (player != null && isReady) {
             ReelVideoPlayer(
                 player = player,
@@ -53,7 +51,6 @@ fun ReelItemCard(
             )
         }
 
-        // ── Bottom gradient scrim ──────────────────────────────────────────────
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -62,7 +59,7 @@ fun ReelItemCard(
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.85f)),
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
                     )
                 )
         )
@@ -84,13 +81,12 @@ fun ReelItemCard(
             )
             ShareButton(
                 sharesCount = item.sharesCount,
-                isSharing   = item.isSharing,
+                isSharing = item.isSharing,
                 downloadPercentage = item.downloadPercentage,
-                onClick = { interactionListener.onShareClicked(item.id,) },
+                onClick = { interactionListener.onShareClicked(item.id) },
             )
         }
 
-        // ── Bottom-left info section ───────────────────────────────────────────
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -98,23 +94,33 @@ fun ReelItemCard(
                 .navigationBarsPadding(),
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                AsyncImage(
-                    model = item.sheikhAvatarUrl.ifEmpty { "https://picsum.photos/seed/avatar/100/100" },
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .shadow(
-                            1.dp,
-                            CircleShape,
-                            true,
-                            Theme.color.secondary
-                                .secondary,
-                            Theme.color.secondary
-                                .secondary
-                        ),
-                )
+                if (item.sheikhAvatarUrl.isEmpty())
+                    Icon(
+                        painter = painterResource(R.drawable.ic_quran_dua),
+                        tint = Theme.color.primary.primary,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentDescription = null
+                    )
+                else
+                    AsyncImage(
+                        model = item.sheikhAvatarUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .shadow(
+                                1.dp,
+                                CircleShape,
+                                true,
+                                Theme.color.secondary
+                                    .secondary,
+                                Theme.color.secondary
+                                    .secondary
+                            ),
+                    )
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
                         text = item
@@ -140,14 +146,13 @@ fun ReelItemCard(
                         )
                     }
 
-                    ReelsAyah(item.ayah, modifier = Modifier.padding(end = 16.dp, top = 12.dp))
                 }
             }
+            ReelsAyah(item.ayah, modifier = Modifier.padding(start = 16.dp, top = 12.dp))
         }
     }
 }
 
-// ── Sub-composables ────────────────────────────────────────────────────────────
 fun formatCount(count: Int): String = when {
     count >= 1_000_000 -> "${count / 1_000_000}M"
     count >= 1_000 -> "${"%.1f".format(count / 1_000.0)}K"

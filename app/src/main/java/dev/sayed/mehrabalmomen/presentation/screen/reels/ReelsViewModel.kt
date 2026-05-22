@@ -2,43 +2,29 @@ package dev.sayed.mehrabalmomen.presentation.screen.reels
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.data.util.AnonymousAuthManager
-import dev.sayed.mehrabalmomen.domain.entity.quranReel.LikeResult
+import dev.sayed.mehrabalmomen.domain.model.LikeResult
 import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class ReelsViewModel(
     private val reelsRepository: ReelsRepository,
-    private val authManager: AnonymousAuthManager
 ) : BaseViewModel<ReelsUiState, ReelsEffect>(ReelsUiState()), ReelsInteractionListener {
 
     private var currentPage = 1
     private val pageSize = 10
 
     init {
-      userSession()
-    }
-    private fun userSession() {
-        tryToCall(
-            block = {
-                authManager.ensureAnonymousLogin()
-            },
-            onSuccess = {
-                loadReels()
-            },
-            onError = { error ->
-                Log.d("ReelsViewModel", "Auth Session error: ${error}")
-                loadReels()
-            }
-        )
+        loadReels()
     }
     private fun loadReels() {
         tryToCall(
             onStart = { updateState { it.copy(isLoading = true, error = null) }},
-            block = {reelsRepository.getReels()},
+            block = {reelsRepository.getReels(
+                pageNumber = currentPage,
+                pageSize = pageSize
+            )},
             onSuccess = {items->
-                Log.d("ReelsViewModel", "loadReels: $items")
                 updateState {
                     it.copy(
                         reels = items.map { r -> r.toUiState() },
@@ -49,7 +35,6 @@ class ReelsViewModel(
             },
             onError = {error->
                 updateState { it.copy(isLoading = false, error = error.message) }
-                Log.d("ReelsViewModel", "error: ${error.message}")
             }
         )
     }
@@ -60,7 +45,10 @@ class ReelsViewModel(
             updateState { it.copy(isPaginating = true) }
             try {
                 currentPage++
-                val items = reelsRepository.getReels()
+                val items = reelsRepository.getReels(
+                    pageNumber = currentPage,
+                    pageSize = pageSize
+                )
                 updateState {
                     it.copy(
                         reels = it.reels + items.map { it.toUiState() },
@@ -93,9 +81,9 @@ class ReelsViewModel(
 
         val action: suspend () -> LikeResult =
             if (item.isLikedOptimistic) {
-                { reelsRepository.unlikeReel(reelId = itemId.toLong()) }
+                { reelsRepository.unlikeReel(reelId = itemId) }
             } else {
-                { reelsRepository.likeReel(reelId = itemId.toLong()) }
+                { reelsRepository.likeReel(reelId = itemId) }
             }
 
         tryToCall(
@@ -113,7 +101,6 @@ class ReelsViewModel(
                 }
             },
             onError = {error->
-                Log.d("ReelsViewModel", "like: ${error}")
                 updateState { current ->
                     current.copy(reels = current.reels.map {
                         if (it.id == itemId) it.copy(
@@ -138,7 +125,7 @@ class ReelsViewModel(
 
         tryToCall(
             block = {
-                reelsRepository.cacheReelVideo(reel.mp4Url, reel.surah) { downloadPercentage ->
+                reelsRepository.cacheReelVideo(reel.mp4Url, cacheVideoName = "reel_${reel.id}") { downloadPercentage ->
                     updateState {
                         it.copy(reels = it.reels.map {
                             if (it.id == reelId) it.copy(downloadPercentage = downloadPercentage) else it
@@ -168,16 +155,22 @@ class ReelsViewModel(
         )
     }
 
-    /** Called by the screen once the download+share flow finishes (success or error). */
     fun onShareCompleted(reelId: Int, shared: Boolean) {
-        updateState { current ->
-            current.copy(reels = current.reels.map {
-                if (it.id == reelId) it.copy(
-                    sharesCount = if (shared) it.sharesCount + 1 else it.sharesCount,
-                ) else it
-            })
-        }
-        // will fire request to increase shared count if it success
+        if (!shared) return
+
+        tryToCall(
+            block = { reelsRepository.recordShare(reelId) },
+            onSuccess = { result ->
+                updateState { current ->
+                    current.copy(reels = current.reels.map {
+                        if (it.id == reelId) it.copy(sharesCount = result.sharesCount) else it
+                    })
+                }
+            },
+            onError = { error ->
+                Log.d("ReelsViewModel", "recordShare error: ${error.message}")
+            }
+        )
     }
 
     override fun onBackClicked() = sendEffect(ReelsEffect.NavigateBack)

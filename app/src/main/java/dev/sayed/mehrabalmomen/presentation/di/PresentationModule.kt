@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
-import dev.sayed.mehrabalmomen.presentation.AnonymousAuthViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
@@ -46,7 +45,6 @@ val presentationModule = module {
     viewModelOf(::RadioChannelsViewModel)
     viewModelOf(::BatteryOptimizationViewModel)
     viewModelOf(::ReelsViewModel)
-    viewModelOf(::AnonymousAuthViewModel)
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }

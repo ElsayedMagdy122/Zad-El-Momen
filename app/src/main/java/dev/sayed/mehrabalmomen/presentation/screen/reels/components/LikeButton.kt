@@ -50,7 +50,6 @@ fun LikeButton(
     )
 
     val animatedTint by animateColorAsState(
-      //  targetValue = if (isLiked) Theme.color.secondary.secondaryText else Theme.color.semantic.shadeTertiary
         targetValue = if (isLiked) Theme.color.semantic.error else Theme.color.semantic.shadeTertiary
     )
 
@@ -88,7 +87,6 @@ fun LikeButton(
                 alpha.animateTo(0f, tween(800, delayMillis = 900))
             }
         } else {
-            // Stop any in-flight animation and reset to init state
             xOffset1.stop(); yOffset1.stop()
             xOffset2.stop(); yOffset2.stop()
             xOffset3.stop(); yOffset3.stop()
@@ -106,9 +104,9 @@ fun LikeButton(
         // Heart 1 — large, flies upper-left
         HeartGradient(
             colors = listOf(
-                Theme.color.secondary.secondaryText.copy(alpha = 0.9f),
-                Theme.color.secondary.secondary.copy(alpha = 0.6f),
-                Theme.color.secondary.secondary.copy(alpha = 0.2f),
+                Theme.color.semantic.error.copy(alpha = 0.9f),
+                Theme.color.semantic.error.copy(alpha = 0.6f),
+                Theme.color.semantic.error.copy(alpha = 0.2f),
             ),
             modifier = Modifier
                 .size(20.dp)
@@ -123,9 +121,9 @@ fun LikeButton(
         // Heart 2 — medium, flies straight up
         HeartGradient(
             colors = listOf(
-                Theme.color.secondary.secondaryText.copy(alpha = 0.9f),
-                Theme.color.secondary.secondary.copy(alpha = 0.6f),
-                Theme.color.secondary.secondary.copy(alpha = 0.2f),
+                Theme.color.semantic.error.copy(alpha = 0.9f),
+                Theme.color.semantic.error.copy(alpha = 0.6f),
+                Theme.color.semantic.error.copy(alpha = 0.2f),
             ),
             modifier = Modifier
                 .size(16.dp)
@@ -140,9 +138,9 @@ fun LikeButton(
         // Heart 3 — small, flies upper-right
         HeartGradient(
             colors = listOf(
-                Theme.color.secondary.secondaryText.copy(alpha = 0.9f),
-                Theme.color.secondary.secondary.copy(alpha = 0.6f),
-                Theme.color.secondary.secondary.copy(alpha = 0.2f),
+                Theme.color.semantic.error.copy(alpha = 0.9f),
+                Theme.color.semantic.error.copy(alpha = 0.6f),
+                Theme.color.semantic.error.copy(alpha = 0.2f),
             ),
             modifier = Modifier
                 .size(12.dp)
@@ -187,8 +185,8 @@ fun LikeButton(
 fun HeartGradient(
     modifier: Modifier = Modifier,
     colors: List<Color> = listOf(
-        Theme.color.secondary.secondaryText,
-        Theme.color.secondary.secondary,
+        Theme.color.semantic.error,
+        Theme.color.semantic.error,
     ),
 ) {
     Canvas(

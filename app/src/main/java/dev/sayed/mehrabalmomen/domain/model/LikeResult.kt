@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity.quranReel
+package dev.sayed.mehrabalmomen.domain.model
 
 data class LikeResult(
      val likesCount: Int,

@@ -6,17 +6,14 @@ import io.github.jan.supabase.auth.auth
 class AnonymousAuthManager(
     private val client: SupabaseClient
 ) {
+    suspend fun getUserId(): String {
+        client.auth.awaitInitialization()
 
-    suspend fun ensureAnonymousLogin() {
-
-        val currentUser = client.auth.currentUserOrNull()
-
-        if (currentUser != null) return
+        client.auth.currentUserOrNull()?.let { return it.id }
 
         client.auth.signInAnonymously()
-    }
 
-    fun getUserId(): String? {
         return client.auth.currentUserOrNull()?.id
+            ?: error("Anonymous sign-in failed — enable it in Supabase Dashboard → Authentication → Providers → Anonymous")
     }
 }

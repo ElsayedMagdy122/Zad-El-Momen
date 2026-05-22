@@ -1,44 +1,44 @@
 package dev.sayed.mehrabalmomen.presentation.screen.reels
 
+import android.content.ClipData
 import android.content.Intent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.util.lerp
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.ReelItemCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.absoluteValue
 
 @Composable
 fun ReelsScreen(
@@ -57,6 +57,12 @@ fun ReelsScreen(
                             putExtra(Intent.EXTRA_STREAM, effect.cachedReelUrl.toUri())
                             putExtra(Intent.EXTRA_SUBJECT, effect.title)
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                            clipData = ClipData.newUri(
+                                context.contentResolver,
+                                "shared_video",
+                                effect.cachedReelUrl.toUri()
+                            )
                         }
                         context.startActivity(Intent.createChooser(intent, null))
                     }.isSuccess
@@ -82,8 +88,13 @@ private fun ReelsContent(
     val pool       = rememberVideoPlayerPool()
     val urls       = remember(state.reels) { state.reels.map { it.videoUrl } }
 
-    LaunchedEffect(urls) {
-        if (urls.isNotEmpty()) pool.onPageChanged(0, urls)
+    LaunchedEffect(urls.size) {
+        if (urls.isNotEmpty()) {
+            pool.onPageChanged(
+                pagerState.currentPage,
+                urls
+            )
+        }
     }
 
     var lastPage by remember { mutableIntStateOf(0) }
@@ -128,29 +139,55 @@ private fun ReelsContent(
                 color    = Theme.color.brand.brand,
             )
 
-            state.reels.isNotEmpty() -> VerticalPager(
-                state                   = pagerState,
-                modifier                = Modifier.fillMaxSize(),
-                beyondViewportPageCount = 2,
-            ) { page ->
-                ReelItemCard(
-                    item                = state.reels[page],
-                    player              = pool.playerForPage(page, pagerState.currentPage),
-                    isActive            = page == pagerState.currentPage,
-                    isReady             = page in readyPages,
-                    interactionListener = interactionListener,
-                    modifier            = Modifier.fillMaxSize(),
-                )
-            }
-        }
+            state.reels.isNotEmpty() ->
+                VerticalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize(),
+                    beyondViewportPageCount = 2,
+                ) { page ->
 
-        AppBar(
-            title       = "Quran Reels",
-            onBackClick = interactionListener::onBackClicked,
-            modifier    = Modifier
-                .align(Alignment.TopStart)
-                .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        )
+                    val pageOffset = (
+                            (pagerState.currentPage - page) + pagerState
+                                .currentPageOffsetFraction
+                            ).absoluteValue
+
+                    val scale by animateFloatAsState(
+                        targetValue = lerp(
+                            start = 0.92f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        ),
+                        label = "scale"
+                    )
+
+                    val alpha by animateFloatAsState(
+                        targetValue = lerp(
+                            start = 0.5f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        ),
+                        label = "alpha"
+                    )
+
+                    CompositionLocalProvider(
+                        LocalLayoutDirection provides LayoutDirection.Rtl
+                    ) {
+                        ReelItemCard(
+                            item = state.reels[page],
+                            player = pool.playerForPage(page, pagerState.currentPage),
+                            isActive = page == pagerState.currentPage,
+                            isReady = page in readyPages,
+                            interactionListener = interactionListener,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer {
+                                    scaleX = scale
+                                    scaleY = scale
+                                    this.alpha = alpha
+                                },
+                        )
+                    }
+                }
+        }
     }
 }
