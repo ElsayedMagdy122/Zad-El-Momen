@@ -4,6 +4,7 @@ interface HomeInteractionListener {
     fun onClickViewAll()
     fun onClickSettings()
     fun onClickQiblaDirection()
+    fun onClickAzkar()
     fun onClickQuran()
     fun onClickTilawah()
 }

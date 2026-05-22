@@ -52,7 +52,6 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.AppRoute> {
             MainContainer(rootNavController = navController)
         }
-        composable<Route.Reels>{ReelsScreen(navController)}
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }
         composable<Route.QiblahScreen> { QiblahScreen(navController) }
