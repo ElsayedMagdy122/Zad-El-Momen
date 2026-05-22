@@ -89,6 +89,7 @@ class ReelsViewModel(
         tryToCall(
             block = { action() },
             onSuccess = { result ->
+                Log.d("ReelsViewModel", "like: ${result.isLiked} ${result.likesCount}")
                 updateState {
                     it.copy(reels = it.reels.map { reel ->
                         if (reel.id == itemId) reel.copy(

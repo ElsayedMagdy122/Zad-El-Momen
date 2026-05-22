@@ -5,7 +5,10 @@ import android.content.Intent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -35,6 +37,7 @@ import androidx.navigation.NavHostController
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.ReelItemCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,38 +46,41 @@ import kotlin.math.absoluteValue
 @Composable
 fun ReelsScreen(
     navController: NavHostController,
+    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     viewModel: ReelsViewModel = koinViewModel(),
 ) {
-    val state   by viewModel.screenState.collectAsStateWithLifecycle()
+    val state by viewModel.screenState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             is ReelsEffect.ShareReel -> {
-                    val shared = runCatching {
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type    = "video/mp4"
-                            putExtra(Intent.EXTRA_STREAM, effect.cachedReelUrl.toUri())
-                            putExtra(Intent.EXTRA_SUBJECT, effect.title)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val shared = runCatching {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "video/mp4"
+                        putExtra(Intent.EXTRA_STREAM, effect.cachedReelUrl.toUri())
+                        putExtra(Intent.EXTRA_SUBJECT, effect.title)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                            clipData = ClipData.newUri(
-                                context.contentResolver,
-                                "shared_video",
-                                effect.cachedReelUrl.toUri()
-                            )
-                        }
-                        context.startActivity(Intent.createChooser(intent, null))
-                    }.isSuccess
+                        clipData = ClipData.newUri(
+                            context.contentResolver,
+                            "shared_video",
+                            effect.cachedReelUrl.toUri()
+                        )
+                    }
+                    context.startActivity(Intent.createChooser(intent, null))
+                }.isSuccess
                 if (shared)
-                    viewModel.onShareCompleted(effect.reelId,shared)
+                    viewModel.onShareCompleted(effect.reelId, shared)
             }
+
             ReelsEffect.NavigateBack -> navController.navigateUp()
         }
     }
 
     ReelsContent(
-        state               = state,
+        state = state,
+        onBottomBarVisibilityChanged = onBottomBarVisibilityChanged,
         interactionListener = viewModel,
     )
 }
@@ -82,12 +88,29 @@ fun ReelsScreen(
 @Composable
 private fun ReelsContent(
     state: ReelsUiState,
+    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     interactionListener: ReelsInteractionListener,
 ) {
     val pagerState = rememberPagerState(pageCount = { state.reels.size })
-    val pool       = rememberVideoPlayerPool()
-    val urls       = remember(state.reels) { state.reels.map { it.videoUrl } }
+    val pool = rememberVideoPlayerPool()
+    val urls = remember(state.reels) { state.reels.map { it.videoUrl } }
+    var lastPage by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(pagerState) {
+
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collectLatest { currentPage ->
+
+                if (currentPage > lastPage) {
+                    onBottomBarVisibilityChanged(false)
+                } else if (currentPage < lastPage) {
+                    onBottomBarVisibilityChanged(true)
+                }
+
+                lastPage = currentPage
+            }
+    }
     LaunchedEffect(urls.size) {
         if (urls.isNotEmpty()) {
             pool.onPageChanged(
@@ -97,7 +120,6 @@ private fun ReelsContent(
         }
     }
 
-    var lastPage by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(pagerState, urls) {
         snapshotFlow { pagerState.settledPage }
@@ -117,9 +139,9 @@ private fun ReelsContent(
     DisposableEffect(lifecycleOwner, pool) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_PAUSE  -> pool.pauseActive()
+                Lifecycle.Event.ON_PAUSE -> pool.pauseActive()
                 Lifecycle.Event.ON_RESUME -> pool.resumeActive()
-                else                      -> Unit
+                else -> Unit
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -131,12 +153,13 @@ private fun ReelsContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Theme.color.surfaces.surface)
+            .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         when {
             state.isLoading -> CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color    = Theme.color.brand.brand,
+                color = Theme.color.brand.brand,
             )
 
             state.reels.isNotEmpty() ->
