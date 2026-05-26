@@ -281,9 +281,6 @@
     <string name="email_value">help.zadelmomen@gmail.com</string>
     <string name="facebook_value">Zad El momen - ZAD EL MOMEN</string>
     <string name="youtube_value">Zad El momen</string>
-
-    <string name="privacy_short_intro">This Privacy Policy summary explains how ZAD Almomen handles your data simply and transparently. We respect your privacy and design the app to operate safely with minimal information.</string>
-
     <string name="privacy_short_h1_collect">What We Collect &amp; Why</string>
     <string name="privacy_short_b1_loc">Location: Only used to calculate accurate prayer times and determine Qibla direction. It is never stored or shared externally.</string>
     <string name="privacy_short_b2_settings">Preferences: Settings like Azan sounds or calculation methods are saved strictly locally on your device.</string>

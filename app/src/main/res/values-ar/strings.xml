@@ -295,8 +295,6 @@
     <string name="facebook_value">زاد المؤمن - Zad El momen</string>
     <string name="youtube_value">زاد المؤمن</string>
 
-    <string name="privacy_short_intro">يوضح هذا الموجز لسياسة الخصوصية كيف يتعامل تطبيق \"زاد المؤمن\" مع بياناتك ببساطة وشفافية. نحن نحترم خصوصيتك تماماً والتطبيق مصمم ليعمل بأمان وبأقل قدر ممكن من البيانات.</string>
-
     <string name="privacy_short_h1_collect">ما نجمعه ولماذا؟</string>
     <string name="privacy_short_b1_loc">الموقع الجغرافي: نطلب الوصول إليه فقط لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة (لا يتم حفظه أو مشاركته خارجيًا).</string>
     <string name="privacy_short_b2_settings">إعداداتك وتفضيلاتك: خياراتك (مثل صوت الأذان، والمذهب الفقهي) تُحفظ محلياً بالكامل على جهازك.</string>

@@ -58,7 +58,7 @@ fun PrivacyAnPolicyScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 24.dp)
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             item {
                 Box(
@@ -75,7 +75,7 @@ fun PrivacyAnPolicyScreen(
                         )
 
                         Text(
-                            text = stringResource(id = R.string.last_updated, "February 4, 2026"),
+                            text = stringResource(id = R.string.last_updated, "26 May 2026"),
                             style = Theme.textStyle.label.small,
                             color = bodyTextColor,
                             textAlign = TextAlign.Center,
@@ -93,7 +93,7 @@ fun PrivacyAnPolicyScreen(
                             style = Theme.textStyle.title.small,
                             color = titleTextColor,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 24.dp, bottom = 12.dp)
+                            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
                         )
                     }
                     is PrivacyModel.Paragraph -> {
@@ -101,12 +101,11 @@ fun PrivacyAnPolicyScreen(
                             text = stringResource(id = item.resId),
                             style = Theme.textStyle.body.medium,
                             color = bodyTextColor,
-                            modifier = Modifier.padding(bottom = 10.dp)
                         )
                     }
                     is PrivacyModel.BulletPoint -> {
                         Row(
-                            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
+                            modifier = Modifier.padding(start = 4.dp, bottom = 8.dp),
                             verticalAlignment = Alignment.Top
                         ) {
                             Text(
@@ -134,8 +133,6 @@ sealed interface PrivacyModel {
 }
 private fun getShortPrivacyContent(): List<PrivacyModel> {
     return listOf(
-        PrivacyModel.Paragraph(R.string.privacy_short_intro),
-
         PrivacyModel.MainHeader(R.string.privacy_short_h1_collect),
         PrivacyModel.BulletPoint(R.string.privacy_short_b1_loc),
         PrivacyModel.BulletPoint(R.string.privacy_short_b2_settings),
