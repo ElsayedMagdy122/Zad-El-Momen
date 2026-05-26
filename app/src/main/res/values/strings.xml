@@ -303,4 +303,6 @@
     <string name="privacy_short_contact_email">Email: help.zadelmomen@gmail.com</string>
 
     <string name="last_updated">Last Updated: %1$s</string>
+    <string name="legal">Legal</string>
+    <string name="growth">Growth</string>
 </resources>
