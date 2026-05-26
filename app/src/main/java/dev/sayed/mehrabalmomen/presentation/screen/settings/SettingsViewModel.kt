@@ -266,7 +266,23 @@ class SettingsViewModel(
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.support,
                 items = supportItems
-            )
+            ),
+            SettingsUiState.SettingsSectionUiState(
+                titleRes =R.string.other,
+                items = listOf(
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_privacy,
+                        title =R.string.privacy_and_policy,
+                        action = SettingsUiState.SettingsAction.PRIVACY_POLICY
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_contact_us,
+                        title = R.string.contact_us,
+                        action = SettingsUiState.SettingsAction.CONTACT_US
+                    )
+                )
+
+            ),
         )
         updateState { it.copy(sections = sections) }
     }
@@ -552,5 +568,13 @@ class SettingsViewModel(
 
     override fun onAboutClick() {
         showSupportBottomSheet()
+    }
+
+    override fun onPrivacyAndPolicy() {
+        sendEffect(SettingsEffect.NavigateToPrivacy)
+    }
+
+    override fun onContactUs() {
+        sendEffect(SettingsEffect.NavigateToContactUs)
     }
 }

@@ -101,6 +101,14 @@ fun SettingsScreen(
             is SettingsEffect.ShowToast -> {
                 toast = effect.toast
             }
+
+            SettingsEffect.NavigateToContactUs -> {
+                navController.navigate(Route.ContactUsScreen)
+            }
+
+            SettingsEffect.NavigateToPrivacy -> {
+                navController.navigate(Route.PrivacyScreen)
+            }
         }
     }
     LaunchedEffect(toast) {
@@ -379,6 +387,8 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.ABOUT -> listener.onAboutClick()
                     SettingsUiState.SettingsAction.TEXT_FONT -> listener.onItemClick(item.action)
                     SettingsUiState.SettingsAction.TAFSEER -> listener.onItemClick(item.action)
+                    SettingsUiState.SettingsAction.PRIVACY_POLICY -> listener.onPrivacyAndPolicy()
+                    SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -415,7 +425,7 @@ fun SettingsItem(
 
                     else -> ""
                 },
-                color = Color(0xFF818599),
+                color = Theme.color.semantic.shadeTertiary,
                 style = Theme.textStyle.label.small,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
