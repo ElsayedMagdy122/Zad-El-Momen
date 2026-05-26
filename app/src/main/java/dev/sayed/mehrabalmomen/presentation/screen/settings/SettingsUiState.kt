@@ -92,7 +92,9 @@ data class SettingsUiState(
         MADHAB,
         HELP_FEEDBACK,
         RATE_APP,
-        ABOUT
+        ABOUT,
+        PRIVACY_POLICY,
+        CONTACT_US
     }
 
     enum class QuranFontSize(val value: Int, val sizeSp: Int) {

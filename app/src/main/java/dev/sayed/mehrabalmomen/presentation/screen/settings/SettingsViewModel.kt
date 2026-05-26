@@ -175,28 +175,27 @@ class SettingsViewModel(
 
     private fun rebuildSections() {
         val state = screenState.value
-        val supportItems = mutableListOf(
+
+        val supportItems = listOf(
             SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_bug,
                 title = R.string.help_feedback,
                 action = SettingsUiState.SettingsAction.HELP_FEEDBACK
             ),
             SettingsUiState.SettingsItemUiState(
-                icon = R.drawable.ic_star_rate,
-                title = R.string.rate_app,
-                action = SettingsUiState.SettingsAction.RATE_APP
+                icon = R.drawable.ic_contact_us,
+                title = R.string.contact_us,
+                action = SettingsUiState.SettingsAction.CONTACT_US
+            ),
+            SettingsUiState.SettingsItemUiState(
+                icon = R.drawable.ic_buy_coffee,
+                title = R.string.support_developer,
+                action = SettingsUiState.SettingsAction.ABOUT
             )
         )
-        if (state.isSupportAvailable) {
-            supportItems.add(
-                SettingsUiState.SettingsItemUiState(
-                    icon = R.drawable.ic_buy_coffee,
-                    title = R.string.support_developer,
-                    action = SettingsUiState.SettingsAction.ABOUT
-                )
-            )
-        }
+
         val sections = listOf(
+
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.general,
                 items = listOf(
@@ -218,10 +217,10 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.LOCATION,
                         descriptionText = state.location.country.plus(", ")
                             .plus(state.location.city)
-
                     )
                 )
             ),
+
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.prayer,
                 items = listOf(
@@ -245,6 +244,7 @@ class SettingsViewModel(
                     )
                 )
             ),
+
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.quran,
                 items = listOf(
@@ -261,13 +261,36 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.TAFSEER
                     )
                 )
-
             ),
+
             SettingsUiState.SettingsSectionUiState(
                 titleRes = R.string.support,
                 items = supportItems
+            ),
+
+            SettingsUiState.SettingsSectionUiState(
+                titleRes = R.string.legal,
+                items = listOf(
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_privacy,
+                        title = R.string.privacy_and_policy,
+                        action = SettingsUiState.SettingsAction.PRIVACY_POLICY
+                    )
+                )
+            ),
+
+            SettingsUiState.SettingsSectionUiState(
+                titleRes = R.string.growth,
+                items = listOf(
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_star_rate,
+                        title = R.string.rate_app,
+                        action = SettingsUiState.SettingsAction.RATE_APP
+                    )
+                )
             )
         )
+
         updateState { it.copy(sections = sections) }
     }
 
@@ -552,5 +575,13 @@ class SettingsViewModel(
 
     override fun onAboutClick() {
         showSupportBottomSheet()
+    }
+
+    override fun onPrivacyAndPolicy() {
+        sendEffect(SettingsEffect.NavigateToPrivacy)
+    }
+
+    override fun onContactUs() {
+        sendEffect(SettingsEffect.NavigateToContactUs)
     }
 }

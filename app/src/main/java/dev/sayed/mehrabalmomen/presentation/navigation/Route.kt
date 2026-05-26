@@ -9,37 +9,59 @@ sealed interface Route {
     val route: String
 
     @Serializable
-    data object AppRoute : Route { override val route = "app_route" }
+    data object AppRoute : Route {
+        override val route = "app_route"
+    }
 
     @Serializable
-    data object HomeScreen : Route { override val route = "home_screen" }
+    data object HomeScreen : Route {
+        override val route = "home_screen"
+    }
 
     @Serializable
-    data object FullPrayerTimeView : Route { override val route = "full_prayer" }
+    data object FullPrayerTimeView : Route {
+        override val route = "full_prayer"
+    }
 
     @Serializable
-    data object CalibrateDevice : Route { override val route = "calibrate_device" }
+    data object CalibrateDevice : Route {
+        override val route = "calibrate_device"
+    }
 
     @Serializable
-    data object QiblahScreen : Route { override val route = "qiblah_screen" }
+    data object QiblahScreen : Route {
+        override val route = "qiblah_screen"
+    }
 
     @Serializable
-    data object LocationPermissionScreen : Route { override val route = "location_permission" }
+    data object LocationPermissionScreen : Route {
+        override val route = "location_permission"
+    }
 
     @Serializable
-    data object MadhabScreen : Route { override val route = "madhab_screen" }
+    data object MadhabScreen : Route {
+        override val route = "madhab_screen"
+    }
 
     @Serializable
-    data object CalculationMethodScreen : Route { override val route = "calculation_method" }
+    data object CalculationMethodScreen : Route {
+        override val route = "calculation_method"
+    }
 
     @Serializable
-    data object SettingsScreen : Route { override val route = "settings_screen" }
+    data object SettingsScreen : Route {
+        override val route = "settings_screen"
+    }
 
     @Serializable
-    data object MapsScreen : Route { override val route = "maps_screen" }
+    data object MapsScreen : Route {
+        override val route = "maps_screen"
+    }
 
     @Serializable
-    data object AzkarScreen : Route { override val route = "azkar_screen" }
+    data object AzkarScreen : Route {
+        override val route = "azkar_screen"
+    }
 
     @Serializable
     data class AzkarDetailScreen(val title: String) : Route {
@@ -47,7 +69,9 @@ sealed interface Route {
     }
 
     @Serializable
-    data object SurahListScreen : Route { override val route = "surah_list_screen" }
+    data object SurahListScreen : Route {
+        override val route = "surah_list_screen"
+    }
 
     @Serializable
     data class SurahAyatScreen(
@@ -69,14 +93,33 @@ sealed interface Route {
     }
 
     @Serializable
-    data object ReportBugScreen : Route { override val route = "report_bug" }
+    data object ReportBugScreen : Route {
+        override val route = "report_bug"
+    }
 
     @Serializable
-    data object BookmarksListScreen : Route { override val route = "bookmarks_list" }
+    data object BookmarksListScreen : Route {
+        override val route = "bookmarks_list"
+    }
 
     @Serializable
-    data object RadioScreen : Route { override val route = "radio_screen" }
+    data object RadioScreen : Route {
+        override val route = "radio_screen"
+    }
 
     @Serializable
-    data object BatteryOptimizationScreen : Route { override val route = "battery_optimization" }
+    data object BatteryOptimizationScreen : Route {
+        override val route = "battery_optimization"
+    }
+
+    @Serializable
+    data object ContactUsScreen : Route {
+        override val route = "contact_us_screen"
+    }
+
+    @Serializable
+    data object PrivacyScreen : Route {
+        override val route: String
+            get() = "privacy_screen"
+    }
 }

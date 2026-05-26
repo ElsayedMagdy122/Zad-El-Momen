@@ -110,6 +110,7 @@ val isDark =  when (currentSettings.theme) {
         LocalIsDarkTheme provides isDark
     ) {
         MehrabTheme(
+            language = currentSettings.language,
             isDarkTheme = isDark
         ) {
             Surface(
