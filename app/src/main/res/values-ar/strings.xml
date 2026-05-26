@@ -283,4 +283,16 @@
     <string name="v">%1$s %2$s</string>
     <string name="version">الإصدار</string>
     <string name="radio">إذاعة</string>
+    <string name="contact_us">اتصل بنا</string>
+    <string name="privacy_and_policy">سياسة الخصوصية</string>
+    <!-- Contact items -->
+    <string name="email_address">البريد الإلكتروني</string>
+    <string name="facebook_account">حساب فيسبوك</string>
+    <string name="youtube">يوتيوب</string>
+
+    <!-- Contact values -->
+    <string name="email_value">help.zadelmomen@gmail.com</string>
+    <string name="facebook_value">زاد المؤمن - Zad El momen</string>
+    <string name="youtube_value">زاد المؤمن</string>
+
 </resources>

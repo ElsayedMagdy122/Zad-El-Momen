@@ -269,4 +269,16 @@
     <string name="v">%1$s %2$s</string>
     <string name="version">Version</string>
     <string name="radio">Radio</string>
+    <string name="contact_us">Contact us</string>
+    <string name="privacy_and_policy">Privacy and policy</string>
+
+    <!-- Contact items -->
+    <string name="email_address">Email address</string>
+    <string name="facebook_account">Facebook account</string>
+    <string name="youtube">YouTube</string>
+
+    <!-- Contact values -->
+    <string name="email_value">help.zadelmomen@gmail.com</string>
+    <string name="facebook_value">Zad El momen - ZAD EL MOMEN</string>
+    <string name="youtube_value">Zad El momen</string>
 </resources>
