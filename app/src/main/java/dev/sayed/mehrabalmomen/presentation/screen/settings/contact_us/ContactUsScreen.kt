@@ -43,33 +43,31 @@ fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = 
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     CollectEffect(viewModel.effect) {
         when (it) {
-
             is ContactEffect.OpenEmail -> {
-
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     data = Uri.parse("mailto:${it.email}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-
                 navController.context.startActivity(intent)
             }
 
             is ContactEffect.OpenFacebook -> {
-
                 val intent = Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse(it.link)
-                )
-
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 navController.context.startActivity(intent)
             }
 
             is ContactEffect.OpenYoutube -> {
-
                 val intent = Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse(it.link)
-                )
-
+                ).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 navController.context.startActivity(intent)
             }
         }

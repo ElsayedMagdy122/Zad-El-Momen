@@ -4,6 +4,7 @@ import SettingsUiState
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -74,7 +75,7 @@ fun SettingsScreen(
     val state by settingsViewModel.screenState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var toast by remember { mutableStateOf<ToastDetails?>(null) }
-    val activity = LocalContext.current as Activity
+    val activity = remember(context) { context.findActivity() }
     val versionNumber = BuildConfig.VERSION_NAME
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
@@ -95,7 +96,9 @@ fun SettingsScreen(
             }
 
             is SettingsEffect.LaunchDonation -> {
-                settingsViewModel.launchDonationFlow(activity, effect.productId)
+                activity?.let {
+                    settingsViewModel.launchDonationFlow(it, effect.productId)
+                }
             }
 
             is SettingsEffect.ShowToast -> {
@@ -441,4 +444,15 @@ fun openStoreReview(context: Context) {
     val intent = Intent(Intent.ACTION_VIEW, uri)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(intent)
+}
+
+fun Context.findActivity(): Activity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is Activity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return currentContext as? Activity
 }

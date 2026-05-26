@@ -134,7 +134,7 @@ data class NavItem(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewBottomNavigationBar() {
-    MehrabTheme(false) {
+    MehrabTheme(isDarkTheme = false) {
 
         val items = listOf(
             NavItem(

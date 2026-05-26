@@ -6,10 +6,13 @@
 
     <style>
         :root {
+            /* قيم افتراضية يتم استبدالها تلقائياً من كود الأندرويد */
             --bg: #F2F4F7;
             --title: #3E4252;
             --text: #818599;
             --primary: #111D2E;
+            --title-size: 16px; /* القيمة الافتراضية لـ title.small */
+            --body-size: 12px;  /* القيمة الافتراضية لـ body.medium */
         }
 
         body {
@@ -25,48 +28,24 @@
             direction: rtl;
         }
 
-        /* LANG SWITCHER CONTAINER */
-        .lang-container {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .lang-container button {
-            border: 1px solid rgba(0,0,0,0.1);
-            background: transparent;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--title);
-            font-size: 12px;
-        }
-
-        .lang-container button.active {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-
         /* TYPOGRAPHY */
         h2 {
-            font-size: 18px;
+            font-size: var(--title-size);
             font-weight: 700;
             color: var(--title);
             margin: 24px 0 12px 0;
         }
 
         h3 {
-            font-size: 15px;
+            /* يتم حساب مقاس العناوين الفرعية لتكون متناسقة تلقائياً مع العنوان الرئيسي */
+            font-size: calc(var(--title-size) - 2px);
             font-weight: 600;
             color: var(--title);
             margin: 16px 0 8px 0;
         }
 
         p, li {
-            font-size: 14px;
+            font-size: var(--body-size);
             line-height: 1.6;
             color: var(--text);
             margin: 0 0 10px 0;
@@ -80,11 +59,6 @@
     </style>
 </head>
 <body>
-
-<div class="lang-container">
-    <button onclick="setLang('en')" id="enBtn" class="active">English</button>
-    <button onclick="setLang('ar')" id="arBtn">العربية</button>
-</div>
 
 <div id="content"></div>
 
@@ -270,27 +244,19 @@
             <p>لديك الحق في إدارة أذونات التطبيق في أي وقت، وحذف بيانات التطبيق المحلية عن طريق مسح مساحة تخزين التطبيق أو إلغاء تثبيته، وطلب حذف تقارير الأخطاء المقدمة عن طريق الاتصال بنا.</p>
 
             <h2>التواصل</h2>
-            <p>للاستفسارات المتعلقة بالخصوصية، أو طلبات حذف البيانات، أو الأسئلة حول المشتريات داخل التطبيق، يرجى التواصل معنا عبر البريد الإلكتروني: <strong>help.zadelmomen@gmail.com</strong></p>
+            <p>للاستفسارات المتعلقة بالخصوصية، أو طلبات حذف البيانات, أو الأسئلة حول المشتريات داخل التطبيق، يرجى التواصل معنا عبر البريد الإلكتروني: <strong>help.zadelmomen@gmail.com</strong></p>
         `
     };
 
     function setLang(lang) {
-        document.getElementById("content").innerHTML = data[lang];
+        document.getElementById("content").innerHTML = data[lang] || data['en'];
 
-        document.getElementById("enBtn").classList.remove("active");
-        document.getElementById("arBtn").classList.remove("active");
-
-        if (lang === "en") {
-            document.body.classList.remove("rtl");
-            document.getElementById("enBtn").classList.add("active");
-        } else {
+        if (lang === "ar") {
             document.body.classList.add("rtl");
-            document.getElementById("arBtn").classList.add("active");
+        } else {
+            document.body.classList.remove("rtl");
         }
     }
-
-    // Default Language
-    setLang("en");
 </script>
 
 </body>
