@@ -7,6 +7,8 @@ sealed interface SettingsEffect {
     object NavigateToHelpFeedback : SettingsEffect
     object NavigateToRateApp : SettingsEffect
     object NavigateToAbout : SettingsEffect
+    object NavigateToPrivacy : SettingsEffect
+    object NavigateToContactUs : SettingsEffect
     data class LaunchDonation(val productId: String) : SettingsEffect
     data class ShowToast(val toast: ToastDetails) : SettingsEffect
 }

@@ -23,8 +23,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListScreen
-import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
@@ -59,6 +60,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
         composable<Route.SettingsScreen> { SettingsScreen(navController) }
         composable<Route.MapsScreen> { MapsScreen(navController) }
+        composable<Route.ContactUsScreen> { ContactUsScreen(navController) }
+        composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
         composable<Route.AzkarScreen> { AzkarScreen(navController) }
         composable<Route.AzkarDetailScreen> { entry ->
             val args = entry.toRoute<Route.AzkarDetailScreen>()

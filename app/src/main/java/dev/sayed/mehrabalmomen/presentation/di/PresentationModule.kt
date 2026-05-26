@@ -20,6 +20,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerManag
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
@@ -43,6 +44,7 @@ val presentationModule = module {
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::RadioChannelsViewModel)
     viewModelOf(::BatteryOptimizationViewModel)
+    viewModelOf(::ContactViewModel)
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }

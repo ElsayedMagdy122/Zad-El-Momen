@@ -20,4 +20,8 @@ interface SettingsInteractionListener {
     fun onRateAppClick()
 
     fun onAboutClick()
+
+    fun onPrivacyAndPolicy()
+
+    fun onContactUs()
 }

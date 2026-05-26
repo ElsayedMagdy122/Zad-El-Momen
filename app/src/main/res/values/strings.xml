@@ -269,4 +269,40 @@
     <string name="v">%1$s %2$s</string>
     <string name="version">Version</string>
     <string name="radio">Radio</string>
+    <string name="contact_us">Contact us</string>
+    <string name="privacy_and_policy">Privacy and policy</string>
+
+    <!-- Contact items -->
+    <string name="email_address">Email address</string>
+    <string name="facebook_account">Facebook account</string>
+    <string name="youtube">YouTube</string>
+
+    <!-- Contact values -->
+    <string name="email_value">help.zadelmomen@gmail.com</string>
+    <string name="facebook_value">Zad El momen - ZAD EL MOMEN</string>
+    <string name="youtube_value">Zad El momen</string>
+    <string name="privacy_short_h1_collect">What We Collect &amp; Why</string>
+    <string name="privacy_short_b1_loc">Location: Only used to calculate accurate prayer times and determine Qibla direction. It is never stored or shared externally.</string>
+    <string name="privacy_short_b2_settings">Preferences: Settings like Azan sounds or calculation methods are saved strictly locally on your device.</string>
+    <string name="privacy_short_b3_bugs">Bug Reports (Optional): If you choose to submit a report, your message and optional image are sent securely to Supabase to help us fix issues.</string>
+    <string name="privacy_short_b4_purchases">In-App Purchases: Donations or support purchases are handled securely by Google Play. We do not store or access your payment methods.</string>
+
+    <string name="privacy_short_h1_not_collect">What We NEVER Collect</string>
+    <string name="privacy_short_not_collect_desc">We do not collect your name, email, phone number, or any directly identifiable personal information.</string>
+
+    <string name="privacy_short_h1_sharing">Information Sharing</string>
+    <string name="privacy_short_b1_sharing">We never sell or share your data with third parties for advertising purposes.</string>
+    <string name="privacy_short_b2_sharing">Data is only processed through trusted services: Supabase (for manual bug reports) and Google Play (for transaction verification).</string>
+
+    <string name="privacy_short_h1_rights">Your Rights &amp; Control</string>
+    <string name="privacy_short_b1_rights">You can revoke or manage app permissions (Location/Notifications) at any time through your device settings.</string>
+    <string name="privacy_short_b2_rights">You can wipe all local app data instantly by clearing the app storage or uninstalling it.</string>
+
+    <string name="privacy_short_h1_contact">Contact Us</string>
+    <string name="privacy_short_contact_desc">For any privacy questions or data deletion requests:</string>
+    <string name="privacy_short_contact_email">Email: help.zadelmomen@gmail.com</string>
+
+    <string name="last_updated">Last Updated: %1$s</string>
+    <string name="legal">Legal</string>
+    <string name="growth">Growth</string>
 </resources>
