@@ -295,4 +295,28 @@
     <string name="facebook_value">زاد المؤمن - Zad El momen</string>
     <string name="youtube_value">زاد المؤمن</string>
 
+    <string name="privacy_short_intro">يوضح هذا الموجز لسياسة الخصوصية كيف يتعامل تطبيق \"زاد المؤمن\" مع بياناتك ببساطة وشفافية. نحن نحترم خصوصيتك تماماً والتطبيق مصمم ليعمل بأمان وبأقل قدر ممكن من البيانات.</string>
+
+    <string name="privacy_short_h1_collect">ما نجمعه ولماذا؟</string>
+    <string name="privacy_short_b1_loc">الموقع الجغرافي: نطلب الوصول إليه فقط لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة (لا يتم حفظه أو مشاركته خارجيًا).</string>
+    <string name="privacy_short_b2_settings">إعداداتك وتفضيلاتك: خياراتك (مثل صوت الأذان، والمذهب الفقهي) تُحفظ محلياً بالكامل على جهازك.</string>
+    <string name="privacy_short_b3_bugs">تقارير الأخطاء (اختياري): إذا واجهتك مشكلة واخترت إرسال تقرير، نرسل نص المشكلة والصورة المرفقة بشكل آمن إلى خوادم Supabase لإصلاحها.</string>
+    <string name="privacy_short_b4_purchases">الدعم والمشتريات: إذا أردت دعم التطبيق، يتم معالجة المعاملة المالية بالكامل وبشكل آمن عبر Google Play دون أن نطلع على بيانات بطاقتك.</string>
+
+    <string name="privacy_short_h1_not_collect">ما لا نجمعه مطلقاً</string>
+    <string name="privacy_short_not_collect_desc">لا نطلب ولا نصل إلى: اسمك، بريدك الإلكتروني، رقم هاتفك، أو أي بيانات تحدد هويتك الشخصية بشكل مباشر.</string>
+
+    <string name="privacy_short_h1_sharing">مشاركة البيانات</string>
+    <string name="privacy_short_b1_sharing">لا نبيع ولا نشارك بياناتك مع أي جهات خارجية لأغراض إعلانية.</string>
+    <string name="privacy_short_b2_sharing">يتم التعامل فقط مع خدمات موثوقة: Supabase (لتخزين التقارير التي ترسلها بنفسك) و Google Play (لإدارة عمليات الدفع والتحقق منها).</string>
+
+    <string name="privacy_short_h1_rights">حقوقك والتحكم في البيانات</string>
+    <string name="privacy_short_b1_rights">يمكنك إلغاء أو تعديل صلاحيات الأذونات (كالموقع والإشعارات) في أي وقت من إعدادات هاتفك.</string>
+    <string name="privacy_short_b2_rights">يمكنك مسح كافة بياناتك المحلية فوراً عبر حذف ذاكرة التخزين المؤقت للتطبيق أو إلغاء تثبيته.</string>
+
+    <string name="privacy_short_h1_contact">للتواصل معنا</string>
+    <string name="privacy_short_contact_desc">لأي استفسار يخص الخصوصية أو لطلب حذف تقرير أخطاء أرسلته سابقاً:</string>
+    <string name="privacy_short_contact_email">البريد الإلكتروني: help.zadelmomen@gmail.com</string>
+
+    <string name="last_updated">آخر تحديث: %1$s</string>
 </resources>
