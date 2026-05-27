@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.reels
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.model.LikeResult
 import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -92,8 +92,6 @@ class ReelsViewModel(
                 updateState {
                     it.copy(reels = it.reels.map { reel ->
                         if (reel.id == itemId) reel.copy(
-                            isLikedOptimistic = result.isLiked,
-                            likesCountOptimistic = result.likesCount,
                             isLiked = result.isLiked,
                             likeCount = result.likesCount,
                         ) else reel
@@ -122,6 +120,12 @@ class ReelsViewModel(
                 if (it.id == reelId) it.copy(isSharing = true) else it
             })
         }
+        sendEffect(
+            ReelsEffect.ShowMessage(
+                titleResId = R.string.preparing_video,
+                messageResId = R.string.please_wait_while_we_prepare_video
+            )
+        )
 
         tryToCall(
             block = {
@@ -143,7 +147,10 @@ class ReelsViewModel(
                 )
             },
             onError = {
-
+                sendEffect(ReelsEffect.Error(
+                    titleResId = R.string.failed_to_cache_video,
+                    messageResId = R.string.failed_to_share_message,
+                ))
             },
             onEnd = {
                 updateState { current ->
@@ -167,9 +174,7 @@ class ReelsViewModel(
                     })
                 }
             },
-            onError = { error ->
-                Log.d("ReelsViewModel", "recordShare error: ${error.message}")
-            }
+            onError = {},
         )
     }
 

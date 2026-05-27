@@ -9,4 +9,7 @@ sealed interface ReelsEffect {
     ) : ReelsEffect
 
     data object NavigateBack : ReelsEffect
+
+    data class Error(val titleResId : Int,val messageResId: Int) : ReelsEffect
+    data class ShowMessage(val titleResId : Int,val messageResId: Int) : ReelsEffect
 }

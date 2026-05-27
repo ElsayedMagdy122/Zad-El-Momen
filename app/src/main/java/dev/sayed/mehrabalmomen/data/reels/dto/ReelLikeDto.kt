@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.reels
+package dev.sayed.mehrabalmomen.data.reels.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

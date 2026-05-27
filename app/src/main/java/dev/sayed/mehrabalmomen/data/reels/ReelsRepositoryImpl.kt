@@ -3,6 +3,8 @@ package dev.sayed.mehrabalmomen.data.reels
 import android.content.Context
 import android.util.Log
 import androidx.core.content.FileProvider
+import dev.sayed.mehrabalmomen.data.reels.dto.ReelDto
+import dev.sayed.mehrabalmomen.data.reels.mapper.toReelVideoItem
 import dev.sayed.mehrabalmomen.data.util.AnonymousAuthManager
 import dev.sayed.mehrabalmomen.domain.model.LikeResult
 import dev.sayed.mehrabalmomen.domain.entity.quranReel.ReelVideoItem
@@ -12,6 +14,7 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.contentLength
 import io.ktor.utils.io.readAvailable
@@ -30,7 +33,6 @@ class ReelsRepositoryImpl(
     override suspend fun getReels(pageNumber: Int, pageSize: Int): List<ReelVideoItem> {
         val offset = (pageNumber - 1) * pageSize
         val userId = anonymousAuthManager.getUserId()
-        Log.e("ReelsRepositoryImpl.kt", "pageNumber = $pageNumber ,pageSize = $pageSize ")
         val reels = supabase.postgrest
             .rpc(
                 function = "get_reels_with_liked_status",
@@ -41,24 +43,9 @@ class ReelsRepositoryImpl(
                 }
             ).decodeList<ReelDto>()
 
-        return reels.map { dto ->
-            ReelVideoItem(
-                id              = dto.id.toInt(),
-                videoUrl        = dto.videoHlsUrl,
-                title           = dto.title,
-                ayah            = dto.ayah,
-                sheikhName      = dto.sheikhName,
-                sheikhAvatarUrl = dto.sheikhAvatarUrl ?: "",
-                sharesCount     = dto.sharesCount,
-                likeCount       = dto.likeCount,
-                isLiked         = dto.isLiked,
-                surahName       = dto.surahName,
-                videoMp4Url     = dto.videoMp4Url,
-            )
-        }
+        return reels.map { it.toReelVideoItem() }
     }
 
-    // ── 2. Like ───────────────────────────────────────────────────────────────
     override suspend fun likeReel(reelId: Int): LikeResult {
         val userId = anonymousAuthManager.getUserId()
 
@@ -80,7 +67,6 @@ class ReelsRepositoryImpl(
         return LikeResult(likesCount = newCount, isLiked = true)
     }
 
-    // ── 3. Unlike ─────────────────────────────────────────────────────────────
     override suspend fun unlikeReel(reelId: Int): LikeResult {
         val userId = anonymousAuthManager.getUserId()
 
@@ -96,8 +82,8 @@ class ReelsRepositoryImpl(
         val newCount = supabase.postgrest
             .rpc(
                 "decrement_like_count",
-                buildJsonObject { put("reel_id_input", reelId.toLong()) }  // ← bigint
-            ).data.trimOrNull()?.toIntOrNull() ?: 0   // ← safe scalar decoding
+                buildJsonObject { put("reel_id_input", reelId.toLong()) }
+            ).data.trimOrNull()?.toIntOrNull() ?: 0
 
         return LikeResult(likesCount = newCount, isLiked = false)
     }
@@ -108,26 +94,36 @@ class ReelsRepositoryImpl(
         cacheVideoName: String,
         onProgress: (Int) -> Unit,
     ): String {
+
         val cacheDir = File(context.cacheDir, "shared_reels").also { it.mkdirs() }
-        val file     = File(cacheDir, "$cacheVideoName.mp4")
+        val file = File(cacheDir, "$cacheVideoName.mp4")
 
-        if (!file.exists() || file.length() == 0L) {
-            val response      = httpClient.get(reelMp4Url)
+        httpClient.prepareGet(reelMp4Url).execute { response ->
+
             val contentLength = response.contentLength() ?: -1L
+            val channel = response.bodyAsChannel()
 
-            val channel         = response.bodyAsChannel()
-            val buffer          = ByteArray(8 * 1024)
+            val buffer = ByteArray(64 * 1024)
             var downloadedBytes = 0L
-            var lastProgress    = 0
+            var lastProgress = 0
 
             file.outputStream().buffered().use { out ->
+
                 while (!channel.isClosedForRead) {
+
                     val bytesRead = channel.readAvailable(buffer)
+
                     if (bytesRead > 0) {
+
                         out.write(buffer, 0, bytesRead)
+
                         downloadedBytes += bytesRead
+
                         if (contentLength > 0) {
-                            val progress = ((downloadedBytes * 100) / contentLength).toInt()
+
+                            val progress =
+                                ((downloadedBytes * 100) / contentLength).toInt()
+
                             if (progress != lastProgress) {
                                 lastProgress = progress
                                 onProgress(progress)
@@ -136,7 +132,6 @@ class ReelsRepositoryImpl(
                     }
                 }
             }
-            onProgress(100)
         }
 
         return FileProvider.getUriForFile(
@@ -145,7 +140,6 @@ class ReelsRepositoryImpl(
             file,
         ).toString()
     }
-
     // ── Helper ────────────────────────────────────────────────────────────────
     private fun String.trimOrNull(): String? = trim().takeIf { it != "null" && it.isNotEmpty() }
 

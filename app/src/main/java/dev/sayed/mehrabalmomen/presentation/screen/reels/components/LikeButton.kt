@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -29,13 +28,16 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
-
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.screen.reels.components.clickAnimation
 
 @Composable
 fun LikeButton(
-    icon: Painter,
     count: Int,
     isLiked: Boolean,
     onClick: () -> Unit,
@@ -99,7 +101,96 @@ fun LikeButton(
         }
     }
 
-    Box(modifier) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        HeartIcon(isLiked = isLiked, onClick = onClick)
+        Text(
+            text = formatCount(count),
+            style = Theme.textStyle.body.medium,
+            color = Color.White,
+        )
+    }
+}
+
+
+@Composable
+fun HeartIcon(
+    isLiked: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconSize: Dp = 32.dp,
+    icon: Painter = painterResource(R.drawable.ic_heart)
+) {
+    var pressed by remember { mutableStateOf(false) }
+    var isFirstComposition by remember { mutableStateOf(true) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (pressed) 1.3f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        finishedListener = { pressed = false },
+    )
+
+    val animatedTint by animateColorAsState(
+        targetValue = if (isLiked) Theme.color.semantic.error else Theme.color.semantic.shadeTertiary
+    )
+
+    val alpha = remember { Animatable(0f) }
+
+    val xOffset1 = remember { Animatable(0f) }
+    val yOffset1 = remember { Animatable(0f) }
+
+    val xOffset2 = remember { Animatable(0f) }
+    val yOffset2 = remember { Animatable(0f) }
+
+    val xOffset3 = remember { Animatable(0f) }
+    val yOffset3 = remember { Animatable(0f) }
+
+    LaunchedEffect(isLiked) {
+        if (isFirstComposition){
+            isFirstComposition = false
+            return@LaunchedEffect
+        }
+
+        if (isLiked) {
+            xOffset1.snapTo(0f); yOffset1.snapTo(0f)
+            xOffset2.snapTo(0f); yOffset2.snapTo(0f)
+            xOffset3.snapTo(0f); yOffset3.snapTo(0f)
+            alpha.snapTo(1f)
+
+            launch {
+                launch { xOffset1.animateTo(-55f, tween(1400)) }
+                yOffset1.animateTo(-140f, tween(1600))
+            }
+            launch {
+                launch { xOffset2.animateTo(10f, tween(1400)) }
+                yOffset2.animateTo(-170f, tween(1600, delayMillis = 80))
+            }
+            launch {
+                launch { xOffset3.animateTo(50f, tween(1400)) }
+                yOffset3.animateTo(-120f, tween(1600, delayMillis = 160))
+            }
+            launch {
+                alpha.animateTo(0f, tween(800, delayMillis = 900))
+            }
+        } else {
+            xOffset1.stop(); yOffset1.stop()
+            xOffset2.stop(); yOffset2.stop()
+            xOffset3.stop(); yOffset3.stop()
+            alpha.stop()
+
+            xOffset1.snapTo(0f); yOffset1.snapTo(0f)
+            xOffset2.snapTo(0f); yOffset2.snapTo(0f)
+            xOffset3.snapTo(0f); yOffset3.snapTo(0f)
+            alpha.snapTo(0f)
+        }
+    }
+
+    Box(modifier.clickAnimation {
+        pressed = true
+        onClick()
+    }) {
 
         // Heart 1 — large, flies upper-left
         HeartGradient(
@@ -151,35 +242,17 @@ fun LikeButton(
                     translationY = yOffset3.value.dp.toPx()
                 }
         )
-
-        // Main icon + counter
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.clickAnimation {
-                pressed = true
-                onClick()
-            },
-        ) {
-            Icon(
-                painter = icon,
-                contentDescription = null,
-                tint = animatedTint,
-                modifier = Modifier
-                    .size(32.dp)
-                    .scale(scale),
-            )
-            Text(
-                text = formatCount(count),
-                style = Theme.textStyle.body.medium,
-                color = Color.White,
-            )
-        }
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            tint = animatedTint,
+            modifier = Modifier
+                .size(iconSize)
+                .scale(scale)
+                .align(Alignment.Center),
+        )
     }
 }
-
-
-
 
 @Composable
 fun HeartGradient(

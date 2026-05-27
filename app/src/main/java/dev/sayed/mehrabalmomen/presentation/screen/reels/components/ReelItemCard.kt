@@ -74,7 +74,6 @@ fun ReelItemCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LikeButton(
-                icon = painterResource(R.drawable.ic_heart),
                 count = item.likesCountOptimistic,
                 isLiked = item.isLikedOptimistic,
                 onClick = { interactionListener.onLikeReelClicked(item.id) },
