@@ -309,6 +309,10 @@ class HomeViewModel(
         sendEffect(HomeEffect.NavigateToCalibrateDevice)
     }
 
+    override fun onClickAzkar() {
+     sendEffect(HomeEffect.NavigateToAzkar)
+    }
+
     override fun onClickQuran() {
         analyticsHelper.logEvent(
             name = "on click surah list"

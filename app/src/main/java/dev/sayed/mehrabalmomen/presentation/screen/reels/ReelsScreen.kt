@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,6 +42,7 @@ import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.ReelItemCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,6 +51,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun ReelsScreen(
     navController: NavHostController,
+    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     viewModel: ReelsViewModel = koinViewModel(),
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
@@ -119,12 +121,29 @@ fun ReelsScreen(
 @Composable
 private fun ReelsContent(
     state: ReelsUiState,
+    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     interactionListener: ReelsInteractionListener,
 ) {
     val pagerState = rememberPagerState(pageCount = { state.reels.size })
     val pool = rememberVideoPlayerPool()
     val urls = remember(state.reels) { state.reels.map { it.videoUrl } }
+    var lastPage by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(pagerState) {
+
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collectLatest { currentPage ->
+
+                if (currentPage > lastPage) {
+                    onBottomBarVisibilityChanged(false)
+                } else if (currentPage < lastPage) {
+                    onBottomBarVisibilityChanged(true)
+                }
+
+                lastPage = currentPage
+            }
+    }
     LaunchedEffect(urls.size) {
         if (urls.isNotEmpty()) {
             pool.onPageChanged(
@@ -168,7 +187,8 @@ private fun ReelsContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Theme.color.surfaces.surface)
+            .windowInsetsPadding(WindowInsets.systemBars),
     ) {
         when {
             state.isLoading -> CircularProgressIndicator(

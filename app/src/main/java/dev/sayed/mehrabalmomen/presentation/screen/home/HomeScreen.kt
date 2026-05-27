@@ -59,6 +59,10 @@ fun HomeScreen(
                 navController.navigate(Route.SurahListScreen)
             }
 
+            HomeEffect.NavigateToAzkar -> {
+                navController.navigate(Route.AzkarScreen)
+            }
+
             HomeEffect.NavigateToTilawah -> {
                 // TODO
             }
