@@ -5,5 +5,6 @@ sealed interface HomeEffect {
     object NavigateToSettings : HomeEffect
     object NavigateToCalibrateDevice : HomeEffect
     object NavigateToQuran : HomeEffect
+    object NavigateToAzkar : HomeEffect
     object NavigateToTilawah : HomeEffect
 }

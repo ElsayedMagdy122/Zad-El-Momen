@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.component.NavItem
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeInteractionListener
 
@@ -64,6 +65,11 @@ private fun faithFeatureCards(homeInteractionListener: HomeInteractionListener):
             title = localizedString(R.string.qiblah_direction),
             icon = painterResource(R.drawable.kaaba_01),
             onClick = homeInteractionListener::onClickQiblaDirection
-        )
+        ),
+        FeatureItem(
+            title = localizedString(R.string.azkar),
+            icon = painterResource(R.drawable.ic_azkar_selected),
+           onClick = homeInteractionListener::onClickAzkar
+        ),
     )
 }

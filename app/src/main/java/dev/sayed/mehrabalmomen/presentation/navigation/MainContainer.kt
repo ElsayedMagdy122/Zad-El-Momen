@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,29 +23,34 @@ import dev.sayed.mehrabalmomen.design_system.component.BottomNavigationBar
 import dev.sayed.mehrabalmomen.design_system.component.NavItem
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
-import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
-
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun MainContainer(
     rootNavController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-
     val bottomNavController = rememberNavController()
 
+    val isBottomBarVisible = remember { mutableStateOf(true) }
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
-        Route.AzkarScreen,
+        Route.Reels,
         Route.RadioScreen,
         Route.SettingsScreen,
-        Route.Reels
     )
 
     val bottomItems = listOf(
@@ -61,9 +65,9 @@ fun MainContainer(
             unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.azkar),
-            selectedIcon = painterResource(R.drawable.ic_azkar_selected),
-            unselectedIcon = painterResource(R.drawable.ic_azkar_not_selected)
+            title = localizedString(R.string.reels),
+            selectedIcon = painterResource(R.drawable.ic_reels_selected),
+            unselectedIcon = painterResource(R.drawable.ic_reels_not_selected)
         ),
         NavItem(
             title = localizedString(R.string.radio),
@@ -74,11 +78,6 @@ fun MainContainer(
             title = localizedString(R.string.settings),
             selectedIcon = painterResource(R.drawable.ic_settings_selected),
             unselectedIcon = painterResource(R.drawable.ic_settings_not_selected)
-        ),
-        NavItem(
-            title = localizedString(R.string.settings),
-            selectedIcon = painterResource(R.drawable.ic_reels_selected),
-            unselectedIcon = painterResource(R.drawable.ic_reels_not_selected)
         )
     )
 
@@ -93,36 +92,56 @@ fun MainContainer(
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-
+        val bottomPadding by animateDpAsState(
+            targetValue = if (isBottomBarVisible.value) 74.dp else 0.dp,
+            label = "bottom_padding"
+        )
         NavHost(
             navController = bottomNavController,
             startDestination = Route.HomeScreen.route,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 74.dp)
+                .background(Theme.color.surfaces.surface)
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .padding(bottom = bottomPadding)
         ) {
             composable(Route.HomeScreen.route) { HomeScreen(rootNavController) }
             composable(Route.FullPrayerTimeView.route) { FullPrayerTimesViewScreen(rootNavController) }
-            composable(Route.AzkarScreen.route) { AzkarScreen(rootNavController) }
+            composable(Route.Reels.route) {
+                ReelsScreen(
+                    navController = rootNavController,
+                    onBottomBarVisibilityChanged = { isVisible ->
+                        isBottomBarVisible.value = isVisible
+                    }
+                )
+            }
             composable(Route.RadioScreen.route) { RadioScreen(rootNavController) }
             composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }
-            composable(Route.Reels.route){ReelsScreen(rootNavController)}
         }
 
-        BottomNavigationBar(
-            items = bottomItems,
-            selectedIndex = selectedIndex,
-            onItemSelected = { index ->
-                val route = navItems[index].route
-                bottomNavController.navigate(route) {
-                    popUpTo(bottomNavController.graph.startDestinationId) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
+        AnimatedVisibility(
+            visible = isBottomBarVisible.value,
+            enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+            exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        ) {
+
+            BottomNavigationBar(
+                items = bottomItems,
+                selectedIndex = selectedIndex,
+                onItemSelected = { index ->
+                    val route = navItems[index].route
+
+                    bottomNavController.navigate(route) {
+                        popUpTo(bottomNavController.graph.startDestinationId) {
+                            saveState = true
+                        }
+
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
     }
 }

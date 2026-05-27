@@ -276,6 +276,7 @@
     <string name="v">%1$s %2$s</string>
     <string name="version">Version</string>
     <string name="radio">Radio</string>
+    <string name="reels">Reels</string>
     <string name="failed_to_cache_video">Failed to share this reel.</string>
     <string name="failed_to_share_message">Please check your internet connection and try again.</string>
 
