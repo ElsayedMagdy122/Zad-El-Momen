@@ -42,7 +42,6 @@ fun ReelItemCard(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-
         if (player != null && isReady) {
             ReelVideoPlayer(
                 player = player,

@@ -15,7 +15,7 @@ import dev.sayed.mehrabalmomen.data.reels.ReelsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
-import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
+import dev.sayed.mehrabalmomen.domain.repository.quranReel.ReelsRepository
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository

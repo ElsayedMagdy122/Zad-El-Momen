@@ -4,6 +4,7 @@ package dev.sayed.mehrabalmomen.domain.entity.quranReel
 data class ReelVideoItem(
     val id: Int,
     val videoUrl: String,
+    val thumbnailUrl: String,
     val title: String,
     val ayah: String,
     val surahName : String,

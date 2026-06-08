@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.presentation.screen.reels.components.clickAnimation
 
 @Composable
 fun LikeButton(
@@ -43,67 +42,10 @@ fun LikeButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var pressed by remember { mutableStateOf(false) }
-
-    val scale by animateFloatAsState(
-        targetValue = if (pressed) 1.3f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-        finishedListener = { pressed = false },
-    )
-
-    val animatedTint by animateColorAsState(
-        targetValue = if (isLiked) Theme.color.semantic.error else Theme.color.semantic.shadeTertiary
-    )
-
-    val alpha = remember { Animatable(0f) }
-
-    val xOffset1 = remember { Animatable(0f) }
-    val yOffset1 = remember { Animatable(0f) }
-
-    val xOffset2 = remember { Animatable(0f) }
-    val yOffset2 = remember { Animatable(0f) }
-
-    val xOffset3 = remember { Animatable(0f) }
-    val yOffset3 = remember { Animatable(0f) }
-
-    LaunchedEffect(isLiked) {
-        if (isLiked) {
-            xOffset1.snapTo(0f); yOffset1.snapTo(0f)
-            xOffset2.snapTo(0f); yOffset2.snapTo(0f)
-            xOffset3.snapTo(0f); yOffset3.snapTo(0f)
-            alpha.snapTo(1f)
-
-            launch {
-                launch { xOffset1.animateTo(-55f, tween(1400)) }
-                yOffset1.animateTo(-140f, tween(1600))
-            }
-            launch {
-                launch { xOffset2.animateTo(10f, tween(1400)) }
-                yOffset2.animateTo(-170f, tween(1600, delayMillis = 80))
-            }
-            launch {
-                launch { xOffset3.animateTo(50f, tween(1400)) }
-                yOffset3.animateTo(-120f, tween(1600, delayMillis = 160))
-            }
-            launch {
-                alpha.animateTo(0f, tween(800, delayMillis = 900))
-            }
-        } else {
-            xOffset1.stop(); yOffset1.stop()
-            xOffset2.stop(); yOffset2.stop()
-            xOffset3.stop(); yOffset3.stop()
-            alpha.stop()
-
-            xOffset1.snapTo(0f); yOffset1.snapTo(0f)
-            xOffset2.snapTo(0f); yOffset2.snapTo(0f)
-            xOffset3.snapTo(0f); yOffset3.snapTo(0f)
-            alpha.snapTo(0f)
-        }
-    }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier
     ) {
         HeartIcon(isLiked = isLiked, onClick = onClick)
         Text(
@@ -158,7 +100,6 @@ fun HeartIcon(
             xOffset2.snapTo(0f); yOffset2.snapTo(0f)
             xOffset3.snapTo(0f); yOffset3.snapTo(0f)
             alpha.snapTo(1f)
-
             launch {
                 launch { xOffset1.animateTo(-55f, tween(1400)) }
                 yOffset1.animateTo(-140f, tween(1600))

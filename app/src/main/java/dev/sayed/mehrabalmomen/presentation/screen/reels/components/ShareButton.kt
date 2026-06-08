@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import kotlin.div
 
 @Composable
 fun ShareButton(
@@ -31,7 +30,6 @@ fun ShareButton(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.clickable(enabled = !isSharing, onClick = onClick),
     ) {
-        // Swap between share icon and download spinner with a smooth crossfade
         Box(modifier = Modifier.size(28.dp), contentAlignment = Alignment.Center) {
             Crossfade(targetState = isSharing, label = "shareIcon") { sharing ->
                 if (sharing) {

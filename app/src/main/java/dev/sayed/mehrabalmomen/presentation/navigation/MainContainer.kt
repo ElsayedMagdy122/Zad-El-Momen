@@ -26,7 +26,6 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
-import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -36,6 +35,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import dev.sayed.mehrabalmomen.presentation.screen.home_reels.HomeReelsScreen
+
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun MainContainer(
@@ -48,7 +49,7 @@ fun MainContainer(
     val navItems = listOf(
         Route.HomeScreen,
         Route.FullPrayerTimeView,
-        Route.Reels,
+        Route.HomeReelsScreen,
         Route.RadioScreen,
         Route.SettingsScreen,
     )
@@ -107,16 +108,10 @@ fun MainContainer(
         ) {
             composable(Route.HomeScreen.route) { HomeScreen(rootNavController) }
             composable(Route.FullPrayerTimeView.route) { FullPrayerTimesViewScreen(rootNavController) }
-            composable(Route.Reels.route) {
-                ReelsScreen(
-                    navController = rootNavController,
-                    onBottomBarVisibilityChanged = { isVisible ->
-                        isBottomBarVisible.value = isVisible
-                    }
-                )
-            }
+
             composable(Route.RadioScreen.route) { RadioScreen(rootNavController) }
             composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }
+            composable(Route.HomeReelsScreen.route) { HomeReelsScreen(navController = rootNavController) }
         }
 
         AnimatedVisibility(

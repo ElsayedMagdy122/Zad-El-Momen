@@ -116,7 +116,7 @@ class VideoPlayerPool(context: Context) {
 
     internal fun release() = players.forEach { it.release() }
 
-    companion object {
+    private companion object {
         const val POOL_SIZE = 4
     }
 }

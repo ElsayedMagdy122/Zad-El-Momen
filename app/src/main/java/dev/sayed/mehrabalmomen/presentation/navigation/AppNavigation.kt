@@ -23,7 +23,6 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListScreen
-import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
@@ -96,5 +95,10 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
             BatteryOptimizationScreen(navController = navController)
         }
 
+        composable<Route.ReelsScreen> {
+            ReelsScreen(
+                navController = navController
+            )
+        }
     }
 }

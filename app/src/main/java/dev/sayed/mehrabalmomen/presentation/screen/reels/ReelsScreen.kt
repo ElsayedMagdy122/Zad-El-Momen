@@ -2,7 +2,6 @@ package dev.sayed.mehrabalmomen.presentation.screen.reels
 
 import android.content.ClipData
 import android.content.Intent
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,13 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
@@ -46,16 +42,13 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.ReelItemCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.absoluteValue
 
 @Composable
 fun ReelsScreen(
     navController: NavHostController,
-    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     viewModel: ReelsViewModel = koinViewModel(),
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
@@ -111,14 +104,13 @@ fun ReelsScreen(
                     .align(Alignment.TopCenter).zIndex(10f)
                     .padding(top = 24.dp),
                 data = it,
-                isSuccess = it.icon == R.drawable.ic_check_circle
+                isSuccess = false
             )
         }
 
         ReelsContent(
             state = state,
             interactionListener = viewModel,
-            onBottomBarVisibilityChanged = onBottomBarVisibilityChanged,
         )
     }
 }
@@ -126,7 +118,6 @@ fun ReelsScreen(
 @Composable
 private fun ReelsContent(
     state: ReelsUiState,
-    onBottomBarVisibilityChanged: (Boolean) -> Unit,
     interactionListener: ReelsInteractionListener,
 ) {
     val pagerState = rememberPagerState(pageCount = { state.reels.size })
@@ -134,21 +125,6 @@ private fun ReelsContent(
     val urls = remember(state.reels) { state.reels.map { it.videoUrl } }
     var lastPage by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(pagerState) {
-
-        snapshotFlow { pagerState.currentPage }
-            .distinctUntilChanged()
-            .collectLatest { currentPage ->
-
-                if (currentPage > lastPage) {
-                    onBottomBarVisibilityChanged(false)
-                } else if (currentPage < lastPage) {
-                    onBottomBarVisibilityChanged(true)
-                }
-
-                lastPage = currentPage
-            }
-    }
     LaunchedEffect(urls.size) {
         if (urls.isNotEmpty()) {
             pool.onPageChanged(
@@ -157,7 +133,6 @@ private fun ReelsContent(
             )
         }
     }
-
 
     LaunchedEffect(pagerState, urls) {
         snapshotFlow { pagerState.settledPage }
@@ -206,30 +181,6 @@ private fun ReelsContent(
                     modifier = Modifier.fillMaxSize(),
                     beyondViewportPageCount = 2,
                 ) { page ->
-
-                    val pageOffset = (
-                            (pagerState.currentPage - page) + pagerState
-                                .currentPageOffsetFraction
-                            ).absoluteValue
-
-                    val scale by animateFloatAsState(
-                        targetValue = lerp(
-                            start = 0.92f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ),
-                        label = "scale"
-                    )
-
-                    val alpha by animateFloatAsState(
-                        targetValue = lerp(
-                            start = 0.5f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ),
-                        label = "alpha"
-                    )
-
                     CompositionLocalProvider(
                         LocalLayoutDirection provides LayoutDirection.Rtl
                     ) {
@@ -240,12 +191,7 @@ private fun ReelsContent(
                             isReady = page in readyPages,
                             interactionListener = interactionListener,
                             modifier = Modifier
-                                .fillMaxSize()
-                                .graphicsLayer {
-                                    scaleX = scale
-                                    scaleY = scale
-                                    this.alpha = alpha
-                                },
+                                .fillMaxSize(),
                         )
                     }
             }

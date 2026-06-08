@@ -110,10 +110,10 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
 
-            firebaseCrashlytics {
-                mappingFileUploadEnabled=false
-                nativeSymbolUploadEnabled=false
-            }
+//            firebaseCrashlytics {
+//                mappingFileUploadEnabled=false
+//                nativeSymbolUploadEnabled=false
+//            }
 
         }
         release {
@@ -123,10 +123,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            firebaseCrashlytics {
-                mappingFileUploadEnabled=true
-                nativeSymbolUploadEnabled=true
-            }
+//            firebaseCrashlytics {
+//                mappingFileUploadEnabled=true
+//                nativeSymbolUploadEnabled=true
+//            }
         }
     }
     compileOptions {

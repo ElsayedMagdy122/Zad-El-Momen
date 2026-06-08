@@ -34,8 +34,8 @@ sealed interface Route {
     }
 
     @Serializable
-    data object Reels : Route {
-        override val route = "reels"
+    data class ReelsScreen (val initialReelId : Int): Route {
+        override val route: String get() = "reels/$initialReelId"
     }
 
     @Serializable
@@ -115,5 +115,10 @@ sealed interface Route {
     @Serializable
     data object BatteryOptimizationScreen : Route {
         override val route = "battery_optimization"
+    }
+
+    @Serializable
+    data object HomeReelsScreen : Route {
+        override val route = "home_reels_screen"
     }
 }

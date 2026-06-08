@@ -16,4 +16,5 @@ data class ReelDto(
     @SerialName("shares_count")      val sharesCount: Int,
     @SerialName("like_count")        val likeCount: Int,
     @SerialName("is_liked")          val isLiked: Boolean,
-)
+    @SerialName("thumbnail_url")     val thumbnailUrl: String,
+    )

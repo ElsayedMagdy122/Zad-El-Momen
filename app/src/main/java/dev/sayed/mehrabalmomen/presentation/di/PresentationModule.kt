@@ -10,6 +10,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization.BatteryOp
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookMarkListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.home_reels.HomeReelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
@@ -19,10 +20,12 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsArgs
 import dev.sayed.mehrabalmomen.presentation.screen.reels.ReelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -45,6 +48,8 @@ val presentationModule = module {
     viewModelOf(::RadioChannelsViewModel)
     viewModelOf(::BatteryOptimizationViewModel)
     viewModelOf(::ReelsViewModel)
+    viewModelOf(::HomeReelsViewModel)
+    factoryOf(::ReelsArgs)
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }

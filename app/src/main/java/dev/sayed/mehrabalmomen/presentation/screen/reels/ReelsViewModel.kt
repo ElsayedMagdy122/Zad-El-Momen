@@ -3,12 +3,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.reels
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.model.LikeResult
-import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
+import dev.sayed.mehrabalmomen.domain.repository.quranReel.ReelsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.launch
 
 class ReelsViewModel(
     private val reelsRepository: ReelsRepository,
+    private val reelsArgs: ReelsArgs
 ) : BaseViewModel<ReelsUiState, ReelsEffect>(ReelsUiState()), ReelsInteractionListener {
 
     private var currentPage = 1
@@ -17,23 +18,27 @@ class ReelsViewModel(
     init {
         loadReels()
     }
+
     private fun loadReels() {
         tryToCall(
-            onStart = { updateState { it.copy(isLoading = true, error = null) }},
-            block = {reelsRepository.getReels(
-                pageNumber = currentPage,
-                pageSize = pageSize
-            )},
-            onSuccess = {items->
+            onStart = { updateState { it.copy(isLoading = true, error = null) } },
+            block = {
+                reelsRepository.getReels(
+                    pageNumber = currentPage,
+                    pageSize = pageSize,
+                    firstReelId = reelsArgs.initialReelId
+                )
+            },
+            onSuccess = { items ->
                 updateState {
                     it.copy(
-                        reels = items.map { r -> r.toUiState() },
+                        reels = items.map { r -> r.toReelItemUiState() },
                         isLoading = false,
                         hasMore = items.size == pageSize,
                     )
                 }
             },
-            onError = {error->
+            onError = { error ->
                 updateState { it.copy(isLoading = false, error = error.message) }
             }
         )
@@ -51,12 +56,12 @@ class ReelsViewModel(
                 )
                 updateState {
                     it.copy(
-                        reels = it.reels + items.map { it.toUiState() },
+                        reels = it.reels + items.map { it.toReelItemUiState() },
                         isPaginating = false,
                         hasMore = items.size == pageSize,
                     )
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 currentPage--
                 updateState { it.copy(isPaginating = false) }
             }
@@ -98,7 +103,7 @@ class ReelsViewModel(
                     })
                 }
             },
-            onError = {error->
+            onError = { error ->
                 updateState { current ->
                     current.copy(reels = current.reels.map {
                         if (it.id == itemId) it.copy(
@@ -129,7 +134,10 @@ class ReelsViewModel(
 
         tryToCall(
             block = {
-                reelsRepository.cacheReelVideo(reel.mp4Url, cacheVideoName = "reel_${reel.id}") { downloadPercentage ->
+                reelsRepository.cacheReelVideo(
+                    reel.mp4Url,
+                    cacheVideoName = "reel_${reel.id}"
+                ) { downloadPercentage ->
                     updateState {
                         it.copy(reels = it.reels.map {
                             if (it.id == reelId) it.copy(downloadPercentage = downloadPercentage) else it
@@ -147,10 +155,12 @@ class ReelsViewModel(
                 )
             },
             onError = {
-                sendEffect(ReelsEffect.Error(
-                    titleResId = R.string.failed_to_cache_video,
-                    messageResId = R.string.failed_to_share_message,
-                ))
+                sendEffect(
+                    ReelsEffect.Error(
+                        titleResId = R.string.failed_to_cache_video,
+                        messageResId = R.string.failed_to_share_message,
+                    )
+                )
             },
             onEnd = {
                 updateState { current ->

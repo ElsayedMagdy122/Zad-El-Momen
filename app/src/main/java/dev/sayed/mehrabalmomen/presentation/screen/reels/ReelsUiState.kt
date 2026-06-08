@@ -11,7 +11,6 @@ data class ReelsUiState(
 data class ReelItemUiState(
     val id: Int,
     val videoUrl: String,
-    /** Direct .mp4 URL — served by the backend alongside the HLS stream. */
     val mp4Url: String,
     val title: String,
     val ayah: String,
@@ -23,7 +22,6 @@ data class ReelItemUiState(
     val likesCountOptimistic: Int,
     val isLiked: Boolean = false,
     val isLikedOptimistic: Boolean = false,
-    /** True while the mp4 is being downloaded for sharing. */
     val isSharing: Boolean = false,
     val downloadPercentage : Int = 0
 )

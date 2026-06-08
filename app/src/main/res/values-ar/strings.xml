@@ -284,4 +284,22 @@
     <string name="version">الإصدار</string>
     <string name="radio">إذاعة</string>
     <string name="reels">ريلز</string>
+
+
+    <plurals name="likes_suffix">
+        <item quantity="zero">لا إعجابات</item>
+        <item quantity="one">%1$d إعجاب</item>
+        <item quantity="two">%1$d إعجابان</item>
+        <item quantity="few">%1$d إعجابات</item>
+        <item quantity="many">%1$d إعجاباً</item>
+        <item quantity="other">%1$d إعجاب</item>
+    </plurals>
+    <plurals name="shares_suffix">
+        <item quantity="zero">لا مشاركات</item>
+        <item quantity="one">%1$d مشاركة</item>
+        <item quantity="two">%1$d مشاركتان</item>
+        <item quantity="few">%1$d مشاركات</item>
+        <item quantity="many">%1$d مشاركةً</item>
+        <item quantity="other">%1$d مشاركة</item>
+    </plurals>
 </resources>

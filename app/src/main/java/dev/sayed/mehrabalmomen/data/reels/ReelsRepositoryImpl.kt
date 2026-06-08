@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.data.reels
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.FileProvider
 import dev.sayed.mehrabalmomen.data.reels.dto.ReelDto
 import dev.sayed.mehrabalmomen.data.reels.mapper.toReelVideoItem
@@ -9,11 +8,10 @@ import dev.sayed.mehrabalmomen.data.util.AnonymousAuthManager
 import dev.sayed.mehrabalmomen.domain.model.LikeResult
 import dev.sayed.mehrabalmomen.domain.entity.quranReel.ReelVideoItem
 import dev.sayed.mehrabalmomen.domain.model.ShareResult
-import dev.sayed.mehrabalmomen.domain.repository.ReelsRepository
+import dev.sayed.mehrabalmomen.domain.repository.quranReel.ReelsRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.contentLength
@@ -22,7 +20,6 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
 
-
 class ReelsRepositoryImpl(
     private val context: Context,
     private val supabase: SupabaseClient,
@@ -30,7 +27,7 @@ class ReelsRepositoryImpl(
     private val anonymousAuthManager: AnonymousAuthManager
 ) : ReelsRepository {
 
-    override suspend fun getReels(pageNumber: Int, pageSize: Int): List<ReelVideoItem> {
+    override suspend fun getReels(pageNumber: Int, pageSize: Int,firstReelId : Int? ): List<ReelVideoItem> {
         val offset = (pageNumber - 1) * pageSize
         val userId = anonymousAuthManager.getUserId()
         val reels = supabase.postgrest
@@ -40,6 +37,7 @@ class ReelsRepositoryImpl(
                     put("p_user_id", userId)
                     put("p_limit", pageSize)
                     put("p_offset", offset)
+                    put("p_reel_id",firstReelId)
                 }
             ).decodeList<ReelDto>()
 
@@ -49,19 +47,12 @@ class ReelsRepositoryImpl(
     override suspend fun likeReel(reelId: Int): LikeResult {
         val userId = anonymousAuthManager.getUserId()
 
-        supabase.postgrest
-            .from("reel_likes")
-            .insert(
-                buildJsonObject {
-                    put("reel_id", reelId.toLong())
-                    put("user_id", userId)
-                }
-            )
-
         val newCount = supabase.postgrest
             .rpc(
-                "increment_like_count",
-                buildJsonObject { put("reel_id_input", reelId.toLong()) }
+                "like_reel",
+                buildJsonObject { put("p_reel_id", reelId.toLong())
+                put("p_user_id", userId)
+                }
             ).data.trimOrNull()?.toIntOrNull() ?: 0
 
         return LikeResult(likesCount = newCount, isLiked = true)
@@ -70,22 +61,23 @@ class ReelsRepositoryImpl(
     override suspend fun unlikeReel(reelId: Int): LikeResult {
         val userId = anonymousAuthManager.getUserId()
 
-        supabase.postgrest
-            .from("reel_likes")
-            .delete {
-                filter {
-                    eq("reel_id", reelId.toLong())    // ← bigint
-                    eq("user_id", userId)
-                }
-            }
-
         val newCount = supabase.postgrest
             .rpc(
-                "decrement_like_count",
-                buildJsonObject { put("reel_id_input", reelId.toLong()) }
-            ).data.trimOrNull()?.toIntOrNull() ?: 0
+                "unlike_reel",
+                buildJsonObject {
+                    put("p_reel_id", reelId.toLong())
+                    put("p_user_id", userId)
+                }
+            )
+            .data
+            .trimOrNull()
+            ?.toIntOrNull()
+            ?: 0
 
-        return LikeResult(likesCount = newCount, isLiked = false)
+        return LikeResult(
+            likesCount = newCount,
+            isLiked = false
+        )
     }
 
     // ── 4. Cache / download MP4 ───────────────────────────────────────────────
