@@ -92,33 +92,7 @@ fun ReelItemCard(
                 .navigationBarsPadding(),
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                if (item.sheikhAvatarUrl.isEmpty())
-                    Icon(
-                        painter = painterResource(R.drawable.ic_quran_dua),
-                        tint = Theme.color.primary.primary,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentDescription = null
-                    )
-                else
-                    AsyncImage(
-                        model = item.sheikhAvatarUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .shadow(
-                                1.dp,
-                                CircleShape,
-                                true,
-                                Theme.color.secondary
-                                    .secondary,
-                                Theme.color.secondary
-                                    .secondary
-                            ),
-                    )
+                SheikhImage(item.sheikhAvatarUrl)
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
                         text = item

@@ -5,7 +5,8 @@ data class ReelsUiState(
     val isLoading: Boolean = false,
     val isPaginating: Boolean = false,
     val hasMore: Boolean = true,
-    val error: String? = null,
+    val isError: Boolean = false,
+    val currentPage: Int = 1
 )
 
 data class ReelItemUiState(
@@ -23,5 +24,5 @@ data class ReelItemUiState(
     val isLiked: Boolean = false,
     val isLikedOptimistic: Boolean = false,
     val isSharing: Boolean = false,
-    val downloadPercentage : Int = 0
+    val downloadPercentage: Int = 0
 )

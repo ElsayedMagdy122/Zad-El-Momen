@@ -1,31 +1,31 @@
 package dev.sayed.mehrabalmomen.presentation.screen.reels
 
-import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.model.LikeResult
 import dev.sayed.mehrabalmomen.domain.repository.quranReel.ReelsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import kotlinx.coroutines.launch
 
 class ReelsViewModel(
     private val reelsRepository: ReelsRepository,
     private val reelsArgs: ReelsArgs
 ) : BaseViewModel<ReelsUiState, ReelsEffect>(ReelsUiState()), ReelsInteractionListener {
 
-    private var currentPage = 1
-    private val pageSize = 10
+
+    private companion object {
+        const val PAGE_SIZE = 10
+    }
 
     init {
         loadReels()
     }
 
-    private fun loadReels() {
+    override fun loadReels() {
         tryToCall(
-            onStart = { updateState { it.copy(isLoading = true, error = null) } },
+            onStart = { updateState { it.copy(isLoading = true, isError = false) } },
             block = {
                 reelsRepository.getReels(
-                    pageNumber = currentPage,
-                    pageSize = pageSize,
+                    pageNumber = 1,
+                    pageSize = PAGE_SIZE,
                     firstReelId = reelsArgs.initialReelId
                 )
             },
@@ -34,38 +34,42 @@ class ReelsViewModel(
                     it.copy(
                         reels = items.map { r -> r.toReelItemUiState() },
                         isLoading = false,
-                        hasMore = items.size == pageSize,
+                        hasMore = items.size == PAGE_SIZE,
                     )
                 }
             },
             onError = { error ->
-                updateState { it.copy(isLoading = false, error = error.message) }
+                updateState { it.copy(isLoading = false, isError = true) }
             }
         )
     }
 
     override fun onLoadNextPage() {
         if (screenState.value.isPaginating || !screenState.value.hasMore) return
-        viewModelScope.launch {
-            updateState { it.copy(isPaginating = true) }
-            try {
-                currentPage++
-                val items = reelsRepository.getReels(
-                    pageNumber = currentPage,
-                    pageSize = pageSize
+        val nextPage = screenState.value.currentPage + 1
+
+        tryToCall(
+            onStart = { updateState { it.copy(isPaginating = true) } },
+            block = {
+                reelsRepository.getReels(
+                    pageNumber = nextPage,
+                    pageSize = PAGE_SIZE
                 )
+            },
+            onSuccess = { items ->
                 updateState {
                     it.copy(
                         reels = it.reels + items.map { it.toReelItemUiState() },
                         isPaginating = false,
-                        hasMore = items.size == pageSize,
+                        currentPage = nextPage,
+                        hasMore = items.size == PAGE_SIZE,
                     )
                 }
-            } catch (_: Exception) {
-                currentPage--
+            },
+            onError = {
                 updateState { it.copy(isPaginating = false) }
             }
-        }
+        )
     }
 
     override fun onLikeReelClicked(itemId: Int) {

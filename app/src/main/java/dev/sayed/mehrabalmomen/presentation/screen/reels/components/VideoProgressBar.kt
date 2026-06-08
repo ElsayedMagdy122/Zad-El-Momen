@@ -101,16 +101,16 @@ fun VideoProgressBar(
                             .height(trackHeight)
                             .border(
                                 width  = trackHeight / 2,
-                                color  = Theme.color.secondary.secondary,
+                                color  = Theme.color.brand.brand,
                                 shape  = RoundedCornerShape(
                                     topEndPercent    = 50,
                                     bottomEndPercent = 50,
                                 ),
                             )
                             .background(
-                                color = Theme.color.secondary.secondary,
+                                color = Theme.color.brand.brand,
                                 shape = RoundedCornerShape(50),
-                            ),
+                            ).glowBorder(Theme.color.brand.brand),
                     )
                 }
             }

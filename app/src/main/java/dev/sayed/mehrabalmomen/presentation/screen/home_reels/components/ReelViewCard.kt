@@ -30,6 +30,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedPlural
 import dev.sayed.mehrabalmomen.presentation.screen.home_reels.HomeReelsUiState
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.HeartIcon
+import dev.sayed.mehrabalmomen.presentation.screen.reels.components.SheikhImage
 
 @Composable
 fun ReelViewCard(
@@ -86,14 +87,7 @@ private fun ReelHeader(
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        AsyncImage(
-            model = sheikhAvatarUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+        SheikhImage(sheikhAvatarUrl)
         Column(
             modifier = Modifier
                 .weight(1f),

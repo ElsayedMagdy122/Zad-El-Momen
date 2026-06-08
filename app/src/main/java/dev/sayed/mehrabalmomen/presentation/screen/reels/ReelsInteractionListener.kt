@@ -6,4 +6,6 @@ interface ReelsInteractionListener {
     fun onLoadNextPage()
 
     fun onLikeReelClicked(reelId: Int)
+
+    fun loadReels()
 }

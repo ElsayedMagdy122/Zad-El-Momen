@@ -39,6 +39,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.components.NoInternetContainer
 import dev.sayed.mehrabalmomen.presentation.screen.reels.components.ReelItemCard
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
@@ -174,6 +175,14 @@ private fun ReelsContent(
                 modifier = Modifier.align(Alignment.Center),
                 color = Theme.color.brand.brand,
             )
+            state.isError -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    NoInternetContainer(
+                        onRetryClick = { interactionListener.loadReels() },
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
 
             state.reels.isNotEmpty() ->
                 VerticalPager(
