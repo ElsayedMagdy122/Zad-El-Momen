@@ -44,7 +44,7 @@ class ReminderAlarmReceiver : BroadcastReceiver() {
 
         val notification =
             NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.app_icon_svg)
+                .setSmallIcon(R.drawable.ic_mosque_02)
                 .setContentTitle(getTitle(type))
                 .setContentText(getBody(type))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
