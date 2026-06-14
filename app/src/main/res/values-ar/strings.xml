@@ -319,4 +319,9 @@
     <string name="last_updated">آخر تحديث: %1$s</string>
     <string name="legal">قانوني</string>
     <string name="growth">التقييم والنمو</string>
+    <string name="notifications">التنبيهات</string>
+    <string name="friday_sunnah">سنن الجمعة</string>
+    <string name="daily_quran_word">الورد القرآني اليومي</string>
+    <string name="save">حفظ</string>
+    <string name="choose_time">اختر الوقت</string>
 </resources>
