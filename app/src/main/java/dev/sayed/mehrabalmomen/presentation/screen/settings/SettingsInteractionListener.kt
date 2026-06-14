@@ -24,4 +24,5 @@ interface SettingsInteractionListener {
     fun onPrivacyAndPolicy()
 
     fun onContactUs()
+    fun onNotifications()
 }

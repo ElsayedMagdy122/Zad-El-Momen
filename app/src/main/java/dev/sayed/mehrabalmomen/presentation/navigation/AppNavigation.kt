@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
@@ -63,6 +64,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.ContactUsScreen> { ContactUsScreen(navController) }
         composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
         composable<Route.AzkarScreen> { AzkarScreen(navController) }
+        composable <Route.ReminderSettingsScreen>{ ReminderSettingsScreen(navController) }
         composable<Route.AzkarDetailScreen> { entry ->
             val args = entry.toRoute<Route.AzkarDetailScreen>()
             AzkarDetailScreen(

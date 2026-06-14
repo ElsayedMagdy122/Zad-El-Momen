@@ -85,6 +85,7 @@ data class SettingsUiState(
         LANGUAGE,
         THEME,
         LOCATION,
+        NOTIFICATIONS,
         CALCULATION_METHOD,
         MOAZEN,
         TEXT_FONT,

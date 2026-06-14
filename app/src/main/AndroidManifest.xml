@@ -58,6 +58,10 @@
             android:name=".presentation.reciver.AzanAlarmReceiver"
             android:enabled="true"
             android:exported="true" />
+        <receiver
+            android:name=".presentation.reciver.ReminderAlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name=".presentation.service.MyFirebaseMessagingService"
             android:exported="false">

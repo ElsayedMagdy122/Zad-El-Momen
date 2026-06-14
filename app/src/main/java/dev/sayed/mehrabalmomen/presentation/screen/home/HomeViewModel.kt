@@ -277,25 +277,6 @@ class HomeViewModel(
         }
     }
 
-    private fun updateCountdownUi(time: Triple<String, String, String>) {
-        updateState { current ->
-            current.copy(
-                time = HomeUiState.TimeUiState(
-                    hours = time.first,
-                    minutes = time.second,
-                    seconds = time.third
-                )
-            )
-        }
-    }
-
-    private fun handleCountdownFinished() {
-        updateState { current ->
-            current.copy(
-                time = HomeUiState.TimeUiState("00", "00", "00")
-            )
-        }
-    }
 
     override fun onClickViewAll() {
         sendEffect(HomeEffect.NavigateToFullPrayersDetails)
