@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
+import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
@@ -23,6 +24,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -44,6 +46,7 @@ val presentationModule = module {
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::RadioChannelsViewModel)
     viewModelOf(::BatteryOptimizationViewModel)
+    viewModelOf(:: ReminderSettingsViewModel)
     viewModelOf(::ContactViewModel)
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }

@@ -217,6 +217,11 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.LOCATION,
                         descriptionText = state.location.country.plus(", ")
                             .plus(state.location.city)
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_notifications,
+                        title =R.string.notifications,
+                        action = SettingsUiState.SettingsAction.NOTIFICATIONS,
                     )
                 )
             ),
@@ -583,5 +588,9 @@ class SettingsViewModel(
 
     override fun onContactUs() {
         sendEffect(SettingsEffect.NavigateToContactUs)
+    }
+
+    override fun onNotifications() {
+        sendEffect(SettingsEffect.NavigateToNotifications)
     }
 }

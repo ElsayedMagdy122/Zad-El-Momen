@@ -112,6 +112,10 @@ fun SettingsScreen(
             SettingsEffect.NavigateToPrivacy -> {
                 navController.navigate(Route.PrivacyScreen)
             }
+
+            SettingsEffect.NavigateToNotifications -> {
+                navController.navigate(Route.ReminderSettingsScreen)
+            }
         }
     }
     LaunchedEffect(toast) {
@@ -392,6 +396,7 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.TAFSEER -> listener.onItemClick(item.action)
                     SettingsUiState.SettingsAction.PRIVACY_POLICY -> listener.onPrivacyAndPolicy()
                     SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
+                    SettingsUiState.SettingsAction.NOTIFICATIONS -> listener.onNotifications()
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),

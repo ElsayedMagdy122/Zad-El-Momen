@@ -305,4 +305,9 @@
     <string name="last_updated">Last Updated: %1$s</string>
     <string name="legal">Legal</string>
     <string name="growth">Growth</string>
+    <string name="notifications">Notifications</string>
+    <string name="friday_sunnah">Friday Sunnah</string>
+    <string name="daily_quran_word">Daily Quran Portion</string>
+    <string name="save">Save</string>
+    <string name="choose_time">Choose time</string>
 </resources>
