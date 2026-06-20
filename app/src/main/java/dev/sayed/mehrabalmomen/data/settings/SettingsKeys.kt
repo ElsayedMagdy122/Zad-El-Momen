@@ -18,6 +18,7 @@ object SettingsKeys {
     val QURAN_FONT_SIZE = intPreferencesKey("quran_font_size")
     val TAFSEER_TYPE = stringPreferencesKey("tafseer_type")
     val SELECTED_MOAZEN = stringPreferencesKey("selected_moazen")
+    val READING_MODE = stringPreferencesKey("selected_reading_mode")
     val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
     val ALARMS_SCHEDULED = booleanPreferencesKey("alarms_scheduled")
     fun prayerKey(prayer: Prayer.PrayerName) =

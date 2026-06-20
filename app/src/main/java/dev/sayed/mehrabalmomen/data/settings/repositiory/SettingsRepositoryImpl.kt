@@ -1,15 +1,16 @@
 package dev.sayed.mehrabalmomen.data.settings.repositiory
 
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsUiState
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.sayed.mehrabalmomen.data.settings.SettingsKeys
 import dev.sayed.mehrabalmomen.data.settings.SettingsKeys.SELECTED_MOAZEN
-import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
-import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -94,6 +95,7 @@ class SettingsRepositoryImpl(
             prefs[SELECTED_MOAZEN] = fileName
         }
     }
+
     override fun observeSelectedMoazen(): Flow<String> {
         return dataStore.data
             .map { prefs ->
@@ -110,6 +112,18 @@ class SettingsRepositoryImpl(
     override fun observeTafseer(): Flow<String> {
         return dataStore.data.map {
             it[SettingsKeys.TAFSEER_TYPE] ?: "tf_ab_mokhtasar_ar.json"
+        }
+    }
+
+    override suspend fun saveReadingMode(readingMode: AppSettings.ReadingMode) {
+        dataStore.edit {
+            it[SettingsKeys.READING_MODE] = readingMode.name
+        }
+    }
+
+    override fun observeReadingMode(): Flow<String> {
+        return dataStore.data.map {
+            it[SettingsKeys.READING_MODE] ?: AppSettings.ReadingMode.CONTINUOUS_READING.name
         }
     }
 
@@ -138,6 +152,10 @@ class SettingsRepositoryImpl(
                 ),
                 language = AppSettings.Language.valueOf(
                     prefs[SettingsKeys.LANGUAGE] ?: AppSettings.Language.ARABIC.name
+                ),
+                readingMode = AppSettings.ReadingMode.valueOf(
+                    prefs[SettingsKeys.READING_MODE]
+                        ?: AppSettings.ReadingMode.CONTINUOUS_READING.name
                 )
             )
         }
