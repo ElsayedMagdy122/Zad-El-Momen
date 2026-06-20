@@ -226,10 +226,10 @@ private fun PageViewContent(
             viewModel.onAyahVisible(firstAyah.id)
         }
     }
-
     HorizontalPager(
         state = pagerState,
         snapPosition = SnapPosition.End,
+        reverseLayout = LocalLayoutDirection.current == LayoutDirection.Ltr,
         modifier = Modifier.fillMaxSize()
     ) { pageIndex ->
         Column(
@@ -250,7 +250,8 @@ private fun PageViewContent(
             }
 
             QuranTextSection(
-                ayat = state.ayatPerPages[state.pageNumbers[pageIndex]] ?: state.ayatPerPages.values.first(),
+                ayat = state.ayatPerPages[state.pageNumbers[pageIndex]]
+                    ?: state.ayatPerPages.values.first(),
                 selectedAyaId = state.selectedAyaId,
                 targetAyahId = state.targetAyahId,
                 fontSizeSp = state.fontSize.sizeSp,
