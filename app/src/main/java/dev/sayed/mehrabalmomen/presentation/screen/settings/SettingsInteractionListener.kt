@@ -1,7 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
-
 
 interface SettingsInteractionListener {
 

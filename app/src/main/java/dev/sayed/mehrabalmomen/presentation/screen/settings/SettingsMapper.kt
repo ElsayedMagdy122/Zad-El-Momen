@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -28,6 +27,10 @@ fun SettingsUiState.ThemeState.toDomain(): AppSettings.Theme = when (this) {
     SettingsUiState.ThemeState.SYSTEM -> AppSettings.Theme.SYSTEM
 }
 
+fun SettingsUiState.ReadingMode.toDomain(): AppSettings.ReadingMode = when (this) {
+    SettingsUiState.ReadingMode.CONTINUOUS_READING -> AppSettings.ReadingMode.CONTINUOUS_READING
+    SettingsUiState.ReadingMode.PAGE_VIEW -> AppSettings.ReadingMode.PAGE_VIEW
+}
 
 fun Madhab.toUi(): SettingsUiState.MadhabState = when (this) {
     Madhab.SHAFI -> SettingsUiState.MadhabState.SHAFI
