@@ -231,12 +231,6 @@ class SettingsViewModel(
 
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_book_reading,
-                        title = R.string.setting_reading_mode,
-                        description = state.selectedReadingMode.value,
-                        action = SettingsUiState.SettingsAction.READING_MODE
-                    ),
-                    SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_notifications,
                         title =R.string.notifications,
                         action = SettingsUiState.SettingsAction.NOTIFICATIONS,
@@ -276,6 +270,12 @@ class SettingsViewModel(
                         title = R.string.text_font,
                         description = state.selectedFontSize.value,
                         action = SettingsUiState.SettingsAction.TEXT_FONT
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_book_reading,
+                        title = R.string.setting_reading_mode,
+                        description = state.selectedReadingMode.value,
+                        action = SettingsUiState.SettingsAction.READING_MODE
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_tafseer,
