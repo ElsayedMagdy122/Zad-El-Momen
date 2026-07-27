@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.data.quran.repository.BookmarkRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.TimeRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
@@ -32,11 +33,13 @@ import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepo
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.TimeRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
+    single<TimeRepository> { TimeRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl() }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }

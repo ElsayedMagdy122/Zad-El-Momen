@@ -193,4 +193,7 @@ dependencies {
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)
+
+    // JVM tests
+    testImplementation(libs.junit)
 }

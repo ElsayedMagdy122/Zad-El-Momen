@@ -1,50 +1,60 @@
 package dev.sayed.mehrabalmomen.data.prayer.mapper
 
 import com.batoulapps.adhan2.CalculationMethod
+import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod as domainCalculationMethod
 
-fun dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.toAdhanParams() =
+
+/**
+ * Maps an application calculation method to a complete Adhan2 parameter set.
+ *
+ * @receiver domain calculation method saved in prayer settings.
+ * @return usable Adhan2 parameters for calculating all five obligatory prayers. The domain
+ * `OTHER` value is not user-selectable and therefore follows the application's existing Muslim
+ * World League fallback instead of Adhan2's unconfigured zero-angle `OTHER` parameters.
+ */
+fun domainCalculationMethod.toAdhanParams() =
     when (this) {
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.EGYPTIAN -> {
+        domainCalculationMethod.EGYPTIAN -> {
             CalculationMethod.EGYPTIAN.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.MUSLIM_WORLD_LEAGUE -> {
+        domainCalculationMethod.MUSLIM_WORLD_LEAGUE -> {
             CalculationMethod.MUSLIM_WORLD_LEAGUE.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.KARACHI -> {
+        domainCalculationMethod.KARACHI -> {
             CalculationMethod.KARACHI.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.UMM_AL_QURA -> {
+        domainCalculationMethod.UMM_AL_QURA -> {
             CalculationMethod.UMM_AL_QURA.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.DUBAI -> {
+        domainCalculationMethod.DUBAI -> {
             CalculationMethod.DUBAI.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.QATAR -> {
+        domainCalculationMethod.QATAR -> {
             CalculationMethod.QATAR.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.KUWAIT -> {
+        domainCalculationMethod.KUWAIT -> {
             CalculationMethod.KUWAIT.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.MOONSIGHTING_COMMITTEE -> {
+        domainCalculationMethod.MOONSIGHTING_COMMITTEE -> {
             CalculationMethod.MOON_SIGHTING_COMMITTEE.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.SINGAPORE -> {
+        domainCalculationMethod.SINGAPORE -> {
             CalculationMethod.SINGAPORE.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.NORTH_AMERICA -> {
+        domainCalculationMethod.NORTH_AMERICA -> {
             CalculationMethod.NORTH_AMERICA.parameters
         }
 
-        dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod.OTHER -> {
-            CalculationMethod.OTHER.parameters
+        domainCalculationMethod.OTHER -> {
+            CalculationMethod.MUSLIM_WORLD_LEAGUE.parameters
         }
     }
