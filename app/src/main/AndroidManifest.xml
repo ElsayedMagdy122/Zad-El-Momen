@@ -62,6 +62,16 @@
             android:name=".presentation.reciver.ReminderAlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+        <receiver
+            android:name=".presentation.widget.prayer.PrayerWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prayer_widget_info" />
+        </receiver>
         <service
             android:name=".presentation.service.MyFirebaseMessagingService"
             android:exported="false">

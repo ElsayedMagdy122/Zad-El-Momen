@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="144dp"
+    android:height="144dp"
+    android:viewportWidth="144"
+    android:viewportHeight="144">
+    <path
+        android:fillColor="@color/prayer_widget_navy"
+        android:pathData="M72,72m-70,0a70,70 0,1 1,140 0a70,70 0,1 1,-140 0" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M72,10a62,62 0,0 1,0 124"
+        android:strokeColor="@color/prayer_widget_gold"
+        android:strokeLineCap="round"
+        android:strokeWidth="5" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M72,134a62,62 0,0 1,-43 -17"
+        android:strokeColor="@color/prayer_widget_gold"
+        android:strokeLineCap="round"
+        android:strokeWidth="5" />
+</vector>

@@ -29,6 +29,7 @@ firebaseMessaging = "25.0.1"
 media3Exoplayer = "1.9.2"
 foundation = "1.10.4"
 firebaseAnalytics = "23.2.0"
+glance = "1.1.1"
 [libraries]
 adhan2 = { module = "com.batoulapps.adhan:adhan2", version.ref = "adhan2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,6 +74,8 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+androidx-glance = { group = "androidx.glance", name = "glance", version.ref = "glance" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -118,3 +121,4 @@ image-loading = ["coil-compose", ]
 
 # ── Others / Domain specific
 others = ["adhan2", "androidx-datastore-preferences", "billing-ktx", "material-v1120"]
+glance = ["androidx-glance", "androidx-glance-appwidget"]
