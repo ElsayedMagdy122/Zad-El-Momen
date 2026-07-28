@@ -5,6 +5,7 @@
     android:layout_height="24dp"
     android:gravity="center"
     android:includeFontPadding="false"
+    android:maxLines="1"
     android:textColor="@android:color/white"
     android:textSize="18sp"
     android:textStyle="bold" />
