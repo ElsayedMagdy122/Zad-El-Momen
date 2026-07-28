@@ -18,6 +18,7 @@ import kotlin.time.Instant
  * @property displayedDate date whose prayer list is displayed by the widget.
  * @property prayers ordered prayers belonging to [displayedDate].
  * @property nextPrayer first prayer strictly after [calculatedAt].
+ * @property countdownStartInstant previous prayer boundary used as zero ring progress.
  * @property remainingDuration duration from [calculatedAt] until [nextPrayer].
  * @property location location used by the prayer calculation.
  * @property language language that presentation code should use for labels and digits.
@@ -30,6 +31,7 @@ data class PrayerWidgetContent(
     val displayedDate: LocalDate,
     val prayers: List<Prayer>,
     val nextPrayer: Prayer,
+    val countdownStartInstant: Instant,
     val remainingDuration: Duration,
     val location: Location,
     val language: AppSettings.Language,

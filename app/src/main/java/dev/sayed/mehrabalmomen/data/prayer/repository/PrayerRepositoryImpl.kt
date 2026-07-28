@@ -17,6 +17,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -148,15 +149,27 @@ class PrayerRepositoryImpl : PrayerRepository {
         location: Location,
     ): PrayerTimelineResult {
         val orderedToday = todayPrayers.sortedBy { prayer -> prayer.time }
-        val nextPrayerToday = orderedToday.firstOrNull { prayer -> prayer.time > now }
+        val nextPrayerTodayIndex = orderedToday.indexOfFirst { prayer -> prayer.time > now }
 
         val displayedDate: LocalDate
         val displayedPrayers: List<Prayer>
         val nextPrayer: Prayer
-        if (nextPrayerToday != null) {
+        val countdownStartInstant: Instant
+        if (nextPrayerTodayIndex >= 0) {
             displayedDate = today
             displayedPrayers = orderedToday
-            nextPrayer = nextPrayerToday
+            nextPrayer = orderedToday[nextPrayerTodayIndex]
+            countdownStartInstant = if (nextPrayerTodayIndex > 0) {
+                orderedToday[nextPrayerTodayIndex - 1].time
+            } else {
+                val yesterday = today.minus(1, DateTimeUnit.DAY)
+                getDailyPrayers(
+                    madhab = madhab,
+                    calculationMethod = calculationMethod,
+                    location = location,
+                    date = yesterday,
+                ).maxBy { prayer -> prayer.time }.time
+            }
         } else {
             displayedDate = today.plus(1, DateTimeUnit.DAY)
             displayedPrayers = getDailyPrayers(
@@ -168,12 +181,14 @@ class PrayerRepositoryImpl : PrayerRepository {
             nextPrayer = displayedPrayers.first { prayer ->
                 prayer.name == Prayer.PrayerName.FAJR
             }
+            countdownStartInstant = orderedToday.last().time
         }
 
         return PrayerTimelineResult(
             displayedDate = displayedDate,
             displayedPrayers = displayedPrayers,
             nextPrayer = nextPrayer,
+            countdownStartInstant = countdownStartInstant,
             remainingDuration = (nextPrayer.time - now).coerceAtLeast(Duration.ZERO),
         )
     }

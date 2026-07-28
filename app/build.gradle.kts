@@ -175,6 +175,7 @@ dependencies {
     // AndroidX
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.glance)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Kotlinx & utilities
     implementation(libs.bundles.kotlinx)

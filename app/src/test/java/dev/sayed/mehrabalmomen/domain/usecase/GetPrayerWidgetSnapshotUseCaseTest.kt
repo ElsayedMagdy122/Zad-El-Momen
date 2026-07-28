@@ -317,6 +317,7 @@ class GetPrayerWidgetSnapshotUseCaseTest {
                 displayedDate = displayedDate,
                 displayedPrayers = displayedPrayers,
                 nextPrayer = nextPrayer,
+                countdownStartInstant = instant,
                 remainingDuration = (nextPrayer.time - instant).coerceAtLeast(Duration.ZERO),
             )
         }

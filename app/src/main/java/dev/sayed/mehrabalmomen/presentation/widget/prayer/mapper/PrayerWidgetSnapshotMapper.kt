@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetPrayer
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetStatus
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetUiState
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.calculatePrayerWidgetCountdownProgress
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toLocalDateTime
@@ -52,7 +53,13 @@ class PrayerWidgetSnapshotMapper {
             nextPrayerName = nextPrayer.name.localizedName(language),
             nextPrayerTime = nextPrayer.formattedTime(timeZone, language),
             countdown = remainingDuration.formattedCountdown(language),
+            countdownStartEpochMillis = countdownStartInstant.toEpochMilliseconds(),
             targetEpochMillis = nextPrayer.time.toEpochMilliseconds(),
+            countdownProgress = calculatePrayerWidgetCountdownProgress(
+                startEpochMillis = countdownStartInstant.toEpochMilliseconds(),
+                targetEpochMillis = nextPrayer.time.toEpochMilliseconds(),
+                currentEpochMillis = calculatedAt.toEpochMilliseconds(),
+            ),
             displayedDate = displayedDate.toJavaLocalDate().format(dateFormatter(language)),
             timeZoneId = timeZone.id,
             languageCode = language.code,

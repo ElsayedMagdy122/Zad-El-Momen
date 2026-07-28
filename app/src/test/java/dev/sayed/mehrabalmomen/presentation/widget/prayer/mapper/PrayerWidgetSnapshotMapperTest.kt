@@ -34,6 +34,8 @@ class PrayerWidgetSnapshotMapperTest {
         assertEquals("العصر", state.nextPrayerName)
         assertEquals("٠٣:٣٠ مساء", state.nextPrayerTime)
         assertEquals("٠١:٠٢:٠٣", state.countdown)
+        assertEquals(Instant.parse("2026-01-15T12:00:00Z").toEpochMilliseconds(), state.countdownStartEpochMillis)
+        assertEquals(7_045, state.countdownProgress)
         assertEquals("ar", state.languageCode)
         assertTrue(state.isRtl)
         assertTrue(state.prayers.first { it.name == "العصر" }.isUpcoming)
@@ -124,6 +126,7 @@ class PrayerWidgetSnapshotMapperTest {
             displayedDate = displayedDate,
             prayers = prayers,
             nextPrayer = nextPrayer,
+            countdownStartInstant = Instant.parse("2026-01-15T12:00:00Z"),
             remainingDuration = 1.hours + 2.minutes + 3.seconds,
             location = Location(latitude = 30.0444, longitude = 31.2357),
             language = language,

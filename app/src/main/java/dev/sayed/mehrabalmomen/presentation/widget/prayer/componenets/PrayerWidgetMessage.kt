@@ -13,18 +13,22 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetUiState
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.localizedString
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetStatus
 
 @Composable
-internal fun PrayerWidgetMessage(status: PrayerWidgetStatus) {
+internal fun PrayerWidgetMessage(state: PrayerWidgetUiState) {
     val context = LocalContext.current
-    val message = when (status) {
+    val message = when (state.status) {
         PrayerWidgetStatus.READY -> ""
-        PrayerWidgetStatus.LOADING -> context.getString(R.string.prayer_widget_loading)
-        PrayerWidgetStatus.NEEDS_LOCATION -> context.getString(R.string.prayer_widget_open_location)
-        PrayerWidgetStatus.ERROR -> context.getString(R.string.prayer_widget_error)
+        PrayerWidgetStatus.LOADING -> state.localizedString(context, R.string.prayer_widget_loading)
+        PrayerWidgetStatus.NEEDS_LOCATION -> {
+            state.localizedString(context, R.string.prayer_widget_open_location)
+        }
+        PrayerWidgetStatus.ERROR -> state.localizedString(context, R.string.prayer_widget_error)
         PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED -> {
-            context.getString(R.string.prayer_widget_exact_alarm_permission)
+            state.localizedString(context, R.string.prayer_widget_exact_alarm_permission)
         }
     }
 

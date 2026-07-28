@@ -14,12 +14,15 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetUiState
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.localizedString
 
 @Composable
 internal fun CurrentAndFollowingCard(
     state: PrayerWidgetUiState,
     modifier: GlanceModifier,
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = modifier
             .background(WidgetWhite)
@@ -29,7 +32,7 @@ internal fun CurrentAndFollowingCard(
     ) {
         CurrentAndFollowingItem(
             prayer = state.currentPrayer(),
-            label = LocalContext.current.getString(R.string.prayer_widget_current),
+            label = state.localizedString(context, R.string.prayer_widget_current),
             modifier = GlanceModifier.defaultWeight(),
         )
         Box(
@@ -40,7 +43,7 @@ internal fun CurrentAndFollowingCard(
         ) {}
         CurrentAndFollowingItem(
             prayer = state.followingPrayer(),
-            label = LocalContext.current.getString(R.string.prayer_widget_next_after),
+            label = state.localizedString(context, R.string.prayer_widget_next_after),
             modifier = GlanceModifier.defaultWeight(),
         )
     }

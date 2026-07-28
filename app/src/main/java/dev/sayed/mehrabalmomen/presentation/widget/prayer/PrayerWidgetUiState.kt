@@ -9,7 +9,9 @@ import androidx.compose.runtime.Stable
  * @property nextPrayerName localized name of the next prayer.
  * @property nextPrayerTime localized 12-hour time of the next prayer.
  * @property countdown formatted remaining duration captured when this state was mapped.
+ * @property countdownStartEpochMillis absolute previous-prayer boundary used for ring progress.
  * @property targetEpochMillis absolute next-prayer target used for a live countdown.
+ * @property countdownProgress ring fill in the inclusive `0..10000` widget progress range.
  * @property displayedDate localized date represented by [prayers].
  * @property timeZoneId timezone used when formatting prayer times.
  * @property languageCode saved language code used for presentation.
@@ -23,7 +25,9 @@ data class PrayerWidgetUiState(
     val nextPrayerName: String = "",
     val nextPrayerTime: String = "",
     val countdown: String = "00:00:00",
+    val countdownStartEpochMillis: Long? = null,
     val targetEpochMillis: Long? = null,
+    val countdownProgress: Int = 0,
     val displayedDate: String = "",
     val timeZoneId: String = "",
     val languageCode: String = "",

@@ -108,7 +108,7 @@ Launcher cell dimensions differ between devices. The implementation should use r
 - At exactly Fajr, the widget switches to Dhuhr.
 - Sunrise is excluded because the domain model and supplied design contain the five obligatory prayers only.
 - After Isha, display tomorrow's five prayer times instead of highlighting today's past Fajr.
-- The gold circular line is decorative unless periodic progress updates become an explicit requirement. A smooth progress ring cannot advance every second without repeatedly redrawing the widget.
+- The gold circular line represents elapsed progress between the previous and upcoming prayers. It advances through battery-safe 15-minute widget refreshes while the embedded chronometer continues updating every second.
 - Android's live chronometer naturally displays `MM:SS` or `H:MM:SS`; it does not guarantee the design's leading hour zero.
 - Tapping the widget opens the full prayer-times screen.
 - The widget follows the selected app language.
@@ -273,6 +273,12 @@ Glance fits the existing Compose-based project and can select responsive content
 
 Do not request a widget update every second. App widgets are passive, their process can disappear, and frequent redraws would waste battery.
 
+The countdown ring is calculated from the complete previous-prayer-to-next-prayer interval. It is
+empty at the previous prayer, fills clockwise as the remaining duration decreases, and is full at
+the target. Because `RemoteViews` cannot bind a determinate ring to `Chronometer`, the ring refreshes
+approximately every 15 minutes through one unique WorkManager job. A single widget-only exact alarm
+refreshes all instances at the prayer boundary and resets the ring for the following interval.
+
 Calculate the chronometer base using elapsed realtime:
 
 ```kotlin
@@ -351,7 +357,8 @@ The widget can be added, resized, localized, and tapped. Its live countdown is d
 
 An Android `Chronometer` continues after zero and can show a negative value. The widget must therefore refresh at each prayer boundary.
 
-Create a widget-specific boundary scheduler independent of Azan notification settings.
+Harden the widget-specific boundary scheduler introduced for countdown-ring transitions. It remains
+independent of Azan notification settings.
 
 ### Boundary update sequence
 

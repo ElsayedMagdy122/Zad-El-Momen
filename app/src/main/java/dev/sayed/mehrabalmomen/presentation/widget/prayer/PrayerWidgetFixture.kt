@@ -13,6 +13,7 @@ object PrayerWidgetFixture {
             status = PrayerWidgetStatus.READY,
             nextPrayerName = maghrib,
             countdown = "01:42:18".localizedDigits(context),
+            countdownProgress = 5_500,
             prayers = listOf(
                 PrayerWidgetPrayer(
                     name = context.getString(R.string.fajr),

@@ -72,6 +72,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/prayer_widget_info" />
         </receiver>
+        <receiver
+            android:name=".presentation.widget.prayer.PrayerWidgetBoundaryReceiver"
+            android:exported="false" />
         <service
             android:name=".presentation.service.MyFirebaseMessagingService"
             android:exported="false">

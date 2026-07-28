@@ -2,6 +2,8 @@ package dev.sayed.mehrabalmomen.domain.entity.prayer
 
 import kotlinx.datetime.LocalDate
 import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Describes the prayer schedule that should be displayed for one timeline calculation.
@@ -11,12 +13,15 @@ import kotlin.time.Duration
  * @property displayedPrayers chronologically ordered prayers for [displayedDate].
  * @property nextPrayer first prayer whose absolute instant is strictly later than the calculation
  * instant.
+ * @property countdownStartInstant previous prayer boundary from which countdown progress begins.
  * @property remainingDuration non-negative duration from the calculation instant to [nextPrayer].
  */
+@OptIn(ExperimentalTime::class)
 data class PrayerTimelineResult(
     val displayedDate: LocalDate,
     val displayedPrayers: List<Prayer>,
     val nextPrayer: Prayer,
+    val countdownStartInstant: Instant,
     val remainingDuration: Duration,
 ) {
     /**

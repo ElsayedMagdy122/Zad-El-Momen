@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerCalculationException
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerTimelineResult
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -89,10 +90,12 @@ class PrayerRepositoryImplTest {
     @Test
     fun `before Fajr timeline selects Fajr and displays today`() {
         val todayPrayers = dailyPrayers()
+        val yesterdayIsha = dailyPrayers(date = fixtureDate.minus(1, DateTimeUnit.DAY)).last()
 
         val timeline = timelineAt(todayPrayers.first().time - 1.milliseconds)
 
         assertEquals(Prayer.PrayerName.FAJR, timeline.nextPrayer.name)
+        assertEquals(yesterdayIsha.time, timeline.countdownStartInstant)
         assertEquals(fixtureDate, timeline.displayedDate)
         assertEquals(todayPrayers, timeline.displayedPrayers)
     }
@@ -114,6 +117,7 @@ class PrayerRepositoryImplTest {
         val timeline = timelineAt(todayPrayers.first().time)
 
         assertEquals(Prayer.PrayerName.ZUHR, timeline.nextPrayer.name)
+        assertEquals(todayPrayers.first().time, timeline.countdownStartInstant)
     }
 
     @Test
@@ -133,6 +137,7 @@ class PrayerRepositoryImplTest {
             val timeline = timelineAt(current.time + 1.milliseconds)
 
             assertEquals(following, timeline.nextPrayer)
+            assertEquals(current.time, timeline.countdownStartInstant)
         }
     }
 
@@ -147,6 +152,7 @@ class PrayerRepositoryImplTest {
         assertEquals(tomorrowDate, timeline.displayedDate)
         assertEquals(tomorrowPrayers, timeline.displayedPrayers)
         assertEquals(tomorrowPrayers.first(), timeline.nextPrayer)
+        assertEquals(todayPrayers.last().time, timeline.countdownStartInstant)
     }
 
     @Test
@@ -160,6 +166,7 @@ class PrayerRepositoryImplTest {
         assertEquals(tomorrowDate, timeline.displayedDate)
         assertEquals(tomorrowPrayers, timeline.displayedPrayers)
         assertEquals(tomorrowPrayers.first(), timeline.nextPrayer)
+        assertEquals(todayPrayers.last().time, timeline.countdownStartInstant)
     }
 
     @Test

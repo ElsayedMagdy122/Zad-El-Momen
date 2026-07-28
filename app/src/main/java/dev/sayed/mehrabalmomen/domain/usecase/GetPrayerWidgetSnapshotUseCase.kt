@@ -58,6 +58,7 @@ class GetPrayerWidgetSnapshotUseCase(
                 displayedDate = timeline.displayedDate,
                 prayers = timeline.displayedPrayers,
                 nextPrayer = timeline.nextPrayer,
+                countdownStartInstant = timeline.countdownStartInstant,
                 remainingDuration = timeline.remainingDuration,
                 location = settings.prayerSettings.location,
                 language = settings.language,

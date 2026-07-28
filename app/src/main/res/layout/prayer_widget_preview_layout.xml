@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/prayer_widget_surface"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@drawable/prayer_widget_countdown_ring"
+        android:gravity="center"
+        android:text="@string/prayer_widget_next"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:background="@color/prayer_widget_surface"
+        android:gravity="center"
+        android:text="@string/prayer_widget_description"
+        android:textColor="@color/prayer_widget_navy"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</LinearLayout>

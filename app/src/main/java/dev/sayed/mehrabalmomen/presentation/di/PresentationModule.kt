@@ -23,6 +23,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.AndroidPrayerWidgetBoundaryAlarm
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetBoundaryAlarm
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetBoundaryScheduler
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.mapper.PrayerWidgetSnapshotMapper
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -53,4 +56,6 @@ val presentationModule = module {
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }
     single { PrayerWidgetSnapshotMapper() }
+    single<PrayerWidgetBoundaryAlarm> { AndroidPrayerWidgetBoundaryAlarm(androidContext()) }
+    single { PrayerWidgetBoundaryScheduler(get(), get()) }
 }

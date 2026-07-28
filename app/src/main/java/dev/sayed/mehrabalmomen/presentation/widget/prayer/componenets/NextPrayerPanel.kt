@@ -22,12 +22,14 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetUiState
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.localizedString
 
 @Composable
 internal fun NextPrayerPanel(
     state: PrayerWidgetUiState,
     modifier: GlanceModifier,
 ) {
+    val context = LocalContext.current
     val nextPrayer = state.upcomingPrayer()
 
     Column(
@@ -35,7 +37,7 @@ internal fun NextPrayerPanel(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = LocalContext.current.getString(R.string.prayer_widget_next).uppercase(),
+            text = state.localizedString(context, R.string.prayer_widget_next).uppercase(),
             style = TextStyle(
                 color = WidgetGold,
                 fontSize = 10.sp,
@@ -44,6 +46,19 @@ internal fun NextPrayerPanel(
             ),
             maxLines = 1,
         )
+        if (state.isTomorrow) {
+            Spacer(modifier = GlanceModifier.height(2.dp))
+            Text(
+                text = state.localizedString(context, R.string.prayer_widget_tomorrow),
+                style = TextStyle(
+                    color = WidgetGold,
+                    fontSize = 8.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                ),
+                maxLines = 1,
+            )
+        }
         Spacer(modifier = GlanceModifier.height(5.dp))
         Image(
             provider = ImageProvider(R.drawable.mosque_02),
