@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.widget.prayer
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.os.Bundle
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import org.koin.core.context.GlobalContext
@@ -16,7 +17,7 @@ class PrayerWidgetReceiver : GlanceAppWidgetReceiver() {
      */
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        PrayerWidgetProgressScheduler.from(context).schedule()
+        GlobalContext.get().get<PrayerWidgetUpdateCoordinator>().scheduleRecovery()
     }
 
     /**
@@ -33,8 +34,27 @@ class PrayerWidgetReceiver : GlanceAppWidgetReceiver() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
     ) {
-        PrayerWidgetProgressScheduler.from(context).schedule()
+        GlobalContext.get().get<PrayerWidgetUpdateCoordinator>().scheduleRecovery()
         super.onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
+    /**
+     * Keeps widget-only recovery active when a launcher resize causes a widget rebuild.
+     *
+     * @param context receiver context used to resolve schedulers.
+     * @param appWidgetManager platform manager delivering the resize event.
+     * @param appWidgetId installed widget instance identifier that changed size.
+     * @param newOptions size/options bundle supplied by the launcher host.
+     * @return no value; after completion, recovery is scheduled and Glance handles the resize.
+     */
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle,
+    ) {
+        GlobalContext.get().get<PrayerWidgetUpdateCoordinator>().scheduleRecovery()
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
     /**
@@ -43,8 +63,7 @@ class PrayerWidgetReceiver : GlanceAppWidgetReceiver() {
      * @param context receiver context used to resolve schedulers.
      */
     override fun onDisabled(context: Context) {
-        PrayerWidgetProgressScheduler.from(context).cancel()
-        GlobalContext.get().get<PrayerWidgetBoundaryScheduler>().cancel()
+        GlobalContext.get().get<PrayerWidgetUpdateCoordinator>().cancelWidgetWork()
         super.onDisabled(context)
     }
 }

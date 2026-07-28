@@ -92,6 +92,10 @@ class GetPrayerWidgetSnapshotUseCaseTest {
         assertEquals(AppSettings.Language.ARABIC, snapshot.content.language)
         assertEquals(TimeZone.UTC, snapshot.content.timeZone)
         assertEquals(LocalDate(2026, 1, 15), snapshot.content.currentLocalDate)
+        assertEquals(
+            Instant.parse("2026-01-16T00:00:00Z"),
+            snapshot.content.nextLocalMidnight,
+        )
     }
 
     @Test
@@ -154,6 +158,52 @@ class GetPrayerWidgetSnapshotUseCaseTest {
             prayerRepository.requestedDates,
         )
         assertEquals(LocalDate(2026, 1, 16), snapshot.content.currentLocalDate)
+    }
+
+    /**
+     * Verifies that the widget snapshot rolls from Isha to the next day's Fajr.
+     *
+     * @return no value; assertions fail if the next prayer or midnight target is stale.
+     */
+    @Test
+    fun `after Isha snapshot targets tomorrow Fajr and next local midnight`() = runBlocking {
+        val useCase = createUseCase(
+            timeRepository = FakeTimeRepository(
+                instant = Instant.parse("2026-01-15T18:00:00Z"),
+                timeZone = TimeZone.UTC,
+            ),
+        )
+
+        val snapshot = useCase() as PrayerWidgetSnapshot.Ready
+
+        assertEquals(Prayer.PrayerName.FAJR, snapshot.content.nextPrayer.name)
+        assertEquals(LocalDate(2026, 1, 16), snapshot.content.displayedDate)
+        assertEquals(
+            Instant.parse("2026-01-16T00:00:00Z"),
+            snapshot.content.nextLocalMidnight,
+        )
+    }
+
+    /**
+     * Verifies that the widget's midnight alarm uses the captured calculation timezone.
+     *
+     * @return no value; assertions fail if midnight is calculated in UTC by mistake.
+     */
+    @Test
+    fun `next local midnight uses captured timezone`() = runBlocking {
+        val useCase = createUseCase(
+            timeRepository = FakeTimeRepository(
+                instant = Instant.parse("2026-01-15T20:00:00Z"),
+                timeZone = TimeZone.of("Africa/Cairo"),
+            ),
+        )
+
+        val snapshot = useCase() as PrayerWidgetSnapshot.Ready
+
+        assertEquals(
+            Instant.parse("2026-01-15T22:00:00Z"),
+            snapshot.content.nextLocalMidnight,
+        )
     }
 
     @Test

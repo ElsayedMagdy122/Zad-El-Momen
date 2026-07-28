@@ -9,9 +9,10 @@ import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.action.Action
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -77,14 +78,17 @@ class PrayerWidget : GlanceAppWidget() {
                 val state = koin.get<PrayerWidgetSnapshotMapper>().map(snapshot)
                 val boundaryScheduler = koin.get<PrayerWidgetBoundaryScheduler>()
                 if (state.status == PrayerWidgetStatus.READY) {
-                    val scheduled = boundaryScheduler.schedule(state.targetEpochMillis)
+                    val scheduled = boundaryScheduler.schedule(
+                        nextPrayerTargetEpochMillis = state.targetEpochMillis,
+                        nextLocalMidnightEpochMillis = state.nextLocalMidnightEpochMillis,
+                    )
                     if (scheduled) {
                         state
                     } else {
                         state.copy(status = PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED)
                     }
                 } else {
-                    boundaryScheduler.cancel()
+                    boundaryScheduler.cancelAll()
                     state
                 }
             }
@@ -101,13 +105,15 @@ class PrayerWidget : GlanceAppWidget() {
  *
  * @receiver widget UI state whose status determines the destination.
  * @param context Android context used to create the activity intent.
- * @return Glance action that opens either the app prayer screen or exact-alarm settings.
+ * @return Glance action that opens the app, opens exact-alarm settings, or retries after errors.
  */
 private fun PrayerWidgetUiState.clickAction(context: Context): Action {
-    return if (status == PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED) {
-        actionStartActivity(context.exactAlarmSettingsIntent())
-    } else {
-        actionStartActivity(context.prayerWidgetLaunchIntent())
+    return when (status) {
+        PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED -> {
+            actionStartActivity(context.exactAlarmSettingsIntent())
+        }
+        PrayerWidgetStatus.ERROR -> actionRunCallback<PrayerWidgetRefreshAction>()
+        else -> actionStartActivity(context.prayerWidgetLaunchIntent())
     }
 }
 

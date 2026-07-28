@@ -90,14 +90,30 @@ internal fun CountdownCircle(
                 )
             } else {
                 Text(
-                    text = state.countdown.asHoursAndMinutes(),
+                    text = if (state.status == PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED) {
+                        state.localizedString(context, R.string.prayer_widget_enable_live_countdown)
+                    } else {
+                        state.countdown.asHoursAndMinutes()
+                    },
                     style = TextStyle(
                         color = WidgetWhite,
-                        fontSize = 18.sp,
+                        fontSize = if (
+                            state.status == PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED
+                        ) {
+                            9.sp
+                        } else {
+                            18.sp
+                        },
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     ),
-                    maxLines = 1,
+                    maxLines = if (
+                        state.status == PrayerWidgetStatus.EXACT_ALARM_PERMISSION_REQUIRED
+                    ) {
+                        2
+                    } else {
+                        1
+                    },
                 )
             }
         }

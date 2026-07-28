@@ -215,6 +215,7 @@
     <string name="prayer_widget_open_location">Open the app to set your location.</string>
     <string name="prayer_widget_error">Prayer times are unavailable right now.</string>
     <string name="prayer_widget_exact_alarm_permission">Open the app to allow exact alarm updates.</string>
+    <string name="prayer_widget_enable_live_countdown">Enable live countdown</string>
     <string name="prayer_widget_loading">Preparing prayer times...</string>
     <string name="prayer_widget_content_description">Prayer widget. Next prayer: %1$s. Time remaining: %2$s.</string>
 

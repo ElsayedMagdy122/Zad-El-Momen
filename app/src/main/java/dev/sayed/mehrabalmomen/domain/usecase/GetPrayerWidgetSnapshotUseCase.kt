@@ -10,6 +10,9 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.widget.ExactAlarmPermissionRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
 
@@ -51,13 +54,17 @@ class GetPrayerWidgetSnapshotUseCase(
                 settings = settings.prayerSettings,
                 timeContext = timeContext,
             )
+            val currentLocalDate = timeContext.instant.toLocalDateTime(timeContext.timeZone).date
             val content = PrayerWidgetContent(
                 calculatedAt = timeContext.instant,
                 timeZone = timeContext.timeZone,
-                currentLocalDate = timeContext.instant.toLocalDateTime(timeContext.timeZone).date,
+                currentLocalDate = currentLocalDate,
                 displayedDate = timeline.displayedDate,
                 prayers = timeline.displayedPrayers,
                 nextPrayer = timeline.nextPrayer,
+                nextLocalMidnight = currentLocalDate
+                    .plus(1, DateTimeUnit.DAY)
+                    .atStartOfDayIn(timeContext.timeZone),
                 countdownStartInstant = timeline.countdownStartInstant,
                 remainingDuration = timeline.remainingDuration,
                 location = settings.prayerSettings.location,

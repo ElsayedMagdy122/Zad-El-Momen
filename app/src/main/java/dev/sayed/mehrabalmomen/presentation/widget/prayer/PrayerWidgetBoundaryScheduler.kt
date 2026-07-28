@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.widget.prayer
 import dev.sayed.mehrabalmomen.domain.repository.widget.ExactAlarmPermissionRepository
 
 /**
- * Validates and coordinates the one exact prayer-boundary alarm shared by all widget instances.
+ * Validates and coordinates exact widget alarms shared by all widget instances.
  *
  * @property exactAlarmPermissionRepository source of current exact-alarm access.
  * @property boundaryAlarm platform alarm implementation used after validation succeeds.
@@ -15,29 +15,48 @@ class PrayerWidgetBoundaryScheduler(
     private val currentTimeMillis: () -> Long = { System.currentTimeMillis() },
 ) {
     /**
-     * Schedules the next prayer boundary only when the target is future and access is available.
+     * Schedules the next prayer boundary and next local-midnight refresh.
      *
      * Invalid targets and missing permission cancel any stale alarm so an obsolete countdown cannot
-     * continue past zero. Repeated valid calls replace the same platform alarm rather than adding
-     * one alarm per widget instance.
+     * continue past zero. Repeated valid calls replace the same platform alarms rather than adding
+     * alarms per widget instance.
      *
-     * @param targetEpochMillis absolute epoch-millis next-prayer instant, if available.
-     * @return `true` only when a future boundary alarm was accepted by the platform.
+     * @param nextPrayerTargetEpochMillis absolute epoch-millis next-prayer instant, if available.
+     * @param nextLocalMidnightEpochMillis absolute epoch-millis next local midnight, if available.
+     * @return `true` only when both future widget alarms were accepted by the platform.
      */
-    fun schedule(targetEpochMillis: Long?): Boolean {
-        val canSchedule = targetEpochMillis != null &&
-            targetEpochMillis > currentTimeMillis() &&
+    fun schedule(
+        nextPrayerTargetEpochMillis: Long?,
+        nextLocalMidnightEpochMillis: Long?,
+    ): Boolean {
+        val now = currentTimeMillis()
+        val canSchedule = nextPrayerTargetEpochMillis != null &&
+            nextPrayerTargetEpochMillis > now &&
+            nextLocalMidnightEpochMillis != null &&
+            nextLocalMidnightEpochMillis > now &&
             exactAlarmPermissionRepository.canScheduleExactAlarms()
         if (!canSchedule) {
-            boundaryAlarm.cancel()
+            boundaryAlarm.cancelAll()
             return false
         }
 
-        return boundaryAlarm.schedule(requireNotNull(targetEpochMillis))
+        if (!boundaryAlarm.schedulePrayerBoundary(nextPrayerTargetEpochMillis)) {
+            boundaryAlarm.cancelAll()
+            return false
+        }
+        if (!boundaryAlarm.scheduleLocalMidnight(nextLocalMidnightEpochMillis)) {
+            boundaryAlarm.cancelAll()
+            return false
+        }
+        return true
     }
 
-    /** Cancels the widget-only prayer-boundary alarm without affecting Azan notification alarms. */
-    fun cancel() {
-        boundaryAlarm.cancel()
+    /**
+     * Cancels widget-only exact alarms without affecting Azan notification alarms.
+     *
+     * @return no value; after completion stale prayer-boundary and midnight alarms are removed.
+     */
+    fun cancelAll() {
+        boundaryAlarm.cancelAll()
     }
 }

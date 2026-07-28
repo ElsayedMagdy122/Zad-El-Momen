@@ -1,10 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.widget.prayer
 
 import android.content.Context
-import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CancellationException
+import org.koin.core.context.GlobalContext
 
 /**
  * Performs the battery-safe periodic refresh that advances calculated countdown ring progress.
@@ -26,7 +26,7 @@ class PrayerWidgetProgressRefreshWorker(
      */
     override suspend fun doWork(): Result {
         return try {
-            PrayerWidget().updateAll(applicationContext)
+            GlobalContext.get().get<PrayerWidgetUpdateCoordinator>().refreshAllIfInstalled()
             Result.success()
         } catch (exception: CancellationException) {
             throw exception

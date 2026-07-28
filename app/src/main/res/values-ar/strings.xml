@@ -215,6 +215,7 @@
     <string name="prayer_widget_open_location">افتح التطبيق لتحديد موقعك.</string>
     <string name="prayer_widget_error">مواقيت الصلاة غير متاحة الآن.</string>
     <string name="prayer_widget_exact_alarm_permission">افتح التطبيق للسماح بتحديثات التنبيه الدقيقة.</string>
+    <string name="prayer_widget_enable_live_countdown">فعّل العد التنازلي المباشر</string>
     <string name="prayer_widget_loading">جاري تجهيز مواقيت الصلاة...</string>
     <string name="prayer_widget_content_description">ويدجت الصلاة. الصلاة القادمة: %1$s. الوقت المتبقي: %2$s.</string>
     <plurals name="minutes_ago">

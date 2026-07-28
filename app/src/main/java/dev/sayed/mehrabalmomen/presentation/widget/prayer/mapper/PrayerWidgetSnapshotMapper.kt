@@ -55,6 +55,7 @@ class PrayerWidgetSnapshotMapper {
             countdown = remainingDuration.formattedCountdown(language),
             countdownStartEpochMillis = countdownStartInstant.toEpochMilliseconds(),
             targetEpochMillis = nextPrayer.time.toEpochMilliseconds(),
+            nextLocalMidnightEpochMillis = nextLocalMidnight.toEpochMilliseconds(),
             countdownProgress = calculatePrayerWidgetCountdownProgress(
                 startEpochMillis = countdownStartInstant.toEpochMilliseconds(),
                 targetEpochMillis = nextPrayer.time.toEpochMilliseconds(),

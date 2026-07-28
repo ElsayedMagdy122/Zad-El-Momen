@@ -11,6 +11,7 @@ import androidx.compose.runtime.Stable
  * @property countdown formatted remaining duration captured when this state was mapped.
  * @property countdownStartEpochMillis absolute previous-prayer boundary used for ring progress.
  * @property targetEpochMillis absolute next-prayer target used for a live countdown.
+ * @property nextLocalMidnightEpochMillis absolute local-midnight target used to refresh the list.
  * @property countdownProgress ring fill in the inclusive `0..10000` widget progress range.
  * @property displayedDate localized date represented by [prayers].
  * @property timeZoneId timezone used when formatting prayer times.
@@ -27,6 +28,7 @@ data class PrayerWidgetUiState(
     val countdown: String = "00:00:00",
     val countdownStartEpochMillis: Long? = null,
     val targetEpochMillis: Long? = null,
+    val nextLocalMidnightEpochMillis: Long? = null,
     val countdownProgress: Int = 0,
     val displayedDate: String = "",
     val timeZoneId: String = "",

@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 
 /**
- * AlarmManager implementation of the single prayer-widget boundary alarm.
+ * AlarmManager implementation of the prayer-widget exact alarms.
  *
  * @property context application context used to access AlarmManager and create the explicit intent.
  */
@@ -26,12 +26,67 @@ class AndroidPrayerWidgetBoundaryAlarm(
      * @return `true` when AlarmManager accepted the request, or `false` after a permission race.
      */
     @SuppressLint("ScheduleExactAlarm")
-    override fun schedule(targetEpochMillis: Long): Boolean {
+    override fun schedulePrayerBoundary(targetEpochMillis: Long): Boolean {
+        return schedule(
+            action = PrayerWidgetBoundaryReceiver.ACTION_PRAYER_WIDGET_BOUNDARY,
+            requestCode = BOUNDARY_REQUEST_CODE,
+            targetEpochMillis = targetEpochMillis,
+        )
+    }
+
+    /**
+     * Schedules an exact idle-capable broadcast at the next local midnight.
+     *
+     * The local-midnight alarm uses a separate PendingIntent identity so it cannot replace the
+     * prayer-boundary alarm. A permission race is converted into `false`.
+     *
+     * @param targetEpochMillis absolute epoch-millis local midnight instant to schedule.
+     * @return `true` when AlarmManager accepted the request, or `false` after a permission race.
+     */
+    @SuppressLint("ScheduleExactAlarm")
+    override fun scheduleLocalMidnight(targetEpochMillis: Long): Boolean {
+        return schedule(
+            action = PrayerWidgetBoundaryReceiver.ACTION_PRAYER_WIDGET_LOCAL_MIDNIGHT,
+            requestCode = LOCAL_MIDNIGHT_REQUEST_CODE,
+            targetEpochMillis = targetEpochMillis,
+        )
+    }
+
+    /**
+     * Cancels both widget-only exact alarms without affecting Azan notification alarms.
+     *
+     * @return no value; after completion both stable widget PendingIntents are removed.
+     */
+    override fun cancelAll() {
+        cancel(
+            action = PrayerWidgetBoundaryReceiver.ACTION_PRAYER_WIDGET_BOUNDARY,
+            requestCode = BOUNDARY_REQUEST_CODE,
+        )
+        cancel(
+            action = PrayerWidgetBoundaryReceiver.ACTION_PRAYER_WIDGET_LOCAL_MIDNIGHT,
+            requestCode = LOCAL_MIDNIGHT_REQUEST_CODE,
+        )
+    }
+
+    /**
+     * Schedules one exact widget broadcast using the supplied PendingIntent identity.
+     *
+     * @param action explicit broadcast action handled by [PrayerWidgetBoundaryReceiver].
+     * @param requestCode stable request code that distinguishes widget alarm types.
+     * @param targetEpochMillis absolute epoch-millis instant to schedule.
+     * @return `true` when AlarmManager accepted the request, or `false` after a permission race.
+     */
+    @SuppressLint("ScheduleExactAlarm")
+    private fun schedule(
+        action: String,
+        requestCode: Int,
+        targetEpochMillis: Long,
+    ): Boolean {
         return try {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 targetEpochMillis,
-                boundaryPendingIntent(),
+                pendingIntent(action, requestCode),
             )
             true
         } catch (exception: SecurityException) {
@@ -39,9 +94,15 @@ class AndroidPrayerWidgetBoundaryAlarm(
         }
     }
 
-    /** Cancels the stable PendingIntent used by the prayer-widget boundary alarm. */
-    override fun cancel() {
-        val pendingIntent = boundaryPendingIntent()
+    /**
+     * Cancels one exact widget broadcast by recreating its stable PendingIntent identity.
+     *
+     * @param action explicit broadcast action used when the alarm was scheduled.
+     * @param requestCode stable request code used when the alarm was scheduled.
+     * @return no value; after completion the matching alarm identity is cancelled if present.
+     */
+    private fun cancel(action: String, requestCode: Int) {
+        val pendingIntent = pendingIntent(action, requestCode)
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
     }
@@ -49,15 +110,17 @@ class AndroidPrayerWidgetBoundaryAlarm(
     /**
      * Creates the immutable explicit broadcast identity shared by scheduling and cancellation.
      *
+     * @param action explicit broadcast action that describes the widget refresh trigger.
+     * @param requestCode stable request code that distinguishes widget alarm types.
      * @return stable PendingIntent targeting [PrayerWidgetBoundaryReceiver].
      */
-    private fun boundaryPendingIntent(): PendingIntent {
+    private fun pendingIntent(action: String, requestCode: Int): PendingIntent {
         val intent = Intent(context, PrayerWidgetBoundaryReceiver::class.java).apply {
-            action = PrayerWidgetBoundaryReceiver.ACTION_PRAYER_WIDGET_BOUNDARY
+            this.action = action
         }
         return PendingIntent.getBroadcast(
             context,
-            BOUNDARY_REQUEST_CODE,
+            requestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
@@ -65,5 +128,6 @@ class AndroidPrayerWidgetBoundaryAlarm(
 
     private companion object {
         const val BOUNDARY_REQUEST_CODE = 4_104
+        const val LOCAL_MIDNIGHT_REQUEST_CODE = 4_105
     }
 }

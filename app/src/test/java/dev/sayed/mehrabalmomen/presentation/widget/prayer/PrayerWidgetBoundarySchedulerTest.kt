@@ -7,15 +7,21 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PrayerWidgetBoundarySchedulerTest {
+    /**
+     * Verifies that valid future targets schedule both shared widget alarm identities.
+     *
+     * @return no value; assertions fail if prayer-boundary or midnight targets are missing.
+     */
     @Test
-    fun `future target with permission replaces the shared boundary alarm`() {
+    fun `future targets with permission replace shared widget alarms`() {
         val alarm = RecordingBoundaryAlarm()
         val scheduler = scheduler(alarm = alarm)
 
-        assertTrue(scheduler.schedule(2_000L))
-        assertTrue(scheduler.schedule(3_000L))
+        assertTrue(scheduler.schedule(2_000L, 2_500L))
+        assertTrue(scheduler.schedule(3_000L, 3_500L))
 
-        assertEquals(listOf(2_000L, 3_000L), alarm.scheduledTargets)
+        assertEquals(listOf(2_000L, 3_000L), alarm.prayerBoundaryTargets)
+        assertEquals(listOf(2_500L, 3_500L), alarm.localMidnightTargets)
         assertEquals(0, alarm.cancellations)
     }
 
@@ -24,10 +30,11 @@ class PrayerWidgetBoundarySchedulerTest {
         val alarm = RecordingBoundaryAlarm()
         val scheduler = scheduler(alarm = alarm, canSchedule = false)
 
-        assertFalse(scheduler.schedule(2_000L))
+        assertFalse(scheduler.schedule(2_000L, 2_500L))
 
         assertEquals(1, alarm.cancellations)
-        assertTrue(alarm.scheduledTargets.isEmpty())
+        assertTrue(alarm.prayerBoundaryTargets.isEmpty())
+        assertTrue(alarm.localMidnightTargets.isEmpty())
     }
 
     @Test
@@ -35,12 +42,31 @@ class PrayerWidgetBoundarySchedulerTest {
         val alarm = RecordingBoundaryAlarm()
         val scheduler = scheduler(alarm = alarm)
 
-        assertFalse(scheduler.schedule(null))
-        assertFalse(scheduler.schedule(1_000L))
-        assertFalse(scheduler.schedule(999L))
+        assertFalse(scheduler.schedule(null, 2_000L))
+        assertFalse(scheduler.schedule(2_000L, null))
+        assertFalse(scheduler.schedule(1_000L, 2_000L))
+        assertFalse(scheduler.schedule(2_000L, 999L))
 
-        assertEquals(3, alarm.cancellations)
-        assertTrue(alarm.scheduledTargets.isEmpty())
+        assertEquals(4, alarm.cancellations)
+        assertTrue(alarm.prayerBoundaryTargets.isEmpty())
+        assertTrue(alarm.localMidnightTargets.isEmpty())
+    }
+
+    /**
+     * Verifies that a platform refusal removes any partially scheduled widget alarms.
+     *
+     * @return no value; assertions fail if stale exact alarms remain after failure.
+     */
+    @Test
+    fun `platform schedule failure cancels both widget alarms`() {
+        val alarm = RecordingBoundaryAlarm(acceptLocalMidnight = false)
+        val scheduler = scheduler(alarm = alarm)
+
+        assertFalse(scheduler.schedule(2_000L, 2_500L))
+
+        assertEquals(listOf(2_000L), alarm.prayerBoundaryTargets)
+        assertTrue(alarm.localMidnightTargets.isEmpty())
+        assertEquals(1, alarm.cancellations)
     }
 
     /**
@@ -68,23 +94,42 @@ class PrayerWidgetBoundarySchedulerTest {
         override fun canScheduleExactAlarms(): Boolean = canSchedule
     }
 
-    private class RecordingBoundaryAlarm : PrayerWidgetBoundaryAlarm {
-        val scheduledTargets = mutableListOf<Long>()
+    private class RecordingBoundaryAlarm(
+        private val acceptPrayerBoundary: Boolean = true,
+        private val acceptLocalMidnight: Boolean = true,
+    ) : PrayerWidgetBoundaryAlarm {
+        val prayerBoundaryTargets = mutableListOf<Long>()
+        val localMidnightTargets = mutableListOf<Long>()
         var cancellations = 0
 
         /**
          * Records an accepted boundary target.
          *
          * @param targetEpochMillis absolute target passed by the scheduler.
-         * @return always `true` to model a platform-accepted alarm.
+         * @return configured platform result for the prayer-boundary alarm.
          */
-        override fun schedule(targetEpochMillis: Long): Boolean {
-            scheduledTargets += targetEpochMillis
-            return true
+        override fun schedulePrayerBoundary(targetEpochMillis: Long): Boolean {
+            if (acceptPrayerBoundary) {
+                prayerBoundaryTargets += targetEpochMillis
+            }
+            return acceptPrayerBoundary
         }
 
-        /** Records cancellation of the shared boundary alarm. */
-        override fun cancel() {
+        /**
+         * Records an accepted local-midnight target.
+         *
+         * @param targetEpochMillis absolute target passed by the scheduler.
+         * @return configured platform result for the local-midnight alarm.
+         */
+        override fun scheduleLocalMidnight(targetEpochMillis: Long): Boolean {
+            if (acceptLocalMidnight) {
+                localMidnightTargets += targetEpochMillis
+            }
+            return acceptLocalMidnight
+        }
+
+        /** Records cancellation of all shared widget alarms. */
+        override fun cancelAll() {
             cancellations += 1
         }
     }
