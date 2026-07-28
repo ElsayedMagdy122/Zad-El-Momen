@@ -20,6 +20,9 @@ object SettingsKeys {
     val SELECTED_MOAZEN = stringPreferencesKey("selected_moazen")
     val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
     val ALARMS_SCHEDULED = booleanPreferencesKey("alarms_scheduled")
+
+    /** Records that the user deliberately selected a location, including valid `0.0, 0.0`. */
+    val LOCATION_CONFIGURED = booleanPreferencesKey("location_configured")
     fun prayerKey(prayer: Prayer.PrayerName) =
         booleanPreferencesKey("prayer_enabled_${prayer.name}")
 }

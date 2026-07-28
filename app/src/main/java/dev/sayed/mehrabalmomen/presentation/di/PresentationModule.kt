@@ -23,6 +23,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.mapper.PrayerWidgetSnapshotMapper
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -51,4 +52,5 @@ val presentationModule = module {
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }
+    single { PrayerWidgetSnapshotMapper() }
 }

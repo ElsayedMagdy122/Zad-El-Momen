@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerCalculationError
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerCalculationException
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerTimelineResult
+import dev.sayed.mehrabalmomen.domain.entity.time.CurrentTimeContext
 import dev.sayed.mehrabalmomen.domain.repository.TimeRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import kotlinx.datetime.DateTimeUnit
@@ -31,7 +32,7 @@ class GetPrayerTimelineUseCaseTest {
     )
 
     @Test
-    fun `reads current instant and timezone once per calculation`() {
+    fun `reads current time context once per calculation`() {
         val timeRepository = FakeTimeRepository(
             instant = Instant.parse("2026-01-15T02:00:00Z"),
             timeZone = TimeZone.UTC,
@@ -41,8 +42,7 @@ class GetPrayerTimelineUseCaseTest {
 
         useCase(settings)
 
-        assertEquals(1, timeRepository.instantReads)
-        assertEquals(1, timeRepository.timeZoneReads)
+        assertEquals(1, timeRepository.timeContextReads)
     }
 
     @Test
@@ -185,19 +185,15 @@ class GetPrayerTimelineUseCaseTest {
         var instant: Instant,
         var timeZone: TimeZone,
     ) : TimeRepository {
-        var instantReads: Int = 0
-        var timeZoneReads: Int = 0
+        var timeContextReads: Int = 0
 
-        /** Returns the configured instant and increments its read counter. */
-        override fun currentInstant(): Instant {
-            instantReads += 1
-            return instant
-        }
-
-        /** Returns the configured timezone and increments its read counter. */
-        override fun currentTimeZone(): TimeZone {
-            timeZoneReads += 1
-            return timeZone
+        /** Returns the configured time context and increments its read counter. */
+        override fun currentTimeContext(): CurrentTimeContext {
+            timeContextReads += 1
+            return CurrentTimeContext(
+                instant = instant,
+                timeZone = timeZone,
+            )
         }
     }
 
