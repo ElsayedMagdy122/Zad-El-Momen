@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

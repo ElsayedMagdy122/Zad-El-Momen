@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahUiState
 
 @Composable
 fun SurahGrid(

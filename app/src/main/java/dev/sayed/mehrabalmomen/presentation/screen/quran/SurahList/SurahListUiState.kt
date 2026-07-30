@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
 import dev.sayed.mehrabalmomen.R
 

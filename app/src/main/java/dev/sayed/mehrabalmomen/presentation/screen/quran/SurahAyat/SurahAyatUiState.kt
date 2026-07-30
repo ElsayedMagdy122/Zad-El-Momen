@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 
 data class SurahAyatUiState(

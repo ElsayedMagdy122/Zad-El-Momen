@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -27,7 +27,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahUiState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahUiState
 
 @Composable
 fun SurahItem(

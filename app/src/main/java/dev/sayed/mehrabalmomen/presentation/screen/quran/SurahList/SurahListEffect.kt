@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
 sealed interface SurahListEffect {
     data class NavigateToSurahAyat(val surahId: Int,val arabicName:String, val englishName:String) : SurahListEffect

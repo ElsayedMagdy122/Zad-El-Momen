@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 

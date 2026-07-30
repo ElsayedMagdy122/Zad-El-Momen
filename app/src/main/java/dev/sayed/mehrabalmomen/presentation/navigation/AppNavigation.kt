@@ -12,7 +12,7 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization.BatteryOptimizationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
@@ -23,7 +23,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabScreen
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahListScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen

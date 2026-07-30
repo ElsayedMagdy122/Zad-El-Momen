@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -32,7 +32,7 @@ import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
-import dev.sayed.mehrabalmomen.presentation.screen.quran.components.SurahGrid
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.components.SurahGrid
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 

@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

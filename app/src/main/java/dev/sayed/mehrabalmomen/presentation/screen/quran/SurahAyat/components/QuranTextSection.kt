@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatUiState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatUiState
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull

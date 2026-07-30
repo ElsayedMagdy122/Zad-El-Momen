@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
 import android.annotation.SuppressLint
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository

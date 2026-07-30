@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.SurahAyat
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -49,11 +49,11 @@ import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.AyaActionsSection
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.BismillahSection
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.QuranTextSection
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.SurahAppBarSection
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.components.cleanAyahTextForCopy
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.AyaActionsSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.QuranTextSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.SurahAppBarSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.cleanAyahTextForCopy
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -1,17 +1,18 @@
-package dev.sayed.mehrabalmomen.presentation.screen.quran
+package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.quran.text.Surah
 
-fun Surah.toUiState() = SurahUiState(
-    id = surahNumber,
-    name = nameEnglish,
-    nameArabic = nameArabic,
-    nameEnglish = nameEnglish,
-    ayahNumbers = ayahCount,
-    surahType = type.toUiState(),
-    surahImage = getSurahImage(surahNumber)
-)
+fun Surah.toUiState() =
+    SurahUiState(
+        id = surahNumber,
+        name = nameEnglish,
+        nameArabic = nameArabic,
+        nameEnglish = nameEnglish,
+        ayahNumbers = ayahCount,
+        surahType = type.toUiState(),
+        surahImage = getSurahImage(surahNumber)
+    )
 
 fun Surah.SurahType.toUiState(): SurahType {
     return when (this) {
