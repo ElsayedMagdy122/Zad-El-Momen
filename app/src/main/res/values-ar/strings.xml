@@ -86,6 +86,12 @@
     <string name="arabic">العربية</string>
     <string name="english">الإنجليزية</string>
 
+    <string name="setting_reading_mode">وضع القراءة</string>
+    <string name="mode_continuous">تمرير مستمر</string>
+    <string name="mode_paged">وضع الصفحات</string>
+    <string name="title_choose_reading_mode">اختر وضع القراءة</string>
+    <string name="description_choose_reading_mode">اختر وضع القراءة المفضل لك</string>
+
     <string name="theme">المظهر</string>
     <string name="light">فاتح</string>
     <string name="dark">داكن</string>

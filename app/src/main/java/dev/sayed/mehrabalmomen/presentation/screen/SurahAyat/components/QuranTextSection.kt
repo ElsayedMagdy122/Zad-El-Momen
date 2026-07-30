@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.SurahAyatUiState
+import dev.sayed.mehrabalmomen.presentation.screen.SurahAyat.AyaUi
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -36,7 +36,10 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun QuranTextSection(
-    state: SurahAyatUiState,
+    ayat: List<AyaUi>,
+    selectedAyaId: Int?,
+    targetAyahId: Int?,
+    fontSizeSp: Int,
     onAyaLongPressed: (Int, String) -> Unit,
     onClearSelection: () -> Unit,
     onAyaVisible: (Int) -> Unit,
@@ -47,12 +50,12 @@ fun QuranTextSection(
     val color = Theme.color.primary.primary
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    val surahText = remember(state.ayat, state.selectedAyaId) {
+    val surahText = remember(ayat, selectedAyaId) {
         buildAnnotatedString {
-            state.ayat.forEach { aya ->
+            ayat.forEach { aya ->
                 val start = length
-                val isSelected = state.selectedAyaId == aya.id
-                val alpha = if (state.selectedAyaId == null || isSelected) 1f else 0.3f
+                val isSelected = selectedAyaId == aya.id
+                val alpha = if (selectedAyaId == null || isSelected) 1f else 0.3f
 
                 withStyle(SpanStyle(color = color.copy(alpha = alpha))) {
                     append(aya.text)
@@ -99,8 +102,8 @@ fun QuranTextSection(
         text = surahText,
         onTextLayout = { layout ->
             textLayoutResult = layout
-            state.targetAyahId?.let { targetId ->
-                val index = state.ayat.indexOfFirst { it.id == targetId }
+            targetAyahId?.let { targetId ->
+                val index = ayat.indexOfFirst { it.id == targetId }
                 if (index != -1) {
                     val annotations = surahText.getStringAnnotations(AYA_ID, 0, surahText.length)
                     val target = annotations.getOrNull(index)
@@ -131,7 +134,7 @@ fun QuranTextSection(
                 )
             },
         style = TextStyle(
-            fontSize = state.fontSize.sizeSp.sp,
+            fontSize = fontSizeSp.sp,
             fontFamily = FontFamily(Font(R.font.hafs)),
             lineHeight = 46.sp,
             textAlign = TextAlign.Justify,

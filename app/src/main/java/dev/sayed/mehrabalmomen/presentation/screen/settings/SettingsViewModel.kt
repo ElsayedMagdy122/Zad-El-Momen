@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
 import android.app.Activity
 import android.content.Context
 import android.media.MediaPlayer
@@ -48,11 +47,11 @@ class SettingsViewModel(
         observeQuranFont()
         observeTafseer()
         observeSelectedMoazen()
+        observeReadingMode()
         billingManager.queryProducts(supportProductIds)
     }
 
     private var previewPlayer: MediaPlayer? = null
-
 
     fun playPreview(index: Int, context: Context) {
         stopPreview()
@@ -161,6 +160,18 @@ class SettingsViewModel(
         }
     }
 
+    private fun observeReadingMode() {
+        viewModelScope.launch {
+            settingsRepository.observeReadingMode().collect { readingMode ->
+                val selectedReadingMode =
+                    SettingsUiState.ReadingMode.entries.firstOrNull { it.name == readingMode }
+                        ?: SettingsUiState.ReadingMode.CONTINUOUS_READING
+                updateState { it.copy(selectedReadingMode = selectedReadingMode) }
+                rebuildSections()
+            }
+        }
+    }
+
     private fun observeSelectedMoazen() {
         viewModelScope.launch {
             settingsRepository.observeSelectedMoazen().collect { fileName ->
@@ -217,6 +228,7 @@ class SettingsViewModel(
                         action = SettingsUiState.SettingsAction.LOCATION,
                         descriptionText = state.location.country.plus(", ")
                             .plus(state.location.city)
+
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_notifications,
@@ -258,6 +270,12 @@ class SettingsViewModel(
                         title = R.string.text_font,
                         description = state.selectedFontSize.value,
                         action = SettingsUiState.SettingsAction.TEXT_FONT
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_book_reading,
+                        title = R.string.setting_reading_mode,
+                        description = state.selectedReadingMode.value,
+                        action = SettingsUiState.SettingsAction.READING_MODE
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_tafseer,
@@ -302,6 +320,7 @@ class SettingsViewModel(
     private val dialogOpeners: Map<SettingsUiState.SettingsAction, () -> Unit> = mapOf(
         SettingsUiState.SettingsAction.LANGUAGE to { openLanguageDialog() },
         SettingsUiState.SettingsAction.THEME to { openThemeDialog() },
+        SettingsUiState.SettingsAction.READING_MODE to { openReadingModeDialog() },
         SettingsUiState.SettingsAction.MADHAB to { openMadhabDialog() },
         SettingsUiState.SettingsAction.CALCULATION_METHOD to { openCalculationMethodDialog() },
         SettingsUiState.SettingsAction.TEXT_FONT to { openFontSizeDialog() }
@@ -364,10 +383,21 @@ class SettingsViewModel(
         )
     }
 
+    private fun openReadingModeDialog() {
+        val state = screenState.value
+        openDialog(
+            type = SettingsUiState.SelectionDialogType.READING_MODE,
+            titleRes = R.string.title_choose_reading_mode,
+            descriptionRes = R.string.description_choose_reading_mode,
+            options = SettingsUiState.ReadingMode.entries.map { SelectionItem(it.value) },
+            selectedIndex = SettingsUiState.ReadingMode.entries.indexOf(state.selectedReadingMode)
+        )
+    }
+
     private fun openMadhabDialog() {
         val state = screenState.value
         openDialog(
-            type = SettingsUiState.SelectionDialogType.MADHAB,
+            type = SettingsUiState.SelectionDialogType.READING_MODE,
             titleRes = R.string.choose_madhab,
             descriptionRes = R.string.madhab_description,
             options = SettingsUiState.MadhabState.entries.map { SelectionItem(it.value) },
@@ -416,6 +446,11 @@ class SettingsViewModel(
             val selected = SettingsUiState.ThemeState.entries[index]
             saveTheme(selected.toDomain())
             updateState { it.copy(selectedTheme = selected) }
+        },
+        SettingsUiState.SelectionDialogType.READING_MODE to { index ->
+            val selected = SettingsUiState.ReadingMode.entries[index]
+            saveReadingMode(selected.toDomain())
+            updateState { it.copy(selectedReadingMode = selected) }
         },
         SettingsUiState.SelectionDialogType.MADHAB to { index ->
             val selected = SettingsUiState.MadhabState.entries[index]
@@ -476,6 +511,12 @@ class SettingsViewModel(
     private fun saveTheme(theme: AppSettings.Theme) {
         viewModelScope.launch {
             settingsRepository.saveTheme(theme)
+        }
+    }
+
+    private fun saveReadingMode(readingMode: AppSettings.ReadingMode) {
+        viewModelScope.launch {
+            settingsRepository.saveReadingMode(readingMode)
         }
     }
 

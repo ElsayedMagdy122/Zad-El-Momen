@@ -1,5 +1,6 @@
+package dev.sayed.mehrabalmomen.presentation.screen.settings
+
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
 
 
 data class SettingsUiState(
@@ -7,6 +8,7 @@ data class SettingsUiState(
     val selectedLanguage: Language = Language.ARABIC,
     val selectedTheme: ThemeState = ThemeState.SYSTEM,
     val selectedMadhab: MadhabState = MadhabState.SHAFI,
+    val selectedReadingMode: ReadingMode = ReadingMode.CONTINUOUS_READING,
     val selectedCalculationMethod: CalculationMethod = CalculationMethod.EGYPTIAN,
     val location: LocationUiState = LocationUiState(),
     val dialog: SelectionDialogUiState? = null,
@@ -44,6 +46,11 @@ data class SettingsUiState(
         HANAFI(R.string.hanafi)
     }
 
+    enum class ReadingMode(val value: Int) {
+        CONTINUOUS_READING(R.string.mode_continuous),
+        PAGE_VIEW(R.string.mode_paged)
+    }
+
     enum class Language(val nameRes: Int) {
         ENGLISH(R.string.english),
         ARABIC(R.string.arabic)
@@ -52,6 +59,7 @@ data class SettingsUiState(
     enum class SelectionDialogType {
         LANGUAGE,
         THEME,
+        READING_MODE,
         MADHAB,
         CALCULATION_METHOD,
         SUPPORT,
@@ -86,6 +94,7 @@ data class SettingsUiState(
         THEME,
         LOCATION,
         NOTIFICATIONS,
+        READING_MODE,
         CALCULATION_METHOD,
         MOAZEN,
         TEXT_FONT,
@@ -104,15 +113,17 @@ data class SettingsUiState(
         LARGE(R.string.large, 28),
         EXTRA_LARGE(R.string.extra_large, 32)
     }
-    enum class Moazen(val fileName: String,val id: Int) {
-        AZAN_ABED_ALBASET("azan_abed_albaset.mp3",0),
-        AZAN_MAKKAH("azan_makkah.mp3",1),
-        AZAN_MANSOOR_AL_ZAHRANI("azan_mansoor_al_zahrani.mp3",2),
-        AZAN_MISHARY_ALAFASI("azan_mishary_alafasi.mp3",3),
-        AZAN_MOHAMMED_ALMENSHWY("azan_mohammed_almenshawy.mp3",4),
-        AZAN_NASSER_ALQATAMI("azan_nasser_alqatami.mp3",5),
-        AZAN_SUHAIB_KHATBA("azan_suhaib_khatba.mp3",6)
+
+    enum class Moazen(val fileName: String, val id: Int) {
+        AZAN_ABED_ALBASET("azan_abed_albaset.mp3", 0),
+        AZAN_MAKKAH("azan_makkah.mp3", 1),
+        AZAN_MANSOOR_AL_ZAHRANI("azan_mansoor_al_zahrani.mp3", 2),
+        AZAN_MISHARY_ALAFASI("azan_mishary_alafasi.mp3", 3),
+        AZAN_MOHAMMED_ALMENSHWY("azan_mohammed_almenshawy.mp3", 4),
+        AZAN_NASSER_ALQATAMI("azan_nasser_alqatami.mp3", 5),
+        AZAN_SUHAIB_KHATBA("azan_suhaib_khatba.mp3", 6)
     }
+
     enum class TafseerType(val value: Int, val fileName: String) {
         MOKHTASAR(R.string.tafseer_mokhtasar, "tf_ab_mokhtasar_ar.json"),
         MOYASSAR(R.string.tafseer_moyasser, "tf_moyasser.json")

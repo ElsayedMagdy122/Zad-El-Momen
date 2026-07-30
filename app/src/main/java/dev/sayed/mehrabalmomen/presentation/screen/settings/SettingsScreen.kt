@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -382,6 +381,7 @@ fun SettingsItem(
                 when (item.action) {
                     SettingsUiState.SettingsAction.LANGUAGE,
                     SettingsUiState.SettingsAction.THEME,
+                    SettingsUiState.SettingsAction.READING_MODE,
                     SettingsUiState.SettingsAction.MADHAB,
                     SettingsUiState.SettingsAction.CALCULATION_METHOD -> listener.onItemClick(
                         item.action

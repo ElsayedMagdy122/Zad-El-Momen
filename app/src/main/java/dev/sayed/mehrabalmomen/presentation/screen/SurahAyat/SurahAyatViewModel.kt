@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
-import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +31,23 @@ class SurahAyatViewModel(
     private val targetAyahId: Int? = savedStateHandle["targetAyahId"]
 
     init {
+        observeReadingMode()
         loadSurahAyat()
         observeFontSize()
+    }
+
+    private fun observeReadingMode() {
+        viewModelScope.launch {
+            settingsRepository.observeReadingMode().collect { readingModeName ->
+                val selectedReadingMode =
+                    AppSettings.ReadingMode.entries.first { it.name == readingModeName }
+                updateState {
+                    it.copy(
+                        readingMode = selectedReadingMode,
+                    )
+                }
+            }
+        }
     }
 
     fun onAyahVisible(ayahId: Int) {
@@ -42,6 +58,7 @@ class SurahAyatViewModel(
             )
         }
     }
+
     private fun observeFontSize() {
         viewModelScope.launch {
             settingsRepository.observeQuranFontSize().collect { size ->
@@ -56,6 +73,7 @@ class SurahAyatViewModel(
             }
         }
     }
+
     private fun loadSurahAyat() {
         tryToCall(
             onStart = {
@@ -64,11 +82,17 @@ class SurahAyatViewModel(
             block = { quranRepository.getAyahs(surahId) },
             onSuccess = { ayat ->
                 delay(200)
+                val uiAyat = ayat.map { AyaUi(it.ayahNumber, it.page, it.text) }
+                val targetPage = calculateTargetPage(uiAyat, targetAyahId)
+                val ayatPerPages = uiAyat.groupBy(AyaUi::page)
                 updateState {
                     it.copy(
-                        ayat = ayat.map { AyaUi(it.ayahNumber, it.text) },
+                        ayat = uiAyat,
+                        ayatPerPages = ayatPerPages,
+                        pageNumbers = ayatPerPages.keys.toList(),
+                        currentPage = targetPage,
                         isLoading = false,
-                       arabicName = arabicName,
+                        arabicName = arabicName,
                         englishName = englishName,
                         selectedAyaId = targetAyahId,
                         scrollToAyaId = targetAyahId,
@@ -78,6 +102,13 @@ class SurahAyatViewModel(
             },
             onError = {}
         )
+    }
+
+    private fun calculateTargetPage(
+        ayat: List<AyaUi>,
+        targetAyahId: Int?
+    ): Int {
+        return ayat.firstOrNull { it.id == targetAyahId }?.page ?: ayat.first().page
     }
 
     fun onScrolledToTarget() {
@@ -103,6 +134,7 @@ class SurahAyatViewModel(
         updateState {
             it.copy(
                 selectedAyaId = null,
+                selectedAyaPage = null,
                 selectedAyaText = "",
                 showActions = false
             )
@@ -126,44 +158,45 @@ class SurahAyatViewModel(
         )
     }
 
-        override fun onBookmarkAya() {
-            val ayahId = screenState.value.selectedAyaId ?: return
-            val ayahText = screenState.value.selectedAyaText
-            if (ayahText.isBlank()) return
+    override fun onBookmarkAya() {
+        val ayahId = screenState.value.selectedAyaId ?: return
+        val ayahText = screenState.value.selectedAyaText
+        if (ayahText.isBlank()) return
 
-            tryToCall(
-                onStart = {
-                    updateState { it.copy(  showActions = false) }
-                },
-                block = {
-                    bookmarkRepository.addBookmark(
-                        Bookmark(
-                            surahId = surahId,
-                            ayahId = ayahId,
-                            arabicName = arabicName,
-                            englishName = englishName,
-                            text = ayahText
+        tryToCall(
+            onStart = {
+                updateState { it.copy(showActions = false) }
+            },
+            block = {
+                bookmarkRepository.addBookmark(
+                    Bookmark(
+                        surahId = surahId,
+                        ayahId = ayahId,
+                        arabicName = arabicName,
+                        englishName = englishName,
+                        text = ayahText
+                    )
+                )
+            },
+            onSuccess = {
+                onClearSelection()
+                sendEffect(
+                    SurahAyatEffect.ShowToast(
+                        ToastDetails(
+                            title = R.string.success,
+                            message = R.string.ayah_bookmarked_message_successfully,
+                            icon = R.drawable.ic_check_circle
                         )
                     )
-                },
-                onSuccess = {
-                    onClearSelection()
-                    sendEffect(
-                        SurahAyatEffect.ShowToast(
-                            ToastDetails(
-                                title = R.string.success,
-                                message = R.string.ayah_bookmarked_message_successfully,
-                                icon = R.drawable.ic_check_circle
-                            )
-                        )
-                    )
-                },
-                onError = {}
-            )
-        }
+                )
+            },
+            onError = {}
+        )
+    }
 
     override fun onTafseer() {
         val ayahId = screenState.value.selectedAyaId ?: return
+        val ayaPage = screenState.value.selectedAyaPage ?: return
         val ayaText = screenState.value.selectedAyaText
 
         tryToCall(
@@ -183,7 +216,7 @@ class SurahAyatViewModel(
                 updateState {
                     it.copy(
                         tafseerUi = TafseerUi(
-                            ayahUi = AyaUi(id = ayahId, text = ayaText),
+                            ayahUi = AyaUi(id = ayahId, page = ayaPage, text = ayaText),
                             text = tafseer
                         )
                     )
@@ -219,5 +252,15 @@ class SurahAyatViewModel(
                 englishName = screenState.value.englishName
             )
         )
+    }
+
+    override fun onPageChange(page: Int) {
+        updateState {
+            it.copy(
+                ayat = it.ayatPerPages[page] ?: emptyList(),
+                currentPage = page,
+                showActions = false
+            )
+        }
     }
 }

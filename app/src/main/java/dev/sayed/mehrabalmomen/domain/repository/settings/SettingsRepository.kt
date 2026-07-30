@@ -24,5 +24,7 @@ interface SettingsRepository {
     fun observeSelectedMoazen(): Flow<String>
     suspend fun saveTafseer(type: String)
     fun observeTafseer(): Flow<String>
+    suspend fun saveReadingMode(readingMode: AppSettings.ReadingMode)
+    fun observeReadingMode(): Flow<String>
     fun observeAppSettings(): Flow<AppSettings>
 }

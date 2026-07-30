@@ -7,7 +7,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,10 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +49,7 @@ import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
@@ -58,6 +65,8 @@ import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+
+private const val FIRST_PAGE_OF_SURAH_INDEX = 0
 
 @Composable
 fun SurahAyatScreen(
@@ -158,53 +167,29 @@ private fun SurahAyatContent(
     listener: SurahAyatInteractionListener,
     viewModel: SurahAyatViewModel
 ) {
-    val listState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
     val textSectionIndex = if (surahId != 1 && surahId != 9) 2 else 1
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val surahName = if (isRtl) state.arabicName else state.englishName
+
     Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-            stickyHeader {
-                SurahAppBarSection(
-                    surahName = surahName,
-                    onBack = listener::onClickBack,
-                    onSearch = listener::onClickSearch
-                )
-            }
+        when (state.readingMode) {
+            AppSettings.ReadingMode.PAGE_VIEW -> PageViewContent(
+                state = state,
+                surahId = surahId,
+                surahName = surahName,
+                textSectionIndex = textSectionIndex,
+                listener = listener,
+                viewModel = viewModel
+            )
 
-            if (surahId != 1 && surahId != 9) {
-                item {
-                    BismillahSection(color = Theme.color.primary.primary)
-                }
-            }
-
-            item {
-
-                QuranTextSection(
-                    state = state,
-                    textSectionIndex = textSectionIndex,
-                    onAyaLongPressed = listener::onAyaLongPressed,
-                    onClearSelection = listener::onClearSelection,
-                    onAyaVisible = { ayahId ->
-                        viewModel.onAyahVisible(ayahId)
-                    },
-                    scrollState = listState,
-                    onCalculatedPosition = { yOffset ->
-                        if (state.targetAyahId != null) {
-                            scope.launch {
-                                val finalOffset = yOffset.toInt() - 140
-
-                                listState.animateScrollToItem(
-                                    index = textSectionIndex,
-                                    scrollOffset = if (finalOffset > 0) finalOffset else 0
-                                )
-                                viewModel.onScrolledToTarget()
-                            }
-                        }
-                    }
-                )
-            }
+            else -> ContinuousViewContent(
+                state = state,
+                surahId = surahId,
+                surahName = surahName,
+                textSectionIndex = textSectionIndex,
+                listener = listener,
+                viewModel = viewModel
+            )
         }
 
         AyaActionsSection(
@@ -216,6 +201,139 @@ private fun SurahAyatContent(
         )
     }
 }
+
+@Composable
+private fun PageViewContent(
+    state: SurahAyatUiState,
+    surahId: Int,
+    surahName: String,
+    textSectionIndex: Int,
+    listener: SurahAyatInteractionListener,
+    viewModel: SurahAyatViewModel
+) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(
+        initialPage = state.pageNumbers.indexOf(state.currentPage),
+        pageCount = { state.pageNumbers.size }
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        val actualPage = state.pageNumbers[pagerState.currentPage]
+        listener.onPageChange(actualPage)
+
+        state.ayatPerPages[actualPage]?.firstOrNull()?.let { firstAyah ->
+            viewModel.onAyahVisible(firstAyah.id)
+        }
+    }
+    HorizontalPager(
+        state = pagerState,
+        snapPosition = SnapPosition.End,
+        reverseLayout = LocalLayoutDirection.current == LayoutDirection.Ltr,
+        modifier = Modifier.fillMaxSize()
+    ) { pageIndex ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (pageIndex == FIRST_PAGE_OF_SURAH_INDEX) {
+                SurahAppBarSection(
+                    surahName = surahName,
+                    onBack = listener::onClickBack,
+                    onSearch = listener::onClickSearch
+                )
+            }
+
+            if (surahId != 1 && surahId != 9 && pageIndex == 0) {
+                BismillahSection(color = Theme.color.primary.primary)
+            }
+
+            QuranTextSection(
+                ayat = state.ayatPerPages[state.pageNumbers[pageIndex]]
+                    ?: state.ayatPerPages.values.first(),
+                selectedAyaId = state.selectedAyaId,
+                targetAyahId = state.targetAyahId,
+                fontSizeSp = state.fontSize.sizeSp,
+                textSectionIndex = textSectionIndex,
+                onAyaLongPressed = listener::onAyaLongPressed,
+                onClearSelection = listener::onClearSelection,
+                onAyaVisible = viewModel::onAyahVisible,
+                scrollState = listState,
+                onCalculatedPosition = { yOffset ->
+                    if (state.targetAyahId != null) {
+                        scope.launch {
+                            val finalOffset = yOffset.toInt() - 140
+
+                            listState.animateScrollToItem(
+                                index = textSectionIndex,
+                                scrollOffset = if (finalOffset > 0) finalOffset else 0
+                            )
+                            viewModel.onScrolledToTarget()
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ContinuousViewContent(
+    state: SurahAyatUiState,
+    surahId: Int,
+    surahName: String,
+    textSectionIndex: Int,
+    listener: SurahAyatInteractionListener,
+    viewModel: SurahAyatViewModel
+) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+        stickyHeader {
+            SurahAppBarSection(
+                surahName = surahName,
+                onBack = listener::onClickBack,
+                onSearch = listener::onClickSearch
+            )
+        }
+
+        if (surahId != 1 && surahId != 9) {
+            item {
+                BismillahSection(color = Theme.color.primary.primary)
+            }
+        }
+
+        item {
+            QuranTextSection(
+                ayat = state.ayat,
+                selectedAyaId = state.selectedAyaId,
+                targetAyahId = state.targetAyahId,
+                fontSizeSp = state.fontSize.sizeSp,
+                textSectionIndex = textSectionIndex,
+                onAyaLongPressed = listener::onAyaLongPressed,
+                onClearSelection = listener::onClearSelection,
+                onAyaVisible = viewModel::onAyahVisible,
+                scrollState = listState,
+                onCalculatedPosition = { yOffset ->
+                    if (state.targetAyahId != null) {
+                        scope.launch {
+                            val finalOffset = yOffset.toInt() - 140
+
+                            listState.animateScrollToItem(
+                                index = textSectionIndex,
+                                scrollOffset = if (finalOffset > 0) finalOffset else 0
+                            )
+                            viewModel.onScrolledToTarget()
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
