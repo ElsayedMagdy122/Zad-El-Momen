@@ -18,5 +18,7 @@ data class QuranAudioReaderDto(
     @SerialName("rewaya_id")
     val rewayaId: Int? = null,
     @SerialName("created_at")
-    val createdAt: String? = null
+    val createdAt: String? = null,
+    @SerialName("rewaya")
+    val rewaya: QuranAudioRewayatDto? = null
 )

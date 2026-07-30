@@ -9,5 +9,5 @@ data class QuranAudioSurah(
     val nameAr: String,
     val nameEn: String,
     val versesCount: Short,
-    val createdAt: Instant
+    val createdAt: Instant?
 )

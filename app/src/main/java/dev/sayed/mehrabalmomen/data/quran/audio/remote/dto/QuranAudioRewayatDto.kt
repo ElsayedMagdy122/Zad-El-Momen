@@ -10,9 +10,8 @@ data class QuranAudioRewayatDto(
     @SerialName("name_ar")
     val nameAr: String,
     @SerialName("name_en")
-    val nameEn: String? = null
+    val nameEn: String
 )
-
 
 
 

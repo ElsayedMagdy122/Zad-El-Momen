@@ -9,8 +9,6 @@ data class QuranAudioReader(
     val nameAr: String,
     val nameEn: String,
     val baseAudioUrl: String,
-    val surahsCount: Short,
-    val rewayaId: Int,
-    val rewaya: QuranAudioRewayat,
-    val createdAt: Instant
+    val surahsCount: Short?,
+    val rewaya: QuranAudioRewayat?
 )

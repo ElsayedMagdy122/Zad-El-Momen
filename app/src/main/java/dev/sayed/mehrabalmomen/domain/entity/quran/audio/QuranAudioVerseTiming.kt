@@ -10,5 +10,5 @@ data class QuranAudioVerseTiming(
     val verseNumber: Int,
     val startTimeMs: Long,
     val endTimeMs: Long,
-    val createdAt: Instant
+    val createdAt: Instant?
 )
