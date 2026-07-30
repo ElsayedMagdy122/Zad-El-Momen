@@ -19,13 +19,13 @@ fun QuranAudioRewayatDto.toEntity(): QuranAudioRewayat = QuranAudioRewayat(
 )
 
 @OptIn(ExperimentalTime::class)
-fun QuranAudioReaderDto.toEntity(): QuranAudioReader = QuranAudioReader(
+fun QuranAudioReaderDto.toEntity(rewaya: QuranAudioRewayat? = null): QuranAudioReader = QuranAudioReader(
     id = id,
     nameAr = nameAr,
     nameEn = nameEn,
     baseAudioUrl = baseAudioUrl,
     surahsCount = surahsCount,
-    rewaya = rewaya?.toEntity()
+    rewaya = rewaya
 )
 
 @OptIn(ExperimentalTime::class)

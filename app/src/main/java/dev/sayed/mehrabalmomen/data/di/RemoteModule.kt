@@ -5,6 +5,12 @@ import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRpcService
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportStorageService
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioReadersRemoteDataSource
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioReadersRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioRemoteDataSource
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioTimingsRemoteDataSource
+import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioTimingsRemoteDataSourceImpl
 import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -60,4 +66,7 @@ val remoteModule = module {
             supabase = get()
         )
     }
+    single <QuranAudioReadersRemoteDataSource>{ QuranAudioReadersRemoteDataSourceImpl(get()) }
+    single <QuranAudioRemoteDataSource>{ QuranAudioRemoteDataSourceImpl(get()) }
+    single <QuranAudioTimingsRemoteDataSource>{ QuranAudioTimingsRemoteDataSourceImpl(get()) }
 }
