@@ -4,7 +4,7 @@ import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 
 fun QuranAudioReader.toUiState(
     isArabic: Boolean = true,
-    isDownloaded: Boolean = false
+    isDownloaded: DownloadState = DownloadState.NOT_DOWNLOADED
 ): ReciterUiState {
     val displayName = if (isArabic) nameAr else nameEn
     val displayRewaya = if (isArabic) {
@@ -18,6 +18,6 @@ fun QuranAudioReader.toUiState(
         name = displayName,
         rewayaName = displayRewaya,
         baseAudioUrl = baseAudioUrl,
-        isDownloaded = isDownloaded
+        downloadState = isDownloaded
     )
 }

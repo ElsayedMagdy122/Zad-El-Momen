@@ -13,7 +13,7 @@ data class ReciterUiState(
     val name: String,
     val rewayaName: String,
     val baseAudioUrl: String,
-    val isDownloaded: Boolean = false,
+    val downloadState: DownloadState = DownloadState.NOT_DOWNLOADED,
     val playState: PlayState = PlayState.RESUME
 )
 
@@ -21,4 +21,9 @@ enum class PlayState {
     PLAY,
     LOADING,
     RESUME
+}
+enum class DownloadState {
+    NOT_DOWNLOADED,
+    DOWNLOADING,
+    DOWNLOADED
 }
