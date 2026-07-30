@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import dev.sayed.mehrabalmomen.domain.entity.quran.ReadingProgress
+import dev.sayed.mehrabalmomen.domain.entity.quran.progress.ReadingProgress
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

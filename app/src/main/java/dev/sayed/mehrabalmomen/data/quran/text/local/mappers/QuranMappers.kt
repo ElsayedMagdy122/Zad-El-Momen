@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.data.quran.text.local.mappers
 
 import dev.sayed.mehrabalmomen.data.quran.text.local.dto.AyahDto
-import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
+import dev.sayed.mehrabalmomen.domain.entity.quran.text.Ayah
 
 fun AyahDto.toDomain(surahNumber: Int,surahNameArabic:String="",surahNameEnglish:String=""): Ayah {
     return Ayah(

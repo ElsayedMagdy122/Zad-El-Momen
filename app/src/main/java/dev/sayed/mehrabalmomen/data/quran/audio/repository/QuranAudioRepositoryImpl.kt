@@ -1,7 +1,5 @@
 package dev.sayed.mehrabalmomen.data.quran.audio.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.quran.tilawah.QuranAudioTrack
-import dev.sayed.mehrabalmomen.domain.entity.quran.tilawah.QuranAudioVerseTiming
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 
 class QuranAudioRepositoryImpl(

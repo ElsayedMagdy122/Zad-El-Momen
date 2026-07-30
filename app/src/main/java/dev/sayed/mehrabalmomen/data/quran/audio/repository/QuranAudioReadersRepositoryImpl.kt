@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.data.quran.audio.repository
 
-import dev.sayed.mehrabalmomen.domain.entity.quran.tilawah.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 
 class QuranAudioReadersRepositoryImpl : QuranAudioReadersRepository {

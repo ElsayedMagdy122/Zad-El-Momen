@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.domain.entity.quran
+package dev.sayed.mehrabalmomen.domain.entity.quran.text
 
 data class Surah(
     val surahNumber: Int,
