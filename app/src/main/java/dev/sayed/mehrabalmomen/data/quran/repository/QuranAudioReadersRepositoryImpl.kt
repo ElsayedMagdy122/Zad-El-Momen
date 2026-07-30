@@ -1,0 +1,10 @@
+package dev.sayed.mehrabalmomen.data.quran.repository
+
+import dev.sayed.mehrabalmomen.domain.entity.quran.tilawah.QuranAudioReader
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
+
+class QuranAudioReadersRepositoryImpl : QuranAudioReadersRepository {
+    override suspend fun getReaders(): List<QuranAudioReader> {
+        TODO("Not yet implemented")
+    }
+}
