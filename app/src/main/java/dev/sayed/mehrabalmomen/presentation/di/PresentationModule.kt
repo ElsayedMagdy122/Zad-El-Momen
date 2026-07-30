@@ -17,6 +17,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
@@ -47,6 +48,7 @@ val presentationModule = module {
     viewModelOf(::BatteryOptimizationViewModel)
     viewModelOf(:: ReminderSettingsViewModel)
     viewModelOf(::ContactViewModel)
+    viewModelOf(::RecitersViewModel)
     single<PlayerController> { AudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }
