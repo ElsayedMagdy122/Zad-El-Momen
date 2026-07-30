@@ -310,4 +310,5 @@
     <string name="daily_quran_word">Daily Quran Portion</string>
     <string name="save">Save</string>
     <string name="choose_time">Choose time</string>
+    <string name="downloaded">Downloaded</string>
 </resources>

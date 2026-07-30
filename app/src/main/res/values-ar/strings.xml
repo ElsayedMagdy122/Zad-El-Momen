@@ -324,4 +324,5 @@
     <string name="daily_quran_word">الورد القرآني اليومي</string>
     <string name="save">حفظ</string>
     <string name="choose_time">اختر الوقت</string>
+    <string name="downloaded">تم التحميل</string>
 </resources>
