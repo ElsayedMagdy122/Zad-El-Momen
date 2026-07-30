@@ -1,9 +1,9 @@
-package dev.sayed.mehrabalmomen.data.quran.repository
+package dev.sayed.mehrabalmomen.data.quran.text.repository
 
 import android.content.Context
-import dev.sayed.mehrabalmomen.data.quran.local.dto.SurahDto
-import dev.sayed.mehrabalmomen.data.quran.local.dto.TafseerDto
-import dev.sayed.mehrabalmomen.data.quran.mappers.toDomain
+import dev.sayed.mehrabalmomen.data.quran.text.local.dto.SurahDto
+import dev.sayed.mehrabalmomen.data.quran.text.local.dto.TafseerDto
+import dev.sayed.mehrabalmomen.data.quran.text.local.mappers.toDomain
 import dev.sayed.mehrabalmomen.domain.entity.quran.Ayah
 import dev.sayed.mehrabalmomen.domain.entity.quran.Surah
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository

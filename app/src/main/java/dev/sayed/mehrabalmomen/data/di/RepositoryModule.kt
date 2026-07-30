@@ -7,9 +7,9 @@ import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.qiblah.QiblahRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.BookmarkRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.QuranRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.ReadingProgressRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.BookmarkRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.QuranRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSettingsRepositoryImpl

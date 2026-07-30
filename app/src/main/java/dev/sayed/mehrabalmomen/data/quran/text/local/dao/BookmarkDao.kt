@@ -1,10 +1,10 @@
-package dev.sayed.mehrabalmomen.data.quran.local.dao
+package dev.sayed.mehrabalmomen.data.quran.text.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.sayed.mehrabalmomen.data.quran.local.dto.BookmarkEntity
+import dev.sayed.mehrabalmomen.data.quran.text.local.dto.BookmarkEntity
 
 @Dao
 interface BookmarkDao {

@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.quran.local.dto
+package dev.sayed.mehrabalmomen.data.quran.text.local.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

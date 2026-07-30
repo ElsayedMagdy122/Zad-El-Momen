@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.data.quran.repository
+package dev.sayed.mehrabalmomen.data.quran.text.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

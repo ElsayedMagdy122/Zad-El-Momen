@@ -2,8 +2,8 @@ package dev.sayed.mehrabalmomen.data.util
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import dev.sayed.mehrabalmomen.data.quran.local.dao.BookmarkDao
-import dev.sayed.mehrabalmomen.data.quran.local.dto.BookmarkEntity
+import dev.sayed.mehrabalmomen.data.quran.text.local.dao.BookmarkDao
+import dev.sayed.mehrabalmomen.data.quran.text.local.dto.BookmarkEntity
 
 @Database(
     entities = [
