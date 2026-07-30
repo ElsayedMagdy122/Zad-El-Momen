@@ -29,13 +29,6 @@ class QuranAudioRemoteDataSourceImpl(
             .decodeSingleOrNull<QuranAudioReaderDto>()
     }
 
-    override suspend fun getRewayat(): List<QuranAudioRewayatDto> {
-        return supabaseClient
-            .from(REWAYAT_TABLE)
-            .select()
-            .decodeList<QuranAudioRewayatDto>()
-    }
-
     override suspend fun getVerseTimings(
         readerId: Int,
         surahId: Int
@@ -53,7 +46,6 @@ class QuranAudioRemoteDataSourceImpl(
 
     private companion object {
         const val READERS_TABLE = "quran_audio_readers"
-        const val REWAYAT_TABLE = "quran_audio_rewayat"
         const val VERSE_TIMINGS_TABLE = "quran_audio_verse_timings"
     }
 }
