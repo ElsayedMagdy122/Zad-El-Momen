@@ -10,7 +10,8 @@ data class RecitersUiState(
 
 data class ReciterUiState(
     val id: Int,
-    val name: String,
+    val nameAr: String,
+    val nameEn: String,
     val rewayaName: String,
     val baseAudioUrl: String,
     val downloadState: DownloadState = DownloadState.NOT_DOWNLOADED,

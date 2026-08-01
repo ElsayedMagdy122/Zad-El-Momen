@@ -6,7 +6,6 @@ fun QuranAudioReader.toUiState(
     isArabic: Boolean = true,
     isDownloaded: DownloadState = DownloadState.NOT_DOWNLOADED
 ): ReciterUiState {
-    val displayName = if (isArabic) nameAr else nameEn
     val displayRewaya = if (isArabic) {
         rewaya?.nameAr.orEmpty()
     } else {
@@ -15,7 +14,8 @@ fun QuranAudioReader.toUiState(
 
     return ReciterUiState(
         id = id,
-        name = displayName,
+        nameAr = nameAr,
+        nameEn= nameEn,
         rewayaName = displayRewaya,
         baseAudioUrl = baseAudioUrl,
         downloadState = isDownloaded
