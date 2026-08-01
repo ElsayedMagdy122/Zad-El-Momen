@@ -24,6 +24,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
@@ -89,6 +90,9 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 surahId = args.surahId,
                 surahName = args.surahName
             )
+        }
+        composable<Route.RecitersScreen> {
+            RecitersScreen(navController = navController)
         }
         composable<Route.ReportBugScreen> {
             ReportBugScreen(navController = navController)

@@ -84,6 +84,11 @@ sealed interface Route {
     }
 
     @Serializable
+    data class RecitersScreen(val surahId: Int) : Route {
+        override val route = "reciters_screen"
+    }
+
+    @Serializable
     data class SearchAyahScreen(
         val type: SearchType,
         val surahId: Int? = null,
