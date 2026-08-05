@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -38,21 +40,25 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.QuranTextSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.SurahAppBarSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.TilawahBox
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.cleanAyahTextForCopy
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
@@ -70,20 +76,35 @@ fun SurahAyatScreen(
     val clipboardManager = LocalClipboardManager.current
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     var toast by remember { mutableStateOf<ToastDetails?>(null) }
+    val appLocale = LocalAppLocale.current
+    val isArabic = appLocale == AppSettings.Language.ARABIC
+
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+    val savedStateHandle = currentBackStackEntry?.savedStateHandle
+
+    LaunchedEffect(savedStateHandle) {
+        val readerId = savedStateHandle?.get<Int>(KEY_SELECTED_READER_ID)
+        val nameAr = savedStateHandle?.get<String>(KEY_SELECTED_READER_NAME_AR)
+        val nameEn = savedStateHandle?.get<String>(KEY_SELECTED_READER_NAME_EN)
+
+        if (readerId != null && nameAr != null && nameEn != null) {
+            viewModel.onReciterSelected(readerId, nameAr, nameEn)
+            // مسح القيم لعدم تكرار التنفيذ عند الإعادة
+            savedStateHandle.remove<Int>(KEY_SELECTED_READER_ID)
+            savedStateHandle.remove<String>(KEY_SELECTED_READER_NAME_AR)
+            savedStateHandle.remove<String>(KEY_SELECTED_READER_NAME_EN)
+        }
+    }
+
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             is SurahAyatEffect.ShowToast -> toast = effect.toast
             is SurahAyatEffect.CopyAya -> {
                 val cleanedText = cleanAyahTextForCopy(effect.text)
-                clipboardManager.setText(
-                    AnnotatedString(cleanedText)
-                )
+                clipboardManager.setText(AnnotatedString(cleanedText))
             }
 
-            SurahAyatEffect.NavigateToBack -> {
-                navController.popBackStack()
-            }
-
+            SurahAyatEffect.NavigateToBack -> navController.popBackStack()
             is SurahAyatEffect.NavigateToSearch -> {
                 navController.navigate(
                     SearchAyahScreen(
@@ -93,9 +114,13 @@ fun SurahAyatScreen(
                     )
                 )
             }
-        }
 
+            is SurahAyatEffect.NavigateToReciters -> {
+                navController.navigate(Route.RecitersScreen(surahId = effect.surahId))
+            }
+        }
     }
+
     LaunchedEffect(toast) {
         toast?.let {
             val current = it
@@ -105,6 +130,7 @@ fun SurahAyatScreen(
             }
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +140,6 @@ fun SurahAyatScreen(
         AnimatedContent(
             targetState = state.isLoading,
             transitionSpec = {
-
                 fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f) togetherWith
                         fadeOut(animationSpec = tween(300))
             },
@@ -129,7 +154,7 @@ fun SurahAyatScreen(
                     state = state,
                     surahId = surahId,
                     listener = viewModel,
-                    viewModel = viewModel
+                    viewModel = viewModel,
                 )
             }
         }
@@ -138,9 +163,10 @@ fun SurahAyatScreen(
             PrimaryToast(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 24.dp), data = it, isSuccess = true
+                    .padding(top = 24.dp), data = it, isSuccess = state.messageState
             )
         }
+
         state.showTafseerSheet.takeIf { it }?.let {
             TafseerBottomSheet(
                 tafseerUi = state.tafseerUi,
@@ -163,6 +189,8 @@ private fun SurahAyatContent(
     val textSectionIndex = if (surahId != 1 && surahId != 9) 2 else 1
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val surahName = if (isRtl) state.arabicName else state.englishName
+    val readerName = if (isRtl) state.selectedReaderNameAr else state.selectedReaderNameEn
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             stickyHeader {
@@ -180,21 +208,17 @@ private fun SurahAyatContent(
             }
 
             item {
-
                 QuranTextSection(
                     state = state,
                     textSectionIndex = textSectionIndex,
                     onAyaLongPressed = listener::onAyaLongPressed,
                     onClearSelection = listener::onClearSelection,
-                    onAyaVisible = { ayahId ->
-                        viewModel.onAyahVisible(ayahId)
-                    },
+                    onAyaVisible = { ayahId -> viewModel.onAyahVisible(ayahId) },
                     scrollState = listState,
                     onCalculatedPosition = { yOffset ->
                         if (state.targetAyahId != null) {
                             scope.launch {
                                 val finalOffset = yOffset.toInt() - 140
-
                                 listState.animateScrollToItem(
                                     index = textSectionIndex,
                                     scrollOffset = if (finalOffset > 0) finalOffset else 0
@@ -207,13 +231,44 @@ private fun SurahAyatContent(
             }
         }
 
-        AyaActionsSection(
-            showActions = state.showActions,
-            selectedAyaText = state.selectedAyaText,
-            onCopy = listener::onCopyAya,
-            onBookmark = listener::onBookmarkAya,
-            onTafseer = listener::onTafseer
-        )
+        if (!state.showTilawahBox) {
+            AyaActionsSection(
+                showActions = state.showActions,
+                selectedAyaText = state.selectedAyaText,
+                onCopy = listener::onCopyAya,
+                onBookmark = listener::onBookmarkAya,
+                onTafseer = listener::onTafseer,
+                onListen = { viewModel.onListenToAyah() }
+            )
+        }
+
+        AnimatedVisibility(
+            visible = state.showTilawahBox,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(bottom = 16.dp)
+                .padding(horizontal = 16.dp),
+            enter = fadeIn(tween(150)),
+            exit = fadeOut(tween(150))
+        ) {
+            TilawahBox(
+                readerName = readerName ?: localizedString(R.string.select_reciter),
+                surahName = surahName,
+                currentAyahNumber = state.currentAudioAyahId,
+                isPlaying = state.isAudioPlaying,
+                isLoading = state.isAudioLoading,
+                repeatCount = state.repeatCount,
+                isContinuous = state.isContinuousReading,
+                onCloseClick = viewModel::onCloseTilawahBox,
+                onRecitersClick = viewModel::onClickReciters,
+                onPlayPauseClick = viewModel::onPlayPauseClick,
+                onForwardClick = viewModel::onForwardClick,
+                onBackwardClick = viewModel::onBackwardClick,
+                onRepeatClick = viewModel::onToggleRepeat,
+                onContinuousClick = viewModel::onToggleContinuous
+            )
+        }
     }
 }
 
@@ -277,3 +332,6 @@ fun TafseerBottomSheet(
     }
 }
 
+const val KEY_SELECTED_READER_ID = "selected_reader_id"
+const val KEY_SELECTED_READER_NAME_AR = "selected_reader_name_ar"
+const val KEY_SELECTED_READER_NAME_EN = "selected_reader_name_en"

@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
+import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioVerseTiming
 
 data class SurahAyatUiState(
     val ayat: List<AyaUi> = emptyList(),
@@ -14,6 +15,19 @@ data class SurahAyatUiState(
     val targetAyahId: Int? = null,
     val showTafseerSheet: Boolean = false,
     val fontSize: QuranFontSize = QuranFontSize.MEDIUM,
+    val messageState : Boolean = true,
+
+    val showTilawahBox: Boolean = false,
+    val selectedReaderId: Int? = null,
+    val selectedReaderNameAr: String? = null,
+    val selectedReaderNameEn: String? = null,
+    val currentAudioAyahId: Int = 1,
+    val isAudioPlaying: Boolean = false,
+    val isAudioLoading: Boolean = false,
+    val repeatCount: Int = 0,
+    val currentRepeatIteration: Int = 0,
+    val isContinuousReading: Boolean = true,
+    val timings: List<QuranAudioVerseTiming> = emptyList()
 )
 
 data class AyaUi(
