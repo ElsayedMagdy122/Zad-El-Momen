@@ -2,12 +2,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.DownloadState
 
@@ -23,14 +25,16 @@ fun DownloadButton(
     downloadState: DownloadState,
     onDownloadClick: () -> Unit,
     modifier: Modifier = Modifier,
-    iconTint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    progressTint: Color = MaterialTheme.colorScheme.primary
+    iconTint: Color = Theme.color.primary.primary,
+    progressTint: Color = Theme.color.primary.primary
 ) {
     Box(
         modifier = modifier
+            .background(Color.Transparent)
             .clickable(
                 enabled = downloadState == DownloadState.NOT_DOWNLOADED,
-                onClick = onDownloadClick
+                onClick = onDownloadClick,
+                interactionSource = MutableInteractionSource()
             ),
         contentAlignment = Alignment.Center
     ) {
