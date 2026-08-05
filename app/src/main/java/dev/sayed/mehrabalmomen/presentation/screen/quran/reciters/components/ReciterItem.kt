@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -30,12 +33,16 @@ fun ReciterItem(
     state: ReciterUiState,
     onPlayClick: () -> Unit,
     onDownloadClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isArabic: Boolean=true
 ) {
+    val reciterName = if (isArabic) state.nameAr else state.nameEn
     Row(
         modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .padding(8.dp)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         PlayButton(
             playState = state.playState,
@@ -43,7 +50,7 @@ fun ReciterItem(
             modifier = Modifier.size(40.dp)
         )
         ReciterInformation(
-            name = state.name,
+            name = reciterName,
             isDownloaded = state.downloadState == DownloadState.DOWNLOADED,
             rewayaName = state.rewayaName,
             modifier = Modifier
@@ -114,7 +121,7 @@ private fun ReciterItemsPreviewContent() {
         ReciterItem(
             state = ReciterUiState(
                 id = 1,
-                name = "عبد الباسط عبد الصمد",
+                nameAr = "عبد الباسط عبد الصمد", nameEn = "",
                 rewayaName = "حفص عن عاصم - مجود",
                 baseAudioUrl = "",
                 downloadState = DownloadState.NOT_DOWNLOADED,
@@ -127,7 +134,7 @@ private fun ReciterItemsPreviewContent() {
         ReciterItem(
             state = ReciterUiState(
                 id = 2,
-                name = "محمود خليل الحصري",
+                nameAr = "محمود خليل الحصري", nameEn = "",
                 rewayaName = "ورش عن نافع",
                 baseAudioUrl = "",
                 downloadState = DownloadState.DOWNLOADING,
@@ -140,7 +147,8 @@ private fun ReciterItemsPreviewContent() {
         ReciterItem(
             state = ReciterUiState(
                 id = 3,
-                name = "محمد صديق المنشاوي",
+                nameAr = "محمد صديق المنشاوي",
+                nameEn = "",
                 rewayaName = "حفص عن عاصم - معلم",
                 baseAudioUrl = "",
                 downloadState = DownloadState.DOWNLOADED,

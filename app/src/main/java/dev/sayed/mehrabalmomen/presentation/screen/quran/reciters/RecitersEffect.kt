@@ -5,4 +5,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatEffe
 
 sealed interface RecitersEffect {
     data class ShowToast(val toast: ToastDetails) : RecitersEffect
+    data class ReciterSelected(
+        val readerId: Int,
+        val nameAr: String,
+        val nameEn: String
+    ) : RecitersEffect
 }
