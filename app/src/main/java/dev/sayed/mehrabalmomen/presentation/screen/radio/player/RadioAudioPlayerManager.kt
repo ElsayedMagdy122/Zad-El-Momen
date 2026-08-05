@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AudioPlayerManager(private val context: Context) : PlayerController {
+class RadioAudioPlayerManager(private val context: Context) : PlayerController {
 
     private var player: ExoPlayer? = null
     private var onError: ((Throwable) -> Unit)? = null
