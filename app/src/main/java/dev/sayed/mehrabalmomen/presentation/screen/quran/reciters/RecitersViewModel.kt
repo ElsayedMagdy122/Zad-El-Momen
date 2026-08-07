@@ -5,25 +5,30 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerState
 import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class RecitersViewModel(
     private val readersRepository: QuranAudioReadersRepository,
+    private val quranAudioRepository: QuranAudioRepository,
     private val audioPlayerManager: AudioPlayerManager,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()) {
 
     private val surahId: Int = savedStateHandle.toRoute<Route.RecitersScreen>().surahId
-
+    private var allReaders: List<QuranAudioReader> = emptyList()
 
     init {
         observeAudioState()
+        observeDownloadedReciters()
     }
 
     fun onReciterSelected(readerId: Int, nameAr: String, nameEn: String) {
@@ -40,12 +45,28 @@ class RecitersViewModel(
         tryToCall(
             onStart = { updateState { it.copy(isLoading = true) } },
             block = {
-                readersRepository.getReaders()
+                try {
+                    allReaders = readersRepository.getReaders()
+                    allReaders.map { reader ->
+                        val isDownloaded =
+                            if (readersRepository.isReciterDownloaded(reader.id, surahId)) {
+                                DownloadState.DOWNLOADED
+                            } else {
+                                DownloadState.NOT_DOWNLOADED
+                            }
+                        reader.toUiState(isArabic, isDownloaded)
+                    }
+                } catch (e: Exception) {
+                    val downloaded = readersRepository.getDownloadedRecitersOnce()
+                    if (downloaded.isEmpty()) throw e
+                    allReaders = downloaded
+                    downloaded.map { it.toUiState(isArabic, DownloadState.DOWNLOADED) }
+                }
             },
             onSuccess = { readersList ->
                 updateState { state ->
                     state.copy(
-                        reciters = readersList.map { reader -> reader.toUiState(isArabic) },
+                        reciters = readersList,
                         isLoading = false
                     )
                 }
@@ -67,14 +88,51 @@ class RecitersViewModel(
         )
     }
 
+    private fun observeDownloadedReciters() {
+        viewModelScope.launch {
+            readersRepository.getDownloadedReciters().collectLatest { downloaded ->
+                updateState { state ->
+                    val updatedReciters = state.reciters.map { reciter ->
+                        val isDownloaded =
+                            downloaded.any { it.id == reciter.id } // This is simple, but we should ideally check surahId too if stored.
+                        // Actually our repository's getDownloadedReciters returns entities which we map to QuranAudioReader.
+                        // For simplicity, if it's in the list, it's downloaded.
+                        if (isDownloaded) {
+                            reciter.copy(downloadState = DownloadState.DOWNLOADED)
+                        } else {
+                            reciter
+                        }
+                    }
+                    state.copy(reciters = updatedReciters)
+                }
+            }
+        }
+    }
+
+    fun onDownloadClick(reciterId: Int) {
+        val domainReciter = allReaders.find { it.id == reciterId } ?: return
+        readersRepository.downloadReciter(domainReciter, surahId)
+
+        updateState { state ->
+            state.copy(
+                reciters = state.reciters.map {
+                    if (it.id == reciterId) it.copy(downloadState = DownloadState.DOWNLOADING) else it
+                }
+            )
+        }
+    }
+
     private fun observeAudioState() {
         viewModelScope.launch {
             audioPlayerManager.playerState.collect { audioState ->
                 updateState { state ->
                     val updatedReciters = state.reciters.map { reciter ->
-                        val isCurrentReciter = audioState.currentUrl?.startsWith(
+                        val isLocalUrl =
+                            audioState.currentUrl?.contains("audio/reciters/${reciter.id}/") == true
+                        val isRemoteUrl = audioState.currentUrl?.startsWith(
                             reciter.baseAudioUrl.trimEnd('/')
                         ) == true
+                        val isCurrentReciter = isLocalUrl || isRemoteUrl
 
                         if (isCurrentReciter) {
                             val newPlayState = when (audioState.playbackState) {
@@ -99,30 +157,38 @@ class RecitersViewModel(
     fun onPlayClick(reciterId: Int) {
         val targetReciter = screenState.value.reciters.find { it.id == reciterId } ?: return
         val currentAudioState = audioPlayerManager.playerState.value
-        val fullAudioUrl = getFullAudioUrl(targetReciter.baseAudioUrl, surahId)
 
-        val isSameReciterPlaying = currentAudioState.currentUrl?.startsWith(
-            targetReciter.baseAudioUrl.trimEnd('/')
-        ) == true
+        viewModelScope.launch {
+            val track = quranAudioRepository.getTrack(reciterId, surahId)
+            val fullAudioUrl =
+                track?.audioUrl ?: getFullAudioUrl(targetReciter.baseAudioUrl, surahId)
 
-        if (isSameReciterPlaying) {
-            when (currentAudioState.playbackState) {
-                AudioPlayerState.AudioPlaybackState.PLAYING -> {
-                    audioPlayerManager.pause()
+            val isLocalUrl =
+                currentAudioState.currentUrl?.contains("audio/reciters/${reciterId}/") == true
+            val isRemoteUrl = currentAudioState.currentUrl?.startsWith(
+                targetReciter.baseAudioUrl.trimEnd('/')
+            ) == true
+            val isSameReciterPlaying = isLocalUrl || isRemoteUrl
+
+            if (isSameReciterPlaying) {
+                when (currentAudioState.playbackState) {
+                    AudioPlayerState.AudioPlaybackState.PLAYING -> {
+                        audioPlayerManager.pause()
+                    }
+
+                    AudioPlayerState.AudioPlaybackState.PAUSED, AudioPlayerState.AudioPlaybackState.ENDED, AudioPlayerState.AudioPlaybackState.IDLE -> {
+                        audioPlayerManager.resume()
+                    }
+
+                    else -> {
+                        setReciterLoadingState(reciterId)
+                        audioPlayerManager.play(fullAudioUrl)
+                    }
                 }
-
-                AudioPlayerState.AudioPlaybackState.PAUSED, AudioPlayerState.AudioPlaybackState.ENDED, AudioPlayerState.AudioPlaybackState.IDLE -> {
-                    audioPlayerManager.resume()
-                }
-
-                else -> {
-                    setReciterLoadingState(reciterId)
-                    audioPlayerManager.play(fullAudioUrl)
-                }
+            } else {
+                setReciterLoadingState(reciterId)
+                audioPlayerManager.play(fullAudioUrl)
             }
-        } else {
-            setReciterLoadingState(reciterId)
-            audioPlayerManager.play(fullAudioUrl)
         }
     }
 

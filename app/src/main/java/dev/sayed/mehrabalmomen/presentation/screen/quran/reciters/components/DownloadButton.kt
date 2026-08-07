@@ -64,6 +64,8 @@ fun DownloadButton(
                 DownloadState.DOWNLOADED -> {
                     // Left empty as the parent layout hides the DownloadButton when downloaded
                 }
+
+                DownloadState.FAILED -> {}
             }
         }
     }

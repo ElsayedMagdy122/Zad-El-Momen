@@ -79,6 +79,18 @@ val repositoryModule = module {
             alarmScheduler = get()
         )
     }
-    single<QuranAudioRepository> { QuranAudioRepositoryImpl(get(), get()) }
-    single<QuranAudioReadersRepository> { QuranAudioReadersRepositoryImpl(get()) }
+    single<QuranAudioRepository> { 
+        QuranAudioRepositoryImpl(
+            readersRemoteDataSource = get(),
+            timingsRemoteDataSource = get(),
+            downloadedReciterDao = get()
+        ) 
+    }
+    single<QuranAudioReadersRepository> {
+        QuranAudioReadersRepositoryImpl(
+            readersRemoteDataSource = get(),
+            downloadedReciterDao = get(),
+            context = androidContext()
+        )
+    }
 }

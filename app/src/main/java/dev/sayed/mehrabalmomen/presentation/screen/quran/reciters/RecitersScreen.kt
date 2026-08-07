@@ -96,7 +96,7 @@ fun RecitersScreen(
                     state = state,
                     isArabic = isArabic,
                     onPlayClick = { reciterId -> viewModel.onPlayClick(reciterId) },
-                    onDownloadClick = { /* reciterId -> ... */ },
+                    onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
                     onRowSelected = { reciter ->
                         viewModel.onReciterSelected(
                             readerId = reciter.id,

@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.data.quran.audio.remote
 
+import dev.sayed.mehrabalmomen.data.quran.audio.local.entity.DownloadedReciterEntity
 import dev.sayed.mehrabalmomen.data.quran.audio.remote.dto.*
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.*
 import kotlin.time.ExperimentalTime
@@ -26,6 +27,15 @@ fun QuranAudioReaderDto.toEntity(rewaya: QuranAudioRewayat? = null): QuranAudioR
     baseAudioUrl = baseAudioUrl,
     surahsCount = surahsCount,
     rewaya = rewaya
+)
+
+fun DownloadedReciterEntity.toEntity(): QuranAudioReader = QuranAudioReader(
+    id = id,
+    nameAr = nameAr,
+    nameEn = nameEn,
+    baseAudioUrl = baseAudioUrl,
+    surahsCount = null,
+    rewaya = QuranAudioRewayat(0, rewayaName, rewayaName) // We don't have rewaya ID in Entity, using name for both
 )
 
 @OptIn(ExperimentalTime::class)

@@ -26,5 +26,6 @@ enum class PlayState {
 enum class DownloadState {
     NOT_DOWNLOADED,
     DOWNLOADING,
-    DOWNLOADED
+    DOWNLOADED,
+    FAILED
 }

@@ -86,6 +86,7 @@ private fun TilawahHeader(
     readerName: String,
     onCloseClick: () -> Unit
 ) {
+    val displayName = readerName.ifBlank { localizedString(R.string.select_reciter) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,7 +95,7 @@ private fun TilawahHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = readerName,
+            text = displayName,
             color = Theme.color.primary.shadePrimary,
             style = Theme.textStyle.label.small,
             maxLines = 1,
