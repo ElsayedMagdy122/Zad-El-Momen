@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -221,13 +222,19 @@ private fun ControlsRow(
             painter = painterResource(R.drawable.ic_repeat_one_01),
             contentDescription = null,
             tint = if (repeatCount > 0) Theme.color.primary.primary else Theme.color.semantic.shadeTertiary,
-            modifier = Modifier.clickable { onRepeatClick() }
+            modifier = Modifier.clickable(
+                onClick = onRepeatClick,
+                interactionSource = MutableInteractionSource()
+            )
         )
 
         Icon(
             modifier = Modifier
                 .graphicsLayer { scaleX = if (isRtl) -1f else 1f }
-                .clickable { onContinuousClick() },
+                .clickable(
+                    onClick = onContinuousClick,
+                    interactionSource = MutableInteractionSource()
+                ),
             painter = painterResource(R.drawable.ic_curvy_right_direction),
             contentDescription = null,
             tint = if (isContinuous) Theme.color.primary.primary else Theme.color.semantic.shadeTertiary
