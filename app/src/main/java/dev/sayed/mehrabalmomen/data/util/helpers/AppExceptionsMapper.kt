@@ -6,10 +6,13 @@ import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
 import java.net.UnknownHostException
 
 suspend fun Throwable.toAppException(): AppException {
+
+    if (this is CancellationException || this.cause is CancellationException) throw this
 
     return when (this) {
 
