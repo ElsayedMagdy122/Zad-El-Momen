@@ -24,6 +24,10 @@ sealed interface Route {
     }
 
     @Serializable
+    data object RecitersSearchScreen : Route{
+        override val route: String = "reciters_search_screen"
+    }
+    @Serializable
     data object CalibrateDevice : Route {
         override val route = "calibrate_device"
     }

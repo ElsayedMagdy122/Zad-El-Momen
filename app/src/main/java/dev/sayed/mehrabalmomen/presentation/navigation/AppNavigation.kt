@@ -25,6 +25,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewSc
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
@@ -66,6 +67,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
         composable<Route.AzkarScreen> { AzkarScreen(navController) }
         composable <Route.ReminderSettingsScreen>{ ReminderSettingsScreen(navController) }
+        composable <Route.RecitersSearchScreen>{ RecitersSearchScreen(navController) }
         composable<Route.AzkarDetailScreen> { entry ->
             val args = entry.toRoute<Route.AzkarDetailScreen>()
             AzkarDetailScreen(
