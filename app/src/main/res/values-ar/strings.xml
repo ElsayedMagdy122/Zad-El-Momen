@@ -335,4 +335,5 @@
     <string name="server_error">حدث خطأ في الخادم، يرجى المحاولة لاحقاً</string>
     <string name="no_data_available">لا توجد بيانات متاحة حالياً</string>
     <string name="something_went_wrong">حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى</string>
+    <string name="reciters">القراء</string>
 </resources>
