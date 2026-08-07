@@ -19,6 +19,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatView
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioAudioPlayerManager
@@ -51,6 +52,7 @@ val presentationModule = module {
     viewModelOf(::ReminderSettingsViewModel)
     viewModelOf(::ContactViewModel)
     viewModelOf(::RecitersViewModel)
+    viewModelOf(::RecitersSearchViewModel)
     factory<AudioPlayerManager> { ExoAudioPlayerManager(androidContext()) }
     single<PlayerController> { RadioAudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
