@@ -77,4 +77,12 @@ class QuranAudioReadersRepositoryImpl(
             workRequest
         )
     }
+
+    override fun getDownloadWorkInfo(
+        reciterId: Int,
+        surahId: Int
+    ): Flow<List<androidx.work.WorkInfo>> {
+        return WorkManager.getInstance(context)
+            .getWorkInfosForUniqueWorkFlow("download_reciter_${reciterId}_$surahId")
+    }
 }

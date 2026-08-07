@@ -44,9 +44,6 @@ import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_ID
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_AR
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_EN
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components.ReciterItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
@@ -69,17 +66,17 @@ fun RecitersScreen(
         when (effect) {
             is RecitersEffect.ShowToast -> toast = effect.toast
 
-            is RecitersEffect.ReciterSelected -> {
-                navController.previousBackStackEntry?.savedStateHandle?.apply {
-                    set(KEY_SELECTED_READER_ID, effect.readerId)
-                    set(KEY_SELECTED_READER_NAME_AR, effect.nameAr)
-                    set(KEY_SELECTED_READER_NAME_EN, effect.nameEn)
-                }
+            RecitersEffect.NavigateBack -> {
                 navController.popBackStack()
             }
 
-            RecitersEffect.NavigateToRecitersSearch -> {
-                navController.navigate(Route.RecitersSearchScreen)
+            is RecitersEffect.NavigateToRecitersSearch -> {
+                navController.navigate(
+                    Route.RecitersSearchScreen(
+                        surahId = effect.surahId,
+                        currentReaderId = effect.currentReaderId
+                    )
+                )
             }
         }
     }
@@ -129,9 +126,7 @@ fun RecitersScreen(
                         onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
                         onRowSelected = { reciter ->
                             viewModel.onReciterSelected(
-                                readerId = reciter.id,
-                                nameAr = reciter.nameAr,
-                                nameEn = reciter.nameEn
+                                readerId = reciter.id
                             )
                         }
                     )

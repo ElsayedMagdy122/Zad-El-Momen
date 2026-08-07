@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.data.quran.audio.remote.QuranAudioTimingsRemoteDa
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.contentLength
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -46,9 +47,25 @@ class DownloadReciterWorker(
             file.parentFile?.mkdirs()
 
             val response = httpClient.get(url)
+            val contentLength = response.contentLength() ?: -1L
             val channel = response.bodyAsChannel()
+            
             file.outputStream().use { output ->
-                channel.toInputStream().copyTo(output)
+                val buffer = ByteArray(8 * 1024)
+                var bytesRead = 0L
+                val inputStream = channel.toInputStream()
+                
+                while (true) {
+                    val read = inputStream.read(buffer)
+                    if (read == -1) break
+                    output.write(buffer, 0, read)
+                    bytesRead += read
+                    
+                    if (contentLength > 0) {
+                        val progress = (bytesRead * 100 / contentLength).toInt()
+                        setProgress(workDataOf(KEY_PROGRESS to progress))
+                    }
+                }
             }
 
             // Download timings
@@ -103,6 +120,7 @@ class DownloadReciterWorker(
         const val KEY_NAME_EN = "name_en"
         const val KEY_REWAYA_NAME = "rewaya_name"
         const val KEY_BASE_AUDIO_URL = "base_audio_url"
+        const val KEY_PROGRESS = "progress"
         
         fun createInputData(
             reciterId: Int,

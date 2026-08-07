@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
@@ -20,10 +21,13 @@ class RecitersViewModel(
     private val readersRepository: QuranAudioReadersRepository,
     private val quranAudioRepository: QuranAudioRepository,
     private val audioPlayerManager: AudioPlayerManager,
+    private val recitationPreferences: RecitationPreferences,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()) {
 
     private val surahId: Int = savedStateHandle.toRoute<Route.RecitersScreen>().surahId
+    private val currentReaderId: Int? =
+        savedStateHandle.toRoute<Route.RecitersScreen>().currentReaderId
     private var allReaders: List<QuranAudioReader> = emptyList()
 
     init {
@@ -31,14 +35,25 @@ class RecitersViewModel(
         observeDownloadedReciters()
     }
 
-    fun onReciterSelected(readerId: Int, nameAr: String, nameEn: String) {
-        sendEffect(
-            RecitersEffect.ReciterSelected(
-                readerId = readerId,
-                nameAr = nameAr,
-                nameEn = nameEn
+    fun onReciterSelected(readerId: Int) {
+        val selectedReciter = allReaders.find { it.id == readerId } ?: return
+        viewModelScope.launch {
+            recitationPreferences.saveLastReciter(
+                id = selectedReciter.id,
+                nameAr = selectedReciter.nameAr,
+                nameEn = selectedReciter.nameEn,
+                baseAudioUrl = selectedReciter.baseAudioUrl,
+                rewayaName = selectedReciter.rewaya?.nameAr ?: ""
             )
-        )
+            updateState { state ->
+                state.copy(
+                    reciters = state.reciters.map {
+                        it.copy(isSelected = it.id == readerId)
+                    }
+                )
+            }
+            sendEffect(RecitersEffect.NavigateBack)
+        }
     }
 
     fun loadReciters(isArabic: Boolean = true) {
@@ -54,13 +69,23 @@ class RecitersViewModel(
                             } else {
                                 DownloadState.NOT_DOWNLOADED
                             }
-                        reader.toUiState(isArabic, isDownloaded)
+                        reader.toUiState(
+                            isArabic,
+                            isDownloaded,
+                            isSelected = reader.id == currentReaderId
+                        )
                     }
                 } catch (e: Exception) {
                     val downloaded = readersRepository.getDownloadedRecitersOnce()
                     if (downloaded.isEmpty()) throw e
                     allReaders = downloaded
-                    downloaded.map { it.toUiState(isArabic, DownloadState.DOWNLOADED) }
+                    downloaded.map {
+                        it.toUiState(
+                            isArabic,
+                            DownloadState.DOWNLOADED,
+                            isSelected = it.id == currentReaderId
+                        )
+                    }
                 }
             },
             onSuccess = { readersList ->
@@ -95,8 +120,6 @@ class RecitersViewModel(
                     val updatedReciters = state.reciters.map { reciter ->
                         val isDownloaded =
                             downloaded.any { it.id == reciter.id } // This is simple, but we should ideally check surahId too if stored.
-                        // Actually our repository's getDownloadedReciters returns entities which we map to QuranAudioReader.
-                        // For simplicity, if it's in the list, it's downloaded.
                         if (isDownloaded) {
                             reciter.copy(downloadState = DownloadState.DOWNLOADED)
                         } else {
@@ -119,6 +142,23 @@ class RecitersViewModel(
                     if (it.id == reciterId) it.copy(downloadState = DownloadState.DOWNLOADING) else it
                 }
             )
+        }
+        observeDownloadProgress(reciterId)
+    }
+
+    private fun observeDownloadProgress(reciterId: Int) {
+        viewModelScope.launch {
+            readersRepository.getDownloadWorkInfo(reciterId, surahId).collectLatest { workInfos ->
+                val workInfo = workInfos.firstOrNull() ?: return@collectLatest
+                val progress = workInfo.progress.getInt("progress", 0)
+                updateState { state ->
+                    state.copy(
+                        reciters = state.reciters.map {
+                            if (it.id == reciterId) it.copy(downloadProgress = progress) else it
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -205,9 +245,10 @@ class RecitersViewModel(
         }
     }
 
-    fun onClickSearch(){
-        sendEffect(RecitersEffect.NavigateToRecitersSearch)
+    fun onClickSearch() {
+        sendEffect(RecitersEffect.NavigateToRecitersSearch(surahId, currentReaderId))
     }
+
     private fun getFullAudioUrl(baseUrl: String, surahNumber: Int): String {
         val formattedSurah = surahNumber.toString().padStart(3, '0')
         val cleanBaseUrl = baseUrl.trimEnd('/')

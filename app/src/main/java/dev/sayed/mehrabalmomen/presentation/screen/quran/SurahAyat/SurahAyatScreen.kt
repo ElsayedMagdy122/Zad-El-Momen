@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
@@ -79,23 +78,6 @@ fun SurahAyatScreen(
     val appLocale = LocalAppLocale.current
     val isArabic = appLocale == AppSettings.Language.ARABIC
 
-    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
-    val savedStateHandle = currentBackStackEntry?.savedStateHandle
-
-    LaunchedEffect(savedStateHandle) {
-        val readerId = savedStateHandle?.get<Int>(KEY_SELECTED_READER_ID)
-        val nameAr = savedStateHandle?.get<String>(KEY_SELECTED_READER_NAME_AR)
-        val nameEn = savedStateHandle?.get<String>(KEY_SELECTED_READER_NAME_EN)
-
-        if (readerId != null && nameAr != null && nameEn != null) {
-            viewModel.onReciterSelected(readerId, nameAr, nameEn)
-            // مسح القيم لعدم تكرار التنفيذ عند الإعادة
-            savedStateHandle.remove<Int>(KEY_SELECTED_READER_ID)
-            savedStateHandle.remove<String>(KEY_SELECTED_READER_NAME_AR)
-            savedStateHandle.remove<String>(KEY_SELECTED_READER_NAME_EN)
-        }
-    }
-
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             is SurahAyatEffect.ShowToast -> toast = effect.toast
@@ -116,7 +98,12 @@ fun SurahAyatScreen(
             }
 
             is SurahAyatEffect.NavigateToReciters -> {
-                navController.navigate(Route.RecitersScreen(surahId = effect.surahId))
+                navController.navigate(
+                    Route.RecitersScreen(
+                        surahId = effect.surahId,
+                        currentReaderId = effect.currentReaderId
+                    )
+                )
             }
         }
     }
@@ -332,6 +319,3 @@ fun TafseerBottomSheet(
     }
 }
 
-const val KEY_SELECTED_READER_ID = "selected_reader_id"
-const val KEY_SELECTED_READER_NAME_AR = "selected_reader_name_ar"
-const val KEY_SELECTED_READER_NAME_EN = "selected_reader_name_en"

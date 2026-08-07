@@ -15,4 +15,6 @@ interface QuranAudioReadersRepository {
     suspend fun getDownloadedReciter(reciterId: Int, surahId: Int): QuranAudioReader?
 
     fun downloadReciter(reciter: QuranAudioReader, surahId: Int)
+
+    fun getDownloadWorkInfo(reciterId: Int, surahId: Int): Flow<List<androidx.work.WorkInfo>>
 }

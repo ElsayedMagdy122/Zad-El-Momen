@@ -30,9 +30,6 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.components.SearchEmptyContainer
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_ID
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_AR
-import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_EN
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components.ReciterItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
@@ -53,14 +50,6 @@ fun RecitersSearchScreen(
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             RecitersSearchEffect.NavigateBack -> navController.popBackStack()
-            is RecitersSearchEffect.ReciterSelected -> {
-                navController.previousBackStackEntry?.savedStateHandle?.apply {
-                    set(KEY_SELECTED_READER_ID, effect.readerId)
-                    set(KEY_SELECTED_READER_NAME_AR, effect.nameAr)
-                    set(KEY_SELECTED_READER_NAME_EN, effect.nameEn)
-                }
-                navController.popBackStack()
-            }
         }
     }
 
@@ -68,11 +57,11 @@ fun RecitersSearchScreen(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onBackClick = viewModel::onBackClick,
+        onPlayClick = viewModel::onPlayClick,
+        onDownloadClick = viewModel::onDownloadClick,
         onReciterClick = { reciter ->
             viewModel.onReciterClick(
-                readerId = reciter.id,
-                nameAr = reciter.nameAr,
-                nameEn = reciter.nameEn
+                readerId = reciter.id
             )
         }
     )
@@ -83,6 +72,8 @@ private fun RecitersSearchContent(
     state: RecitersSearchUiState,
     onSearchQueryChange: (String) -> Unit,
     onBackClick: () -> Unit,
+    onPlayClick: (Int) -> Unit,
+    onDownloadClick: (Int) -> Unit,
     onReciterClick: (dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.ReciterUiState) -> Unit
 ) {
     Column(
@@ -143,8 +134,8 @@ private fun RecitersSearchContent(
                     ReciterItem(
                         state = reciter,
                         isArabic = state.isArabic,
-                        onPlayClick = {  },
-                        onDownloadClick = {  },
+                        onPlayClick = { onPlayClick(reciter.id) },
+                        onDownloadClick = { onDownloadClick(reciter.id) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onReciterClick(reciter) }

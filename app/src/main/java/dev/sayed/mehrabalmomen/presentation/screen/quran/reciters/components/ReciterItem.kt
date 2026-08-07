@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,12 +35,23 @@ fun ReciterItem(
     onPlayClick: () -> Unit,
     onDownloadClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isArabic: Boolean=true
+    isArabic: Boolean = true
 ) {
     val reciterName = if (isArabic) state.nameAr else state.nameEn
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
+            .then(
+                if (state.isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = Theme.color.primary.primary,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                } else {
+                    Modifier
+                }
+            )
             .background(Theme.color.surfaces.surfaceLow)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -60,6 +72,7 @@ fun ReciterItem(
         if (state.downloadState != DownloadState.DOWNLOADED) {
             DownloadButton(
                 downloadState = state.downloadState,
+                downloadProgress = state.downloadProgress,
                 onDownloadClick = onDownloadClick
             )
         }
