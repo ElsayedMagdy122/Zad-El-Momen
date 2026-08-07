@@ -205,6 +205,9 @@ class RecitersViewModel(
         }
     }
 
+    fun onClickSearch(){
+        sendEffect(RecitersEffect.NavigateToRecitersSearch)
+    }
     private fun getFullAudioUrl(baseUrl: String, surahNumber: Int): String {
         val formattedSurah = surahNumber.toString().padStart(3, '0')
         val cleanBaseUrl = baseUrl.trimEnd('/')

@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,15 +29,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
+import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_ID
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_AR
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.KEY_SELECTED_READER_NAME_EN
@@ -70,6 +77,10 @@ fun RecitersScreen(
                 }
                 navController.popBackStack()
             }
+
+            RecitersEffect.NavigateToRecitersSearch -> {
+                navController.navigate(Route.RecitersSearchScreen)
+            }
         }
     }
 
@@ -78,6 +89,7 @@ fun RecitersScreen(
             .fillMaxSize()
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(horizontal = 16.dp),
     ) {
         AnimatedContent(
             targetState = state.isLoading,
@@ -92,19 +104,38 @@ fun RecitersScreen(
                     LoadingContainer()
                 }
             } else {
-                RecitersContent(
-                    state = state,
-                    isArabic = isArabic,
-                    onPlayClick = { reciterId -> viewModel.onPlayClick(reciterId) },
-                    onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
-                    onRowSelected = { reciter ->
-                        viewModel.onReciterSelected(
-                            readerId = reciter.id,
-                            nameAr = reciter.nameAr,
-                            nameEn = reciter.nameEn
+                Column() {
+                    QuranAppBar(
+                        onBackClick = {
+                            navController.popBackStack()
+                        },
+                        titleColor = Theme.color.primary.shadePrimary,
+                        title = localizedString(R.string.reciters), actions = listOf(
+                            AppBarAction(
+                                icon = painterResource(R.drawable.ic_search),
+                                onClick = {
+                                    viewModel.onClickSearch()
+                                },
+                            )
                         )
-                    }
-                )
+                    )
+                    RecitersContent(
+                        modifier = Modifier.padding(
+                            top = 12.dp
+                        ),
+                        state = state,
+                        isArabic = isArabic,
+                        onPlayClick = { reciterId -> viewModel.onPlayClick(reciterId) },
+                        onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
+                        onRowSelected = { reciter ->
+                            viewModel.onReciterSelected(
+                                readerId = reciter.id,
+                                nameAr = reciter.nameAr,
+                                nameEn = reciter.nameEn
+                            )
+                        }
+                    )
+                }
             }
         }
 

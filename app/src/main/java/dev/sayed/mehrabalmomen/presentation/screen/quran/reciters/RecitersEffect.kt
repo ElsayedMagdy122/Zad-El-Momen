@@ -10,4 +10,5 @@ sealed interface RecitersEffect {
         val nameAr: String,
         val nameEn: String
     ) : RecitersEffect
+    data object NavigateToRecitersSearch : RecitersEffect
 }
