@@ -24,7 +24,8 @@ fun BoxScope.AyaActionsSection(
     selectedAyaText: String,
     onCopy: () -> Unit,
     onBookmark: () -> Unit,
-    onTafseer: () -> Unit
+    onTafseer: () -> Unit,
+    onListen: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -42,16 +43,17 @@ fun BoxScope.AyaActionsSection(
                 when (action) {
                     AyahAction.COPY -> onCopy()
                     AyahAction.BOOKMARK -> onBookmark()
-                    AyahAction.SEND -> {
-                        val cleanedText = cleanAyahTextForCopy(selectedAyaText)
-                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                            putExtra(Intent.EXTRA_TEXT, cleanedText)
-                            type = "text/plain"
-                        }
-                        context.startActivity(Intent.createChooser(shareIntent, "Share Aya"))
-                    }
+//                    AyahAction.SEND -> {
+//                        val cleanedText = cleanAyahTextForCopy(selectedAyaText)
+//                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+//                            putExtra(Intent.EXTRA_TEXT, cleanedText)
+//                            type = "text/plain"
+//                        }
+//                        context.startActivity(Intent.createChooser(shareIntent, "Share Aya"))
+//                    }
 
                     AyahAction.TAFSEER -> onTafseer()
+                    AyahAction.LISTEN -> onListen()
                 }
             }
         )

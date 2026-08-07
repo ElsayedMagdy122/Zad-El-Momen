@@ -26,7 +26,8 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 
 enum class AyahAction {
-    SEND, BOOKMARK, COPY, TAFSEER
+    //SEND,
+    BOOKMARK, COPY, TAFSEER, LISTEN
 }
 
 @Composable
@@ -35,10 +36,16 @@ fun AyahActions(
     modifier: Modifier = Modifier,
 ) {
     val actions = listOf(
-        ActionItem(
-            icon = painterResource(R.drawable.ic_link_forward),
-            text = localizedString(R.string.send),
-            action = AyahAction.SEND
+//        ActionItem(
+//            icon = painterResource(R.drawable.ic_link_forward),
+//            text = localizedString(R.string.send),
+//            action = AyahAction.SEND
+//        ),
+
+                ActionItem(
+            icon = painterResource(R.drawable.ic_play),
+            text = localizedString(R.string.listen),
+            action = AyahAction.LISTEN
         ),
         ActionItem(
             icon = painterResource(R.drawable.ic_all_bookmark),
