@@ -179,6 +179,7 @@
     <string name="daily_limit">Daily Limit Reached</string>
     <string name="you_have_reached_the_daily_report_limit">You have reached the daily report limit</string>
     <string name="error">Error</string>
+    <string name="select_reciter_first">Select Reciter First</string>
     <string name="failed_to_send_report">Failed to send report</string>
     <string name="support_developer">Support the Developer</string>
     <string name="support_description">Your support helps continue developing and improving the app</string>
@@ -310,4 +311,17 @@
     <string name="daily_quran_word">Daily Quran Portion</string>
     <string name="save">Save</string>
     <string name="choose_time">Choose time</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="surah_ayah_format">Surah %1$s - Ayah %2$s</string>
+    <string name="select_reciter">Select Reciter</string>
+
+    <string name="request_timeout">Connection timeout, please try again</string>
+    <string name="slow_internet_connection">Slow internet connection, please check your network</string>
+    <string name="server_unreachable">Cannot reach the server, please try again later</string>
+    <string name="server_error">A server error occurred, please try again later</string>
+    <string name="no_data_available">No data available at the moment</string>
+    <string name="something_went_wrong">Something went wrong, please try again</string>
+    <string name="reciters">Reciters</string>
+    <string name="no_downloaded_reciters_for_this_surah">No downloaded reciters for this surah yet!</string>
+    <string name="start_download_now">Start Download Now</string>
 </resources>

@@ -136,7 +136,7 @@ private fun SearchTextField(
                         text = placeholder,
                         maxLines = 1,
                         style = Theme.textStyle.label.medium,
-                        color = Theme.color.primary.shadePrimary
+                        color = Theme.color.semantic.shadeTertiary
                     )
                 }
                 innerTextField()

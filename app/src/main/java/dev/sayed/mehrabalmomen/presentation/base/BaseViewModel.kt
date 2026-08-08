@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BaseViewModel<T, E>(
     initialState: T
@@ -47,13 +48,16 @@ abstract class BaseViewModel<T, E>(
         onStart: suspend () -> Unit = {},
         onEnd: suspend () -> Unit = {},
         dispatcher: CoroutineDispatcher = Dispatchers.IO
-    ): Job {
-        return viewModelScope.launch(dispatcher) {
-            onStart()
-            runCatching { block() }
+    ): Job = viewModelScope.launch(dispatcher) {
+        onStart()
 
-                .onSuccess({ onSuccess(it) })
-                .onFailure({ onError(it) })
+        try {
+            onSuccess(block())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (t: Throwable) {
+            onError(t)
+        } finally {
             onEnd()
         }
     }
