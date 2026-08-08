@@ -6,6 +6,7 @@ bom = "3.1.4"
 coilCompose = "2.7.0"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.2.0"
+workManager = "2.11.2"
 kotlin = "2.2.21"
 coreKtx = "1.17.0"
 kotlinxDatetime = "0.7.1"
@@ -71,6 +72,7 @@ postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 [plugins]

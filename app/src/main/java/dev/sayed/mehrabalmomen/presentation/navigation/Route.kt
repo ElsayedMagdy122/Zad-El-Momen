@@ -24,6 +24,10 @@ sealed interface Route {
     }
 
     @Serializable
+    data class RecitersSearchScreen(val surahId: Int, val currentReaderId: Int? = null) : Route {
+        override val route: String = "reciters_search_screen"
+    }
+    @Serializable
     data object CalibrateDevice : Route {
         override val route = "calibrate_device"
     }
@@ -81,6 +85,11 @@ sealed interface Route {
         val targetAyahId: Int? = null
     ) : Route {
         override val route: String get() = "surah_ayat_screen/$surahId"
+    }
+
+    @Serializable
+    data class RecitersScreen(val surahId: Int, val currentReaderId: Int? = null) : Route {
+        override val route = "reciters_screen"
     }
 
     @Serializable

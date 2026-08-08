@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.repository.quran
 
-import dev.sayed.mehrabalmomen.domain.entity.quran.Bookmark
+import dev.sayed.mehrabalmomen.domain.entity.quran.bookmark.Bookmark
 
 interface BookmarkRepository {
     suspend fun addBookmark(bookmark: Bookmark)

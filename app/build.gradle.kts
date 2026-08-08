@@ -189,6 +189,7 @@ dependencies {
     implementation(libs.bundles.others)
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.LayoutDirection
@@ -32,9 +33,12 @@ fun MehrabTheme(
 ) {
     val theme = if (isDarkTheme) darkThemeColors else lightThemeColors
     val context = LocalContext.current
-    val localizedContext = remember(language) {
+    val isPreview = LocalInspectionMode.current
+    val localizedContext = remember(language, isPreview) {
         val locale = Locale(language.code)
-        Locale.setDefault(locale)
+        if (!isPreview) {
+            Locale.setDefault(locale)
+        }
         val config = Configuration(context.resources.configuration)
         config.setLocale(locale)
         context.createConfigurationContext(config)
@@ -51,14 +55,19 @@ fun MehrabTheme(
         }
         currentContext as? ActivityResultRegistryOwner
     }
-    CompositionLocalProvider(
-        LocalContext provides localizedContext,
-        LocalLayoutDirection provides layoutDirection,
-        LocalMehrabColor provides theme,
-        LocalMehrabTextStyle provides defaultTextStyle,
-        LocalIsDark provides isDarkTheme,
-        LocalActivityResultRegistryOwner provides registryOwner!!,
-    ) {
+    val providers = remember(localizedContext, layoutDirection, theme, isDarkTheme, registryOwner) {
+        val list = mutableListOf<androidx.compose.runtime.ProvidedValue<*>>(
+            LocalContext provides localizedContext,
+            LocalLayoutDirection provides layoutDirection,
+            LocalMehrabColor provides theme,
+            LocalMehrabTextStyle provides defaultTextStyle,
+            LocalIsDark provides isDarkTheme,
+        )
+        registryOwner?.let { list.add(LocalActivityResultRegistryOwner provides it) }
+        list.toTypedArray()
+    }
+
+    CompositionLocalProvider(values = providers) {
         UpdateStatusBarIconsForTheme()
         content()
     }
