@@ -115,11 +115,11 @@ class RecitersViewModel(
 
     private fun observeDownloadedReciters() {
         viewModelScope.launch {
-            readersRepository.getDownloadedReciters().collectLatest { downloaded ->
+            readersRepository.getDownloadedReciters(surahId).collectLatest { downloaded ->
                 updateState { state ->
                     val updatedReciters = state.reciters.map { reciter ->
                         val isDownloaded =
-                            downloaded.any { it.id == reciter.id } // This is simple, but we should ideally check surahId too if stored.
+                            downloaded.any { it.id == reciter.id }
                         if (isDownloaded) {
                             reciter.copy(downloadState = DownloadState.DOWNLOADED)
                         } else {

@@ -58,9 +58,9 @@ val remoteModule = module {
                 json(get())
             }
             install(HttpTimeout) {
-                requestTimeoutMillis = 30_000
-                connectTimeoutMillis = 30_000
-                socketTimeoutMillis = 30_000
+                requestTimeoutMillis = 300_000
+                connectTimeoutMillis = 300_000
+                socketTimeoutMillis = 300_000
             }
         }
     }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface QuranAudioReadersRepository {
     suspend fun getReaders(): List<QuranAudioReader>
 
-    fun getDownloadedReciters(): Flow<List<QuranAudioReader>>
+    fun getDownloadedReciters(surahId: Int): Flow<List<QuranAudioReader>>
 
     suspend fun getDownloadedRecitersOnce(): List<QuranAudioReader>
 

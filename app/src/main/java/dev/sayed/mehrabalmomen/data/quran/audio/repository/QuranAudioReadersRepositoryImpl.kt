@@ -34,8 +34,8 @@ class QuranAudioReadersRepositoryImpl(
         }
     }
 
-    override fun getDownloadedReciters(): Flow<List<QuranAudioReader>> {
-        return downloadedReciterDao.getAllDownloadedReciters().map { entities ->
+    override fun getDownloadedReciters(surahId: Int): Flow<List<QuranAudioReader>> {
+        return downloadedReciterDao.getDownloadedRecitersForSurah(surahId).map { entities ->
             entities.map { it.toEntity() }
         }
     }

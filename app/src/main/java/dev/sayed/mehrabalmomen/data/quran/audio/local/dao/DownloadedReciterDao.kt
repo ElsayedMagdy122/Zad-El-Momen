@@ -36,6 +36,9 @@ interface DownloadedReciterDao {
     @Query("SELECT * FROM downloaded_reciters")
     fun getAllDownloadedReciters(): Flow<List<DownloadedReciterEntity>>
 
+    @Query("SELECT * FROM downloaded_reciters WHERE surahId = :surahId")
+    fun getDownloadedRecitersForSurah(surahId: Int): Flow<List<DownloadedReciterEntity>>
+
     @Query("SELECT * FROM downloaded_reciters")
     suspend fun getAllDownloadedRecitersOnce(): List<DownloadedReciterEntity>
 

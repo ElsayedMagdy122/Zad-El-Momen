@@ -113,13 +113,19 @@ class SurahAyatViewModel(
 
                     currentTiming?.let { timing ->
                         val currentAyah = timing.verseNumber
-                        
-                        // Update UI to current ayah being played
+
+                        // Update UI and scrolling when the ayah changes
                         if (state.currentAudioAyahId != currentAyah) {
-                             updateState { it.copy(currentAudioAyahId = currentAyah) }
+                            updateState {
+                                it.copy(
+                                    currentAudioAyahId = currentAyah,
+                                    selectedAyaId = currentAyah,
+                                    scrollToAyaId = currentAyah
+                                )
+                            }
                         }
 
-                        // Check for repetition at the end of the ayah
+                        // Check for repetition at the end of the ayah (250ms threshold)
                         if (currentPos >= timing.endTimeMs - 250) {
                             if (state.repeatCount > 0 && state.currentRepeatIteration < state.repeatCount - 1) {
                                 // Repeat the current ayah
@@ -129,17 +135,17 @@ class SurahAyatViewModel(
                             } else {
                                 // Repeats finished for this ayah
                                 updateState { it.copy(currentRepeatIteration = 0) }
-                                
+
                                 if (!state.isContinuousReading) {
-                                    // Stop if not continuous
+                                    // Stop if not continuous mode
                                     audioPlayerManager.pause()
                                     audioPlayerManager.seekTo(timing.startTimeMs)
                                 } else if (currentAyah >= state.ayat.size) {
-                                    // Stop if end of surah
+                                    // Stop if end of surah reached
                                     audioPlayerManager.pause()
                                     updateState { it.copy(isContinuousReading = false) }
                                 }
-                                // If continuous, ExoPlayer will naturally flow or we rely on next timing match
+                                // If continuous mode is ON, we let it flow to the next ayah
                             }
                         }
                     }
@@ -166,6 +172,8 @@ class SurahAyatViewModel(
                         timings = timings,
                         currentRepeatIteration = 0,
                         currentAudioAyahId = ayahId,
+                        selectedAyaId = ayahId,
+                        scrollToAyaId = ayahId,
                         isAudioLoading = false
                     )
                 }

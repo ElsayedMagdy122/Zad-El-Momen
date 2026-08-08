@@ -158,7 +158,7 @@ class RecitersSearchViewModel(
 
     private fun observeDownloadedReciters() {
         viewModelScope.launch {
-            readersRepository.getDownloadedReciters().collectLatest { downloaded ->
+            readersRepository.getDownloadedReciters(surahId).collectLatest { downloaded ->
                 updateState { state ->
                     val updatedResults = state.results.map { reciter ->
                         val isDownloaded = downloaded.any { it.id == reciter.id }
