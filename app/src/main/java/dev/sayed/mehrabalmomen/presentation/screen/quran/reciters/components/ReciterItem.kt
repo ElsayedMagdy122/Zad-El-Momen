@@ -86,7 +86,6 @@ fun ReciterInformation(
     isDownloaded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Column(modifier = modifier) {
         Text(
             text = name,
@@ -107,11 +106,6 @@ fun ReciterInformation(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
                         .size(12.dp)
-                        .graphicsLayer {
-                            if (isRtl) {
-                                scaleX = -1f
-                            }
-                        }
                 )
                 Text(
                     text = localizedString(R.string.downloaded),

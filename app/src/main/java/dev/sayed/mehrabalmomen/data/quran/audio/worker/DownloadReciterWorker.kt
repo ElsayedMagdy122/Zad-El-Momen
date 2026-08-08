@@ -13,11 +13,14 @@ import io.ktor.client.plugins.timeout
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.contentLength
-import io.ktor.utils.io.jvm.javaio.toInputStream
+import io.ktor.utils.io.readAvailable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.system.measureTimeMillis
 
 class DownloadReciterWorker(
     context: Context,
@@ -41,77 +44,84 @@ class DownloadReciterWorker(
             return Result.failure()
         }
 
+        // Immediate feedback
+        setProgress(workDataOf(KEY_PROGRESS to 1))
+
         return try {
-            val file = getLocalFile(reciterId, surahId)
-            if (file.exists()) {
-                file.delete()
-            }
-            file.parentFile?.mkdirs()
-
-            httpClient.prepareGet(url) {
-                timeout {
-                    requestTimeoutMillis = Long.MAX_VALUE
-                    connectTimeoutMillis = 60_000
-                    socketTimeoutMillis = Long.MAX_VALUE
+            coroutineScope {
+                // Start downloading timings in parallel
+                val timingsDeferred = async {
+                    timingsRemoteDataSource.getVerseTimings(reciterId, surahId)
                 }
-            }.execute { response ->
-                val contentLength = response.contentLength() ?: -1L
 
-                val channel = response.bodyAsChannel()
+                val file = getLocalFile(reciterId, surahId)
+                if (file.exists()) {
+                    file.delete()
+                }
+                file.parentFile?.mkdirs()
 
-                file.outputStream().use { output ->
-                    val buffer = ByteArray(32 * 1024)
-                    var bytesRead = 0L
-                    var lastProgress = -1
-                    val inputStream = channel.toInputStream()
+                val connectionTime = measureTimeMillis {
+                    httpClient.prepareGet(url) {
+                        timeout {
+                            requestTimeoutMillis = Long.MAX_VALUE
+                            connectTimeoutMillis = 60_000
+                            socketTimeoutMillis = Long.MAX_VALUE
+                        }
+                    }.execute { response ->
+                        val contentLength = response.contentLength() ?: -1L
 
-                    while (true) {
-                        val read = inputStream.read(buffer)
-                        if (read == -1) break
-                        output.write(buffer, 0, read)
-                        bytesRead += read
+                        val channel = response.bodyAsChannel()
+                        file.outputStream().buffered().use { output ->
+                            val buffer = ByteArray(64 * 1024)
+                            var bytesRead = 0L
+                            var lastProgress = 1
 
-                        if (contentLength > 0) {
-                            val progress = (bytesRead * 100 / contentLength).toInt()
-                            if (progress != lastProgress) {
-                                lastProgress = progress
-                                setProgress(workDataOf(KEY_PROGRESS to progress))
-                            }
-                        } else if (contentLength == -1L) {
-                            if (lastProgress == -1) {
-                                lastProgress = 1
-                                setProgress(workDataOf(KEY_PROGRESS to 1))
+                            while (!channel.isClosedForRead) {
+                                val read = channel.readAvailable(buffer)
+                                if (read <= 0) break
+                                output.write(buffer, 0, read)
+                                bytesRead += read
+
+                                if (contentLength > 0) {
+                                    val progress =
+                                        (bytesRead * 100 / contentLength).toInt().coerceIn(1, 99)
+                                    if (progress != lastProgress) {
+                                        lastProgress = progress
+                                        setProgress(workDataOf(KEY_PROGRESS to progress))
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // Download timings
-            val remoteTimings = timingsRemoteDataSource.getVerseTimings(reciterId, surahId)
-            val timingEntities = remoteTimings.map {
-                VerseTimingEntity(
-                    readerId = reciterId,
+                // Wait for timings to finish
+                val remoteTimings = timingsDeferred.await()
+
+                val timingEntities = remoteTimings.map {
+                    VerseTimingEntity(
+                        readerId = reciterId,
+                        surahId = surahId,
+                        verseNumber = it.verseNumber,
+                        startTimeMs = it.startTimeMs,
+                        endTimeMs = it.endTimeMs
+                    )
+                }
+
+                val entity = DownloadedReciterEntity(
+                    id = reciterId,
                     surahId = surahId,
-                    verseNumber = it.verseNumber,
-                    startTimeMs = it.startTimeMs,
-                    endTimeMs = it.endTimeMs
+                    nameAr = nameAr,
+                    nameEn = nameEn,
+                    rewayaName = rewayaName,
+                    baseAudioUrl = baseAudioUrl,
+                    localFilePath = file.absolutePath
+                )
+                downloadedReciterDao.saveDownloadedReciterWithTimings(
+                    reciter = entity,
+                    timings = timingEntities
                 )
             }
-
-            val entity = DownloadedReciterEntity(
-                id = reciterId,
-                surahId = surahId,
-                nameAr = nameAr,
-                nameEn = nameEn,
-                rewayaName = rewayaName,
-                baseAudioUrl = baseAudioUrl,
-                localFilePath = file.absolutePath
-            )
-            downloadedReciterDao.saveDownloadedReciterWithTimings(
-                reciter = entity,
-                timings = timingEntities
-            )
 
             Result.success()
         } catch (e: CancellationException) {

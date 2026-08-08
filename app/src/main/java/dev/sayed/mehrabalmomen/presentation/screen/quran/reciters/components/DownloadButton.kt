@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -23,7 +24,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.DownloadState
 
 @Composable
@@ -34,6 +38,11 @@ fun DownloadButton(
     downloadProgress: Int = 0,
     iconTint: Color = Theme.color.primary.primary
 ) {
+    val appLocale = LocalAppLocale.current
+    val percentSymbol = when (appLocale) {
+        AppSettings.Language.ARABIC -> "٪"
+        else -> "%"
+    }
     Box(
         modifier = modifier
             .size(32.dp)
@@ -68,15 +77,15 @@ fun DownloadButton(
                     Box(contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(
                             progress = { downloadProgress / 100f },
-                            modifier = Modifier.size(28.dp),
-                            color = Theme.color.semantic.success,
+                            color = Theme.color.primary.primary,
                             strokeWidth = 2.dp,
-                            trackColor = Theme.color.semantic.success.copy(alpha = 0.3f),
+                            trackColor = Theme.color.semantic.shadeTertiary,
                         )
                         Text(
-                            text = "$downloadProgress",
+                            modifier = Modifier.padding(8.dp),
+                            text = "${downloadProgress.toString().toLocalizedDigits(appLocale)} $percentSymbol",
                             style = Theme.textStyle.label.small,
-                            color = Theme.color.semantic.success
+                            color = Theme.color.primary.primary
                         )
                     }
                 }
