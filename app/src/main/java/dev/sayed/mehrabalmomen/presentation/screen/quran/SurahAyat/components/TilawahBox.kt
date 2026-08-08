@@ -1,5 +1,12 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -274,20 +281,45 @@ private fun PlayerControls(
                 .clickable(enabled = !isLoading) { onPlayPauseClick() },
             contentAlignment = Alignment.Center
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = Theme.color.primary.primary,
-                    strokeWidth = 2.5.dp
-                )
-            } else {
-                Icon(
-                    painter = painterResource(
-                        if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
-                    ),
-                    contentDescription = null,
-                    tint = Theme.color.primary.primary
-                )
+            val state = when {
+                isLoading -> PlayerState.LOADING
+                isPlaying -> PlayerState.PLAYING
+                else -> PlayerState.PAUSED
+            }
+
+            AnimatedContent(
+                targetState = state,
+                transitionSpec = {
+                    (fadeIn(tween(200)) + scaleIn(initialScale = 0.8f))
+                        .togetherWith(fadeOut(tween(200)) + scaleOut(targetScale = 0.8f))
+                },
+                label = "PlayerStateAnimation"
+            ) { targetState ->
+                when (targetState) {
+                    PlayerState.LOADING -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Theme.color.primary.primary,
+                            strokeWidth = 2.5.dp
+                        )
+                    }
+
+                    PlayerState.PLAYING -> {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_pause),
+                            contentDescription = null,
+                            tint = Theme.color.primary.primary
+                        )
+                    }
+
+                    PlayerState.PAUSED -> {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_play),
+                            contentDescription = null,
+                            tint = Theme.color.primary.primary
+                        )
+                    }
+                }
             }
         }
 
@@ -300,4 +332,8 @@ private fun PlayerControls(
             tint = Theme.color.primary.primary
         )
     }
+}
+
+private enum class PlayerState {
+    LOADING, PLAYING, PAUSED
 }

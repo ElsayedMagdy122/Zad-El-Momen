@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,6 +43,8 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
+import dev.sayed.mehrabalmomen.presentation.components.NoDataContainer
+import dev.sayed.mehrabalmomen.presentation.components.NoInternetContainer
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components.ReciterItem
@@ -88,48 +91,73 @@ fun RecitersScreen(
             .windowInsetsPadding(WindowInsets.systemBars)
             .padding(horizontal = 16.dp),
     ) {
-        AnimatedContent(
-            targetState = state.isLoading,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f) togetherWith
-                        fadeOut(animationSpec = tween(300))
-            },
-            label = "LoadingToContentAnimation"
-        ) { isLoading ->
-            if (isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    LoadingContainer()
-                }
-            } else {
-                Column() {
-                    QuranAppBar(
-                        onBackClick = {
-                            navController.popBackStack()
+        Column(modifier = Modifier.fillMaxSize()) {
+            QuranAppBar(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                titleColor = Theme.color.primary.shadePrimary,
+                title = localizedString(R.string.reciters),
+                actions = listOf(
+                    AppBarAction(
+                        icon = painterResource(R.drawable.ic_search),
+                        onClick = {
+                            viewModel.onClickSearch()
                         },
-                        titleColor = Theme.color.primary.shadePrimary,
-                        title = localizedString(R.string.reciters), actions = listOf(
-                            AppBarAction(
-                                icon = painterResource(R.drawable.ic_search),
-                                onClick = {
-                                    viewModel.onClickSearch()
-                                },
-                            )
-                        )
                     )
-                    RecitersContent(
-                        modifier = Modifier.padding(
-                            top = 12.dp
-                        ),
-                        state = state,
-                        isArabic = isArabic,
-                        onPlayClick = { reciterId -> viewModel.onPlayClick(reciterId) },
-                        onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
-                        onRowSelected = { reciter ->
-                            viewModel.onReciterSelected(
-                                readerId = reciter.id
-                            )
+                )
+            )
+
+            val screenDisplayState = when {
+                state.isLoading -> ReciterScreenDisplayState.LOADING
+                state.isNoInternet && state.reciters.isEmpty() -> ReciterScreenDisplayState.NO_INTERNET
+                state.reciters.isEmpty() -> ReciterScreenDisplayState.NO_DATA
+                else -> ReciterScreenDisplayState.CONTENT
+            }
+
+            AnimatedContent(
+                targetState = screenDisplayState,
+                transitionSpec = {
+                    (fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f))
+                        .togetherWith(fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.95f))
+                },
+                label = "ScreenStateTransition",
+                modifier = Modifier.weight(1f)
+            ) { displayState ->
+                when (displayState) {
+                    ReciterScreenDisplayState.LOADING -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LoadingContainer()
                         }
-                    )
+                    }
+
+                    ReciterScreenDisplayState.NO_INTERNET -> {
+                        NoInternetContainer(
+                            onRetryClick = { viewModel.loadReciters(isArabic, isManualRetry = true) }
+                        )
+                    }
+
+                    ReciterScreenDisplayState.NO_DATA -> {
+                        NoDataContainer(
+                            onDownloadNow = { viewModel.loadReciters(isArabic, isManualRetry = true) }
+                        )
+                    }
+
+                    ReciterScreenDisplayState.CONTENT -> {
+                        RecitersContent(
+                            modifier = Modifier.padding(top = 12.dp),
+                            state = state,
+                            isArabic = isArabic,
+                            onPlayClick = { reciterId -> viewModel.onPlayClick(reciterId) },
+                            onDownloadClick = { reciterId -> viewModel.onDownloadClick(reciterId) },
+                            onRowSelected = { reciter ->
+                                viewModel.onReciterSelected(readerId = reciter.id)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -138,7 +166,9 @@ fun RecitersScreen(
             PrimaryToast(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 24.dp), data = it, isSuccess = false
+                    .padding(top = 24.dp),
+                data = it,
+                isSuccess = false
             )
         }
     }
@@ -155,7 +185,7 @@ fun RecitersContent(
 ) {
     LazyVerticalStaggeredGrid(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+        contentPadding = PaddingValues( vertical = 12.dp),
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         columns = StaggeredGridCells.Adaptive(320.dp)
@@ -175,4 +205,8 @@ fun RecitersContent(
             )
         }
     }
+}
+
+private enum class ReciterScreenDisplayState {
+    LOADING, NO_INTERNET, NO_DATA, CONTENT
 }

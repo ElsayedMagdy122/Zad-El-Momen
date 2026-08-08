@@ -322,4 +322,6 @@
     <string name="no_data_available">No data available at the moment</string>
     <string name="something_went_wrong">Something went wrong, please try again</string>
     <string name="reciters">Reciters</string>
+    <string name="no_downloaded_reciters_for_this_surah">No downloaded reciters for this surah yet!</string>
+    <string name="start_download_now">Start Download Now</string>
 </resources>

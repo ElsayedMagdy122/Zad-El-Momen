@@ -5,7 +5,8 @@ data class RecitersUiState(
     val reciters: List<ReciterUiState> = emptyList(),
     val isLoading: Boolean = true,
     val searchQuery: String = "",
-    val errorMessage: String? = null
+    val isNoInternet: Boolean = false,
+    val isError: Boolean = false
 )
 
 data class ReciterUiState(

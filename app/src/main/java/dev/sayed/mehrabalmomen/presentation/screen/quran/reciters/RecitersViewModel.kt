@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
+import dev.sayed.mehrabalmomen.domain.exceptions.NetworkException
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
@@ -56,9 +57,17 @@ class RecitersViewModel(
         }
     }
 
-    fun loadReciters(isArabic: Boolean = true) {
+    fun loadReciters(isArabic: Boolean = true, isManualRetry: Boolean = false) {
         tryToCall(
-            onStart = { updateState { it.copy(isLoading = true) } },
+            onStart = {
+                updateState {
+                    it.copy(
+                        isLoading = true,
+                        isNoInternet = if (isManualRetry) it.isNoInternet else false,
+                        isError = false
+                    )
+                }
+            },
             block = {
                 try {
                     allReaders = readersRepository.getReaders()
@@ -76,14 +85,21 @@ class RecitersViewModel(
                         )
                     }
                 } catch (e: Exception) {
-                    val downloaded = readersRepository.getDownloadedRecitersOnce()
-                    if (downloaded.isEmpty()) throw e
-                    allReaders = downloaded
-                    downloaded.map {
-                        it.toUiState(
+                    val allDownloaded = readersRepository.getDownloadedRecitersOnce()
+                    
+                    // Filter: Only include reciters who have the CURRENT surah downloaded
+                    val readersWithCurrentSurah = allDownloaded.filter { reader ->
+                        readersRepository.isReciterDownloaded(reader.id, surahId)
+                    }
+                    
+                    if (readersWithCurrentSurah.isEmpty()) throw e
+
+                    allReaders = readersWithCurrentSurah
+                    readersWithCurrentSurah.map { reader ->
+                        reader.toUiState(
                             isArabic,
                             DownloadState.DOWNLOADED,
-                            isSelected = it.id == currentReaderId
+                            isSelected = reader.id == currentReaderId
                         )
                     }
                 }
@@ -92,23 +108,35 @@ class RecitersViewModel(
                 updateState { state ->
                     state.copy(
                         reciters = readersList,
-                        isLoading = false
+                        isLoading = false,
+                        isNoInternet = false,
+                        isError = false
                     )
                 }
             },
             onError = { throwable ->
-                updateState { it.copy(isLoading = false) }
-                val errorMessageRes = throwable.toUiErrorMessage()
+                val isNetworkError = throwable is NetworkException
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        // Only show No Internet screen if it's a manual retry/download request
+                        isNoInternet = isNetworkError && isManualRetry,
+                        isError = !isNetworkError
+                    )
+                }
 
-                sendEffect(
-                    RecitersEffect.ShowToast(
-                        ToastDetails(
-                            title = R.string.error,
-                            message = errorMessageRes,
-                            icon = R.drawable.ic_close_circle
+                if (!isNetworkError) {
+                    val errorMessageRes = throwable.toUiErrorMessage()
+                    sendEffect(
+                        RecitersEffect.ShowToast(
+                            ToastDetails(
+                                title = R.string.error,
+                                message = errorMessageRes,
+                                icon = R.drawable.ic_close_circle
+                            )
                         )
                     )
-                )
+                }
             }
         )
     }

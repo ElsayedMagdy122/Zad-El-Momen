@@ -336,4 +336,6 @@
     <string name="no_data_available">لا توجد بيانات متاحة حالياً</string>
     <string name="something_went_wrong">حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى</string>
     <string name="reciters">القراء</string>
+    <string name="no_downloaded_reciters_for_this_surah">لا يوجد قراء مُحمّلون لهذه السورة حتى الآن!</string>
+    <string name="start_download_now">ابدأ التحميل الآن</string>
 </resources>
