@@ -179,10 +179,22 @@ class RecitersViewModel(
             readersRepository.getDownloadWorkInfo(reciterId, surahId).collectLatest { workInfos ->
                 val workInfo = workInfos.firstOrNull() ?: return@collectLatest
                 val progress = workInfo.progress.getInt("progress", 0)
-                updateState { state ->
-                    state.copy(
-                        reciters = state.reciters.map {
-                            if (it.id == reciterId) it.copy(downloadProgress = progress) else it
+                val workState = workInfo.state
+
+                updateState { currentState ->
+                    currentState.copy(
+                        reciters = currentState.reciters.map {
+                            if (it.id == reciterId) {
+                                val downloadState = when {
+                                    workState.isFinished && workState == androidx.work.WorkInfo.State.SUCCEEDED -> DownloadState.DOWNLOADED
+                                    workState.isFinished -> DownloadState.FAILED
+                                    else -> DownloadState.DOWNLOADING
+                                }
+                                it.copy(
+                                    downloadProgress = progress,
+                                    downloadState = downloadState
+                                )
+                            } else it
                         }
                     )
                 }

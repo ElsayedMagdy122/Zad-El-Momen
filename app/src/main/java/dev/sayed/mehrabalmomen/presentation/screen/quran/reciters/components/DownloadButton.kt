@@ -48,7 +48,7 @@ fun DownloadButton(
             .size(32.dp)
             .background(Color.Transparent)
             .clickable(
-                enabled = downloadState == DownloadState.NOT_DOWNLOADED,
+                enabled = downloadState == DownloadState.NOT_DOWNLOADED || downloadState == DownloadState.FAILED,
                 onClick = onDownloadClick,
                 interactionSource = MutableInteractionSource()
             ),
@@ -64,7 +64,7 @@ fun DownloadButton(
             label = "DownloadButtonAnimation"
         ) { state ->
             when (state) {
-                DownloadState.NOT_DOWNLOADED -> {
+                DownloadState.NOT_DOWNLOADED, DownloadState.FAILED -> {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_download_01),
                         contentDescription = localizedString(R.string.downloaded),
@@ -93,8 +93,6 @@ fun DownloadButton(
                 DownloadState.DOWNLOADED -> {
                     // Left empty as the parent layout hides the DownloadButton when downloaded
                 }
-
-                DownloadState.FAILED -> {}
             }
         }
     }
