@@ -131,7 +131,11 @@ class DownloadReciterWorker(
             if (file.exists()) {
                 file.delete()
             }
-            Result.retry()
+            if (runAttemptCount < 3) {
+                Result.retry()
+            } else {
+                Result.failure()
+            }
         }
     }
 
