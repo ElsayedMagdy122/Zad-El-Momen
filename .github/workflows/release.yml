@@ -33,6 +33,12 @@ jobs:
           mkdir -p app
           echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > app/google-services.json
 
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > app/keystore.jks
+
       - name: Build Release APK
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -42,6 +48,9 @@ jobs:
           SUPPORT_10: ${{ secrets.SUPPORT_10 }}
           SUPPORT_25: ${{ secrets.SUPPORT_25 }}
           SUPPORT_100: ${{ secrets.SUPPORT_100 }}
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          ALIAS: ${{ secrets.ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease
 
       - name: Find Release APK
