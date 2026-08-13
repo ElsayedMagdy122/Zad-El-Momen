@@ -1,7 +1,9 @@
 package dev.sayed.mehrabalmomen.data.quran.audio.repository
 
 import android.content.Context
+import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dev.sayed.mehrabalmomen.data.quran.audio.local.dao.DownloadedReciterDao
@@ -67,8 +69,13 @@ class QuranAudioReadersRepositoryImpl(
             baseAudioUrl = reciter.baseAudioUrl
         )
 
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
         val workRequest = OneTimeWorkRequestBuilder<DownloadReciterWorker>()
             .setInputData(inputData)
+            .setConstraints(constraints)
             .build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(
