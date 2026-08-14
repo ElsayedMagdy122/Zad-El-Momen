@@ -7,9 +7,11 @@ import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerAlarmRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerNotificationsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.prayer.repository.PrayerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.qiblah.QiblahRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.BookmarkRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.QuranRepositoryImpl
-import dev.sayed.mehrabalmomen.data.quran.repository.ReadingProgressRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.audio.repository.QuranAudioReadersRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.audio.repository.QuranAudioRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.BookmarkRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.QuranRepositoryImpl
+import dev.sayed.mehrabalmomen.data.quran.text.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
 import dev.sayed.mehrabalmomen.data.repository.TimeRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSchedulerRepositoryImpl
@@ -27,6 +29,8 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepos
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.QiblahRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
@@ -79,6 +83,20 @@ val repositoryModule = module {
             context = androidContext(),
             settingsRepository = get(),
             alarmScheduler = get()
+        )
+    }
+    single<QuranAudioRepository> { 
+        QuranAudioRepositoryImpl(
+            readersRemoteDataSource = get(),
+            timingsRemoteDataSource = get(),
+            downloadedReciterDao = get()
+        ) 
+    }
+    single<QuranAudioReadersRepository> {
+        QuranAudioReadersRepositoryImpl(
+            readersRemoteDataSource = get(),
+            downloadedReciterDao = get(),
+            context = androidContext()
         )
     }
 }

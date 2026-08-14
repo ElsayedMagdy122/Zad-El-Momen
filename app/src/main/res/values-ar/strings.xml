@@ -175,6 +175,7 @@
     <string name="daily_limit">تم الوصول للحد اليومي</string>
     <string name="you_have_reached_the_daily_report_limit">لقد وصلت إلى الحد اليومي من التقارير</string>
     <string name="error">خطأ</string>
+    <string name="select_reciter_first">اختر قارئ اولا</string>
     <string name="failed_to_send_report">فشل في إرسال التقرير</string>
     <string name="support_developer">دعم المطور</string>
     <string name="support_description">يساعد دعمك في الاستمرار بتطوير التطبيق وتحسينه</string>
@@ -338,4 +339,17 @@
     <string name="daily_quran_word">الورد القرآني اليومي</string>
     <string name="save">حفظ</string>
     <string name="choose_time">اختر الوقت</string>
+    <string name="downloaded">تم التحميل</string>
+    <string name="surah_ayah_format">%1$s: الآية %2$s</string>
+    <string name="select_reciter">اختر القارئ</string>
+
+    <string name="request_timeout">انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى</string>
+    <string name="slow_internet_connection">اتصال الإنترنت بطيء، يرجى التحقق من الشبكة</string>
+    <string name="server_unreachable">تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً</string>
+    <string name="server_error">حدث خطأ في الخادم، يرجى المحاولة لاحقاً</string>
+    <string name="no_data_available">لا توجد بيانات متاحة حالياً</string>
+    <string name="something_went_wrong">حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى</string>
+    <string name="reciters">القراء</string>
+    <string name="no_downloaded_reciters_for_this_surah">لا يوجد قراء مُحمّلون لهذه السورة حتى الآن!</string>
+    <string name="start_download_now">ابدأ التحميل الآن</string>
 </resources>

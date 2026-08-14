@@ -47,8 +47,8 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 14
-        versionName = "1.0.1"
+        versionCode = 16
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -191,6 +191,7 @@ dependencies {
     implementation(libs.bundles.others)
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)

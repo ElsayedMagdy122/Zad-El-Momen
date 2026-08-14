@@ -1,6 +1,6 @@
 package dev.sayed.mehrabalmomen.domain.repository.quran
 
-import dev.sayed.mehrabalmomen.domain.entity.quran.ReadingProgress
+import dev.sayed.mehrabalmomen.domain.entity.quran.progress.ReadingProgress
 import kotlinx.coroutines.flow.Flow
 
 interface ReadingProgressRepository {
