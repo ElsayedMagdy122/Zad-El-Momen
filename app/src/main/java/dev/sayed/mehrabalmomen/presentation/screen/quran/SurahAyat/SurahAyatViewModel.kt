@@ -72,6 +72,7 @@ class SurahAyatViewModel(
                         )
                     } else if (isNewReciter) {
                         // User selected a new reciter from list/search
+                        audioPlayerManager.stop()
                         updateState { it.copy(showTilawahBox = true, showActions = false) }
                         loadTimingsAndPlay(
                             readerId = lastReciter.id,
@@ -210,6 +211,7 @@ class SurahAyatViewModel(
                         currentAudioAyahId = ayahId,
                         selectedAyaId = ayahId,
                         scrollToAyaId = ayahId,
+                        currentAudioUrl = track?.audioUrl,
                         isAudioLoading = if (autoPlay && track != null) it.isAudioLoading else false
                     )
                 }
@@ -271,7 +273,9 @@ class SurahAyatViewModel(
             audioPlayerManager.pause()
         } else {
             val currentPlayerUrl = audioPlayerManager.playerState.value.currentUrl
-            if (state.timings.isEmpty() || currentPlayerUrl == null) {
+            val isSameReciter = currentPlayerUrl != null && currentPlayerUrl == state.currentAudioUrl
+
+            if (state.timings.isEmpty() || !isSameReciter) {
                 loadTimingsAndPlay(
                     readerId = state.selectedReaderId,
                     ayahId = state.currentAudioAyahId,
@@ -356,6 +360,7 @@ class SurahAyatViewModel(
     }
 
     fun onClickReciters() {
+        audioPlayerManager.stop()
         sendEffect(
             SurahAyatEffect.NavigateToReciters(
                 surahId = surahId,

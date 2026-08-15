@@ -116,7 +116,10 @@ private fun TilawahHeader(
             painter = painterResource(R.drawable.ic_close),
             contentDescription = null,
             tint = Theme.color.primary.primary,
-            modifier = Modifier.clickable { onCloseClick() }
+            modifier = Modifier.size(14.dp).clickable(
+                onClick = onCloseClick,
+                interactionSource = MutableInteractionSource()
+            )
         )
     }
 }

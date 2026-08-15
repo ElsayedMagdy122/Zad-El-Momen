@@ -27,7 +27,8 @@ data class SurahAyatUiState(
     val repeatCount: Int = 0,
     val currentRepeatIteration: Int = 0,
     val isContinuousReading: Boolean = true,
-    val timings: List<QuranAudioVerseTiming> = emptyList()
+    val timings: List<QuranAudioVerseTiming> = emptyList(),
+    val currentAudioUrl: String? = null
 )
 
 data class AyaUi(
