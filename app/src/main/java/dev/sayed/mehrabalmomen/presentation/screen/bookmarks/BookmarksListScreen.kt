@@ -59,12 +59,12 @@ import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import org.koin.compose.viewmodel.koinActivityViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BookmarksListScreen(
     navController: NavController,
-    viewModel: BookMarkListViewModel = koinActivityViewModel()
+    viewModel: BookMarkListViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
