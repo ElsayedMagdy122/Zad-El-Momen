@@ -32,7 +32,11 @@ import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPol
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
-fun AppNavigation(settingsRepository: SettingsRepository) {
+fun AppNavigation(
+    settingsRepository: SettingsRepository,
+    widgetDestination: String? = null,
+    onWidgetDestinationConsumed: () -> Unit = {},
+) {
     val navController = rememberNavController()
 
     val onboardingComplete by settingsRepository
@@ -53,7 +57,11 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.SurahListScreen> { SurahListScreen(navController) }
         // composable<Route.HomeScreen> { HomeScreen(navController) }
         composable<Route.AppRoute> {
-            MainContainer(rootNavController = navController)
+            MainContainer(
+                rootNavController = navController,
+                widgetDestination = widgetDestination,
+                onWidgetDestinationConsumed = onWidgetDestinationConsumed,
+            )
         }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }

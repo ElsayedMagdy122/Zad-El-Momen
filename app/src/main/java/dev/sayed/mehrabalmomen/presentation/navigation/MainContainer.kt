@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +30,15 @@ import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PRAYER_WIDGET_DESTINATION_PRAYER_TIMES
 
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun MainContainer(
     rootNavController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    widgetDestination: String? = null,
+    onWidgetDestinationConsumed: () -> Unit = {},
 ) {
 
     val bottomNavController = rememberNavController()
@@ -79,6 +83,19 @@ fun MainContainer(
     val currentRoute = currentBackStack?.destination?.route
 
     val selectedIndex = navItems.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
+
+    LaunchedEffect(widgetDestination) {
+        if (widgetDestination == PRAYER_WIDGET_DESTINATION_PRAYER_TIMES) {
+            bottomNavController.navigate(Route.FullPrayerTimeView.route) {
+                popUpTo(bottomNavController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+            onWidgetDestinationConsumed()
+        }
+    }
 
     Box(
         modifier = modifier

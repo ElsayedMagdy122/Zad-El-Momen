@@ -174,6 +174,8 @@ dependencies {
     implementation("androidx.media:media:1.6.0")
     // AndroidX
     implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.glance)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Kotlinx & utilities
     implementation(libs.bundles.kotlinx)
@@ -193,4 +195,7 @@ dependencies {
 
     // Debug only
     debugImplementation(libs.bundles.compose.debug)
+
+    // JVM tests
+    testImplementation(libs.junit)
 }

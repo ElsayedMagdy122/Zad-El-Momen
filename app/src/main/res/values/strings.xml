@@ -205,6 +205,20 @@
     <string name="home">Home</string>
     <string name="am">AM</string>
     <string name="pm">PM</string>
+    <string name="prayer_widget_name">Prayer times</string>
+    <string name="prayer_widget_description">Shows the next prayer countdown and daily prayer times.</string>
+    <string name="prayer_widget_next_prayer">Next prayer</string>
+    <string name="prayer_widget_time_remaining">Time remaining</string>
+    <string name="prayer_widget_current">Current</string>
+    <string name="prayer_widget_next_after">Next after</string>
+    <string name="prayer_widget_next">Next</string>
+    <string name="prayer_widget_tomorrow">Tomorrow</string>
+    <string name="prayer_widget_open_location">Open the app to set your location.</string>
+    <string name="prayer_widget_error">Prayer times are unavailable right now.</string>
+    <string name="prayer_widget_exact_alarm_permission">Open the app to allow exact alarm updates.</string>
+    <string name="prayer_widget_enable_live_countdown">Enable live countdown</string>
+    <string name="prayer_widget_loading">Preparing prayer times...</string>
+    <string name="prayer_widget_content_description">Prayer widget. Next prayer: %1$s. Time remaining: %2$s.</string>
 
     <plurals name="minutes_ago">
         <item quantity="one">%d minute ago</item>

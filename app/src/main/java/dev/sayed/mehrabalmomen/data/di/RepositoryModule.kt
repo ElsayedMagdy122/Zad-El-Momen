@@ -13,11 +13,13 @@ import dev.sayed.mehrabalmomen.data.quran.text.repository.BookmarkRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.text.repository.QuranRepositoryImpl
 import dev.sayed.mehrabalmomen.data.quran.text.repository.ReadingProgressRepositoryImpl
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
+import dev.sayed.mehrabalmomen.data.repository.TimeRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
+import dev.sayed.mehrabalmomen.data.widget.repository.ExactAlarmPermissionRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
@@ -36,11 +38,15 @@ import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepo
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.TimeRepository
+import dev.sayed.mehrabalmomen.domain.repository.widget.ExactAlarmPermissionRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
+    single<TimeRepository> { TimeRepositoryImpl() }
+    single<ExactAlarmPermissionRepository> { ExactAlarmPermissionRepositoryImpl(androidContext()) }
     single<QiblahRepository> { QiblahRepositoryImpl() }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }

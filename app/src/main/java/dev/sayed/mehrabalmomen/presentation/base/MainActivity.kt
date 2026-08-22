@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.base
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,7 +18,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -28,17 +31,20 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.prayerWidgetDestination
 import org.koin.android.ext.android.inject
 import java.util.Locale
 import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
+    private var widgetDestination by mutableStateOf<String?>(null)
 
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        widgetDestination = intent.prayerWidgetDestination()
         var isSettingsLoaded = false
 
         splashScreen.setKeepOnScreenCondition {
@@ -47,10 +53,25 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            AppRoot(settingsRepository = settingsRepository) {
-                isSettingsLoaded = true
-            }
+            AppRoot(
+                settingsRepository = settingsRepository,
+                widgetDestination = widgetDestination,
+                onWidgetDestinationConsumed = { widgetDestination = null },
+                onReady = { isSettingsLoaded = true },
+            )
         }
+    }
+
+    /**
+     * Handles widget launches delivered to an existing activity instance.
+     *
+     * @param intent latest launch intent that may contain a widget destination extra.
+     * @return Unit after storing the pending widget destination for Compose navigation.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        widgetDestination = intent.prayerWidgetDestination()
     }
 }
 
@@ -64,7 +85,7 @@ fun rememberLocalizedContext(): Context {
 
     return remember(language) {
         val config = Configuration(baseContext.resources.configuration)
-        config.setLocale(Locale(language.code))
+        config.setLocale(Locale.forLanguageTag(language.code))
         baseContext.createConfigurationContext(config)
     }
 }
@@ -81,7 +102,12 @@ fun localizedPlural(@PluralsRes id: Int, quantity: Int, vararg args: Any): Strin
 }
 
 @Composable
-fun AppRoot(settingsRepository: SettingsRepository, onReady: () -> Unit) {
+fun AppRoot(
+    settingsRepository: SettingsRepository,
+    widgetDestination: String? = null,
+    onWidgetDestinationConsumed: () -> Unit = {},
+    onReady: () -> Unit,
+) {
     val appSettingsDelegate by settingsRepository.observeAppSettings()
         .collectAsState(initial = null)
 
@@ -117,7 +143,11 @@ val isDark =  when (currentSettings.theme) {
                 modifier = Modifier.fillMaxSize(),
                 color = Theme.color.surfaces.surface
             ) {
-                AppNavigation(settingsRepository)
+                AppNavigation(
+                    settingsRepository = settingsRepository,
+                    widgetDestination = widgetDestination,
+                    onWidgetDestinationConsumed = onWidgetDestinationConsumed,
+                )
             }
         }
     }

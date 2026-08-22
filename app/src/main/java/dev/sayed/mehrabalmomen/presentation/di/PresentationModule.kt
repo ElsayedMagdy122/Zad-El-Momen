@@ -27,6 +27,14 @@ import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsVie
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.AndroidPrayerWidgetBoundaryAlarm
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetBoundaryAlarm
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetBoundaryScheduler
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetProgressScheduler
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetSettingsRefreshObserver
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.PrayerWidgetUpdateCoordinator
+import dev.sayed.mehrabalmomen.presentation.widget.prayer.mapper.PrayerWidgetSnapshotMapper
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -57,4 +65,16 @@ val presentationModule = module {
     single<PlayerController> { RadioAudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }
+    single { PrayerWidgetSnapshotMapper() }
+    single<PrayerWidgetBoundaryAlarm> { AndroidPrayerWidgetBoundaryAlarm(androidContext()) }
+    single { PrayerWidgetBoundaryScheduler(get(), get()) }
+    single { PrayerWidgetProgressScheduler.from(androidContext()) }
+    single { PrayerWidgetUpdateCoordinator(androidContext(), get(), get()) }
+    single {
+        val coordinator: PrayerWidgetUpdateCoordinator = get()
+        PrayerWidgetSettingsRefreshObserver(
+            get<SettingsRepository>().observePrayerWidgetSettings(),
+            coordinator::refreshAllIfInstalled,
+        )
+    }
 }

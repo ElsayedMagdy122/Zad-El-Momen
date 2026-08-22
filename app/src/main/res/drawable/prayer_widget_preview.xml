@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item
+        android:bottom="11dp"
+        android:left="6dp"
+        android:right="156dp"
+        android:top="11dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/prayer_widget_navy" />
+        </shape>
+    </item>
+    <item
+        android:bottom="15dp"
+        android:left="104dp"
+        android:right="6dp"
+        android:top="15dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="@color/prayer_widget_surface" />
+        </shape>
+    </item>
+</layer-list>
