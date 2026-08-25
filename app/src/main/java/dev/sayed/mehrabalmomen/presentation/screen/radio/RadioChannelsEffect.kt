@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.radio
 
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
-import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationEffect
 
 sealed interface  RadioChannelsEffect {
     data class ShowToast(

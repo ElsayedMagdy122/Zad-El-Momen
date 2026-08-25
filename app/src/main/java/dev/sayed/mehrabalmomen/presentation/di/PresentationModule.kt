@@ -6,12 +6,12 @@ import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewM
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.batteryOptimization.BatteryOptimizationViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookMarkListViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.calculation_method.CalculationMethodViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.location_permission.LocationViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.madhab.MadhabViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.location_permission.LocationViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.madhab.MadhabViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
