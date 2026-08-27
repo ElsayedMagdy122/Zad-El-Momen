@@ -1,10 +1,14 @@
 package dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization
 
+import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.launch
 
 class BatteryOptimizationViewModel(
-    private val batteryOptimizationRepository: BatteryOptimizationRepository
+    private val batteryOptimizationRepository: BatteryOptimizationRepository,
+    private val settingsRepository: SettingsRepository
 ) :
     BaseViewModel<BatteryOptimizationUiState, BatteryOptimizationEffect>(
         BatteryOptimizationUiState()
@@ -25,7 +29,10 @@ class BatteryOptimizationViewModel(
     }
 
     override fun onSkipForNowClicked() {
-        sendEffect(BatteryOptimizationEffect.SkipForNow)
+        viewModelScope.launch {
+            settingsRepository.setOnboardingComplete()
+            sendEffect(BatteryOptimizationEffect.NavigateToHome)
+        }
     }
 
     override fun onBackClicked() {
