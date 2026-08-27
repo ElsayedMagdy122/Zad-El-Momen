@@ -68,9 +68,8 @@ fun CalculationMethodScreen(
             item(span = { GridItemSpan(maxLineSpan) }){
             AppBar(
                     title = localizedString(R.string.prayer_time_calculation_methods),
-                    onBackClick = {
-                        navController.popBackStack()
-                    }
+                    onBackClick = {},
+                    isBackEnabled = false
                 )
             }
             items(CalculationMethodUiState.CalculationMethod.entries) { method ->
