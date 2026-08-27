@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 
 class AlarmScheduler(
     private val context: Context
@@ -20,6 +21,12 @@ class AlarmScheduler(
         intent: Intent
     ) {
         if (triggerAtMillis <= System.currentTimeMillis()) return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                return
+            }
+        }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
