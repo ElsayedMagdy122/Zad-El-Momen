@@ -358,4 +358,6 @@
     <string name="faq_a3">اذهب إلى الإعدادات -> الدعم -> المساعدة والتعليقات لإرسال تقاريرك أو اقتراحاتك لنا.</string>
     <string name="faq_q4">هل بوصلة القبلة دقيقة؟</string>
     <string name="faq_a4">نعم، ولكنها تعتمد على مستشعرات جهازك. نوصي بمعايرة البوصلة من خلال تحريك هاتفك بشكل رقم 8 إذا لاحظت أي عدم دقة.</string>
+    <string name="battery_settings_title">تحسين استقبال التنبيهات</string>
+    <string name="battery_optimization_description">هذه الخطوات ضرورية لضمان عمل الأذان بكفاءة وفي وقته المحدد على جهازك.</string>
 </resources>

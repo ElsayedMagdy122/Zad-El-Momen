@@ -346,4 +346,6 @@
     <string name="faq_a3">Go to Settings -> Support -> Help &amp; Feedback to send us your reports or suggestions.</string>
     <string name="faq_q4">Is the Qiblah compass accurate?</string>
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
+    <string name="battery_settings_title">Notification Optimization</string>
+    <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
 </resources>
