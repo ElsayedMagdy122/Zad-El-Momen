@@ -188,6 +188,11 @@ class SettingsViewModel(
                 action = SettingsUiState.SettingsAction.CONTACT_US
             ),
             SettingsUiState.SettingsItemUiState(
+                icon = R.drawable.ic_help,
+                title = R.string.faq,
+                action = SettingsUiState.SettingsAction.FAQ
+            ),
+            SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_buy_coffee,
                 title = R.string.support_developer,
                 action = SettingsUiState.SettingsAction.ABOUT
@@ -500,6 +505,7 @@ class SettingsViewModel(
                 showSupportBottomSheet()
             }
 
+            SettingsUiState.SettingsAction.FAQ -> sendEffect(SettingsEffect.NavigateToFAQ)
             SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
             SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
             else -> {}

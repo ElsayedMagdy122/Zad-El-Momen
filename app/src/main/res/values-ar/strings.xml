@@ -348,4 +348,14 @@
     <string name="reciters">القراء</string>
     <string name="no_downloaded_reciters_for_this_surah">لا يوجد قراء مُحمّلون لهذه السورة حتى الآن!</string>
     <string name="start_download_now">ابدأ التحميل الآن</string>
+    <string name="faq">الأسئلة الشائعة</string>
+    <string name="frequently_asked_questions">الأسئلة المتكررة</string>
+    <string name="faq_q1">كيف أضمن استلام تنبيهات الأذان؟</string>
+    <string name="faq_a1">لضمان استلام تنبيهات الأذان في وقتها، يرجى السماح بجميع الأذونات اللازمة (التنبيهات، المنبهات) وتعطيل تحسين البطارية للتطبيق في إعدادات جهازك.</string>
+    <string name="faq_q2">كيف يمكنني تغيير طريقة حساب أوقات الصلاة؟</string>
+    <string name="faq_a2">يمكنك تغيير طريقة الحساب من خلال الذهاب إلى الإعدادات -> الصلاة -> طريقة الحساب واختيار الطريقة التي تفضلها.</string>
+    <string name="faq_q3">كيف أبلغ عن مشكلة أو أقترح ميزة؟</string>
+    <string name="faq_a3">اذهب إلى الإعدادات -> الدعم -> المساعدة والتعليقات لإرسال تقاريرك أو اقتراحاتك لنا.</string>
+    <string name="faq_q4">هل بوصلة القبلة دقيقة؟</string>
+    <string name="faq_a4">نعم، ولكنها تعتمد على مستشعرات جهازك. نوصي بمعايرة البوصلة من خلال تحريك هاتفك بشكل رقم 8 إذا لاحظت أي عدم دقة.</string>
 </resources>
