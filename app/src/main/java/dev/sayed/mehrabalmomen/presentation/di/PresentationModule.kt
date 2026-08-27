@@ -6,13 +6,12 @@ import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewM
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookMarkListViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.madhab.MadhabViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatViewModel
@@ -36,7 +35,6 @@ val presentationModule = module {
     viewModelOf(::FullPrayerTimesViewModel)
     viewModelOf(::QiblahViewModel)
     viewModelOf(::PermissionsViewModel)
-    viewModelOf(::MadhabViewModel)
     viewModelOf(::CalculationMethodViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::MapsViewModel)
