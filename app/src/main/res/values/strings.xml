@@ -32,7 +32,19 @@
     <string name="step_3_tilt_rotate"><![CDATA[Step 3: Tilt & rotate]]></string>
     <string name="tilt_and_rotate_the_device_to_cover_all_axes_for_complete_calibration">Tilt and rotate the device to cover all axes for complete calibration.</string>
     <string name="location_permission">Location Permission</string>
-    <string name="we_need_your_location_to_calculate_accurate_prayer_times_and_determine_the_qibla_direction">We need your location to calculate accurate prayer times and determine the Qibla direction.</string>
+    <string name="location_permission_desc">We need your location to calculate accurate prayer times and determine the Qibla direction.</string>
+    <string name="notification_permission">Notification Permission</string>
+    <string name="notification_permission_desc">Receive Azan and Azkar reminders on time.</string>
+    <string name="alarm_permission">Exact Alarm Permission</string>
+    <string name="alarm_permission_desc">Required to play the Azan exactly on time, even when the device is idle.</string>
+    <string name="background_permission">Run in Background</string>
+    <string name="background_permission_desc">Allow the app to run in the background without battery restrictions to ensure reminders work accurately.</string>
+    <string name="granted">Granted</string>
+    <string name="allow">Allow</string>
+    <string name="set_up_permissions">Set up permissions</string>
+    <string name="set_up_permissions_description">
+    Allow the permissions below to get accurate prayer times and timely reminders.
+</string>
     <string name="muslim_world_league">Muslim World League</string>
     <string name="egyptian">Egyptian</string>
     <string name="karachi">Karachi</string>

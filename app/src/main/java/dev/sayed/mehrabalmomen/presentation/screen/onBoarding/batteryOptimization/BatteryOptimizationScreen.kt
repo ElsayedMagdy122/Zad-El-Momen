@@ -103,7 +103,7 @@ private fun HandleEffects(
                 context.openAppSettings()
 
             BatteryOptimizationEffect.SkipForNow ->
-                navController.navigate(Route.LocationPermissionScreen)
+                navController.navigate(Route.PermissionsScreen)
 
             BatteryOptimizationEffect.NavigateToLearnMore ->
                 context.openUrl("https://dontkillmyapp.com")

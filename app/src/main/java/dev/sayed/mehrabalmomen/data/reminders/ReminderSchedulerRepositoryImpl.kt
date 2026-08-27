@@ -1,7 +1,10 @@
 package dev.sayed.mehrabalmomen.data.reminders
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
 import dev.sayed.mehrabalmomen.presentation.reciver.ReminderAlarmReceiver
@@ -15,7 +18,10 @@ class ReminderSchedulerRepositoryImpl(
     private val alarmScheduler: AlarmScheduler
 ) : ReminderSchedulerRepository {
 
-    override suspend fun rescheduleAll() {
+    override suspend fun rescheduleAll(): RescheduleResult {
+        if (!hasExactAlarmPermission()) {
+            return RescheduleResult.PermissionRequired
+        }
         val reminders = settingsRepository.observeAllReminders().first()
         reminders.forEach { reminder ->
             val intent = Intent(context, ReminderAlarmReceiver::class.java).apply {
@@ -29,6 +35,14 @@ class ReminderSchedulerRepositoryImpl(
                 alarmScheduler.scheduleExact(reminder.type.alarmId, triggerMillis, intent)
             }
         }
+        return RescheduleResult.Success
+    }
+
+    private fun hasExactAlarmPermission(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true
+        return context
+            .getSystemService(AlarmManager::class.java)
+            .canScheduleExactAlarms()
     }
 
     companion object {

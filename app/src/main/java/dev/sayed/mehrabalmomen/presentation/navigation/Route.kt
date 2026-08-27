@@ -38,8 +38,8 @@ sealed interface Route {
     }
 
     @Serializable
-    data object LocationPermissionScreen : Route {
-        override val route = "location_permission"
+    data object PermissionsScreen : Route {
+        override val route = "permissions_screen"
     }
 
     @Serializable

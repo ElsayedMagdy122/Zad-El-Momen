@@ -4,6 +4,7 @@ import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
+import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
@@ -23,11 +24,11 @@ class PrayerSchedulingUseCase(
     private val notificationsRepository: PrayerNotificationsRepository,
 ) {
 
-    suspend fun rescheduleTodayPrayerAlarms() {
+    suspend fun rescheduleTodayPrayerAlarms(): RescheduleResult {
         val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
         val prayers = getDailyPrayers(today)
         val alarms = setupAlarms(prayers)
-        schedulerRepository.reschedule(alarms)
+        return schedulerRepository.reschedule(alarms)
     }
 
     private suspend fun getDailyPrayers(today: LocalDate): List<Prayer> {

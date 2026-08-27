@@ -47,8 +47,18 @@
 </string>
 
     <string name="location_permission">إذن الموقع</string>
-    <string name="we_need_your_location_to_calculate_accurate_prayer_times_and_determine_the_qibla_direction">
-    نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة.
+    <string name="location_permission_desc">نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة.</string>
+    <string name="notification_permission">إذن الإشعارات</string>
+    <string name="notification_permission_desc">استلام تنبيهات الأذان والأذكار في وقتها.</string>
+    <string name="alarm_permission">إذن المنبه الدقيق</string>
+    <string name="alarm_permission_desc">مطلوب لتشغيل الأذان في وقته الدقيق، حتى في حالة سكون الجهاز.</string>
+    <string name="background_permission">العمل في الخلفية</string>
+    <string name="background_permission_desc">السماح للتطبيق بالعمل في الخلفية دون قيود على البطارية لضمان وصول التنبيهات بدقة.</string>
+    <string name="granted">تم المنح</string>
+    <string name="allow">منح</string>
+    <string name="set_up_permissions">إعداد الأذونات</string>
+    <string name="set_up_permissions_description">
+    اسمح بالأذونات التالية للحصول على مواقيت صلاة دقيقة وتنبيهات في الوقت المناسب.
 </string>
     <string name="muslim_world_league">رابطة العالم الإسلامي</string>
     <string name="egyptian">الهيئة المصرية</string>
