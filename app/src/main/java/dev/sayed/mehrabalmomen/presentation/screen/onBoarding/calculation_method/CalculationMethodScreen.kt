@@ -39,8 +39,8 @@ fun CalculationMethodScreen(
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
-            CalculationMethodEffect.NavigateToBatteryOptimizationScreen -> {
-                navController.navigate(Route.BatteryOptimizationScreen)
+            CalculationMethodEffect.NavigateToPermissionsScreen -> {
+                navController.navigate(Route.PermissionsScreen)
             }
         }
     }

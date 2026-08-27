@@ -35,8 +35,7 @@ class PermissionsViewModel(
 
     override fun onClickNext() {
         viewModelScope.launch {
-            settingsRepository.setOnboardingComplete()
-            sendEffect(PermissionsEffect.NavigateToHome)
+            sendEffect(PermissionsEffect.NavigateToBatteryOptimizationScreen)
         }
     }
 

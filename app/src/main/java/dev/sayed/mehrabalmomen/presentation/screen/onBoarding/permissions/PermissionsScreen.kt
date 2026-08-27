@@ -160,10 +160,8 @@ fun PermissionsScreen(
                 context.startActivity(intent)
             }
 
-            PermissionsEffect.NavigateToHome -> {
-                navController.navigate(Route.AppRoute) {
-                    popUpTo(Route.CalculationMethodScreen) { inclusive = true }
-                }
+            PermissionsEffect.NavigateToBatteryOptimizationScreen -> {
+                navController.navigate(Route.BatteryOptimizationScreen)
             }
 
             PermissionsEffect.RequestEnableGps -> {
