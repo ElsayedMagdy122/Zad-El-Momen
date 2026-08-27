@@ -27,6 +27,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.Reciter
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.FAQScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
 
 @OptIn(kotlin.time.ExperimentalTime::class)
@@ -63,6 +64,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.MapsScreen> { MapsScreen(navController) }
         composable<Route.ContactUsScreen> { ContactUsScreen(navController) }
         composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
+        composable<Route.FAQScreen> { FAQScreen(navController) }
         composable<Route.AzkarScreen> { AzkarScreen(navController) }
         composable<Route.ReminderSettingsScreen> { ReminderSettingsScreen(navController) }
         composable<Route.RecitersSearchScreen> { RecitersSearchScreen(navController) }

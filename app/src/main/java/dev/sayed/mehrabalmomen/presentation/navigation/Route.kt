@@ -122,6 +122,11 @@ sealed interface Route {
     }
 
     @Serializable
+    data object FAQScreen : Route {
+        override val route = "faq_screen"
+    }
+
+    @Serializable
     data object ContactUsScreen : Route {
         override val route = "contact_us_screen"
     }

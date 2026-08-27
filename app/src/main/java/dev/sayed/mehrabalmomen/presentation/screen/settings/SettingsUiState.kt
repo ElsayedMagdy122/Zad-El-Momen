@@ -94,6 +94,7 @@ data class SettingsUiState(
         HELP_FEEDBACK,
         RATE_APP,
         ABOUT,
+        FAQ,
         PRIVACY_POLICY,
         CONTACT_US
     }
