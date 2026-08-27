@@ -13,9 +13,12 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
+import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
+import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -42,10 +46,11 @@ class FullPrayerTimesViewModel(
     private val settingsRepository: SettingsRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val batteryOptimizationRepository: BatteryOptimizationRepository,
     private val analyticsHelper: AnalyticsHelper,
     private val context: Context
 ) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
-    FullPrayerTimeInteractionListener {
+    FullPrayerTimeInteractionListener, BatteryOptimizationInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     private var exactAlarmRequested = false
@@ -61,6 +66,22 @@ class FullPrayerTimesViewModel(
         observePrayerNotifications()
         getDailyPrayers()
         scheduleAlarmsIfNeeded()
+        refreshBatteryStatus()
+    }
+
+    fun refreshBatteryStatus() {
+        val manufacturer = Build.MANUFACTURER.lowercase()
+        val isArabic = Locale.getDefault().language == "ar"
+        val isOptimized = !isIgnoringBatteryOptimizations(context)
+        
+        val instructions = batteryOptimizationRepository.getBrandInstructions(manufacturer, isArabic)
+
+        updateState { 
+            it.copy(
+                isBatteryOptimizationEnabled = isOptimized,
+                batteryInstructions = instructions
+            ) 
+        }
     }
 
     private fun scheduleAlarmsIfNeeded() {
@@ -267,6 +288,30 @@ class FullPrayerTimesViewModel(
 
     override fun onClickBack() {
         sendEffect(FullPrayerTimesEffect.NavigateBack)
+    }
+
+    fun onBatteryWarningClick() {
+        updateState { it.copy(showBatteryDialog = true) }
+    }
+
+    fun onDismissBatteryDialog() {
+        updateState { it.copy(showBatteryDialog = false) }
+    }
+
+    override fun onOpenSettingsClicked() {
+        sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
+    }
+
+    override fun onSkipForNowClicked() {
+        onDismissBatteryDialog()
+    }
+
+    override fun onBackClicked() {
+        onDismissBatteryDialog()
+    }
+
+    override fun onLearnMoreClick() {
+        // Handle learn more if needed, or just send a generic URL effect
     }
 
     override fun onClickEnablePrayer(
