@@ -35,10 +35,8 @@ fun HeaderBox(modifier: Modifier = Modifier) {
             tint = Theme.color.primary.primary
         )
         Text(
-            text = localizedString(
-                R.string.please_follow_the_instructions_below_to_ensure_that_adhan_notifications_are_received
-            ),
-            color = Theme.color.primary.primary,
+            text = localizedString(R.string.settings_steps),
+            color = Theme.color.primary.shadePrimary,
             style = Theme.textStyle.title.small,
             textAlign = TextAlign.Start
         )

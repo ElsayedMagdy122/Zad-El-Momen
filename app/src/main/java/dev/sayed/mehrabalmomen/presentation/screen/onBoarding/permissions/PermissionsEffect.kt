@@ -8,7 +8,7 @@ sealed interface PermissionsEffect {
     data object RequestAlarmPermission : PermissionsEffect
     data object RequestBackgroundPermission : PermissionsEffect
     data object RequestEnableGps : PermissionsEffect
-    data object NavigateToHome : PermissionsEffect
+    data object NavigateToBatteryOptimizationScreen : PermissionsEffect
     data class ShowToast(
         val toast: ToastDetails
     ) : PermissionsEffect
