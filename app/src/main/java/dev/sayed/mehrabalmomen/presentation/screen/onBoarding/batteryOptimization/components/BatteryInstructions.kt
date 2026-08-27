@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,37 +30,14 @@ fun BatteryInstructions(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(Theme.color.surfaces.surfaceLow)
-            .padding(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier.fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                modifier = Modifier.padding(end = 8.dp),
-                painter = painterResource(R.drawable.ic_dashboard_circle_remove),
-                contentDescription = null,
-                tint = Theme.color.primary.primary
+        for ((index, step) in instructions.withIndex()) {
+            BatteryInstructionsItem(
+                text = step,
+                number = index + 1
             )
-            Text(
-                text = localizedString(R.string.settings_steps),
-                color = Theme.color.primary.primary,
-                style = Theme.textStyle.title.small,
-                textAlign = TextAlign.Center
-            )
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(top = 24.dp)
-        ) {
-            for ((index, step) in instructions.withIndex()) {
-                BatteryInstructionsItem(
-                    text = step,
-                    number = index + 1
-                )
-            }
         }
     }
 }
@@ -74,14 +50,18 @@ private fun BatteryInstructionsItem(
 ) {
     val language = LocalAppLocale.current
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Theme.color.surfaces.surfaceLow)
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(32.dp)
                 .clip(CircleShape)
-                .background(Theme.color.surfaces.surface),
+                .background(Theme.color.surfaces.surfaceHigh),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -91,10 +71,11 @@ private fun BatteryInstructionsItem(
             )
         }
         Text(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(start = 16.dp),
             text = text,
-            style = Theme.textStyle.label.medium,
-            color = Theme.color.primary.primary
+            style = Theme.textStyle.body.small,
+            color = Theme.color.primary.shadePrimary,
+            textAlign = TextAlign.Start
         )
     }
 }
