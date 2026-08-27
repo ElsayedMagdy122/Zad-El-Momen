@@ -116,6 +116,10 @@ fun SettingsScreen(
             SettingsEffect.NavigateToNotifications -> {
                 navController.navigate(Route.ReminderSettingsScreen)
             }
+
+            SettingsEffect.NavigateToFAQ -> {
+                navController.navigate(Route.FAQScreen)
+            }
         }
     }
     LaunchedEffect(toast) {
@@ -397,6 +401,7 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.PRIVACY_POLICY -> listener.onPrivacyAndPolicy()
                     SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
                     SettingsUiState.SettingsAction.NOTIFICATIONS -> listener.onNotifications()
+                    SettingsUiState.SettingsAction.FAQ -> listener.onItemClick(item.action)
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),
