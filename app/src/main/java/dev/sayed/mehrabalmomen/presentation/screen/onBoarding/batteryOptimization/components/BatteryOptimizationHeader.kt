@@ -39,7 +39,7 @@ fun BatteryOptimizationHeader(
         ) {
             Image(
                 modifier = Modifier.size(120.dp),
-                painter = painterResource(id = R.drawable.bg_warning),
+                painter = painterResource(id = R.drawable.bg_security),
                 contentDescription = null,
             )
         }

@@ -249,7 +249,7 @@ private fun PermissionsContent(
             if (PermissionsHelper.isExactAlarmPermissionRequired()) {
                 item {
                     PermissionItem(
-                        icon = R.drawable.notification_bell,
+                        icon = R.drawable.ic_reminder,
                         title = R.string.alarm_permission,
                         description = R.string.alarm_permission_desc,
                         isGranted = state.isAlarmPermissionGranted,
