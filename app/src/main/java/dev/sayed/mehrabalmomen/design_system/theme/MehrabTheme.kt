@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.design_system.theme
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
@@ -47,32 +48,23 @@ fun MehrabTheme(
         AppSettings.Language.ARABIC -> LayoutDirection.Rtl
         else -> LayoutDirection.Ltr
     }
-    val registryOwner = remember(context) {
-        var currentContext = context
-        while (currentContext is android.content.ContextWrapper) {
-            if (currentContext is ActivityResultRegistryOwner) break
-            currentContext = currentContext.baseContext
-        }
-        currentContext as? ActivityResultRegistryOwner
-    }
-    val providers = remember(localizedContext, layoutDirection, theme, isDarkTheme, registryOwner) {
-        val list = mutableListOf<androidx.compose.runtime.ProvidedValue<*>>(
-            LocalContext provides localizedContext,
-            LocalLayoutDirection provides layoutDirection,
-            LocalMehrabColor provides theme,
-            LocalMehrabTextStyle provides defaultTextStyle,
-            LocalIsDark provides isDarkTheme,
-        )
-        registryOwner?.let { list.add(LocalActivityResultRegistryOwner provides it) }
-        list.toTypedArray()
-    }
 
-    CompositionLocalProvider(values = providers) {
+    val registryOwner = LocalActivityResultRegistryOwner.current
+
+    CompositionLocalProvider(
+        LocalLocalizedContext provides localizedContext,
+        LocalLayoutDirection provides layoutDirection,
+        LocalMehrabColor provides theme,
+        LocalMehrabTextStyle provides defaultTextStyle,
+        LocalIsDark provides isDarkTheme,
+    ) {
         UpdateStatusBarIconsForTheme()
         content()
     }
 }
-
+val LocalLocalizedContext = staticCompositionLocalOf<Context> {
+    error("LocalizedContext not provided")
+}
 internal val LocalIsDark = staticCompositionLocalOf { true }
 
 @Composable
