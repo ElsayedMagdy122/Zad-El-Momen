@@ -48,6 +48,7 @@ fun PrivacyAnPolicyScreen(
             .fillMaxSize()
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(horizontal = 16.dp)
     ) {
         AppBar(
             title = stringResource(R.string.privacy_and_policy),
@@ -58,7 +59,7 @@ fun PrivacyAnPolicyScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             item {
                 Box(

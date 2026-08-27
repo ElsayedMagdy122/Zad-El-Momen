@@ -77,6 +77,7 @@ fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = 
             .fillMaxSize()
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(horizontal = 16.dp)
     ) {
         AppBar(
             title = "Contact Us",
@@ -86,7 +87,7 @@ fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = 
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 320.dp),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(end = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(state.items) { item ->
