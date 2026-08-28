@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
@@ -80,7 +81,7 @@ fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = 
             .padding(horizontal = 16.dp)
     ) {
         AppBar(
-            title = "Contact Us",
+            title = localizedString(R.string.contact_us),
             onBackClick = {
                 navController.popBackStack()
             }
