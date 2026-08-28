@@ -2,12 +2,11 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -28,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -95,11 +93,10 @@ fun FullPrayerTimesViewScreen(
             }
 
             FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
-                context.startActivity(
-                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = "package:${context.packageName}".toUri()
-                    }
-                )
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
             }
 
             FullPrayerTimesEffect.RequestXiaomiAutoStart -> {
@@ -146,7 +143,7 @@ fun FullPrayerTimesViewScreen(
                 prayerTime = it.time.time,
                 isAm = it.time.isAm,
                 isNextPrayer = it.isUpComing,
-                isNotificationEnabled =it.isNotificationEnabled,
+                isNotificationEnabled = it.isNotificationEnabled,
                 onNotificationClick = { prayerName, enabled ->
                     viewModel.onClickEnablePrayer(prayerName, enabled)
                 }

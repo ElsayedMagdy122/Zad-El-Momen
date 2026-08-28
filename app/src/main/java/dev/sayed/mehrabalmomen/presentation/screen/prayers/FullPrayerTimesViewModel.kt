@@ -73,14 +73,15 @@ class FullPrayerTimesViewModel(
         val manufacturer = Build.MANUFACTURER.lowercase()
         val isArabic = Locale.getDefault().language == "ar"
         val isOptimized = !isIgnoringBatteryOptimizations(context)
-        
-        val instructions = batteryOptimizationRepository.getBrandInstructions(manufacturer, isArabic)
 
-        updateState { 
+        val instructions =
+            batteryOptimizationRepository.getBrandInstructions(manufacturer, isArabic)
+
+        updateState {
             it.copy(
                 isBatteryOptimizationEnabled = isOptimized,
                 batteryInstructions = instructions
-            ) 
+            )
         }
     }
 
@@ -103,9 +104,11 @@ class FullPrayerTimesViewModel(
                 }
         }
     }
+
     fun onScreenOpened() {
         analyticsHelper.logScreen("Prayer times")
     }
+
     private fun getDailyPrayers() {
         tryToCall(
             block = ::getDailyPrayersBlock,
@@ -300,6 +303,7 @@ class FullPrayerTimesViewModel(
 
     override fun onOpenSettingsClicked() {
         sendEffect(FullPrayerTimesEffect.RequestIgnoreBatteryOptimization)
+        onDismissBatteryDialog()
     }
 
     override fun onSkipForNowClicked() {

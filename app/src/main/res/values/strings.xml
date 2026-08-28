@@ -339,11 +339,11 @@
     <string name="faq">FAQ</string>
     <string name="frequently_asked_questions">Frequently Asked Questions</string>
     <string name="faq_q1">How to ensure Adhan notifications are received?</string>
-    <string name="faq_a1">To ensure you receive Adhan notifications on time, please allow all necessary permissions (Notifications, Alarms) and disable battery optimization for the app in your device settings.</string>
+    <string name="faq_a1">To ensure you receive Adhan notifications on time, please allow all necessary permissions (Notifications, Alarms) and disable battery optimization for the app in your device settings. You can also click the warning icon in the prayer times screen for specific instructions.</string>
     <string name="faq_q2">How to change the prayer calculation method?</string>
     <string name="faq_a2">You can change the calculation method by going to Settings -> Prayer -> Calculation Method and selecting your preferred method.</string>
     <string name="faq_q3">How to report a bug or suggest a feature?</string>
-    <string name="faq_a3">Go to Settings -> Support -> Help &amp; Feedback to send us your reports or suggestions.</string>
+    <string name="faq_a3">Go to Settings -> Support -> Report a Bug to send us your reports or suggestions.</string>
     <string name="faq_q4">Is the Qiblah compass accurate?</string>
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
     <string name="battery_settings_title">Notification Optimization</string>
