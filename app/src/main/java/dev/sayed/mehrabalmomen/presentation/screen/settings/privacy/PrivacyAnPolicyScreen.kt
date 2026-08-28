@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +30,7 @@ import dev.sayed.mehrabalmomen.design_system.color.darkThemeColors
 import dev.sayed.mehrabalmomen.design_system.color.lightThemeColors
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 
 @Composable
 fun PrivacyAnPolicyScreen(
@@ -51,7 +51,7 @@ fun PrivacyAnPolicyScreen(
             .padding(horizontal = 16.dp)
     ) {
         AppBar(
-            title = stringResource(R.string.privacy_and_policy),
+            title = localizedString(R.string.privacy_and_policy),
             onBackClick = { navController.popBackStack() }
         )
 
@@ -76,7 +76,7 @@ fun PrivacyAnPolicyScreen(
                         )
 
                         Text(
-                            text = stringResource(id = R.string.last_updated, "26 May 2026"),
+                            text = localizedString(id = R.string.last_updated, "26 May 2026"),
                             style = Theme.textStyle.label.small,
                             color = bodyTextColor,
                             textAlign = TextAlign.Center,
@@ -90,7 +90,7 @@ fun PrivacyAnPolicyScreen(
                 when (item) {
                     is PrivacyModel.MainHeader -> {
                         Text(
-                            text = stringResource(id = item.resId),
+                            text = localizedString(id = item.resId),
                             style = Theme.textStyle.title.small,
                             color = titleTextColor,
                             fontWeight = FontWeight.Bold,
@@ -99,7 +99,7 @@ fun PrivacyAnPolicyScreen(
                     }
                     is PrivacyModel.Paragraph -> {
                         Text(
-                            text = stringResource(id = item.resId),
+                            text = localizedString(id = item.resId),
                             style = Theme.textStyle.body.medium,
                             color = bodyTextColor,
                         )
@@ -115,7 +115,7 @@ fun PrivacyAnPolicyScreen(
                                 color = bodyTextColor
                             )
                             Text(
-                                text = stringResource(id = item.resId),
+                                text = localizedString(id = item.resId),
                                 style = Theme.textStyle.body.medium,
                                 color = bodyTextColor
                             )
