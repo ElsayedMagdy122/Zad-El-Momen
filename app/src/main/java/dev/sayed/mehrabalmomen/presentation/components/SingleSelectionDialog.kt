@@ -16,7 +16,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
+import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.LocalIsDarkTheme
 
 @Composable
 fun PrimaryDialog(
@@ -24,27 +27,35 @@ fun PrimaryDialog(
     backgroundColor: Color = Theme.color.surfaces.surfaceHigh,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val language = LocalAppLocale.current
+    val isDark = LocalIsDarkTheme.current
+    
     Dialog(
         onDismissRequest = onDismiss
     ) {
-        val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
-        LaunchedEffect(dialogWindow) {
-            dialogWindow?.let { window ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    window.setBackgroundBlurRadius(20)
-                }
-                window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                window.setDimAmount(0.35f)
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(backgroundColor)
-                .widthIn(max = 400.dp)
+        MehrabTheme(
+            language = language,
+            isDarkTheme = isDark
         ) {
-            content()
+            val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
+            LaunchedEffect(dialogWindow) {
+                dialogWindow?.let { window ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        window.setBackgroundBlurRadius(20)
+                    }
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                    window.setDimAmount(0.35f)
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(backgroundColor)
+                    .widthIn(max = 400.dp)
+            ) {
+                content()
+            }
         }
     }
 }

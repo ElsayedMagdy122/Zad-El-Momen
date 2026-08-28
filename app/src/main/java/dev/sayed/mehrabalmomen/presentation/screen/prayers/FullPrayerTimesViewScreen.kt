@@ -2,12 +2,11 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.os.PowerManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,18 +21,22 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.components.BatteryOptimizationDialog
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerCard
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
@@ -51,6 +54,20 @@ fun FullPrayerTimesViewScreen(
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshBatteryStatus()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -76,11 +93,10 @@ fun FullPrayerTimesViewScreen(
             }
 
             FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
-                context.startActivity(
-                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = "package:${context.packageName}".toUri()
-                    }
-                )
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
             }
 
             FullPrayerTimesEffect.RequestXiaomiAutoStart -> {
@@ -109,7 +125,10 @@ fun FullPrayerTimesViewScreen(
                 title = localizedString(R.string.prayer_times),
                 modifier = Modifier.padding(
                     horizontal = 16.dp
-                )
+                ),
+                actionIcon = R.drawable.ic_warning,
+                actionIconTint = Theme.color.primary.primary,
+                onActionClick = viewModel::onBatteryWarningClick
             )
         }
         item {
@@ -124,13 +143,21 @@ fun FullPrayerTimesViewScreen(
                 prayerTime = it.time.time,
                 isAm = it.time.isAm,
                 isNextPrayer = it.isUpComing,
-                isNotificationEnabled =it.isNotificationEnabled,
+                isNotificationEnabled = it.isNotificationEnabled,
                 onNotificationClick = { prayerName, enabled ->
                     viewModel.onClickEnablePrayer(prayerName, enabled)
                 }
 
             )
         }
+    }
+
+    if (state.showBatteryDialog) {
+        BatteryOptimizationDialog(
+            instructions = state.batteryInstructions,
+            onDismiss = viewModel::onDismissBatteryDialog,
+            listener = viewModel
+        )
     }
 }
 
@@ -144,45 +171,5 @@ fun openXiaomiAutoStart(context: Context) {
         }
         context.startActivity(intent)
     } catch (e: Exception) {
-    }
-}
-
-@SuppressLint("BatteryLife")
-suspend fun checkAndRequestPermissions(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        if (!alarmManager.canScheduleExactAlarms()) {
-            context.startActivity(
-                Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-            )
-            return
-        }
-    }
-
-    val powerManager =
-        context.getSystemService(Context.POWER_SERVICE) as PowerManager
-
-    if (!powerManager.isIgnoringBatteryOptimizations(context.packageName)) {
-        context.startActivity(
-            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                data = "package:${context.packageName}".toUri()
-            }
-        )
-        return
-    }
-
-    if (Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)) {
-        try {
-            val intent = Intent().apply {
-                component = ComponentName(
-                    "com.miui.securitycenter",
-                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
-                )
-            }
-            context.startActivity(intent)
-        } catch (_: Exception) {
-        }
     }
 }

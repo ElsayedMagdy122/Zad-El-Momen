@@ -10,7 +10,10 @@ data class FullPrayerTimesUiState(
     val time: TimeUiState = TimeUiState(),
     val prayers: List<PrayerUiState> = emptyList(),
     val nextPrayer: PrayerUiState = PrayerUiState(),
-    val prayerNotifications: List<PrayerNotificationUiState> =emptyList()
+    val prayerNotifications: List<PrayerNotificationUiState> = emptyList(),
+    val isBatteryOptimizationEnabled: Boolean = false,
+    val showBatteryDialog: Boolean = false,
+    val batteryInstructions: List<String> = emptyList()
 ) {
     data class PrayerUiState(
         @param:StringRes

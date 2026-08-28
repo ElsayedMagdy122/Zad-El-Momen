@@ -30,7 +30,7 @@ fun HeaderBox(modifier: Modifier = Modifier) {
     ) {
         Icon(
             modifier = Modifier.padding(end = 8.dp),
-            painter = painterResource(R.drawable.ic_setting_error_03),
+            painter = painterResource(R.drawable.ic_settings_not_selected),
             contentDescription = null,
             tint = Theme.color.primary.primary
         )
