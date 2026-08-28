@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -29,12 +30,15 @@ fun AppBar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     isBackEnabled: Boolean = true,
+    actionIcon: Int? = null,
+    actionIconTint: Color = Theme.color.primary.primary,
+    onActionClick: (() -> Unit)? = null
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding( vertical =  8.dp)
+            .padding(vertical = 8.dp)
     ) {
         AnimatedVisibility(isBackEnabled) {
             Box(
@@ -68,6 +72,27 @@ fun AppBar(
             color = Theme.color.primary.primary,
             style = Theme.textStyle.title.medium
         )
+
+        if (actionIcon != null && onActionClick != null) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Theme.color.surfaces.surfaceLow)
+                    .clickable {
+                        onActionClick()
+                    }
+                    .align(Alignment.CenterEnd),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(id = actionIcon),
+                    contentDescription = null,
+                    tint = actionIconTint
+                )
+            }
+        }
     }
 }
 

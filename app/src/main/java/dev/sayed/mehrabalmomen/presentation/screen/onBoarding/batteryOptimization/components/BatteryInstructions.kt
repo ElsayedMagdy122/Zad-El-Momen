@@ -15,13 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
-import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 
 @Composable
@@ -77,5 +74,27 @@ private fun BatteryInstructionsItem(
             color = Theme.color.primary.shadePrimary,
             textAlign = TextAlign.Start
         )
+    }
+}
+
+@Composable
+fun BatteryInstructionsDialog(
+    instructions: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        for (step in instructions) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                text = "• $step",
+                style = Theme.textStyle.body.small,
+                color = Theme.color.secondary.shadeSecondary,
+                textAlign = TextAlign.Start
+            )
+        }
     }
 }
