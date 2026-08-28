@@ -17,7 +17,6 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRep
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
@@ -101,6 +100,7 @@ class FullPrayerTimesViewModel(
                         exactAlarmRequested = true
                         sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
                     }
+                    getDailyPrayers()
                 }
         }
     }
