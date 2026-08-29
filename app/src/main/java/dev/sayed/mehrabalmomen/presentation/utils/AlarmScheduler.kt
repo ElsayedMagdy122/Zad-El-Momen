@@ -35,10 +35,19 @@ class AlarmScheduler(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        alarmManager.setAlarmClock(
-            AlarmManager.AlarmClockInfo(triggerAtMillis, pendingIntent),
-            pendingIntent
-        )
+        try {
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(triggerAtMillis, pendingIntent),
+                pendingIntent
+            )
+        } catch (e: SecurityException) {
+            // Fallback to non-exact alarm if permission is missing despite check
+            alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerAtMillis,
+                pendingIntent
+            )
+        }
     }
 
     fun cancel(requestCode: Int, intent: Intent) {
