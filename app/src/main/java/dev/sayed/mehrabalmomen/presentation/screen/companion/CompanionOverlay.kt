@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
@@ -119,12 +120,12 @@ fun CompanionOverlay(
             modifier = Modifier
                 .offset { IntOffset(offsetX.value.dp.roundToPx(), offsetY.value.dp.roundToPx()) }
                 .graphicsLayer { rotationY = currentRotationY }
-                .padding(bottom = 80.dp)
+                .padding(bottom = 90.dp) // Lifted above the bottom navigation bar
         ) {
             AnimatedVisibility(
                 visible = state.dialogueRes != null,
-                enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-                exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom)
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
                 state.dialogueRes?.let {
                     DialogueBubble(
@@ -132,11 +133,12 @@ fun CompanionOverlay(
                         modifier = Modifier
                             .widthIn(max = 220.dp)
                             .graphicsLayer { rotationY = -currentRotationY }
+                            .padding(bottom = 0.dp) // Tighten gap to bird
                     )
                 }
             }
             
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(120.dp)) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(80.dp)) {
                 // Pass ticker as lambda to prevent recomposition of CompanionScreen
                 ParticleCanvas(particleHolder, { ticker }, isBehind = true)
 
@@ -145,7 +147,7 @@ fun CompanionOverlay(
                     isLaughing = state.isLaughing,
                     isDoingTasbih = state.isDoingTasbih,
                     modifier = Modifier
-                        .size(75.dp)
+                        .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = { viewModel.onInteract() }
