@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerState
@@ -29,6 +30,7 @@ class SurahAyatViewModel(
     private val quranAudioRepository: QuranAudioRepository,
     private val audioPlayerManager: AudioPlayerManager,
     private val recitationPreferences: RecitationPreferences,
+    private val companionRepository: CompanionRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
     SurahAyatUiState()
@@ -406,6 +408,10 @@ class SurahAyatViewModel(
                         scrollToAyaId = targetAyahId,
                         targetAyahId = targetAyahId,
                     )
+                }
+                viewModelScope.launch {
+                    companionRepository.updateQuranReadStatus(true)
+                    companionRepository.updateLastInteraction(System.currentTimeMillis())
                 }
             },
             onError = { throwable ->
