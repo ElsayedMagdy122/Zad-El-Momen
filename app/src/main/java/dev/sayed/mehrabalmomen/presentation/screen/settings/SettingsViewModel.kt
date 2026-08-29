@@ -12,6 +12,7 @@ import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
+    private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val billingManager: BillingManager
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
@@ -48,6 +50,7 @@ class SettingsViewModel(
         observeQuranFont()
         observeTafseer()
         observeSelectedMoazen()
+        observeCompanionEnabled()
         billingManager.queryProducts(supportProductIds)
     }
 
@@ -57,7 +60,7 @@ class SettingsViewModel(
     fun playPreview(index: Int, context: Context) {
         stopPreview()
 
-        val moazen = SettingsUiState.Moazen.values().getOrNull(index)
+        val moazen = SettingsUiState.Moazen.entries.getOrNull(index)
         if (moazen == null) {
             return
         }
@@ -173,6 +176,15 @@ class SettingsViewModel(
         }
     }
 
+    private fun observeCompanionEnabled() {
+        viewModelScope.launch {
+            companionRepository.observeCompanionEnabled().collect { enabled ->
+                updateState { it.copy(isCompanionEnabled = enabled) }
+                rebuildSections()
+            }
+        }
+    }
+
     private fun rebuildSections() {
         val state = screenState.value
 
@@ -227,6 +239,12 @@ class SettingsViewModel(
                         icon = R.drawable.ic_notifications,
                         title =R.string.notifications,
                         action = SettingsUiState.SettingsAction.NOTIFICATIONS,
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_rafeek,
+                        title = R.string.companion_mode,
+                        action = SettingsUiState.SettingsAction.COMPANION,
+                        value = state.isCompanionEnabled
                     )
                 )
             ),
@@ -452,7 +470,7 @@ class SettingsViewModel(
             }
         },
         SettingsUiState.SelectionDialogType.MOAZEN to { index ->
-            val selected = SettingsUiState.Moazen.values()[index]
+            val selected = SettingsUiState.Moazen.entries[index]
             updateState { it.copy(selectedMoazen = selected) }
             viewModelScope.launch {
                 settingsRepository.saveSelectedMoazen(selected.fileName)
@@ -508,7 +526,14 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.FAQ -> sendEffect(SettingsEffect.NavigateToFAQ)
             SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
             SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
+            SettingsUiState.SettingsAction.COMPANION -> toggleCompanion()
             else -> {}
+        }
+    }
+
+    private fun toggleCompanion() {
+        viewModelScope.launch {
+            companionRepository.updateCompanionEnabled(!screenState.value.isCompanionEnabled)
         }
     }
 
