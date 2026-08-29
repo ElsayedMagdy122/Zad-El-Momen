@@ -1,10 +1,14 @@
 package dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails
 
+import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
+import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.launch
 
 class AzkarDetailViewModel(
-    private val repository: AzkarRepository
+    private val repository: AzkarRepository,
+    private val companionRepository: CompanionRepository
 ) : BaseViewModel<AzkarDetailUiState, AzkarDetailEffect>(
     AzkarDetailUiState()
 ), AzkarDetailInteractionListener {
@@ -25,6 +29,10 @@ class AzkarDetailViewModel(
                         isLoading = false,
                         items = items
                     )
+                }
+                viewModelScope.launch {
+                    companionRepository.updateAzkarReadStatus(true)
+                    companionRepository.updateLastInteraction(System.currentTimeMillis())
                 }
             },
             onError = {

@@ -15,6 +15,7 @@ import dev.sayed.mehrabalmomen.data.quran.text.repository.ReadingProgressReposit
 import dev.sayed.mehrabalmomen.data.radio.repository.RadioRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSchedulerRepositoryImpl
 import dev.sayed.mehrabalmomen.data.reminders.ReminderSettingsRepositoryImpl
+import dev.sayed.mehrabalmomen.data.companion.CompanionRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
@@ -34,6 +35,7 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import org.koin.android.ext.koin.androidContext
@@ -48,6 +50,7 @@ val repositoryModule = module {
     single<LocationRepository> { LocationRepositoryImpl(get(), get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<BatteryOptimizationRepository> { BatteryOptimizationRepositoryImpl(get(), get()) }
+    single<CompanionRepository> { CompanionRepositoryImpl(get()) }
     single<QuranRepository> { QuranRepositoryImpl(get(), get(), get()) }
     single<ReadingProgressRepository> { ReadingProgressRepositoryImpl(get()) }
     single<RadioRepository> { RadioRepositoryImpl(get()) }

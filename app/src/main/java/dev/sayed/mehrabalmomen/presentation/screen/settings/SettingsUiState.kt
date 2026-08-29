@@ -13,7 +13,8 @@ data class SettingsUiState(
     val isSupportAvailable: Boolean = false,
     val selectedFontSize: QuranFontSize = QuranFontSize.SMALL,
     val selectedMoazen: Moazen = Moazen.AZAN_ABED_ALBASET,
-    val selectedTafseer: TafseerType = TafseerType.MOKHTASAR
+    val selectedTafseer: TafseerType = TafseerType.MOKHTASAR,
+    val isCompanionEnabled: Boolean = true
 ) {
     data class LocationUiState(
         val country: String = "Unknown",
@@ -30,7 +31,8 @@ data class SettingsUiState(
         val title: Int,
         val description: Int = 0,
         val descriptionText: String? = null,
-        val action: SettingsAction
+        val action: SettingsAction,
+        val value: Boolean? = null
     )
 
     enum class ThemeState(val value: Int) {
@@ -96,7 +98,8 @@ data class SettingsUiState(
         ABOUT,
         FAQ,
         PRIVACY_POLICY,
-        CONTACT_US
+        CONTACT_US,
+        COMPANION
     }
 
     enum class QuranFontSize(val value: Int, val sizeSp: Int) {

@@ -12,6 +12,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatViewModel
@@ -51,6 +52,7 @@ val presentationModule = module {
     viewModelOf(::ContactViewModel)
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
+    viewModelOf(::CompanionViewModel)
     factory<AudioPlayerManager> { ExoAudioPlayerManager(androidContext()) }
     single<PlayerController> { RadioAudioPlayerManager(androidContext()) }
     single { FirebaseAnalytics.getInstance(get()) }

@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -26,14 +27,17 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
 import org.koin.android.ext.android.inject
+import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
+    private val companionRepository: CompanionRepository by inject()
 
     @OptIn(ExperimentalTime::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +50,11 @@ class MainActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
+        
+        lifecycleScope.launch {
+            companionRepository.updateLastInteraction(System.currentTimeMillis())
+        }
+
         setContent {
             AppRoot(settingsRepository = settingsRepository) {
                 isSettingsLoaded = true

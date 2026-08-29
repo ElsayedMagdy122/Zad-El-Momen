@@ -57,6 +57,7 @@ import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
+import dev.sayed.mehrabalmomen.design_system.component.Switch
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
@@ -387,17 +388,16 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.LANGUAGE,
                     SettingsUiState.SettingsAction.THEME,
                     SettingsUiState.SettingsAction.MADHAB,
-                    SettingsUiState.SettingsAction.CALCULATION_METHOD -> listener.onItemClick(
-                        item.action
-                    )
+                    SettingsUiState.SettingsAction.CALCULATION_METHOD,
+                    SettingsUiState.SettingsAction.MOAZEN,
+                    SettingsUiState.SettingsAction.TEXT_FONT,
+                    SettingsUiState.SettingsAction.TAFSEER -> listener.onItemClick(item.action)
 
-                    SettingsUiState.SettingsAction.MOAZEN -> listener.onItemClick(item.action)
+                    SettingsUiState.SettingsAction.COMPANION -> listener.onItemClick(item.action)
                     SettingsUiState.SettingsAction.LOCATION -> listener.onLocationClick()
                     SettingsUiState.SettingsAction.HELP_FEEDBACK -> listener.onHelpFeedbackClick()
                     SettingsUiState.SettingsAction.RATE_APP -> listener.onRateAppClick()
                     SettingsUiState.SettingsAction.ABOUT -> listener.onAboutClick()
-                    SettingsUiState.SettingsAction.TEXT_FONT -> listener.onItemClick(item.action)
-                    SettingsUiState.SettingsAction.TAFSEER -> listener.onItemClick(item.action)
                     SettingsUiState.SettingsAction.PRIVACY_POLICY -> listener.onPrivacyAndPolicy()
                     SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
                     SettingsUiState.SettingsAction.NOTIFICATIONS -> listener.onNotifications()
@@ -424,11 +424,16 @@ fun SettingsItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        if (
-            item.description != 0 || item.descriptionText != null
-        ) {
+        
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (item.value != null) {
+            Switch(
+                isChecked = item.value,
+                onCheckedChange = { listener.onItemClick(item.action) }
+            )
+        } else if (item.description != 0 || item.descriptionText != null) {
             Text(
-                modifier = Modifier.weight(1f),
                 text = when {
                     item.description != 0 ->
                         localizedString(item.description)
@@ -448,6 +453,7 @@ fun SettingsItem(
 
     }
 }
+
 
 fun openStoreReview(context: Context) {
     val uri = "market://details?id=${context.packageName}".toUri()
