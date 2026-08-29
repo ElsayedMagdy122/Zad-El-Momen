@@ -348,4 +348,51 @@
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
     <string name="battery_settings_title">Notification Optimization</string>
     <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
+    <string name="companion_mode">Companion Mode</string>
+
+    <!-- Rafiq's spiritual messages -->
+    <string name="rafiq_happy_1">MashaAllah.. Every step toward Allah is a beautiful one. Keep going ❤️</string>
+    <string name="rafiq_happy_2">What a beautiful heart filled with the remembrance of Allah.. Keep this light alive ❤️</string>
+    <string name="rafiq_happy_3">May Allah grant you steadfastness, light, and blessings in your worship ❤️</string>
+    <string name="rafiq_happy_4">MashaAllah.. The Quran becomes even more beautiful when it lives in the heart ❤️</string>
+    <string name="rafiq_happy_5">Every act of worship brings you closer to Allah.. Keep walking this beautiful path ❤️</string>
+    <string name="rafiq_happy_6">May Allah increase you in knowledge and guidance, and make your knowledge a light for you ❤️</string>
+
+    <string name="rafiq_sad_1">It\'s okay.. Take one small step back toward Allah. The path of goodness is always open ❤️</string>
+    <string name="rafiq_sad_2">Surely, in the remembrance of Allah hearts find peace.. Let\'s remember Allah together ❤️</string>
+    <string name="rafiq_sad_3">I miss our journey with the Quran.. How about we start with one verse? ❤️</string>
+    <string name="rafiq_sad_4">Perhaps one small act of remembrance today can bring great goodness ❤️</string>
+    <string name="rafiq_sad_5">No matter how far you feel, you can always return to Allah ❤️</string>
+
+    <string name="rafiq_excited_1">MashaAllah.. What a beautiful day of worship. May Allah accept it from you ❤️</string>
+    <string name="rafiq_excited_2">The Quran and remembrance together.. What a beautiful way to fill your day with light ❤️</string>
+    <string name="rafiq_excited_3">MashaAllah.. Your dedication made me happy today ❤️</string>
+    <string name="rafiq_excited_4">Worship leaves a beautiful light in the heart.. Keep going ❤️</string>
+    <string name="rafiq_excited_5">Your consistency today is beautiful.. May Allah always keep you steadfast ❤️</string>
+
+    <string name="rafiq_thinking_quran">How about spending a few peaceful moments with the Quran today? ❤️</string>
+    <string name="rafiq_thinking_azkar">Have you had your share of daily adhkar today? ❤️</string>
+    <string name="rafiq_thinking_general_1">Have you sent blessings upon the Prophet ﷺ today? ❤️</string>
+    <string name="rafiq_thinking_general_2">SubhanAllah.. Look around and reflect on the beauty of Allah\'s creation</string>
+    <string name="rafiq_thinking_general_3">Alhamdulillah.. Keep this beautiful word on your tongue ❤️</string>
+    <string name="rafiq_thinking_general_4">SubhanAllah, Alhamdulillah, La ilaha illallah, Allahu Akbar ❤️</string>
+    <string name="rafiq_thinking_general_5">Make your intention for Allah.. Every good deed begins with a sincere intention ❤️</string>
+
+    <string name="rafiq_morning_1">Good morning.. Begin your day with the remembrance of Allah, and fill your morning with goodness ❤️</string>
+    <string name="rafiq_morning_2">A new morning and a new blessing.. Alhamdulillah for this day ❤️</string>
+    <string name="rafiq_evening_1">Good evening.. What better way to end the day than with the remembrance of Allah? ❤️</string>
+    <string name="rafiq_evening_2">The night is calm.. Give your heart a moment for remembrance and dua ❤️</string>
+
+    <string name="rafiq_interact_1">Assalamu Alaikum.. I\'m your companion. What good shall we do today? ❤️</string>
+    <string name="rafiq_interact_2">The remembrance of Allah brings peace to the heart.. Let\'s remember Allah together ❤️</string>
+    <string name="rafiq_interact_3">Haha.. May Allah keep your heart happy and your smile bright ❤️</string>
+    <string name="rafiq_interact_4">I\'m happy to be your companion on this journey.. May Allah keep us steadfast ❤️</string>
+    <string name="rafiq_interact_5">Keep your tongue moist with the remembrance of Allah, and your heart at peace ❤️</string>
+
+    <string name="rafiq_tickle">Haha.. Enough tickling! May Allah bless you with endless joy ❤️</string>
+
+    <string name="rafiq_tasbih_1">SubhanAllah.. SubhanAllah.. ❤️</string>
+    <string name="rafiq_tasbih_2">Alhamdulillah.. Alhamdulillah.. ❤️</string>
+    <string name="rafiq_tasbih_3">Allahu Akbar.. Allahu Akbar.. ❤️</string>
+    <string name="rafiq_tasbih_4">La ilaha illallah.. La ilaha illallah.. ❤️</string>
 </resources>

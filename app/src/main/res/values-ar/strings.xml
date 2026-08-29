@@ -360,4 +360,51 @@
     <string name="faq_a4">نعم، ولكنها تعتمد على مستشعرات جهازك. نوصي بمعايرة البوصلة من خلال تحريك هاتفك بشكل رقم 8 إذا لاحظت أي عدم دقة.</string>
     <string name="battery_settings_title">تحسين استقبال التنبيهات</string>
     <string name="battery_optimization_description">هذه الخطوات ضرورية لضمان عمل الأذان بكفاءة وفي وقته المحدد على جهازك.</string>
+    <string name="companion_mode">وضع الرفيق</string>
+
+    <!-- رسائل رفيق الروحانية -->
+    <string name="rafiq_happy_1">ما شاء الله.. خطوة جميلة تقربك إلى الله، استمر ❤️</string>
+    <string name="rafiq_happy_2">ما أجمل قلباً عامراً بذكر الله.. دام هذا النور ❤️</string>
+    <string name="rafiq_happy_3">زادك الله ثباتاً ونوراً، وبارك لك في طاعتك ❤️</string>
+    <string name="rafiq_happy_4">ما شاء الله.. القرآن يزداد جمالاً حين يسكن القلب ❤️</string>
+    <string name="rafiq_happy_5">كل طاعة تقربك إلى الله.. واصل طريقك الجميل ❤️</string>
+    <string name="rafiq_happy_6">زادك الله علماً وهدى، وجعل علمك نوراً لك ❤️</string>
+
+    <string name="rafiq_sad_1">لا بأس.. عد بخطوة صغيرة، فطريق الخير لا ينتهي ❤️</string>
+    <string name="rafiq_sad_2">ألا بذكر الله تطمئن القلوب.. لنذكر الله معاً ❤️</string>
+    <string name="rafiq_sad_3">اشتقت لرحلتنا مع القرآن.. ما رأيك أن نبدأ بآية؟ ❤️</string>
+    <string name="rafiq_sad_4">ربما ذكرٌ صغير اليوم يكون سبباً في خير كبير ❤️</string>
+    <string name="rafiq_sad_5">مهما ابتعدت، يمكنك دائماً أن تعود إلى الله ❤️</string>
+
+    <string name="rafiq_excited_1">ما شاء الله.. يوم جميل من الطاعة، تقبل الله منك ❤️</string>
+    <string name="rafiq_excited_2">القرآن والأذكار.. ما أجمل أن يجتمع نوران في يومك ❤️</string>
+    <string name="rafiq_excited_3">ما شاء الله.. أسعدت قلبي اليوم بهمتك ❤️</string>
+    <string name="rafiq_excited_4">نور الطاعة يترك أثراً جميلاً في القلب.. استمر ❤️</string>
+    <string name="rafiq_excited_5">ثباتك اليوم جميل.. أسأل الله أن يثبتك دائماً ❤️</string>
+
+    <string name="rafiq_thinking_quran">ما رأيك أن نعيش دقائق مع القرآن اليوم؟ ❤️</string>
+    <string name="rafiq_thinking_azkar">هل أخذت نصيبك من الأذكار اليوم؟ ❤️</string>
+    <string name="rafiq_thinking_general_1">هل صليت على النبي ﷺ اليوم؟ ❤️</string>
+    <string name="rafiq_thinking_general_2">سبحان الله.. كم في خلق الله من جمال يدعو للتأمل</string>
+    <string name="rafiq_thinking_general_3">الحمد لله.. اجعلها دائماً على لسانك ❤️</string>
+    <string name="rafiq_thinking_general_4">سبحان الله والحمد لله ولا إله إلا الله والله أكبر ❤️</string>
+    <string name="rafiq_thinking_general_5">اجعل نيتك لله.. ففي النية بداية كل خير ❤️</string>
+
+    <string name="rafiq_morning_1">صباح الخير.. ابدأ يومك بذكر الله، واجعل أول ساعاتك عامرة بالخير ❤️</string>
+    <string name="rafiq_morning_2">صباح جديد ونعمة جديدة.. الحمد لله على هذا اليوم ❤️</string>
+    <string name="rafiq_evening_1">مساء الخير.. ما أجمل أن نختم يومنا بذكر الله ❤️</string>
+    <string name="rafiq_evening_2">هدأ الليل.. فاجعل لقلبك نصيباً من الذكر والدعاء ❤️</string>
+
+    <string name="rafiq_interact_1">السلام عليكم.. أنا رفيقك، ماذا سنفعل من الخير اليوم؟ ❤️</string>
+    <string name="rafiq_interact_2">بذكر الله يطمئن القلب.. هيا نذكر الله معاً ❤️</string>
+    <string name="rafiq_interact_3">ههههه.. أسعد الله قلبك وأدام عليك ابتسامتك ❤️</string>
+    <string name="rafiq_interact_4">سعيد برفقتك في هذه الرحلة.. ثبتنا الله وإياك ❤️</string>
+    <string name="rafiq_interact_5">اجعل لسانك عامراً بذكر الله، وقلبك مطمئناً به ❤️</string>
+
+    <string name="rafiq_tickle">ههههه.. كفى دغدغة! رزقك الله فرحاً لا ينتهي ❤️</string>
+
+    <string name="rafiq_tasbih_1">سبحان الله.. ما أجمل أن يلهج لسانك بذكره ❤️</string>
+    <string name="rafiq_tasbih_2">الحمد لله.. دائماً وأبداً ❤️</string>
+    <string name="rafiq_tasbih_3">الله أكبر.. الله أكبر.. ❤️</string>
+    <string name="rafiq_tasbih_4">لا إله إلا الله.. بها تحيا القلوب ❤️</string>
 </resources>
