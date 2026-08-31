@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.domain.usecase
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
@@ -9,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -22,6 +22,7 @@ class PrayerSchedulingUseCase(
     private val prayerRepository: PrayerRepository,
     private val schedulerRepository: PrayerAlarmRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
+    private val logger: Logger
 ) {
 
     suspend fun rescheduleTodayPrayerAlarms(): RescheduleResult {
@@ -53,7 +54,7 @@ class PrayerSchedulingUseCase(
                 timeMillis = prayer.time.toEpochMilliseconds(),
                 enabled = notifications[prayer.name] ?: true
             ).apply {
-                Log.d("AZAN_DEBUG", "PrayerAlarm: $this")
+                logger.d("AZAN_DEBUG", "PrayerAlarm: $this")
             }
         }
     }
