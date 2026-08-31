@@ -7,7 +7,7 @@ import dev.sayed.mehrabalmomen.domain.model.companion.CompanionMood
 data class CompanionUiState(
     val mood: CompanionMood = CompanionMood.HAPPY,
     val dialogueRes: Int? = null,
-    val isVisible: Boolean = true,
+    val isVisible: Boolean = false,
     val isLaughing: Boolean = false,
     val isDoingTasbih: Boolean = false,
 

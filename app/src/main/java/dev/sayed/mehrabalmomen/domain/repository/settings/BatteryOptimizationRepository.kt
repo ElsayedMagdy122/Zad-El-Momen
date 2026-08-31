@@ -5,4 +5,5 @@ interface BatteryOptimizationRepository {
         manufacturer: String,
         isArabic: Boolean
     ): List<String>
+    fun isIgnoringBatteryOptimizations(): Boolean
 }

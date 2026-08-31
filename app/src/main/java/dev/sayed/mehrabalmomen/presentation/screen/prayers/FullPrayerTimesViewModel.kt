@@ -5,7 +5,6 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 import android.app.AlarmManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
@@ -16,20 +15,19 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
+import dev.sayed.mehrabalmomen.domain.util.Logger
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
-import dev.sayed.mehrabalmomen.presentation.utils.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -47,14 +45,13 @@ class FullPrayerTimesViewModel(
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val batteryOptimizationRepository: BatteryOptimizationRepository,
     private val analyticsHelper: AnalyticsHelper,
+    private val logger: Logger,
     private val context: Context
 ) : BaseViewModel<FullPrayerTimesUiState, FullPrayerTimesEffect>(FullPrayerTimesUiState()),
     FullPrayerTimeInteractionListener, BatteryOptimizationInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     private var exactAlarmRequested = false
-    private var batteryOptRequested = false
-    private var autoStartRequested = false
     private val isXiaomiDevice: Boolean
         get() = android.os.Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
     private val _countdownTime =
@@ -71,7 +68,7 @@ class FullPrayerTimesViewModel(
     fun refreshBatteryStatus() {
         val manufacturer = Build.MANUFACTURER.lowercase()
         val isArabic = Locale.getDefault().language == "ar"
-        val isOptimized = !isIgnoringBatteryOptimizations(context)
+        val isOptimized = batteryOptimizationRepository.isIgnoringBatteryOptimizations()
 
         val instructions =
             batteryOptimizationRepository.getBrandInstructions(manufacturer, isArabic)
@@ -86,22 +83,28 @@ class FullPrayerTimesViewModel(
 
     private fun scheduleAlarmsIfNeeded() {
         viewModelScope.launch {
-            combine(
-                settingsRepository.observePrayerSettings().distinctUntilChanged(),
-                notificationsRepository.observeAll().distinctUntilChanged()
-            ) { settings, notifications ->
-                settings to notifications
-            }
-                .collect {
-                    val result = prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
-                    Log.d("AZAN_DEBUG", "Reschedule triggered $result")
-
-                    if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {
-                        exactAlarmRequested = true
-                        sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+            launch {
+                settingsRepository.observePrayerSettings()
+                    .distinctUntilChanged()
+                    .collect {
+                        prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+                        getDailyPrayers()
                     }
-                    getDailyPrayers()
-                }
+            }
+
+            launch {
+                notificationsRepository.observeAll()
+                    .distinctUntilChanged()
+                    .collect {
+                        val result = prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+                        logger.d("AZAN_DEBUG", "Reschedule triggered $result")
+
+                        if (result == RescheduleResult.PermissionRequired && !exactAlarmRequested) {
+                            exactAlarmRequested = true
+                            sendEffect(FullPrayerTimesEffect.RequestExactAlarm)
+                        }
+                    }
+            }
         }
     }
 
@@ -119,6 +122,7 @@ class FullPrayerTimesViewModel(
 
     private suspend fun getDailyPrayersBlock(): List<FullPrayerTimesUiState.PrayerUiState> {
         val settings = settingsRepository.observeAppSettings().first().prayerSettings
+        val notifications = notificationsRepository.observeAll().first()
         val prayers = prayerRepository.getDailyPrayers(
             madhab = settings.madhab,
             calculationMethod = settings.calculationMethod,
@@ -129,7 +133,11 @@ class FullPrayerTimesViewModel(
             date = today
         )
         val zone = TimeZone.currentSystemDefault()
-        return prayers.map { it.toPrayerUiState(zone = zone) }
+        return prayers.map { prayer ->
+            prayer.toPrayerUiState(zone = zone).copy(
+                isNotificationEnabled = notifications[prayer.name] ?: false
+            )
+        }
     }
 
     private fun onGetDailyPrayersSuccess(prayers: List<FullPrayerTimesUiState.PrayerUiState>) {
@@ -351,7 +359,7 @@ class FullPrayerTimesViewModel(
                 return
             }
         }
-        if (!isIgnoringBatteryOptimizations(context)) {
+        if (!batteryOptimizationRepository.isIgnoringBatteryOptimizations()) {
             sendEffect(FullPrayerTimesEffect.ShowBatteryOptimizationDialog)
             return
         }
