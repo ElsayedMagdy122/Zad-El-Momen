@@ -63,7 +63,7 @@ fun BirdCanvas(
     LaunchedEffect(isLaughing) {
         if (!isLaughing) {
             while (true) {
-                delay(Random.nextLong(6000, 15000))
+                delay(Random.nextLong(6000, 12000))
                 isBlinking = true
                 delay(120)
                 lookX = Random.nextInt(-4, 4).toFloat()

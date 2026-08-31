@@ -1,7 +1,8 @@
 package dev.sayed.mehrabalmomen.data.settings.repositiory
 
 import android.content.Context
-import android.util.Log
+import android.os.Build
+import android.os.PowerManager
 import dev.sayed.mehrabalmomen.data.settings.dto.DeviceBrand
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import kotlinx.serialization.json.Json
@@ -11,6 +12,15 @@ import kotlinx.serialization.json.jsonArray
 
 class BatteryOptimizationRepositoryImpl(private val context: Context, private val json: Json) :
     BatteryOptimizationRepository {
+
+    override fun isIgnoringBatteryOptimizations(): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            powerManager.isIgnoringBatteryOptimizations(context.packageName)
+        } else {
+            true
+        }
+    }
     private fun loadBrands(): List<DeviceBrand> {
         return try {
             val jsonString = context.assets.open("dont_kill_app.json")
