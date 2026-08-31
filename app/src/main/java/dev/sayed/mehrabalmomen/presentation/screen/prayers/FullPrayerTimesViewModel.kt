@@ -15,7 +15,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
-import dev.sayed.mehrabalmomen.domain.util.Logger
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.toPrayerName
