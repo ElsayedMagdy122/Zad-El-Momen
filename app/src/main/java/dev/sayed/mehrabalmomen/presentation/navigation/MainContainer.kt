@@ -26,7 +26,7 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionOverlay
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 
@@ -41,7 +41,7 @@ fun MainContainer(
 
     val navItems = listOf(
         Route.HomeScreen,
-        Route.FullPrayerTimeView,
+        Route.PrayerTimes,
         Route.AzkarScreen,
         Route.RadioScreen,
         Route.SettingsScreen
@@ -95,7 +95,7 @@ fun MainContainer(
                 .padding(bottom = 74.dp)
         ) {
             composable(Route.HomeScreen.route) { HomeScreen(rootNavController) }
-            composable(Route.FullPrayerTimeView.route) { FullPrayerTimesViewScreen(rootNavController) }
+            composable(Route.PrayerTimes.route) { PrayerTimesScreen(rootNavController) }
             composable(Route.AzkarScreen.route) { AzkarScreen(rootNavController) }
             composable(Route.RadioScreen.route) { RadioScreen(rootNavController) }
             composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }

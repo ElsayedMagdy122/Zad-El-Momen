@@ -2,11 +2,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,13 +40,13 @@ import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.ExperimentalTime
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@RequiresApi(33)
 @SuppressLint("BatteryLife")
 @ExperimentalTime
 @Composable
-fun FullPrayerTimesViewScreen(
+fun PrayerTimesScreen(
     navController: NavController,
-    viewModel: FullPrayerTimesViewModel = koinViewModel()
+    viewModel: PrayerTimesViewModel = koinViewModel(),
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
@@ -80,30 +77,24 @@ fun FullPrayerTimesViewScreen(
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
 
-            FullPrayerTimesEffect.RequestExactAlarm -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    context.startActivity(
-                        Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    )
-                }
+            PrayerTimesEffect.RequestExactAlarm -> {
+                context.startActivity(
+                    Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                )
             }
 
-            FullPrayerTimesEffect.RequestNotificationPermission -> {
+            PrayerTimesEffect.RequestNotificationPermission -> {
                 notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
 
-            FullPrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
+            PrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", context.packageName, null)
                 }
                 context.startActivity(intent)
             }
 
-            FullPrayerTimesEffect.RequestXiaomiAutoStart -> {
-                openXiaomiAutoStart(context)
-            }
-
-            FullPrayerTimesEffect.NavigateBack -> {
+            PrayerTimesEffect.NavigateBack -> {
                 navController.popBackStack()
             }
 
@@ -137,18 +128,16 @@ fun FullPrayerTimesViewScreen(
                 countdownTime = countdownTime,
             )
         }
-        items(state.prayers) {
+        items(state.prayers) { prayerUiState ->
             PrayerItem(
-                prayerNameResource = it.name,
-                prayerTime = it.time.time,
-                isAm = it.time.isAm,
-                isNextPrayer = it.isUpComing,
-                isNotificationEnabled = it.isNotificationEnabled,
-                onNotificationClick = { prayerName, enabled ->
-                    viewModel.onClickEnablePrayer(prayerName, enabled)
-                }
-
-            )
+                prayerNameResource = prayerUiState.name,
+                prayerTime = prayerUiState.time.time,
+                isAm = prayerUiState.time.isAm,
+                isNextPrayer = prayerUiState.isUpComing,
+                isNotificationEnabled = prayerUiState.isNotificationEnabled,
+            ) { prayerName, enabled ->
+                viewModel.onClickEnablePrayer(prayerName, enabled)
+            }
         }
     }
 
@@ -158,18 +147,5 @@ fun FullPrayerTimesViewScreen(
             onDismiss = viewModel::onDismissBatteryDialog,
             listener = viewModel
         )
-    }
-}
-
-fun openXiaomiAutoStart(context: Context) {
-    try {
-        val intent = Intent().apply {
-            component = ComponentName(
-                "com.miui.securitycenter",
-                "com.miui.permcenter.autostart.AutoStartManagementActivity"
-            )
-        }
-        context.startActivity(intent)
-    } catch (e: Exception) {
     }
 }

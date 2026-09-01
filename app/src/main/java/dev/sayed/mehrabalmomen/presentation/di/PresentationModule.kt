@@ -13,7 +13,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimizatio
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListViewModel
@@ -33,7 +33,7 @@ import org.koin.dsl.module
 
 val presentationModule = module {
     viewModelOf(::HomeViewModel)
-    viewModelOf(::FullPrayerTimesViewModel)
+    viewModelOf(::PrayerTimesViewModel)
     viewModelOf(::QiblahViewModel)
     viewModelOf(::PermissionsViewModel)
     viewModelOf(::CalculationMethodViewModel)

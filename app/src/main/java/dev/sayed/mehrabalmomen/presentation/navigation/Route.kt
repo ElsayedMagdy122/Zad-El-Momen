@@ -19,8 +19,8 @@ sealed interface Route {
     }
 
     @Serializable
-    data object FullPrayerTimeView : Route {
-        override val route = "full_prayer"
+    data object PrayerTimes : Route {
+        override val route = "prayer_times"
     }
 
     @Serializable

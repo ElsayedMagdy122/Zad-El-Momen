@@ -6,7 +6,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @ExperimentalTime
-data class FullPrayerTimesUiState(
+data class PrayerTimesUiState(
     val time: TimeUiState = TimeUiState(),
     val prayers: List<PrayerUiState> = emptyList(),
     val nextPrayer: PrayerUiState = PrayerUiState(),

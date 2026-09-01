@@ -279,7 +279,7 @@ class HomeViewModel(
 
 
     override fun onClickViewAll() {
-        sendEffect(HomeEffect.NavigateToFullPrayersDetails)
+        sendEffect(HomeEffect.NavigateToPrayerTimes)
     }
 
     override fun onClickSettings() {

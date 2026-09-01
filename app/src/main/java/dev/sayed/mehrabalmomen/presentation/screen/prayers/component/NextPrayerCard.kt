@@ -20,14 +20,14 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesUiState
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesUiState
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @Composable
 fun NextPrayerCard(
-    state: FullPrayerTimesUiState,
-    countdownTime: FullPrayerTimesUiState.TimeUiState,
+    state: PrayerTimesUiState,
+    countdownTime: PrayerTimesUiState.TimeUiState,
     modifier: Modifier = Modifier
 ) {
     val language = LocalAppLocale.current
