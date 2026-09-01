@@ -3,8 +3,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.bookmark.Bookmark
 import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
@@ -12,15 +12,19 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
-import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerState
 import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
@@ -28,13 +32,14 @@ class SurahAyatViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val settingsRepository: SettingsRepository,
     private val quranAudioRepository: QuranAudioRepository,
-    private val audioPlayerManager: AudioPlayerManager,
     private val recitationPreferences: RecitationPreferences,
     private val companionRepository: CompanionRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
     SurahAyatUiState()
-), SurahAyatInteractionListener {
+), SurahAyatInteractionListener, KoinComponent {
+
+    private val audioPlayer: AudioPlayer by inject(named("quran"))
 
     private val surahId: Int = checkNotNull(savedStateHandle["surahId"])
     private val arabicName: String = checkNotNull(savedStateHandle["arabicName"])
@@ -74,7 +79,7 @@ class SurahAyatViewModel(
                         )
                     } else if (isNewReciter) {
                         // User selected a new reciter from list/search
-                        audioPlayerManager.stop()
+                        audioPlayer.stop()
                         updateState { it.copy(showTilawahBox = true, showActions = false) }
                         loadTimingsAndPlay(
                             readerId = lastReciter.id,
@@ -112,11 +117,9 @@ class SurahAyatViewModel(
 
     private fun observeAudioPlayerState() {
         viewModelScope.launch {
-            audioPlayerManager.playerState.collectLatest { audioState ->
-                val isPlaying =
-                    audioState.playbackState == AudioPlayerState.AudioPlaybackState.PLAYING
-                val isBuffering =
-                    audioState.playbackState == AudioPlayerState.AudioPlaybackState.BUFFERING
+            audioPlayer.playerState.collectLatest { audioState ->
+                val isPlaying = audioState.status == AudioPlayerStatus.PLAYING
+                val isBuffering = audioState.status == AudioPlayerStatus.BUFFERING
 
                 updateState {
                     it.copy(
@@ -137,19 +140,19 @@ class SurahAyatViewModel(
                             if (state.repeatCount > 0 && state.currentRepeatIteration < state.repeatCount - 1) {
                                 // Repeat the current ayah
                                 updateState { it.copy(currentRepeatIteration = it.currentRepeatIteration + 1) }
-                                audioPlayerManager.seekTo(timing.startTimeMs)
+                                audioPlayer.seekTo(timing.startTimeMs)
                                 return@collectLatest
                             } else {
                                 // Repeats finished for this ayah
                                 if (!state.isContinuousReading) {
                                     // Stop if not continuous mode
-                                    audioPlayerManager.pause()
-                                    audioPlayerManager.seekTo(timing.startTimeMs)
+                                    audioPlayer.pause()
+                                    audioPlayer.seekTo(timing.startTimeMs)
                                     updateState { it.copy(currentRepeatIteration = 0) }
                                     return@collectLatest
                                 } else if (timing.verseNumber >= state.ayat.size) {
                                     // Stop if end of surah reached
-                                    audioPlayerManager.pause()
+                                    audioPlayer.pause()
                                     updateState {
                                         it.copy(
                                             isContinuousReading = false,
@@ -222,7 +225,7 @@ class SurahAyatViewModel(
                     val targetTiming = timings.find { it.verseNumber == ayahId }
                     val startMs = targetTiming?.startTimeMs ?: 0L
                     withContext(Dispatchers.Main) {
-                        audioPlayerManager.play(track.audioUrl, startMs)
+                        audioPlayer.play(AudioSource.fromPath(track.audioUrl), startMs)
                     }
                 }
             },
@@ -272,10 +275,16 @@ class SurahAyatViewModel(
         }
 
         if (state.isAudioPlaying) {
-            audioPlayerManager.pause()
+            audioPlayer.pause()
         } else {
-            val currentPlayerUrl = audioPlayerManager.playerState.value.currentUrl
-            val isSameReciter = currentPlayerUrl != null && currentPlayerUrl == state.currentAudioUrl
+            val currentAudioState = audioPlayer.playerState.value
+            val currentSource = currentAudioState.currentSource
+            val currentUrl = when (currentSource) {
+                is AudioSource.RemoteUrl -> currentSource.url
+                is AudioSource.LocalFile -> "file://${currentSource.path}"
+                else -> null
+            }
+            val isSameReciter = currentUrl != null && currentUrl == state.currentAudioUrl
 
             if (state.timings.isEmpty() || !isSameReciter) {
                 loadTimingsAndPlay(
@@ -288,11 +297,11 @@ class SurahAyatViewModel(
                 val currentTiming =
                     state.timings.find { it.verseNumber == state.currentAudioAyahId }
                 currentTiming?.let { timing ->
-                    if (audioPlayerManager.playerState.value.currentPositionMs >= timing.endTimeMs - 200) {
-                        audioPlayerManager.seekTo(timing.startTimeMs)
+                    if (currentAudioState.currentPositionMs >= timing.endTimeMs - 200) {
+                        audioPlayer.seekTo(timing.startTimeMs)
                     }
                 }
-                audioPlayerManager.resume()
+                audioPlayer.resume()
             }
         }
     }
@@ -314,8 +323,8 @@ class SurahAyatViewModel(
     private fun seekToAyah(ayahNumber: Int) {
         val timing = screenState.value.timings.find { it.verseNumber == ayahNumber }
         if (timing != null) {
-            audioPlayerManager.seekTo(timing.startTimeMs)
-            audioPlayerManager.resume()
+            audioPlayer.seekTo(timing.startTimeMs)
+            audioPlayer.resume()
             updateState {
                 it.copy(
                     currentAudioAyahId = ayahNumber,
@@ -349,7 +358,7 @@ class SurahAyatViewModel(
     }
 
     fun onCloseTilawahBox() {
-        audioPlayerManager.stop()
+        audioPlayer.stop()
         updateState {
             it.copy(
                 showTilawahBox = false,
@@ -362,7 +371,7 @@ class SurahAyatViewModel(
     }
 
     fun onClickReciters() {
-        audioPlayerManager.stop()
+        audioPlayer.stop()
         sendEffect(
             SurahAyatEffect.NavigateToReciters(
                 surahId = surahId,
@@ -373,7 +382,7 @@ class SurahAyatViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        audioPlayerManager.stop()
+        audioPlayer.stop()
     }
 
     fun onAyahVisible(ayahId: Int) {

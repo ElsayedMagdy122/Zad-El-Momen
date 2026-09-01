@@ -1,7 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import com.google.firebase.analytics.FirebaseAnalytics
-import dev.sayed.mehrabalmomen.data.audio.ExoAudioPlayerManager
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahViewModel
@@ -17,18 +17,15 @@ import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioAudioPlayerManager
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val presentationModule = module {
@@ -53,8 +50,8 @@ val presentationModule = module {
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
     viewModelOf(::CompanionViewModel)
-    factory<AudioPlayerManager> { ExoAudioPlayerManager(androidContext()) }
-    single<PlayerController> { RadioAudioPlayerManager(androidContext()) }
+    factory(named("quran")) { get<AudioPlayer>() }
+    single(named("radio")) { get<AudioPlayer>() }
     single { FirebaseAnalytics.getInstance(get()) }
     single { AnalyticsHelper(get()) }
 }

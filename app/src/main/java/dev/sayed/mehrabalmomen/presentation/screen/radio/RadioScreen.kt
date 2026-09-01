@@ -12,11 +12,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.presentation.screen.radio.components.RadioContent
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerAction
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.AudioPlayerService
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.ACTION_SENDED
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.NOTIFICATION_TITLE
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerConstants.STREAM_URL
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerAction
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerService
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerConstants.ACTION_SENDED
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerConstants.NOTIFICATION_TITLE
+import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerConstants.STREAM_URL
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -65,20 +65,20 @@ private fun HandleRadioEffects(
 
             is RadioChannelsEffect.PlaySound -> {
 
-                val intent = Intent(context, AudioPlayerService::class.java)
+                val intent = Intent(context, RadioPlayerService::class.java)
 
                 intent.putExtra(STREAM_URL, effect.url)
                 intent.putExtra(NOTIFICATION_TITLE, effect.titleText)
-                intent.putExtra(ACTION_SENDED, AudioPlayerAction.PLAY.name)
+                intent.putExtra(ACTION_SENDED, RadioPlayerAction.PLAY.name)
 
                 context.startService(intent)
             }
 
             is RadioChannelsEffect.PauseSound -> {
 
-                val intent = Intent(context, AudioPlayerService::class.java)
+                val intent = Intent(context, RadioPlayerService::class.java)
 
-                intent.putExtra(ACTION_SENDED, AudioPlayerAction.PAUSE.name)
+                intent.putExtra(ACTION_SENDED, RadioPlayerAction.PAUSE.name)
 
                 context.startService(intent)
             }
