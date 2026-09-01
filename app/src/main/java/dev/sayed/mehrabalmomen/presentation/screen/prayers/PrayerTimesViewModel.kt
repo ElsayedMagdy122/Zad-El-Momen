@@ -55,6 +55,9 @@ class PrayerTimesViewModel(
         refreshBatteryStatus()
     }
 
+    /**
+     * Updates the UI state with the current battery optimization status.
+     */
     fun refreshBatteryStatus() {
         val isIgnoring = batteryOptimizationRepository.isIgnoringBatteryOptimizations()
         updateState { it.copy(isBatteryOptimizationEnabled = isIgnoring) }
@@ -74,6 +77,9 @@ class PrayerTimesViewModel(
         analyticsHelper.logScreen("PrayerTimes")
     }
 
+    /**
+     * Retrieves the list of prayer times for the current day and updates the state.
+     */
     private fun getDailyPrayers() {
         viewModelScope.launch {
             try {
@@ -115,6 +121,9 @@ class PrayerTimesViewModel(
         }
     }
 
+    /**
+     * Identifies the next prayer and starts the countdown timer.
+     */
     private fun getNextPrayer() {
         viewModelScope.launch {
             try {
@@ -139,6 +148,9 @@ class PrayerTimesViewModel(
         }
     }
 
+    /**
+     * Starts a periodic timer that updates the remaining time until the next prayer.
+     */
     private fun startCountdown(targetMillis: Long) {
         countdownJob?.cancel()
         countdownJob = viewModelScope.launch {
@@ -181,6 +193,7 @@ class PrayerTimesViewModel(
         prayers: List<PrayerTimesUiState.PrayerUiState>,
         now: Long
     ): List<PrayerTimesUiState.PrayerUiState> {
+        // Implementation for prayer progress calculation
         return prayers
     }
 
@@ -210,7 +223,7 @@ class PrayerTimesViewModel(
     }
 
     override fun onLearnMoreClick() {
-        // Implementation
+        // Open tutorial or help screen
     }
 
     override fun onClickEnablePrayer(prayerName: Prayer.PrayerName, isEnabled: Boolean) {
@@ -230,6 +243,9 @@ class PrayerTimesViewModel(
         }
     }
 
+    /**
+     * Checks for necessary system permissions before enabling a prayer alarm.
+     */
     private fun checkPermissionsBeforeEnable() {
         if (!notificationScheduler.hasPermission()) {
             sendEffect(PrayerTimesEffect.RequestNotificationPermission)

@@ -16,6 +16,10 @@ import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Use case responsible for coordinating the calculation and scheduling of prayer alarms.
+ * It retrieves the user's prayer settings, calculates daily times, and persists the alarms.
+ */
 @OptIn(ExperimentalTime::class)
 class PrayerSchedulingUseCase(
     private val settingsRepository: SettingsRepository,
@@ -25,6 +29,9 @@ class PrayerSchedulingUseCase(
     private val logger: Logger
 ) {
 
+    /**
+     * Re-calculates and schedules all prayer alarms for the current day.
+     */
     suspend fun rescheduleTodayPrayerAlarms(): RescheduleResult {
         val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
         val prayers = getDailyPrayers(today)
@@ -59,6 +66,7 @@ class PrayerSchedulingUseCase(
         }
     }
 
+    /** Maps a prayer name to a unique integer ID used for system alarms. */
     private fun Prayer.PrayerName.alarmId(): Int = when (this) {
         Prayer.PrayerName.FAJR -> 10
         Prayer.PrayerName.ZUHR -> 20

@@ -66,7 +66,6 @@ val repositoryModule = module {
     }
     single<PrayerAlarmRepository> {
         PrayerAlarmRepositoryImpl(
-            context = androidContext(),
             alarmScheduler = get()
         )
     }
@@ -77,7 +76,6 @@ val repositoryModule = module {
 
     single<ReminderSchedulerRepository> {
         ReminderSchedulerRepositoryImpl(
-            context = androidContext(),
             settingsRepository = get(),
             alarmScheduler = get()
         )
