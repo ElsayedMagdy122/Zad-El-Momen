@@ -47,8 +47,8 @@ class MapsViewModel(
     override fun onDetectLocationClicked() {
         tryToCall(
             block = { locationRepository.getCurrentDeviceLocation() },
-            onSuccess = { latLng ->
-                onDetectLocationSuccess(latLng.latitude, latLng.longitude)
+            onSuccess = { location ->
+                onDetectLocationSuccess(location.latitude, location.longitude)
             },
             onError = {
                 sendEffect(
