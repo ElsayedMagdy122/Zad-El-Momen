@@ -2,22 +2,22 @@ package dev.sayed.mehrabalmomen.presentation.screen.maps
 
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 
 class MapsViewModel(
     private val settingsRepository: SettingsRepository,
     private val locationRepository: LocationRepository,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<MapsUiState, MapsEffect>(MapsUiState()), MapsInteractionListener {
     init {
         loadUserCurrentLocation()
     }
     fun onScreenOpened() {
-        analyticsHelper.logScreen("maps")
+        analyticsTracker.logScreen("maps")
     }
     private fun loadUserCurrentLocation() {
         tryToCall(

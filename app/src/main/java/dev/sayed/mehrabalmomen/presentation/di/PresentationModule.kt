@@ -23,7 +23,6 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -50,8 +49,9 @@ val presentationModule = module {
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
     viewModelOf(::CompanionViewModel)
+    
     factory(named("quran")) { get<AudioPlayer>() }
     single(named("radio")) { get<AudioPlayer>() }
+    
     single { FirebaseAnalytics.getInstance(get()) }
-    single { AnalyticsHelper(get()) }
 }

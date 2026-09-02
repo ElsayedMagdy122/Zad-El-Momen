@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerState
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
@@ -10,7 +11,6 @@ import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ import org.koin.core.qualifier.named
 
 class RadioChannelsViewModel(
     private val radioRepository: RadioRepository,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<RadioUiState, RadioChannelsEffect>(RadioUiState()),
     RadioChannelsInteractionListener, KoinComponent {
 
@@ -113,7 +113,7 @@ class RadioChannelsViewModel(
     }
 
     private fun getChannelsByCategory(categoryId: String) {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click category",
             params = mapOf(
                 "category_id" to categoryId
@@ -173,7 +173,7 @@ class RadioChannelsViewModel(
 
     override fun onPlayClick(id: Int) {
         val channel = screenState.value.channels.firstOrNull { it.id == id } ?: return
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click play",
             params = mapOf(
                 "channel_name" to channel.nameAr

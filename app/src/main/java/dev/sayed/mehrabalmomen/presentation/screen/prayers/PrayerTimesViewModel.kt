@@ -1,8 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.repository.notification.NotificationScheduler
+import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
@@ -12,7 +14,6 @@ import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.domain.utils.Logger
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,9 +36,8 @@ class PrayerTimesViewModel(
     private val notificationsRepository: PrayerNotificationsRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val batteryOptimizationRepository: BatteryOptimizationRepository,
-    private val alarmScheduler: AlarmScheduler,
-    private val notificationScheduler: NotificationScheduler,
-    private val analyticsHelper: AnalyticsHelper,
+    private val permissionProvider: PermissionProvider,
+    private val analyticsTracker: AnalyticsTracker,
     private val logger: Logger,
 ) : BaseViewModel<PrayerTimesUiState, PrayerTimesEffect>(PrayerTimesUiState()),
     PrayerTimesInteractionListener, BatteryOptimizationInteractionListener {
@@ -74,7 +74,7 @@ class PrayerTimesViewModel(
     }
 
     fun onScreenOpened() {
-        analyticsHelper.logScreen("PrayerTimes")
+        analyticsTracker.logScreen("PrayerTimes")
     }
 
     /**
@@ -233,7 +233,7 @@ class PrayerTimesViewModel(
             }
             notificationsRepository.setPrayerEnabled(prayerName, isEnabled)
             scheduleAlarmsIfNeeded()
-            analyticsHelper.logEvent(
+            analyticsTracker.logEvent(
                 "prayer_notification_toggled",
                 mapOf(
                     "prayer" to prayerName.name,
@@ -247,11 +247,11 @@ class PrayerTimesViewModel(
      * Checks for necessary system permissions before enabling a prayer alarm.
      */
     private fun checkPermissionsBeforeEnable() {
-        if (!notificationScheduler.hasPermission()) {
+        if (!permissionProvider.hasNotificationPermission()) {
             sendEffect(PrayerTimesEffect.RequestNotificationPermission)
             return
         }
-        if (!alarmScheduler.hasPermission()) {
+        if (!permissionProvider.canScheduleExactAlarms()) {
             sendEffect(PrayerTimesEffect.RequestExactAlarm)
             return
         }

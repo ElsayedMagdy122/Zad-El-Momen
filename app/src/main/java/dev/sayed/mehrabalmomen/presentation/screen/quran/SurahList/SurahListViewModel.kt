@@ -1,62 +1,57 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
-import android.annotation.SuppressLint
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import kotlinx.coroutines.delay
 
 class SurahListViewModel(
     private val quranRepository: QuranRepository,
-    private val analyticsHelper: AnalyticsHelper
-) : BaseViewModel<SurahListUiState, SurahListEffect>(
-    SurahListUiState()
-), SurahListInteractionListener {
+    private val analyticsTracker: AnalyticsTracker
+) : BaseViewModel<SurahListUiState, SurahListEffect>(SurahListUiState()),
+    SurahListInteractionListener {
 
     init {
         loadSurahs()
     }
 
-    @SuppressLint("SuspiciousIndentation")
     private fun loadSurahs() {
         tryToCall(
             onStart = { updateState { it.copy(isLoading = true) } },
-            block = {
-                val tafseer = quranRepository.getAyahTafseer(114, 1)
-                println("TAfseer : ${tafseer}")
-                quranRepository.getSurahs().map { it.toUiState() }
-            },
+            block = { quranRepository.getSurahs() },
             onSuccess = { surahs ->
-                updateState { it.copy(surahList = surahs) }
+                updateState { it.copy(surahList = surahs.map { it.toUiState() }) }
                 delay(100)
                 updateState { it.copy(isLoading = false) }
             },
-            onError = {}
+            onError = { updateState { it.copy(isLoading = false) } }
         )
     }
+
     fun onScreenOpened() {
-        analyticsHelper.logScreen("surah list")
+        analyticsTracker.logScreen("surah list")
     }
+
     override fun onSurahClick(surahId: Int, arabicName: String, englishName: String) {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click surah",
             params = mapOf(
                 "surah_id" to surahId.toString(),
-                "surah_name" to arabicName,
+                "surah_name" to englishName
             )
         )
-        sendEffect(SurahListEffect.NavigateToSurahAyat(surahId, arabicName,englishName))
+        sendEffect(SurahListEffect.NavigateToSurahAyat(surahId, arabicName, englishName))
     }
 
     override fun onSearchClick() {
-        analyticsHelper.logEvent(
-            name = "on click search"
+        analyticsTracker.logEvent(
+            name = "on click search surah"
         )
         sendEffect(SurahListEffect.NavigateToQuranSearch)
     }
 
     override fun onBookmarksClick() {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click bookmarks"
         )
         sendEffect(SurahListEffect.NavigateToBookmarksList)

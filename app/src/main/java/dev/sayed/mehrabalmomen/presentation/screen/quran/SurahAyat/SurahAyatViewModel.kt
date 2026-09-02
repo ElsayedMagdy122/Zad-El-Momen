@@ -14,7 +14,6 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
-import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
@@ -26,7 +25,10 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SurahAyatViewModel(
     private val quranRepository: QuranRepository,
     private val readingProgressRepository: ReadingProgressRepository,
@@ -71,7 +73,6 @@ class SurahAyatViewModel(
                     }
 
                     if (isInitialLoad) {
-                        // Verify availability on start (silent)
                         loadTimingsAndPlay(
                             readerId = lastReciter.id,
                             ayahId = screenState.value.currentAudioAyahId,
@@ -79,7 +80,6 @@ class SurahAyatViewModel(
                             isAutomaticLoad = true
                         )
                     } else if (isNewReciter) {
-                        // User selected a new reciter from list/search
                         audioPlayer.stop()
                         updateState { it.copy(showTilawahBox = true, showActions = false) }
                         loadTimingsAndPlay(
@@ -133,26 +133,20 @@ class SurahAyatViewModel(
                     val currentPos = audioState.currentPositionMs
                     val state = screenState.value
 
-                    // 1. Handle Repetition and Stopping for the current ayah
                     val currentTiming = state.timings.find { it.verseNumber == state.currentAudioAyahId }
                     currentTiming?.let { timing ->
-                        // If we reached the end of the current ayah
                         if (currentPos >= timing.endTimeMs - 250) {
                             if (state.repeatCount > 0 && state.currentRepeatIteration < state.repeatCount - 1) {
-                                // Repeat the current ayah
                                 updateState { it.copy(currentRepeatIteration = it.currentRepeatIteration + 1) }
                                 audioPlayer.seekTo(timing.startTimeMs)
                                 return@collectLatest
                             } else {
-                                // Repeats finished for this ayah
                                 if (!state.isContinuousReading) {
-                                    // Stop if not continuous mode
                                     audioPlayer.pause()
                                     audioPlayer.seekTo(timing.startTimeMs)
                                     updateState { it.copy(currentRepeatIteration = 0) }
                                     return@collectLatest
                                 } else if (timing.verseNumber >= state.ayat.size) {
-                                    // Stop if end of surah reached
                                     audioPlayer.pause()
                                     updateState {
                                         it.copy(
@@ -162,12 +156,10 @@ class SurahAyatViewModel(
                                     }
                                     return@collectLatest
                                 }
-                                // If continuous mode is ON and not end of surah, we let it flow
                             }
                         }
                     }
 
-                    // 2. Update UI based on actual player position
                     val detectedTiming = state.timings.find {
                         currentPos >= it.startTimeMs && currentPos < it.endTimeMs
                     }
@@ -175,14 +167,13 @@ class SurahAyatViewModel(
                     detectedTiming?.let { timing ->
                         val detectedAyah = timing.verseNumber
 
-                        // Update UI and scrolling when the ayah changes
                         if (state.currentAudioAyahId != detectedAyah) {
                             updateState {
                                 it.copy(
                                     currentAudioAyahId = detectedAyah,
                                     selectedAyaId = detectedAyah,
                                     scrollToAyaId = detectedAyah,
-                                    currentRepeatIteration = 0 // Reset iteration when moving to new ayah
+                                    currentRepeatIteration = 0 
                                 )
                             }
                         }
@@ -235,7 +226,6 @@ class SurahAyatViewModel(
                     it.copy(
                         isAudioLoading = false,
                         messageState = false,
-                        // Clear selected reciter if load fails during verification
                         selectedReaderId = if (isAutomaticLoad) null else it.selectedReaderId,
                         selectedReaderNameAr = if (isAutomaticLoad) null else it.selectedReaderNameAr,
                         selectedReaderNameEn = if (isAutomaticLoad) null else it.selectedReaderNameEn
@@ -421,7 +411,7 @@ class SurahAyatViewModel(
                 }
                 viewModelScope.launch {
                     companionRepository.updateQuranReadStatus(true)
-                    companionRepository.updateLastInteraction(System.currentTimeMillis())
+                    companionRepository.updateLastInteraction(Clock.System.now().toEpochMilliseconds())
                 }
             },
             onError = { throwable ->

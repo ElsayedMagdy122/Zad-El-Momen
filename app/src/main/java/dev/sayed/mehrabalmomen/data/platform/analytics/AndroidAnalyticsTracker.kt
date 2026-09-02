@@ -1,16 +1,17 @@
-package dev.sayed.mehrabalmomen.presentation.utils
+package dev.sayed.mehrabalmomen.data.platform.analytics
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 
-class AnalyticsHelper(
+/**
+ * Android implementation of [AnalyticsTracker] using Firebase Analytics.
+ */
+class AndroidAnalyticsTracker(
     private val firebaseAnalytics: FirebaseAnalytics
-) {
+) : AnalyticsTracker {
 
-    fun logEvent(
-        name: String,
-        params: Map<String, String> = emptyMap()
-    ) {
+    override fun logEvent(name: String, params: Map<String, String>) {
         firebaseAnalytics.logEvent(name) {
             params.forEach { (key, value) ->
                 param(key, value)
@@ -18,7 +19,7 @@ class AnalyticsHelper(
         }
     }
 
-    fun logScreen(screenName: String) {
+    override fun logScreen(screenName: String) {
         logEvent(
             name = "screen_view",
             params = mapOf("screen_name" to screenName)
