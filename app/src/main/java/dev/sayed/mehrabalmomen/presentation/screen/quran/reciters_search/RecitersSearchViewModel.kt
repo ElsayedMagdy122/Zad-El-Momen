@@ -3,12 +3,12 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
@@ -28,7 +28,6 @@ import org.koin.core.qualifier.named
 class RecitersSearchViewModel(
     private val readersRepository: QuranAudioReadersRepository,
     private val quranAudioRepository: QuranAudioRepository,
-    private val recitationPreferences: RecitationPreferences,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<RecitersSearchUiState, RecitersSearchEffect>(RecitersSearchUiState()), KoinComponent {
 
@@ -113,12 +112,14 @@ class RecitersSearchViewModel(
     fun onReciterClick(readerId: Int) {
         val selectedReciter = allReaders.find { it.id == readerId } ?: return
         viewModelScope.launch {
-            recitationPreferences.saveLastReciter(
-                id = selectedReciter.id,
-                nameAr = selectedReciter.nameAr,
-                nameEn = selectedReciter.nameEn,
-                baseAudioUrl = selectedReciter.baseAudioUrl,
-                rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+            readersRepository.saveLastReciter(
+                ReciterPreference(
+                    id = selectedReciter.id,
+                    nameAr = selectedReciter.nameAr,
+                    nameEn = selectedReciter.nameEn,
+                    baseAudioUrl = selectedReciter.baseAudioUrl,
+                    rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+                )
             )
             updateState { state ->
                 state.copy(
@@ -147,13 +148,21 @@ class RecitersSearchViewModel(
 
     private fun observeDownloadProgress(reciterId: Int) {
         viewModelScope.launch {
-            readersRepository.getDownloadWorkInfo(reciterId, surahId).collectLatest { workInfos ->
-                val workInfo = workInfos.firstOrNull() ?: return@collectLatest
-                val progress = workInfo.progress.getInt("progress", 0)
+            readersRepository.observeDownloadStatus(reciterId, surahId).collectLatest { status ->
                 updateState { state ->
                     state.copy(
                         results = state.results.map {
-                            if (it.id == reciterId) it.copy(downloadProgress = progress) else it
+                            if (it.id == reciterId) {
+                                val downloadState = when (status.state) {
+                                    dev.sayed.mehrabalmomen.domain.model.audio.DownloadStatus.State.COMPLETED -> DownloadState.DOWNLOADED
+                                    dev.sayed.mehrabalmomen.domain.model.audio.DownloadStatus.State.FAILED -> DownloadState.FAILED
+                                    else -> DownloadState.DOWNLOADING
+                                }
+                                it.copy(
+                                    downloadProgress = status.progress,
+                                    downloadState = downloadState
+                                )
+                            } else it
                         }
                     )
                 }
@@ -190,11 +199,10 @@ class RecitersSearchViewModel(
                         else -> null
                     }
                     val updatedResults = state.results.map { reciter ->
-                        val isLocalUrl =
-                            currentUrl?.contains("audio/reciters/${reciter.id}/") == true
                         val isRemoteUrl =
                             currentUrl?.startsWith(reciter.baseAudioUrl.trimEnd('/')) == true
-                        val isCurrentReciter = isLocalUrl || isRemoteUrl
+                        val isLocalFile = currentUrl?.contains("audio/reciters/${reciter.id}/") == true
+                        val isCurrentReciter = isLocalFile || isRemoteUrl
 
                         if (isCurrentReciter) {
                             val newPlayState = when (audioState.status) {
@@ -217,6 +225,7 @@ class RecitersSearchViewModel(
         val targetReciter = screenState.value.results.find { it.id == reciterId } ?: return
         val currentAudioState = audioPlayer.playerState.value
         val currentSource = currentAudioState.currentSource
+        
         val currentUrl = when (currentSource) {
             is AudioSource.RemoteUrl -> currentSource.url
             is AudioSource.LocalFile -> "file://${currentSource.path}"

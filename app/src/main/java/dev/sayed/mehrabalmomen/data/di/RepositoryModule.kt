@@ -91,6 +91,7 @@ val repositoryModule = module {
         QuranAudioReadersRepositoryImpl(
             readersRemoteDataSource = get(),
             downloadedReciterDao = get(),
+            recitationPreferences = get(),
             context = androidContext()
         )
     }

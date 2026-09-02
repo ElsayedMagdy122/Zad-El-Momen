@@ -3,10 +3,10 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.bookmark.Bookmark
 import dev.sayed.mehrabalmomen.domain.repository.quran.BookmarkRepository
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
@@ -14,6 +14,7 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
@@ -32,7 +33,7 @@ class SurahAyatViewModel(
     private val bookmarkRepository: BookmarkRepository,
     private val settingsRepository: SettingsRepository,
     private val quranAudioRepository: QuranAudioRepository,
-    private val recitationPreferences: RecitationPreferences,
+    private val readersRepository: QuranAudioReadersRepository,
     private val companionRepository: CompanionRepository,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SurahAyatUiState, SurahAyatEffect>(
@@ -55,7 +56,7 @@ class SurahAyatViewModel(
 
     private fun loadLastReciter() {
         viewModelScope.launch {
-            recitationPreferences.lastReciter.collectLatest { lastReciter ->
+            readersRepository.observeLastReciter().collectLatest { lastReciter ->
                 if (lastReciter != null) {
                     val currentId = screenState.value.selectedReaderId
                     val isInitialLoad = currentId == null

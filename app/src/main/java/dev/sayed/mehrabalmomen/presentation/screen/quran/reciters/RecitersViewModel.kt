@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
@@ -12,6 +11,8 @@ import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.exceptions.NetworkException
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.model.audio.DownloadStatus
+import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
@@ -25,7 +26,6 @@ import org.koin.core.qualifier.named
 class RecitersViewModel(
     private val readersRepository: QuranAudioReadersRepository,
     private val quranAudioRepository: QuranAudioRepository,
-    private val recitationPreferences: RecitationPreferences,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()), KoinComponent {
 
@@ -44,12 +44,14 @@ class RecitersViewModel(
     fun onReciterSelected(readerId: Int) {
         val selectedReciter = allReaders.find { it.id == readerId } ?: return
         viewModelScope.launch {
-            recitationPreferences.saveLastReciter(
-                id = selectedReciter.id,
-                nameAr = selectedReciter.nameAr,
-                nameEn = selectedReciter.nameEn,
-                baseAudioUrl = selectedReciter.baseAudioUrl,
-                rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+            readersRepository.saveLastReciter(
+                ReciterPreference(
+                    id = selectedReciter.id,
+                    nameAr = selectedReciter.nameAr,
+                    nameEn = selectedReciter.nameEn,
+                    baseAudioUrl = selectedReciter.baseAudioUrl,
+                    rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+                )
             )
             updateState { state ->
                 state.copy(
@@ -179,22 +181,18 @@ class RecitersViewModel(
 
     private fun observeDownloadProgress(reciterId: Int) {
         viewModelScope.launch {
-            readersRepository.getDownloadWorkInfo(reciterId, surahId).collectLatest { workInfos ->
-                val workInfo = workInfos.firstOrNull() ?: return@collectLatest
-                val progress = workInfo.progress.getInt("progress", 0)
-                val workState = workInfo.state
-
+            readersRepository.observeDownloadStatus(reciterId, surahId).collectLatest { status ->
                 updateState { currentState ->
                     currentState.copy(
                         reciters = currentState.reciters.map {
                             if (it.id == reciterId) {
-                                val downloadState = when {
-                                    workState.isFinished && workState == androidx.work.WorkInfo.State.SUCCEEDED -> DownloadState.DOWNLOADED
-                                    workState.isFinished -> DownloadState.FAILED
+                                val downloadState = when (status.state) {
+                                    DownloadStatus.State.COMPLETED -> DownloadState.DOWNLOADED
+                                    DownloadStatus.State.FAILED -> DownloadState.FAILED
                                     else -> DownloadState.DOWNLOADING
                                 }
                                 it.copy(
-                                    downloadProgress = progress,
+                                    downloadProgress = status.progress,
                                     downloadState = downloadState
                                 )
                             } else it
@@ -215,22 +213,19 @@ class RecitersViewModel(
                         is AudioSource.LocalFile -> "file://${currentSource.path}"
                         else -> null
                     }
+                    
                     val updatedReciters = state.reciters.map { reciter ->
-                        val isLocalUrl =
-                            currentUrl?.contains("audio/reciters/${reciter.id}/") == true
                         val isRemoteUrl = currentUrl?.startsWith(
                             reciter.baseAudioUrl.trimEnd('/')
                         ) == true
-                        val isCurrentReciter = isLocalUrl || isRemoteUrl
+                        val isLocalFile = currentUrl?.contains("audio/reciters/${reciter.id}/") == true
+                        val isCurrentReciter = isLocalFile || isRemoteUrl
 
                         if (isCurrentReciter) {
                             val newPlayState = when (audioState.status) {
                                 AudioPlayerStatus.BUFFERING -> PlayState.LOADING
                                 AudioPlayerStatus.PLAYING -> PlayState.PLAY
-                                AudioPlayerStatus.PAUSED,
-                                AudioPlayerStatus.ENDED,
-                                AudioPlayerStatus.IDLE,
-                                AudioPlayerStatus.ERROR -> PlayState.RESUME
+                                else -> PlayState.RESUME
                             }
                             reciter.copy(playState = newPlayState)
                         } else {
@@ -247,6 +242,7 @@ class RecitersViewModel(
         val targetReciter = screenState.value.reciters.find { it.id == reciterId } ?: return
         val currentAudioState = audioPlayer.playerState.value
         val currentSource = currentAudioState.currentSource
+        
         val currentUrl = when (currentSource) {
             is AudioSource.RemoteUrl -> currentSource.url
             is AudioSource.LocalFile -> "file://${currentSource.path}"
