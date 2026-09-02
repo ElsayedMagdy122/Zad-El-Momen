@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 
-interface FullPrayerTimeInteractionListener {
+interface PrayerTimesInteractionListener {
     fun onClickBack()
     fun onClickEnablePrayer(
         prayerName: Prayer.PrayerName,

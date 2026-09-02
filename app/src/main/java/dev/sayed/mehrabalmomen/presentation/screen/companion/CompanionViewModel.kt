@@ -1,17 +1,24 @@
 package dev.sayed.mehrabalmomen.presentation.screen.companion
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
+import dev.sayed.mehrabalmomen.domain.usecase.GetCompanionMessageUseCase
+import dev.sayed.mehrabalmomen.domain.usecase.GetCompanionMessageUseCase.CompanionMessage
 import dev.sayed.mehrabalmomen.domain.usecase.ObserveCompanionUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class CompanionViewModel(
     private val observeCompanionUseCase: ObserveCompanionUseCase,
+    private val getCompanionMessage: GetCompanionMessageUseCase,
     private val companionRepository: CompanionRepository
 ) : BaseViewModel<CompanionUiState, Unit>(
     CompanionUiState()
@@ -36,19 +43,22 @@ class CompanionViewModel(
 
     private fun observeCompanionState() {
         viewModelScope.launch {
-            observeCompanionUseCase().collect { state ->
+            observeCompanionUseCase().collect { (state, mood) ->
                 val previousMood = screenState.value.mood
                 val isDoingActivity = screenState.value.isLaughing || screenState.value.isDoingTasbih
                 
                 updateState {
                     it.copy(
-                        mood = state.mood,
-                        dialogueRes = if (it.dialogueRes == null) 
-                            CompanionDialogue.getMessage(state) else it.dialogueRes
+                        mood = mood,
+                        dialogue = if (it.dialogue == null) {
+                            val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
+                            val message = getCompanionMessage.execute(state, hour)
+                            CompanionDialogue.getMessage(message)
+                        } else it.dialogue
                     )
                 }
                 
-                if (previousMood != state.mood && !isDoingActivity) {
+                if (previousMood != mood && !isDoingActivity) {
                     refreshDialogue()
                 }
             }
@@ -70,10 +80,11 @@ class CompanionViewModel(
         viewModelScope.launch {
             while(true) {
                 delay(2000) 
-                val silenceDuration = System.currentTimeMillis() - screenState.value.lastInteractionTime
+                val now = Clock.System.now().toEpochMilliseconds()
+                val silenceDuration = now - screenState.value.lastInteractionTime
                 if (silenceDuration >= 20000 && !screenState.value.isLaughing && !screenState.value.isDoingTasbih) {
                     tasbihJob = launch { startTasbih() }
-                    updateState { it.copy(lastInteractionTime = System.currentTimeMillis()) }
+                    updateState { it.copy(lastInteractionTime = now) }
                 }
             }
         }
@@ -81,15 +92,15 @@ class CompanionViewModel(
 
     private suspend fun startTasbih() {
         val tasbihMsgs = listOf(
-            R.string.rafiq_tasbih_1, 
-            R.string.rafiq_tasbih_2, 
-            R.string.rafiq_tasbih_3,
-            R.string.rafiq_tasbih_4
+            CompanionMessage.TASBIH_1, 
+            CompanionMessage.TASBIH_2, 
+            CompanionMessage.TASBIH_3,
+            CompanionMessage.TASBIH_4
         )
         updateState {
             it.copy(
                 isDoingTasbih = true,
-                dialogueRes = tasbihMsgs.random()
+                dialogue = CompanionDialogue.getMessage(tasbihMsgs.random())
             )
         }
         delay(15000) 
@@ -98,10 +109,9 @@ class CompanionViewModel(
     }
 
     override fun onInteract() {
-        val now = System.currentTimeMillis()
+        val now = Clock.System.now().toEpochMilliseconds()
         val currentState = screenState.value
 
-        // Cancel Tasbih if user interacts
         if (currentState.isDoingTasbih) {
             tasbihJob?.cancel()
             updateState { it.copy(isDoingTasbih = false) }
@@ -122,8 +132,14 @@ class CompanionViewModel(
         }
 
         viewModelScope.launch {
-            companionRepository.updateLastInteraction(System.currentTimeMillis())
-            if (newTapCount >= 3 && !screenState.value.isLaughing) {
+            companionRepository.updateLastInteraction(now)
+            
+            if (newTapCount < 3) {
+                val (state, _) = observeCompanionUseCase().first()
+                val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
+                val message = getCompanionMessage.execute(state, hour, isManualInteraction = true)
+                updateState { it.copy(dialogue = CompanionDialogue.getMessage(message)) }
+            } else if (!screenState.value.isLaughing) {
                 triggerTickle()
             }
         }
@@ -134,7 +150,7 @@ class CompanionViewModel(
             updateState {
                 it.copy(
                     isLaughing = true,
-                    dialogueRes = R.string.rafiq_tickle
+                    dialogue = CompanionDialogue.getMessage(CompanionMessage.TICKLE)
                 )
             }
             delay(3500) 
@@ -150,12 +166,13 @@ class CompanionViewModel(
 
     fun refreshDialogue() {
         viewModelScope.launch {
-            // Guard against overwriting special activities
             if (screenState.value.isLaughing || screenState.value.isDoingTasbih) return@launch
 
-            val state = observeCompanionUseCase().first()
+            val (state, _) = observeCompanionUseCase().first()
+            val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
+            val message = getCompanionMessage.execute(state, hour)
             updateState {
-                it.copy(dialogueRes = CompanionDialogue.getMessage(state))
+                it.copy(dialogue = CompanionDialogue.getMessage(message))
             }
         }
     }

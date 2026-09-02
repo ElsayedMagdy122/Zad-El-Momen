@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.domain.usecase
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerAlarm
@@ -9,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerAlarmRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -16,14 +16,22 @@ import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Use case responsible for coordinating the calculation and scheduling of prayer alarms.
+ * It retrieves the user's prayer settings, calculates daily times, and persists the alarms.
+ */
 @OptIn(ExperimentalTime::class)
 class PrayerSchedulingUseCase(
     private val settingsRepository: SettingsRepository,
     private val prayerRepository: PrayerRepository,
     private val schedulerRepository: PrayerAlarmRepository,
     private val notificationsRepository: PrayerNotificationsRepository,
+    private val logger: Logger
 ) {
 
+    /**
+     * Re-calculates and schedules all prayer alarms for the current day.
+     */
     suspend fun rescheduleTodayPrayerAlarms(): RescheduleResult {
         val today = Clock.System.todayIn(TimeZone.Companion.currentSystemDefault())
         val prayers = getDailyPrayers(today)
@@ -53,11 +61,12 @@ class PrayerSchedulingUseCase(
                 timeMillis = prayer.time.toEpochMilliseconds(),
                 enabled = notifications[prayer.name] ?: true
             ).apply {
-                Log.d("AZAN_DEBUG", "PrayerAlarm: $this")
+                logger.d("AZAN_DEBUG", "PrayerAlarm: $this")
             }
         }
     }
 
+    /** Maps a prayer name to a unique integer ID used for system alarms. */
     private fun Prayer.PrayerName.alarmId(): Int = when (this) {
         Prayer.PrayerName.FAJR -> 10
         Prayer.PrayerName.ZUHR -> 20

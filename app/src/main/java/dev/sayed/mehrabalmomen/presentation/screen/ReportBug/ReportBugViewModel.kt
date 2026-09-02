@@ -1,14 +1,16 @@
 package dev.sayed.mehrabalmomen.presentation.screen.ReportBug
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.bugReport.remote.DailyLimitExceededException
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 
 class ReportBugViewModel(
-    private val bugReportRepository: BugReportRepository
+    private val bugReportRepository: BugReportRepository,
+    private val logger: Logger
 ) : BaseViewModel<ReportBugUiState, ReportBugEffect>(ReportBugUiState()),
     ReportBugInteractionListener {
 
@@ -59,15 +61,15 @@ class ReportBugViewModel(
             },
             onError = { throwable ->
                 updateState { it.copy(isLoading = false) }
-                Log.e(
+                logger.e(
                     "ReportBugViewModel",
                     "Error submitting bug report ${throwable.message.toString()}"
                 )
                 when (throwable) {
                     is DailyLimitExceededException -> sendEffect(ReportBugEffect.LimitReached)
                     else -> {
-                        Log.e("ReportBugViewModel", "Error submitting bug report ${throwable.message}")
-                        sendEffect(ReportBugEffect.Error(R.string.failed_to_send_report))
+                        logger.e("ReportBugViewModel", "Error submitting bug report ${throwable.message}")
+                        sendEffect(ReportBugEffect.Error(UiText.StringResource(R.string.failed_to_send_report)))
                     }
                 }
             }

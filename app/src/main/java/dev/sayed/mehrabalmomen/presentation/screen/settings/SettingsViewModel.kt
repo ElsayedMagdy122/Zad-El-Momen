@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -16,6 +17,7 @@ import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,8 @@ class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
-    private val billingManager: BillingManager
+    private val billingManager: BillingManager,
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -103,8 +106,8 @@ class SettingsViewModel(
                 sendEffect(
                     SettingsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.success,
-                            message = R.string.thank_you_for_support,
+                            title = UiText.StringResource(R.string.success),
+                            message = UiText.StringResource(R.string.thank_you_for_support),
                             icon = R.drawable.ic_check_circle
                         )
                     )
@@ -191,22 +194,22 @@ class SettingsViewModel(
         val supportItems = listOf(
             SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_bug,
-                title = R.string.help_feedback,
+                title = UiText.StringResource(R.string.help_feedback),
                 action = SettingsUiState.SettingsAction.HELP_FEEDBACK
             ),
             SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_contact_us,
-                title = R.string.contact_us,
+                title = UiText.StringResource(R.string.contact_us),
                 action = SettingsUiState.SettingsAction.CONTACT_US
             ),
             SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_help,
-                title = R.string.faq,
+                title = UiText.StringResource(R.string.faq),
                 action = SettingsUiState.SettingsAction.FAQ
             ),
             SettingsUiState.SettingsItemUiState(
                 icon = R.drawable.ic_buy_coffee,
-                title = R.string.support_developer,
+                title = UiText.StringResource(R.string.support_developer),
                 action = SettingsUiState.SettingsAction.ABOUT
             )
         )
@@ -214,35 +217,34 @@ class SettingsViewModel(
         val sections = listOf(
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.general,
+                title = UiText.StringResource(R.string.general),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_language,
-                        title = R.string.language,
-                        description = state.selectedLanguage.nameRes,
+                        title = UiText.StringResource(R.string.language),
+                        description = UiText.StringResource(state.selectedLanguage.resId),
                         action = SettingsUiState.SettingsAction.LANGUAGE
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_theme,
-                        title = R.string.theme,
-                        description = state.selectedTheme.value,
+                        title = UiText.StringResource(R.string.theme),
+                        description = UiText.StringResource(state.selectedTheme.resId),
                         action = SettingsUiState.SettingsAction.THEME
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_location,
-                        title = R.string.location,
+                        title = UiText.StringResource(R.string.location),
                         action = SettingsUiState.SettingsAction.LOCATION,
-                        descriptionText = state.location.country.plus(", ")
-                            .plus(state.location.city)
+                        description = UiText.DynamicString(state.location.country.plus(", ").plus(state.location.city))
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_notifications,
-                        title =R.string.notifications,
+                        title = UiText.StringResource(R.string.notifications),
                         action = SettingsUiState.SettingsAction.NOTIFICATIONS,
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_rafeek,
-                        title = R.string.companion_mode,
+                        title = UiText.StringResource(R.string.companion_mode),
                         action = SettingsUiState.SettingsAction.COMPANION,
                         value = state.isCompanionEnabled
                     )
@@ -250,23 +252,23 @@ class SettingsViewModel(
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.prayer,
+                title = UiText.StringResource(R.string.prayer),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_calculation_method,
-                        title = R.string.calculation_method,
-                        description = state.selectedCalculationMethod.value,
+                        title = UiText.StringResource(R.string.calculation_method),
+                        description = UiText.StringResource(state.selectedCalculationMethod.resId),
                         action = SettingsUiState.SettingsAction.CALCULATION_METHOD
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_mosque_02,
-                        title = R.string.madhab,
-                        description = state.selectedMadhab.value,
+                        title = UiText.StringResource(R.string.madhab),
+                        description = UiText.StringResource(state.selectedMadhab.resId),
                         action = SettingsUiState.SettingsAction.MADHAB
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_moazen,
-                        title = R.string.moazen,
+                        title = UiText.StringResource(R.string.moazen),
                         description = getMoazenName(state.selectedMoazen),
                         action = SettingsUiState.SettingsAction.MOAZEN
                     )
@@ -274,17 +276,17 @@ class SettingsViewModel(
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.quran,
+                title = UiText.StringResource(R.string.quran),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_text_font,
-                        title = R.string.text_font,
-                        description = state.selectedFontSize.value,
+                        title = UiText.StringResource(R.string.text_font),
+                        description = UiText.StringResource(state.selectedFontSize.resId),
                         action = SettingsUiState.SettingsAction.TEXT_FONT
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_tafseer,
-                        title = R.string.al_tafseer,
+                        title = UiText.StringResource(R.string.al_tafseer),
                         description = getTafseerName(state.selectedTafseer),
                         action = SettingsUiState.SettingsAction.TAFSEER
                     )
@@ -292,27 +294,27 @@ class SettingsViewModel(
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.support,
+                title = UiText.StringResource(R.string.support),
                 items = supportItems
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.legal,
+                title = UiText.StringResource(R.string.legal),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_privacy,
-                        title = R.string.privacy_and_policy,
+                        title = UiText.StringResource(R.string.privacy_and_policy),
                         action = SettingsUiState.SettingsAction.PRIVACY_POLICY
                     )
                 )
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                titleRes = R.string.growth,
+                title = UiText.StringResource(R.string.growth),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
                         icon = R.drawable.ic_star_rate,
-                        title = R.string.rate_app,
+                        title = UiText.StringResource(R.string.rate_app),
                         action = SettingsUiState.SettingsAction.RATE_APP
                     )
                 )
@@ -330,11 +332,12 @@ class SettingsViewModel(
         SettingsUiState.SettingsAction.TEXT_FONT to { openFontSizeDialog() }
     )
 
-    private fun getTafseerName(type: SettingsUiState.TafseerType): Int {
-        return when (type) {
+    private fun getTafseerName(type: SettingsUiState.TafseerType): UiText {
+        val resId = when (type) {
             SettingsUiState.TafseerType.MOKHTASAR -> R.string.tafseer_mokhtasar
             SettingsUiState.TafseerType.MOYASSAR -> R.string.tafseer_moyasser
         }
+        return UiText.StringResource(resId)
     }
 
     private fun openTafseerDialog() {
@@ -342,10 +345,10 @@ class SettingsViewModel(
 
         openDialog(
             type = SettingsUiState.SelectionDialogType.TAFSEER,
-            titleRes = R.string.choose_tafseer,
-            descriptionRes = R.string.tafseer_description,
+            title = UiText.StringResource(R.string.choose_tafseer),
+            description = UiText.StringResource(R.string.tafseer_description),
             options = SettingsUiState.TafseerType.entries.map {
-                SelectionItem(it.value)
+                SelectionItem(UiText.StringResource(it.resId))
             },
             selectedIndex = SettingsUiState.TafseerType.entries.indexOf(state.selectedTafseer)
         )
@@ -356,10 +359,10 @@ class SettingsViewModel(
 
         openDialog(
             type = SettingsUiState.SelectionDialogType.FONT_SIZE,
-            titleRes = R.string.choose_font_size,
-            descriptionRes = R.string.font_size_description,
+            title = UiText.StringResource(R.string.choose_font_size),
+            description = UiText.StringResource(R.string.font_size_description),
             options = SettingsUiState.QuranFontSize.entries.map {
-                SelectionItem(it.value)
+                SelectionItem(UiText.StringResource(it.resId))
             },
             selectedIndex = SettingsUiState.QuranFontSize.entries.indexOf(state.selectedFontSize)
         )
@@ -369,9 +372,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.LANGUAGE,
-            titleRes = R.string.choose_language,
-            descriptionRes = R.string.language_description,
-            options = SettingsUiState.Language.entries.map { SelectionItem(it.nameRes) },
+            title = UiText.StringResource(R.string.choose_language),
+            description = UiText.StringResource(R.string.language_description),
+            options = SettingsUiState.Language.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
             selectedIndex = SettingsUiState.Language.entries.indexOf(state.selectedLanguage)
         )
     }
@@ -380,9 +383,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.THEME,
-            titleRes = R.string.choose_theme,
-            descriptionRes = R.string.theme_description,
-            options = SettingsUiState.ThemeState.entries.map { SelectionItem(it.value) },
+            title = UiText.StringResource(R.string.choose_theme),
+            description = UiText.StringResource(R.string.theme_description),
+            options = SettingsUiState.ThemeState.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
             selectedIndex = SettingsUiState.ThemeState.entries.indexOf(state.selectedTheme)
         )
     }
@@ -391,9 +394,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.MADHAB,
-            titleRes = R.string.choose_madhab,
-            descriptionRes = R.string.madhab_description,
-            options = SettingsUiState.MadhabState.entries.map { SelectionItem(it.value) },
+            title = UiText.StringResource(R.string.choose_madhab),
+            description = UiText.StringResource(R.string.madhab_description),
+            options = SettingsUiState.MadhabState.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
             selectedIndex = SettingsUiState.MadhabState.entries.indexOf(state.selectedMadhab)
         )
     }
@@ -402,25 +405,25 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.CALCULATION_METHOD,
-            titleRes = R.string.choose_calculation_method,
-            descriptionRes = R.string.calculation_method_description,
-            options = SettingsUiState.CalculationMethod.entries.map { SelectionItem(it.value) },
+            title = UiText.StringResource(R.string.choose_calculation_method),
+            description = UiText.StringResource(R.string.calculation_method_description),
+            options = SettingsUiState.CalculationMethod.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
             selectedIndex = SettingsUiState.CalculationMethod.entries.indexOf(state.selectedCalculationMethod)
         )
     }
 
     private fun openDialog(
         type: SettingsUiState.SelectionDialogType,
-        titleRes: Int,
-        descriptionRes: Int? = null,
+        title: UiText,
+        description: UiText? = null,
         options: List<SelectionItem>,
         selectedIndex: Int
     ) {
         updateState {
             it.copy(
                 dialog = SettingsUiState.SelectionDialogUiState(
-                    titleRes = titleRes,
-                    descriptionRes = descriptionRes,
+                    title = title,
+                    description = description,
                     options = options,
                     selectedIndex = selectedIndex,
                     type = type
@@ -541,8 +544,8 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.MOAZEN,
-            titleRes = R.string.choose_moazen,
-            descriptionRes = R.string.moazen_description,
+            title = UiText.StringResource(R.string.choose_moazen),
+            description = UiText.StringResource(R.string.moazen_description),
             options = SettingsUiState.Moazen.entries.map { moazen ->
                 SelectionItem(
                     text = getMoazenName(moazen),
@@ -560,13 +563,13 @@ class SettingsViewModel(
             val price = details?.oneTimePurchaseOfferDetails?.formattedPrice ?: "N/A"
             SelectionItem(
                 description = price,
-                text = getSupportName(id)
+                text = UiText.StringResource(getSupportName(id))
             )
         }
         openDialog(
             type = SettingsUiState.SelectionDialogType.SUPPORT,
-            titleRes = R.string.support_developer,
-            descriptionRes = R.string.support_description,
+            title = UiText.StringResource(R.string.support_developer),
+            description = UiText.StringResource(R.string.support_description),
             options = options,
             selectedIndex = -1
         )

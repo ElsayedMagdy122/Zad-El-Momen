@@ -1,16 +1,20 @@
 package dev.sayed.mehrabalmomen.data.bugReport.mapper
 
-import android.os.Build
 import dev.sayed.mehrabalmomen.data.bugReport.remote.dto.BugReportInsertDto
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+/**
+ * Maps domain [BugReportRequest] to data [BugReportInsertDto].
+ */
 @OptIn(ExperimentalTime::class)
 fun BugReportRequest.toInsertDto(
     deviceId: String,
     imageUrl: String?,
-    dayStamp: Long
+    dayStamp: Long,
+    deviceName: String,
+    osVersion: String
 ): BugReportInsertDto {
     return BugReportInsertDto(
         uid = deviceId,
@@ -20,7 +24,7 @@ fun BugReportRequest.toInsertDto(
         imageUrl = imageUrl,
         createdAt = Clock.System.now().toString(),
         dayStamp = dayStamp,
-        deviceName = "${Build.MANUFACTURER} ${Build.MODEL}",
-        androidVersion = "${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})"
+        deviceName = deviceName,
+        androidVersion = osVersion
     )
 }

@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
-import androidx.annotation.StringRes
+import dev.sayed.mehrabalmomen.presentation.base.UiIcon
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 
 data class HomeUiState(
     val location: LocationUiState = LocationUiState(),
@@ -13,15 +14,13 @@ data class HomeUiState(
     data class LocationUiState(
         val country: String = "",
         val city: String = "",
-
-        )
+    )
 
     data class PrayerUiState(
-        @param:StringRes
-        val name: Int = 0,
+        val name: UiText = UiText.DynamicString(""),
         val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,
-        val icon: Int = 0,
+        val icon: UiIcon = UiIcon(0),
         val isAm : Boolean = false
     )
 

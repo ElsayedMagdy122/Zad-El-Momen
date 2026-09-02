@@ -30,6 +30,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.LocalIsDarkTheme
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
@@ -40,7 +41,7 @@ fun PrayerTimesCard(
     modifier: Modifier = Modifier
 ) {
     if (prayerTimesUiState == null) return
-val isDark = LocalIsDarkTheme.current
+    val isDark = LocalIsDarkTheme.current
     Box(
         modifier = modifier
     ) {
@@ -112,7 +113,7 @@ private fun PrayerItem(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = localizedString( prayer.name),
+                text = prayer.name.asString(),
                 color = Theme.color.secondary.secondaryText,
                 style = Theme.textStyle.label.small,
             )
@@ -149,33 +150,33 @@ private fun PrayerTimesCardPreview() {
     val samplePrayerTimesUiState = HomeUiState(
         prayers = listOf(
             HomeUiState.PrayerUiState(
-                name = R.string.fajr,
+                name = UiText.StringResource(R.string.fajr),
                 time = "06:00",
                 isAm = true
             ),
             HomeUiState.PrayerUiState(
-                name = R.string.dhuhr,
+                name = UiText.StringResource(R.string.dhuhr),
                 time = "12:00",
                 isAm = false
             ),
             HomeUiState.PrayerUiState(
-                name = R.string.asr,
+                name = UiText.StringResource(R.string.asr),
                 time = "04:00",
                 isAm = false
             ),
             HomeUiState.PrayerUiState(
-                name = R.string.fajr,
+                name = UiText.StringResource(R.string.fajr),
                 time = "06:00",
                 isAm = false
             ),
             HomeUiState.PrayerUiState(
-                name = R.string.isha,
+                name = UiText.StringResource(R.string.isha),
                 time = "08:00",
                 isAm = false
             )
         ),
         nextPrayer =  HomeUiState.PrayerUiState(
-            name = R.string.isha,
+            name = UiText.StringResource(R.string.isha),
             time = "08:00",
             isAm = false
         )
