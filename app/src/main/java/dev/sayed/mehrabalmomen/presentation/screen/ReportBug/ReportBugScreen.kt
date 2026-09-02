@@ -25,6 +25,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.components.AttachmentsSection
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.components.BugTitleSection
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.components.DescriptionSection
@@ -43,7 +44,7 @@ fun ReportBugScreen(navController: NavController, viewModel: ReportBugViewModel 
         when (effect) {
             is ReportBugEffect.Error -> {
                 toast = ToastDetails(
-                    title = R.string.error,
+                    title = UiText.StringResource(R.string.error),
                     message = effect.message,
                     icon = R.drawable.ic_close_circle
                 )
@@ -51,24 +52,24 @@ fun ReportBugScreen(navController: NavController, viewModel: ReportBugViewModel 
 
             ReportBugEffect.InvalidInput -> {
                 toast = ToastDetails(
-                    title = R.string.invalid_input,
-                    message = R.string.please_fill_all_required_fields,
+                    title = UiText.StringResource(R.string.invalid_input),
+                    message = UiText.StringResource(R.string.please_fill_all_required_fields),
                     icon = R.drawable.ic_close_circle
                 )
             }
 
             ReportBugEffect.LimitReached -> {
                 toast = ToastDetails(
-                    title = R.string.daily_limit,
-                    message = R.string.you_have_reached_the_daily_report_limit,
+                    title = UiText.StringResource(R.string.daily_limit),
+                    message = UiText.StringResource(R.string.you_have_reached_the_daily_report_limit),
                     icon = R.drawable.ic_close_circle
                 )
             }
 
             ReportBugEffect.Success -> {
                 toast = ToastDetails(
-                    title = R.string.success,
-                    message = R.string.report_sent_successfully,
+                    title = UiText.StringResource(R.string.success),
+                    message = UiText.StringResource(R.string.report_sent_successfully),
                     icon = R.drawable.ic_check_circle
                 )
             }

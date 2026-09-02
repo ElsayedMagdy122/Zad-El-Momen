@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionReposi
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.launch
 
 class PermissionsViewModel(
@@ -81,8 +82,8 @@ class PermissionsViewModel(
             val isNetworkAvailable = networkConnectionRepository.isCurrentlyConnected()
             if (!isNetworkAvailable) {
                 sendEffect(PermissionsEffect.ShowToast(ToastDetails(
-                    title = R.string.error,
-                    message = R.string.no_internet_connection,
+                    title = UiText.StringResource(R.string.error),
+                    message = UiText.StringResource(R.string.no_internet_connection),
                     icon = R.drawable.ic_close_circle
                 )))
                 updateState { it.copy(isLoading = false, isLocationPermissionGranted = false) }
@@ -101,8 +102,8 @@ class PermissionsViewModel(
         } catch (e: Exception) {
             updateState { it.copy(isLoading = false, isLocationPermissionGranted = false) }
             sendEffect(PermissionsEffect.ShowToast(ToastDetails(
-                title = R.string.error,
-                message = R.string.error,
+                title = UiText.StringResource(R.string.error),
+                message = UiText.StringResource(R.string.error),
                 icon = R.drawable.ic_close_circle
             )))
         }

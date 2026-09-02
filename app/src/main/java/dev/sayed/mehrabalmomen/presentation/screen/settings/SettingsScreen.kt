@@ -80,10 +80,6 @@ fun SettingsScreen(
     val versionNumber = BuildConfig.VERSION_NAME
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
-            SettingsEffect.NavigateToAbout -> {
-
-            }
-
             SettingsEffect.NavigateToHelpFeedback -> {
                 navController.navigate(Route.ReportBugScreen)
             }

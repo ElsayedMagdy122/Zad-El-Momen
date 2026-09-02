@@ -9,7 +9,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class CompanionViewModel(
     private val observeCompanionUseCase: ObserveCompanionUseCase,
     private val companionRepository: CompanionRepository
@@ -36,19 +39,19 @@ class CompanionViewModel(
 
     private fun observeCompanionState() {
         viewModelScope.launch {
-            observeCompanionUseCase().collect { state ->
+            observeCompanionUseCase().collect { (state, mood) ->
                 val previousMood = screenState.value.mood
                 val isDoingActivity = screenState.value.isLaughing || screenState.value.isDoingTasbih
                 
                 updateState {
                     it.copy(
-                        mood = state.mood,
+                        mood = mood,
                         dialogueRes = if (it.dialogueRes == null) 
                             CompanionDialogue.getMessage(state) else it.dialogueRes
                     )
                 }
                 
-                if (previousMood != state.mood && !isDoingActivity) {
+                if (previousMood != mood && !isDoingActivity) {
                     refreshDialogue()
                 }
             }
@@ -70,10 +73,11 @@ class CompanionViewModel(
         viewModelScope.launch {
             while(true) {
                 delay(2000) 
-                val silenceDuration = System.currentTimeMillis() - screenState.value.lastInteractionTime
+                val now = Clock.System.now().toEpochMilliseconds()
+                val silenceDuration = now - screenState.value.lastInteractionTime
                 if (silenceDuration >= 20000 && !screenState.value.isLaughing && !screenState.value.isDoingTasbih) {
                     tasbihJob = launch { startTasbih() }
-                    updateState { it.copy(lastInteractionTime = System.currentTimeMillis()) }
+                    updateState { it.copy(lastInteractionTime = now) }
                 }
             }
         }
@@ -98,7 +102,7 @@ class CompanionViewModel(
     }
 
     override fun onInteract() {
-        val now = System.currentTimeMillis()
+        val now = Clock.System.now().toEpochMilliseconds()
         val currentState = screenState.value
 
         // Cancel Tasbih if user interacts
@@ -122,7 +126,7 @@ class CompanionViewModel(
         }
 
         viewModelScope.launch {
-            companionRepository.updateLastInteraction(System.currentTimeMillis())
+            companionRepository.updateLastInteraction(now)
             if (newTapCount >= 3 && !screenState.value.isLaughing) {
                 triggerTickle()
             }
@@ -153,7 +157,7 @@ class CompanionViewModel(
             // Guard against overwriting special activities
             if (screenState.value.isLaughing || screenState.value.isDoingTasbih) return@launch
 
-            val state = observeCompanionUseCase().first()
+            val (state, _) = observeCompanionUseCase().first()
             updateState {
                 it.copy(dialogueRes = CompanionDialogue.getMessage(state))
             }

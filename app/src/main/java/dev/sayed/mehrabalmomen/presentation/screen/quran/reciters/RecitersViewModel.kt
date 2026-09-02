@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
@@ -15,8 +16,9 @@ import dev.sayed.mehrabalmomen.domain.model.audio.DownloadStatus
 import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
+import dev.sayed.mehrabalmomen.presentation.utils.toUiText
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -26,6 +28,7 @@ import org.koin.core.qualifier.named
 class RecitersViewModel(
     private val readersRepository: QuranAudioReadersRepository,
     private val quranAudioRepository: QuranAudioRepository,
+    private val analyticsTracker: AnalyticsTracker,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()), KoinComponent {
 
@@ -131,12 +134,11 @@ class RecitersViewModel(
                 }
 
                 if (!isNetworkError) {
-                    val errorMessageRes = throwable.toUiErrorMessage()
                     sendEffect(
                         RecitersEffect.ShowToast(
                             ToastDetails(
-                                title = R.string.error,
-                                message = errorMessageRes,
+                                title = UiText.StringResource(R.string.error),
+                                message = throwable.toUiText(),
                                 icon = R.drawable.ic_close_circle
                             )
                         )

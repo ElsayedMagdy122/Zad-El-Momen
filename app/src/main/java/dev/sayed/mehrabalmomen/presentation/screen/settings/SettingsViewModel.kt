@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -16,6 +17,7 @@ import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,8 @@ class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
-    private val billingManager: BillingManager
+    private val billingManager: BillingManager,
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -103,8 +106,8 @@ class SettingsViewModel(
                 sendEffect(
                     SettingsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.success,
-                            message = R.string.thank_you_for_support,
+                            title = UiText.StringResource(R.string.success),
+                            message = UiText.StringResource(R.string.thank_you_for_support),
                             icon = R.drawable.ic_check_circle
                         )
                     )

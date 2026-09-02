@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,8 +39,8 @@ class RadioChannelsViewModel(
                     sendEffect(
                         RadioChannelsEffect.ShowToast(
                             ToastDetails(
-                                title = R.string.error,
-                                message = R.string.no_internet_connection,
+                                title = UiText.StringResource(R.string.error),
+                                message = UiText.StringResource(R.string.no_internet_connection),
                                 icon = R.drawable.ic_close_circle
                             )
                         )
