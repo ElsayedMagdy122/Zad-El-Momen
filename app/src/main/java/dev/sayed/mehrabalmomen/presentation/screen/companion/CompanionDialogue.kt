@@ -2,14 +2,15 @@ package dev.sayed.mehrabalmomen.presentation.screen.companion
 
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.usecase.GetCompanionMessageUseCase.CompanionMessage
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 
 /**
- * Maps domain-level companion messages to Android string resources.
+ * Maps domain-level companion messages to platform-independent [UiText].
  */
 object CompanionDialogue {
 
-    fun getMessageRes(message: CompanionMessage): Int {
-        return when (message) {
+    fun getMessage(message: CompanionMessage): UiText {
+        val resId = when (message) {
             CompanionMessage.INTERACT_1 -> R.string.rafiq_interact_1
             CompanionMessage.INTERACT_2 -> R.string.rafiq_interact_2
             CompanionMessage.INTERACT_3 -> R.string.rafiq_interact_3
@@ -58,5 +59,6 @@ object CompanionDialogue {
             CompanionMessage.TASBIH_3 -> R.string.rafiq_tasbih_3
             CompanionMessage.TASBIH_4 -> R.string.rafiq_tasbih_4
         }
+        return UiText.StringResource(resId)
     }
 }

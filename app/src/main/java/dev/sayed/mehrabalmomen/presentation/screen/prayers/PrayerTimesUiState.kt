@@ -1,6 +1,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
-import androidx.annotation.StringRes
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.presentation.base.UiIcon
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.utils.FormattedTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -16,12 +18,12 @@ data class PrayerTimesUiState(
     val batteryInstructions: List<String> = emptyList()
 ) {
     data class PrayerUiState(
-        @param:StringRes
-        val name: Int = 0,
-        val time: FormattedTime = FormattedTime(time = "00:00",isAm = false),
+        val prayerName: Prayer.PrayerName = Prayer.PrayerName.FAJR,
+        val name: UiText = UiText.DynamicString(""),
+        val time: FormattedTime = FormattedTime(time = "00:00", isAm = false),
         val isUpComing: Boolean = false,
         val progress: Float = 100.0f,
-        val icon: Int = 0,
+        val icon: UiIcon = UiIcon(0),
         val instantTime: Instant? = null,
         val isNotificationEnabled: Boolean = false
     )
@@ -33,9 +35,8 @@ data class PrayerTimesUiState(
     )
 
     data class PrayerNotificationUiState(
-        @param:StringRes
-        val name: Int = 0,
+        val prayerName: Prayer.PrayerName = Prayer.PrayerName.FAJR,
+        val name: UiText = UiText.DynamicString(""),
         val isEnabled: Boolean = true
     )
-
 }

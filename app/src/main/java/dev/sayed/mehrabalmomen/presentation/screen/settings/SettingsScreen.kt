@@ -60,6 +60,7 @@ import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.Switch
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
@@ -131,8 +132,8 @@ fun SettingsScreen(
             settingsViewModel = settingsViewModel,
             isMoazen = dialog.type == SettingsUiState.SelectionDialogType.MOAZEN,
             items = dialog.options,
-            title = localizedString(dialog.titleRes),
-            description = dialog.descriptionRes?.let { localizedString(it) } ?: "",
+            title = dialog.title,
+            description = dialog.description ?: UiText.DynamicString(""),
             selectedIndex = dialog.selectedIndex,
             onConfirm = { index ->
                 settingsViewModel.stopPreview()
@@ -173,7 +174,7 @@ fun SettingsScreen(
 
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
-                        text = localizedString(section.titleRes),
+                        text = section.title.asString(),
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.primary.primary,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
@@ -217,8 +218,8 @@ fun SettingsScreen(
 fun SettingsBottomSheet(
     settingsViewModel: SettingsViewModel,
     items: List<SelectionItem>,
-    title: String,
-    description: String,
+    title: UiText,
+    description: UiText,
     selectedIndex: Int,
     onConfirm: (Int) -> Unit,
     onDismiss: () -> Unit,
@@ -228,12 +229,12 @@ fun SettingsBottomSheet(
     val context = LocalContext.current
     BottomSheetDs(onDismiss = onDismiss) {
         Text(
-            text = title,
+            text = title.asString(),
             style = Theme.textStyle.label.medium,
             color = Theme.color.primary.shadePrimary
         )
         Text(
-            text = description,
+            text = description.asString(),
             style = Theme.textStyle.label.medium,
             color = Theme.color.semantic.shadeTertiary
         )
@@ -328,7 +329,7 @@ fun SingleSelectionContentWithPreview(
             }
             CheckboxItem(
                 modifier = Modifier.weight(1f),
-                text = item.text?.let { localizedString(it) } ?: "",
+                text = item.text?.asString() ?: "",
                 description = item.description,
                 icon = item.icon?.let { painterResource(it) },
                 isChecked = selectedIndex == index,
@@ -349,7 +350,7 @@ fun SingleSelectionContent(
 ) {
     items.forEachIndexed { index, item ->
         CheckboxItem(
-            text = item.text?.let { localizedString(it) } ?: "",
+            text = item.text?.asString() ?: "",
             description = item.description,
             icon = item.icon?.let { painterResource(it) },
             isChecked = selectedIndex == index,
@@ -362,7 +363,7 @@ fun SingleSelectionContent(
 }
 
 data class SelectionItem(
-    val text: Int? = null,
+    val text: UiText? = null,
     val description: String? = null,
     val icon: Int? = null,
     val resId: Int? = null
@@ -414,7 +415,7 @@ fun SettingsItem(
         Text(
             modifier = Modifier
                 .padding(horizontal = 8.dp),
-            text = localizedString(item.title),
+            text = item.title.asString(),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.label.medium,
             maxLines = 1,
@@ -428,17 +429,9 @@ fun SettingsItem(
                 isChecked = item.value,
                 onCheckedChange = { listener.onItemClick(item.action) }
             )
-        } else if (item.description != 0 || item.descriptionText != null) {
+        } else if (item.description != null) {
             Text(
-                text = when {
-                    item.description != 0 ->
-                        localizedString(item.description)
-
-                    item.descriptionText != null ->
-                        item.descriptionText
-
-                    else -> ""
-                },
+                text = item.description.asString(),
                 color = Theme.color.semantic.shadeTertiary,
                 style = Theme.textStyle.label.small,
                 maxLines = 1,

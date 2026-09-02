@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesUiState
@@ -51,13 +52,17 @@ fun NextPrayerCard(
                 .padding(vertical = 8.dp)
                 .size(40.dp)
         )
-        val nextPrayerText = if (state.nextPrayer.name != 0) {
-
-            val prayerName = localizedString(state.nextPrayer.name)
-            localizedString(R.string.next_prayer_in, prayerName)
-        } else {
-            localizedString(R.string.no_upcoming_prayer)
+        
+        val nextPrayerText = when (val name = state.nextPrayer.name) {
+            is UiText.DynamicString -> {
+                if (name.value.isEmpty()) localizedString(R.string.no_upcoming_prayer)
+                else localizedString(R.string.next_prayer_in, name.value)
+            }
+            is UiText.StringResource -> {
+                localizedString(R.string.next_prayer_in, name.asString())
+            }
         }
+
         Column(
             modifier = Modifier
                 .weight(1f)

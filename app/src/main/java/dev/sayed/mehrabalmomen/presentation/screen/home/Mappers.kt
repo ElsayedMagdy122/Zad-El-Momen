@@ -18,4 +18,3 @@ fun Prayer.toPrayerUiState(zone: TimeZone): HomeUiState.PrayerUiState{
         icon = this.toUiIcon(this.name)
     )
 }
-

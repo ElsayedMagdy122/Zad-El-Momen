@@ -7,19 +7,24 @@ import androidx.core.net.toUri
 import dev.sayed.mehrabalmomen.data.bugReport.mapper.toInsertDto
 import dev.sayed.mehrabalmomen.data.util.helpers.ImageCompressor
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
+import dev.sayed.mehrabalmomen.domain.repository.platform.DeviceInfoProvider
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.security.MessageDigest
-import java.time.Instant
-import java.time.ZoneOffset
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class BugReportRemoteDataSourceImpl(
     private val rpcService: BugReportRpcService,
     private val storageService: BugReportStorageService,
+    private val deviceInfoProvider: DeviceInfoProvider,
     private val supabase: SupabaseClient,
     private val context: Context
 ) : BugReportRemoteDataSource {
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun submit(report: BugReportRequest) {
         val deviceId = getDeviceId()
         val dayStamp = currentDayStamp()
@@ -31,7 +36,9 @@ class BugReportRemoteDataSourceImpl(
         val dto = report.toInsertDto(
             deviceId = deviceId,
             imageUrl = imageUrl,
-            dayStamp = dayStamp
+            dayStamp = dayStamp,
+            deviceName = deviceInfoProvider.getDeviceModel(),
+            osVersion = deviceInfoProvider.getOsVersion()
         )
 
         supabase.from(TABLE_REPORTS).insert(dto)
@@ -47,6 +54,7 @@ class BugReportRemoteDataSourceImpl(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private suspend fun uploadImageIfNeeded(
         report: BugReportRequest,
         deviceId: String
@@ -72,7 +80,7 @@ class BugReportRemoteDataSourceImpl(
         }
 
         return storageService.uploadImage(
-            fileName = "${deviceId}_${System.currentTimeMillis()}.jpg",
+            fileName = "${deviceId}_${Clock.System.now().toEpochMilliseconds()}.jpg",
             bytes = compressedBytes
         )
     }
@@ -93,11 +101,13 @@ class BugReportRemoteDataSourceImpl(
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun currentDayStamp(): Long =
-        Instant.now()
-            .atOffset(ZoneOffset.UTC)
-            .toLocalDate()
-            .toEpochDay()
+        Clock.System.now()
+            .toLocalDateTime(TimeZone.UTC)
+            .date
+            .toEpochDays()
+            .toLong()
 
     private companion object {
         const val DAILY_LIMIT = 5

@@ -130,14 +130,16 @@ fun PrayerTimesScreen(
         }
         items(state.prayers) { prayerUiState ->
             PrayerItem(
-                prayerNameResource = prayerUiState.name,
+                prayerName = prayerUiState.prayerName,
+                prayerLabel = prayerUiState.name,
                 prayerTime = prayerUiState.time.time,
                 isAm = prayerUiState.time.isAm,
                 isNextPrayer = prayerUiState.isUpComing,
                 isNotificationEnabled = prayerUiState.isNotificationEnabled,
-            ) { prayerName, enabled ->
-                viewModel.onClickEnablePrayer(prayerName, enabled)
-            }
+                onNotificationClick = { name, enabled ->
+                    viewModel.onClickEnablePrayer(name, enabled)
+                }
+            )
         }
     }
 

@@ -1,8 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.companion
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.domain.model.companion.CompanionMood
-import dev.sayed.mehrabalmomen.domain.model.companion.CompanionState
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.usecase.GetCompanionMessageUseCase
 import dev.sayed.mehrabalmomen.domain.usecase.GetCompanionMessageUseCase.CompanionMessage
@@ -52,11 +50,11 @@ class CompanionViewModel(
                 updateState {
                     it.copy(
                         mood = mood,
-                        dialogueRes = if (it.dialogueRes == null) {
+                        dialogue = if (it.dialogue == null) {
                             val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
                             val message = getCompanionMessage.execute(state, hour)
-                            CompanionDialogue.getMessageRes(message)
-                        } else it.dialogueRes
+                            CompanionDialogue.getMessage(message)
+                        } else it.dialogue
                     )
                 }
                 
@@ -102,7 +100,7 @@ class CompanionViewModel(
         updateState {
             it.copy(
                 isDoingTasbih = true,
-                dialogueRes = CompanionDialogue.getMessageRes(tasbihMsgs.random())
+                dialogue = CompanionDialogue.getMessage(tasbihMsgs.random())
             )
         }
         delay(15000) 
@@ -140,7 +138,7 @@ class CompanionViewModel(
                 val (state, _) = observeCompanionUseCase().first()
                 val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
                 val message = getCompanionMessage.execute(state, hour, isManualInteraction = true)
-                updateState { it.copy(dialogueRes = CompanionDialogue.getMessageRes(message)) }
+                updateState { it.copy(dialogue = CompanionDialogue.getMessage(message)) }
             } else if (!screenState.value.isLaughing) {
                 triggerTickle()
             }
@@ -152,7 +150,7 @@ class CompanionViewModel(
             updateState {
                 it.copy(
                     isLaughing = true,
-                    dialogueRes = CompanionDialogue.getMessageRes(CompanionMessage.TICKLE)
+                    dialogue = CompanionDialogue.getMessage(CompanionMessage.TICKLE)
                 )
             }
             delay(3500) 
@@ -174,7 +172,7 @@ class CompanionViewModel(
             val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
             val message = getCompanionMessage.execute(state, hour)
             updateState {
-                it.copy(dialogueRes = CompanionDialogue.getMessageRes(message))
+                it.copy(dialogue = CompanionDialogue.getMessage(message))
             }
         }
     }
