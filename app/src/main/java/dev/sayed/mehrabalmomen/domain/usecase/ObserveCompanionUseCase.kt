@@ -5,26 +5,30 @@ import dev.sayed.mehrabalmomen.domain.model.companion.CompanionState
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class ObserveCompanionUseCase(
-    private val companionRepository: CompanionRepository
+    private val repository: CompanionRepository
 ) {
 
     @OptIn(ExperimentalTime::class)
-    operator fun invoke(): Flow<CompanionState> = companionRepository.observeCompanionState().map { state ->
-        val mood = calculateMood(state)
-        state.copy(mood = mood)
+    operator fun invoke(): Flow<Pair<CompanionState, CompanionMood>> {
+        return repository.observeCompanionState().map { state ->
+            val mood = calculateMood(state.lastInteractionMillis, state.quranReadToday, state.azkarReadToday)
+            state to mood
+        }
     }
 
-    private fun calculateMood(state: CompanionState): CompanionMood {
-        val lastInteraction = state.lastInteractionMillis
-        val diffDays = (System.currentTimeMillis() - lastInteraction) / (1000 * 60 * 60 * 24)
+    @OptIn(ExperimentalTime::class)
+    private fun calculateMood(lastInteraction: Long, quranRead: Boolean, azkarRead: Boolean): CompanionMood {
+        val now = Clock.System.now().toEpochMilliseconds()
+        val diffDays = (now - lastInteraction) / (1000 * 60 * 60 * 24)
 
         return when {
-            diffDays >= 2 -> CompanionMood.SAD
-            state.quranReadToday && state.azkarReadToday -> CompanionMood.EXCITED
-            state.quranReadToday || state.azkarReadToday -> CompanionMood.HAPPY
+            diffDays >= 3 -> CompanionMood.SAD
+            quranRead && azkarRead -> CompanionMood.EXCITED
+            quranRead || azkarRead -> CompanionMood.HAPPY
             else -> CompanionMood.THINKING
         }
     }

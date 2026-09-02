@@ -7,58 +7,58 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.media.MediaPlayer
 import android.os.Build
-import android.os.PowerManager
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.utils.Constants
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_ID
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.AZAN_CHANNEL_NAME
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
 import dev.sayed.mehrabalmomen.presentation.base.MainActivity
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 
+/**
+ * Foreground service responsible for playing the Azan (Call to Prayer) and displaying
+ * the associated notification. It uses the unified [AudioPlayer] for playback.
+ */
 class PrayerAlarmService : Service() {
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private val audioPlayer: AudioPlayer by inject()
     private val settingsRepository: SettingsRepository by inject()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
     override fun onBind(intent: Intent?) = null
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         if (intent?.action == Constants.ACTION_STOP_AZAN) {
             stopAzan()
-            return START_STICKY
-        }
-        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
             return START_NOT_STICKY
         }
-        createChannel()
-        val prayerName = intent?.getStringExtra(PRAYER_NAME_KEY) ?: return START_NOT_STICKY
-        val prayerEnum = Prayer.PrayerName.valueOf(intent.getStringExtra(PRAYER_NAME_KEY) ?: "FAJR")
-        startForeground(1, createNotification(prayerEnum.getDisplayNameRes()))
+
+        createNotificationChannel()
+
+        val prayerName = intent?.getStringExtra(PRAYER_NAME_KEY) ?: "FAJR"
+        val prayerEnum = runCatching { Prayer.PrayerName.valueOf(prayerName) }.getOrDefault(Prayer.PrayerName.FAJR)
+
+        startForeground(NOTIFICATION_ID, createNotification(prayerEnum.getDisplayName()))
         playAzan()
 
         return START_NOT_STICKY
     }
 
     private fun stopAzan() {
-        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-        }
-        stopForeground(true)
+        audioPlayer.stop()
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
-    private fun createChannel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 AZAN_CHANNEL_ID,
@@ -68,13 +68,12 @@ class PrayerAlarmService : Service() {
                 setSound(null, null)
                 enableVibration(false)
             }
-            getSystemService(NotificationManager::class.java)
-                .createNotificationChannel(channel)
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
     }
 
     @SuppressLint("FullScreenIntentPolicy")
-    private fun createNotification(prayerName: String): Notification {
+    private fun createNotification(prayerDisplayName: String): Notification {
         val openAppIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("FROM_ALARM", true)
@@ -90,15 +89,12 @@ class PrayerAlarmService : Service() {
             this, 1, stopIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val bm = BitmapFactory.decodeResource(resources, R.drawable.night_mosque)
-
         return NotificationCompat.Builder(this, AZAN_CHANNEL_ID)
             .setFullScreenIntent(openAppPendingIntent, true)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setContentTitle("أذان $prayerName")
+            .setContentTitle("أذان $prayerDisplayName")
             .setContentText("اضغط هنا لرؤية مواقيت الصلاة")
-            .setSmallIcon(R.drawable.mosque_02)
-          //  .setLargeIcon(bm)
+            .setSmallIcon(R.drawable.ic_mosque_02)
             .setContentIntent(openAppPendingIntent)
             .setOngoing(true)
             .setAutoCancel(false)
@@ -107,38 +103,30 @@ class PrayerAlarmService : Service() {
             .build()
     }
 
-private fun playAzan() {
-    val selectedMoazenFileName = runBlocking {
-        settingsRepository.observeSelectedMoazen().first()
-    }.removeSuffix(".mp3")
-    val resId = resources.getIdentifier(selectedMoazenFileName, "raw", packageName)
-    val audioResId = if (resId != 0) resId else R.raw.azan_makkah
-
-    val assetFileDescriptor = resources.openRawResourceFd(audioResId)
-
-    mediaPlayer = MediaPlayer().apply {
-        setWakeMode(this@PrayerAlarmService, PowerManager.PARTIAL_WAKE_LOCK)
-        setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
-        prepare()
-        start()
-        setOnCompletionListener {
-            stopForeground(true)
-            stopSelf()
+    private fun playAzan() {
+        serviceScope.launch {
+            val selectedMoazen = settingsRepository.observeSelectedMoazen().first()
+                .removeSuffix(".mp3")
+            
+            audioPlayer.play(AudioSource.LocalResource(selectedMoazen))
         }
     }
-    assetFileDescriptor.close()
-}
+
     override fun onDestroy() {
-        if (::mediaPlayer.isInitialized) {
-            mediaPlayer.release()
-        }
+        audioPlayer.release()
+        serviceScope.cancel()
         super.onDestroy()
     }
-    fun   Prayer.PrayerName.getDisplayNameRes(): String = when(this) {
-          Prayer.PrayerName.FAJR -> "الفجر"
-          Prayer.PrayerName.ZUHR -> "الظهر"
-          Prayer.PrayerName.ASR -> "العصر"
-          Prayer.PrayerName.MAGHRIB -> "المغرب"
+
+    private fun Prayer.PrayerName.getDisplayName(): String = when (this) {
+        Prayer.PrayerName.FAJR -> "الفجر"
+        Prayer.PrayerName.ZUHR -> "الظهر"
+        Prayer.PrayerName.ASR -> "العصر"
+        Prayer.PrayerName.MAGHRIB -> "المغرب"
         Prayer.PrayerName.ISHA -> "العشاء"
+    }
+
+    companion object {
+        private const val NOTIFICATION_ID = 1001
     }
 }

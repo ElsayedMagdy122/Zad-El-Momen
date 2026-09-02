@@ -8,8 +8,9 @@ import kotlinx.datetime.TimeZone
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-fun Prayer.toPrayerUiState(zone: TimeZone): FullPrayerTimesUiState.PrayerUiState {
-    return FullPrayerTimesUiState.PrayerUiState(
+fun Prayer.toPrayerUiState(zone: TimeZone): PrayerTimesUiState.PrayerUiState {
+    return PrayerTimesUiState.PrayerUiState(
+        prayerName = this.name,
         name = this.toUiName(this.name),
         time = format(instant = this.time, zone = zone),
         icon = this.toUiIcon(this.name),

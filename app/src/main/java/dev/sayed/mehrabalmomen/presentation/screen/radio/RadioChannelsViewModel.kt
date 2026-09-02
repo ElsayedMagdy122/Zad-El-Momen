@@ -3,23 +3,29 @@ package dev.sayed.mehrabalmomen.presentation.screen.radio
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerState
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerController
-import dev.sayed.mehrabalmomen.presentation.screen.radio.player.PlayerState
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class RadioChannelsViewModel(
     private val radioRepository: RadioRepository,
-    private val playerController: PlayerController,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<RadioUiState, RadioChannelsEffect>(RadioUiState()),
-    RadioChannelsInteractionListener {
+    RadioChannelsInteractionListener, KoinComponent {
+
+    private val audioPlayer: AudioPlayer by inject(named("radio"))
 
     init {
         loadCategories()
@@ -28,13 +34,13 @@ class RadioChannelsViewModel(
 
     private fun observePlayerState() {
         viewModelScope.launch {
-            playerController.playerState.collectLatest { serviceState ->
-                if (serviceState.isError) {
+            audioPlayer.playerState.collectLatest { serviceState ->
+                if (serviceState.status == AudioPlayerStatus.ERROR) {
                     sendEffect(
                         RadioChannelsEffect.ShowToast(
                             ToastDetails(
-                                title = R.string.error,
-                                message = R.string.no_internet_connection,
+                                title = UiText.StringResource(R.string.error),
+                                message = UiText.StringResource(R.string.no_internet_connection),
                                 icon = R.drawable.ic_close_circle
                             )
                         )
@@ -45,18 +51,19 @@ class RadioChannelsViewModel(
         }
     }
 
-    private fun updateUiBasedOnServiceState(serviceState: PlayerState) {
+    private fun updateUiBasedOnServiceState(serviceState: AudioPlayerState) {
         updateState { oldState ->
-
             val updatedChannels = oldState.channels.map { channel ->
-
-                val isSelected = channel.streamUrl == serviceState.currentUrl
-                val isPlaying = serviceState.isPlaying && isSelected
+                val currentSource = serviceState.currentSource
+                val currentUrl = (currentSource as? AudioSource.RemoteUrl)?.url
+                val isSelected = channel.streamUrl == currentUrl
+                val isPlaying = serviceState.status == AudioPlayerStatus.PLAYING && isSelected
+                val isBuffering = serviceState.status == AudioPlayerStatus.BUFFERING
 
                 val isLoading =
                     if (!isSelected) false
                     else if (isPlaying) false
-                    else channel.isLoading || serviceState.isBuffering
+                    else channel.isLoading || isBuffering
 
                 if (
                     channel.isPlaying == isPlaying &&
@@ -72,7 +79,6 @@ class RadioChannelsViewModel(
                     )
                 }
             }
-
             oldState.copy(channels = updatedChannels)
         }
     }
@@ -108,7 +114,7 @@ class RadioChannelsViewModel(
     }
 
     private fun getChannelsByCategory(categoryId: String) {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click category",
             params = mapOf(
                 "category_id" to categoryId
@@ -127,7 +133,7 @@ class RadioChannelsViewModel(
                                 isLoading = false
                             )
                         }
-                        updateUiBasedOnServiceState(playerController.playerState.value)
+                        updateUiBasedOnServiceState(audioPlayer.playerState.value)
                     }
                 }
             },
@@ -151,7 +157,7 @@ class RadioChannelsViewModel(
                             val uiChannels = mapChannelsToUiState(channels)
                             updateState { it.copy(channels = uiChannels, isLoading = false) }
 
-                            updateUiBasedOnServiceState(playerController.playerState.value)
+                            updateUiBasedOnServiceState(audioPlayer.playerState.value)
                         }
                 }
             },
@@ -168,7 +174,7 @@ class RadioChannelsViewModel(
 
     override fun onPlayClick(id: Int) {
         val channel = screenState.value.channels.firstOrNull { it.id == id } ?: return
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click play",
             params = mapOf(
                 "channel_name" to channel.nameAr

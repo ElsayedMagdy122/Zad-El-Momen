@@ -1,4 +1,5 @@
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
 
 
@@ -12,7 +13,7 @@ data class SettingsUiState(
     val dialog: SelectionDialogUiState? = null,
     val isSupportAvailable: Boolean = false,
     val selectedFontSize: QuranFontSize = QuranFontSize.SMALL,
-    val selectedMoazen: Moazen = Moazen.AZAN_ABED_ALBASET,
+    val selectedMoazen: Moazen = Moazen.AZAN_MAKKAH,
     val selectedTafseer: TafseerType = TafseerType.MOKHTASAR,
     val isCompanionEnabled: Boolean = true
 ) {
@@ -22,31 +23,30 @@ data class SettingsUiState(
     )
 
     data class SettingsSectionUiState(
-        val titleRes: Int,
+        val title: UiText,
         val items: List<SettingsItemUiState>
     )
 
     data class SettingsItemUiState(
         val icon: Int,
-        val title: Int,
-        val description: Int = 0,
-        val descriptionText: String? = null,
+        val title: UiText,
+        val description: UiText? = null,
         val action: SettingsAction,
         val value: Boolean? = null
     )
 
-    enum class ThemeState(val value: Int) {
+    enum class ThemeState(val resId: Int) {
         LIGHT(R.string.light),
         DARK(R.string.dark),
         SYSTEM(R.string.system_default)
     }
 
-    enum class MadhabState(val value: Int) {
+    enum class MadhabState(val resId: Int) {
         SHAFI(R.string.shafi),
         HANAFI(R.string.hanafi)
     }
 
-    enum class Language(val nameRes: Int) {
+    enum class Language(val resId: Int) {
         ENGLISH(R.string.english),
         ARABIC(R.string.arabic)
     }
@@ -63,24 +63,24 @@ data class SettingsUiState(
     }
 
     data class SelectionDialogUiState(
-        val titleRes: Int,
-        val descriptionRes: Int? = null,
+        val title: UiText,
+        val description: UiText? = null,
         val options: List<SelectionItem>,
         val selectedIndex: Int,
         val type: SelectionDialogType
     )
 
-    enum class CalculationMethod(val value: Int) {
-        MUSLIM_WORLD_LEAGUE(value = (R.string.muslim_world_league)),
-        EGYPTIAN(value = (R.string.egyptian)),
-        KARACHI(value = (R.string.karachi)),
-        UMM_AL_QURA(value = (R.string.umm_al_qura)),
-        DUBAI(value = (R.string.dubai)),
-        QATAR(value = (R.string.qatar)),
-        KUWAIT(value = (R.string.kuwait)),
-        MOONSIGHTING_COMMITTEE(value = (R.string.moonsighting_committee)),
-        SINGAPORE(value = (R.string.singapore)),
-        NORTH_AMERICA(value = (R.string.north_america))
+    enum class CalculationMethod(val resId: Int) {
+        MUSLIM_WORLD_LEAGUE(R.string.muslim_world_league),
+        EGYPTIAN(R.string.egyptian),
+        KARACHI(R.string.karachi),
+        UMM_AL_QURA(R.string.umm_al_qura),
+        DUBAI(R.string.dubai),
+        QATAR(R.string.qatar),
+        KUWAIT(R.string.kuwait),
+        MOONSIGHTING_COMMITTEE(R.string.moonsighting_committee),
+        SINGAPORE(R.string.singapore),
+        NORTH_AMERICA(R.string.north_america)
     }
 
     enum class SettingsAction {
@@ -102,7 +102,7 @@ data class SettingsUiState(
         COMPANION
     }
 
-    enum class QuranFontSize(val value: Int, val sizeSp: Int) {
+    enum class QuranFontSize(val resId: Int, val sizeSp: Int) {
         SMALL(R.string.small, 20),
         MEDIUM(R.string.medium, 24),
         LARGE(R.string.large, 28),
@@ -117,7 +117,7 @@ data class SettingsUiState(
         AZAN_NASSER_ALQATAMI("azan_nasser_alqatami.mp3",5),
         AZAN_SUHAIB_KHATBA("azan_suhaib_khatba.mp3",6)
     }
-    enum class TafseerType(val value: Int, val fileName: String) {
+    enum class TafseerType(val resId: Int, val fileName: String) {
         MOKHTASAR(R.string.tafseer_mokhtasar, "tf_ab_mokhtasar_ar.json"),
         MOYASSAR(R.string.tafseer_moyasser, "tf_moyasser.json")
     }

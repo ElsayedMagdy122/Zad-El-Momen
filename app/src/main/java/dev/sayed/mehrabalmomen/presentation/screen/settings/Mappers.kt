@@ -1,9 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
 import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 
- fun getMoazenName(moazen: SettingsUiState.Moazen): Int {
-    return when(moazen) {
+fun getMoazenName(moazen: SettingsUiState.Moazen): UiText {
+    val resId = when(moazen) {
         SettingsUiState.Moazen.AZAN_ABED_ALBASET -> R.string.mozan_abed_albaset
         SettingsUiState.Moazen.AZAN_MAKKAH -> R.string.mozan_makkah
         SettingsUiState.Moazen.AZAN_MANSOOR_AL_ZAHRANI -> R.string.mozan_mansoor_alzahrani
@@ -12,4 +13,5 @@ import dev.sayed.mehrabalmomen.R
         SettingsUiState.Moazen.AZAN_NASSER_ALQATAMI -> R.string.mozan_nasser_alqatami
         SettingsUiState.Moazen.AZAN_SUHAIB_KHATBA -> R.string.mozan_suhaib_khatba
     }
+    return UiText.StringResource(resId)
 }

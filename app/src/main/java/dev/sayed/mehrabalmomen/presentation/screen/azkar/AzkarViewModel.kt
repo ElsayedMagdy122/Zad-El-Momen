@@ -1,51 +1,50 @@
 package dev.sayed.mehrabalmomen.presentation.screen.azkar
 
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 
 class AzkarViewModel(
     private val repository: AzkarRepository,
-    private val analyticsHelper: AnalyticsHelper
-) : BaseViewModel<AzkarUiState, AzkarEffect>(
-    AzkarUiState(isLoading = true)
-), AzkarInteractionListener {
+    private val analyticsTracker: AnalyticsTracker
+) : BaseViewModel<AzkarUiState, AzkarEffect>(AzkarUiState()), AzkarInteractionListener {
 
     init {
         loadAzkar()
     }
     fun onScreenOpened() {
-        analyticsHelper.logScreen("azkar")
+        analyticsTracker.logScreen("azkar")
     }
-        private fun loadAzkar() {
+    private fun loadAzkar() {
         tryToCall(
             block = { repository.getAzkarCategories() },
-            onSuccess = { list ->
-                updateState {
-                    it.copy(
-                        isLoading = false,
-                        categories = list.map { it.toUiModel() }
+            onSuccess = { categories ->
+                updateState { state ->
+                    state.copy(
+                        categories = categories.map { category ->
+                            AzkarCategoryUiModel(category.title.toAzkarType())
+                        },
+                        isLoading = false
                     )
                 }
             },
             onError = {
                 updateState { it.copy(isLoading = false) }
-                sendEffect(AzkarEffect.ShowError(it.message ?: "Error"))
             }
         )
     }
 
     override fun onClickCategory(type: AzkarType) {
-        analyticsHelper.logEvent(
-            name = "azkar",
+        analyticsTracker.logEvent(
+            name = "on click azkar category",
             params = mapOf(
-                "type" to type.name.lowercase(),
+                "category_name" to type.domainTitle
             )
         )
         sendEffect(AzkarEffect.NavigateToDetails(type))
     }
 
     override fun onClickBack() {
-      sendEffect(AzkarEffect.NavigateToBack)
+        sendEffect(AzkarEffect.NavigateToBack)
     }
 }

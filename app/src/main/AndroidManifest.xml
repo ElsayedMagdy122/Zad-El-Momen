@@ -70,7 +70,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".presentation.screen.radio.player.AudioPlayerService"
+            android:name=".presentation.screen.radio.player.RadioPlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
         <meta-data

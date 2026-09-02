@@ -4,27 +4,35 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.quran.audio.QuranAudioReader
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioRepository
 import dev.sayed.mehrabalmomen.domain.exceptions.NetworkException
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioPlayerStatus
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.model.audio.DownloadStatus
+import dev.sayed.mehrabalmomen.domain.model.audio.ReciterPreference
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
-import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerManager
-import dev.sayed.mehrabalmomen.presentation.screen.quran.audio_utils.AudioPlayerState
-import dev.sayed.mehrabalmomen.presentation.utils.toUiErrorMessage
+import dev.sayed.mehrabalmomen.presentation.utils.toUiText
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class RecitersViewModel(
     private val readersRepository: QuranAudioReadersRepository,
     private val quranAudioRepository: QuranAudioRepository,
-    private val audioPlayerManager: AudioPlayerManager,
-    private val recitationPreferences: RecitationPreferences,
+    private val analyticsTracker: AnalyticsTracker,
     savedStateHandle: SavedStateHandle
-) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()) {
+) : BaseViewModel<RecitersUiState, RecitersEffect>(RecitersUiState()), KoinComponent {
+
+    private val audioPlayer: AudioPlayer by inject(named("quran"))
 
     private val surahId: Int = savedStateHandle.toRoute<Route.RecitersScreen>().surahId
     private val currentReaderId: Int? =
@@ -39,12 +47,14 @@ class RecitersViewModel(
     fun onReciterSelected(readerId: Int) {
         val selectedReciter = allReaders.find { it.id == readerId } ?: return
         viewModelScope.launch {
-            recitationPreferences.saveLastReciter(
-                id = selectedReciter.id,
-                nameAr = selectedReciter.nameAr,
-                nameEn = selectedReciter.nameEn,
-                baseAudioUrl = selectedReciter.baseAudioUrl,
-                rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+            readersRepository.saveLastReciter(
+                ReciterPreference(
+                    id = selectedReciter.id,
+                    nameAr = selectedReciter.nameAr,
+                    nameEn = selectedReciter.nameEn,
+                    baseAudioUrl = selectedReciter.baseAudioUrl,
+                    rewayaName = selectedReciter.rewaya?.nameAr ?: ""
+                )
             )
             updateState { state ->
                 state.copy(
@@ -87,7 +97,6 @@ class RecitersViewModel(
                 } catch (e: Exception) {
                     val allDownloaded = readersRepository.getDownloadedRecitersOnce()
                     
-                    // Filter: Only include reciters who have the CURRENT surah downloaded
                     val readersWithCurrentSurah = allDownloaded.filter { reader ->
                         readersRepository.isReciterDownloaded(reader.id, surahId)
                     }
@@ -119,19 +128,17 @@ class RecitersViewModel(
                 updateState {
                     it.copy(
                         isLoading = false,
-                        // Only show No Internet screen if it's a manual retry/download request
                         isNoInternet = isNetworkError && isManualRetry,
                         isError = !isNetworkError
                     )
                 }
 
                 if (!isNetworkError) {
-                    val errorMessageRes = throwable.toUiErrorMessage()
                     sendEffect(
                         RecitersEffect.ShowToast(
                             ToastDetails(
-                                title = R.string.error,
-                                message = errorMessageRes,
+                                title = UiText.StringResource(R.string.error),
+                                message = throwable.toUiText(),
                                 icon = R.drawable.ic_close_circle
                             )
                         )
@@ -176,22 +183,18 @@ class RecitersViewModel(
 
     private fun observeDownloadProgress(reciterId: Int) {
         viewModelScope.launch {
-            readersRepository.getDownloadWorkInfo(reciterId, surahId).collectLatest { workInfos ->
-                val workInfo = workInfos.firstOrNull() ?: return@collectLatest
-                val progress = workInfo.progress.getInt("progress", 0)
-                val workState = workInfo.state
-
+            readersRepository.observeDownloadStatus(reciterId, surahId).collectLatest { status ->
                 updateState { currentState ->
                     currentState.copy(
                         reciters = currentState.reciters.map {
                             if (it.id == reciterId) {
-                                val downloadState = when {
-                                    workState.isFinished && workState == androidx.work.WorkInfo.State.SUCCEEDED -> DownloadState.DOWNLOADED
-                                    workState.isFinished -> DownloadState.FAILED
+                                val downloadState = when (status.state) {
+                                    DownloadStatus.State.COMPLETED -> DownloadState.DOWNLOADED
+                                    DownloadStatus.State.FAILED -> DownloadState.FAILED
                                     else -> DownloadState.DOWNLOADING
                                 }
                                 it.copy(
-                                    downloadProgress = progress,
+                                    downloadProgress = status.progress,
                                     downloadState = downloadState
                                 )
                             } else it
@@ -204,24 +207,27 @@ class RecitersViewModel(
 
     private fun observeAudioState() {
         viewModelScope.launch {
-            audioPlayerManager.playerState.collect { audioState ->
+            audioPlayer.playerState.collect { audioState ->
                 updateState { state ->
+                    val currentSource = audioState.currentSource
+                    val currentUrl = when (currentSource) {
+                        is AudioSource.RemoteUrl -> currentSource.url
+                        is AudioSource.LocalFile -> "file://${currentSource.path}"
+                        else -> null
+                    }
+                    
                     val updatedReciters = state.reciters.map { reciter ->
-                        val isLocalUrl =
-                            audioState.currentUrl?.contains("audio/reciters/${reciter.id}/") == true
-                        val isRemoteUrl = audioState.currentUrl?.startsWith(
+                        val isRemoteUrl = currentUrl?.startsWith(
                             reciter.baseAudioUrl.trimEnd('/')
                         ) == true
-                        val isCurrentReciter = isLocalUrl || isRemoteUrl
+                        val isLocalFile = currentUrl?.contains("audio/reciters/${reciter.id}/") == true
+                        val isCurrentReciter = isLocalFile || isRemoteUrl
 
                         if (isCurrentReciter) {
-                            val newPlayState = when (audioState.playbackState) {
-                                AudioPlayerState.AudioPlaybackState.BUFFERING -> PlayState.LOADING
-                                AudioPlayerState.AudioPlaybackState.PLAYING -> PlayState.PLAY
-                                AudioPlayerState.AudioPlaybackState.PAUSED,
-                                AudioPlayerState.AudioPlaybackState.ENDED,
-                                AudioPlayerState.AudioPlaybackState.IDLE,
-                                AudioPlayerState.AudioPlaybackState.ERROR -> PlayState.RESUME
+                            val newPlayState = when (audioState.status) {
+                                AudioPlayerStatus.BUFFERING -> PlayState.LOADING
+                                AudioPlayerStatus.PLAYING -> PlayState.PLAY
+                                else -> PlayState.RESUME
                             }
                             reciter.copy(playState = newPlayState)
                         } else {
@@ -236,7 +242,14 @@ class RecitersViewModel(
 
     fun onPlayClick(reciterId: Int) {
         val targetReciter = screenState.value.reciters.find { it.id == reciterId } ?: return
-        val currentAudioState = audioPlayerManager.playerState.value
+        val currentAudioState = audioPlayer.playerState.value
+        val currentSource = currentAudioState.currentSource
+        
+        val currentUrl = when (currentSource) {
+            is AudioSource.RemoteUrl -> currentSource.url
+            is AudioSource.LocalFile -> "file://${currentSource.path}"
+            else -> null
+        }
 
         viewModelScope.launch {
             val track = quranAudioRepository.getTrack(reciterId, surahId)
@@ -244,30 +257,30 @@ class RecitersViewModel(
                 track?.audioUrl ?: getFullAudioUrl(targetReciter.baseAudioUrl, surahId)
 
             val isLocalUrl =
-                currentAudioState.currentUrl?.contains("audio/reciters/${reciterId}/") == true
-            val isRemoteUrl = currentAudioState.currentUrl?.startsWith(
+                currentUrl?.contains("audio/reciters/${reciterId}/") == true
+            val isRemoteUrl = currentUrl?.startsWith(
                 targetReciter.baseAudioUrl.trimEnd('/')
             ) == true
             val isSameReciterPlaying = isLocalUrl || isRemoteUrl
 
             if (isSameReciterPlaying) {
-                when (currentAudioState.playbackState) {
-                    AudioPlayerState.AudioPlaybackState.PLAYING -> {
-                        audioPlayerManager.pause()
+                when (currentAudioState.status) {
+                    AudioPlayerStatus.PLAYING -> {
+                        audioPlayer.pause()
                     }
 
-                    AudioPlayerState.AudioPlaybackState.PAUSED, AudioPlayerState.AudioPlaybackState.ENDED, AudioPlayerState.AudioPlaybackState.IDLE -> {
-                        audioPlayerManager.resume()
+                    AudioPlayerStatus.PAUSED, AudioPlayerStatus.ENDED, AudioPlayerStatus.IDLE -> {
+                        audioPlayer.resume()
                     }
 
                     else -> {
                         setReciterLoadingState(reciterId)
-                        audioPlayerManager.play(fullAudioUrl)
+                        audioPlayer.play(AudioSource.fromPath(fullAudioUrl))
                     }
                 }
             } else {
                 setReciterLoadingState(reciterId)
-                audioPlayerManager.play(fullAudioUrl)
+                audioPlayer.play(AudioSource.fromPath(fullAudioUrl))
             }
         }
     }
@@ -297,6 +310,6 @@ class RecitersViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        audioPlayerManager.release()
+        audioPlayer.release()
     }
 }

@@ -22,7 +22,6 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
-import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.getReminderIcon
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.getReminderTitle
@@ -54,7 +53,10 @@ fun ReminderItem(
         amPm
     ).toLocalizedDigits(language)
         .localizeAmPm(language)
-    val iconRes = getReminderIcon(config)
+        
+    val icon = getReminderIcon(config)
+    val title = getReminderTitle(config.type)
+    
     Column(modifier = modifier) {
 
         Row(
@@ -76,7 +78,7 @@ fun ReminderItem(
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
-                    painter = painterResource(iconRes),
+                    painter = painterResource(icon.resId),
                     contentDescription = null,
                     tint = Theme.color.primary.primary
                 )
@@ -90,7 +92,7 @@ fun ReminderItem(
             ) {
 
                 Text(
-                    text = localizedString(getReminderTitle(config.type)),
+                    text = title.asString(),
                     color = Theme.color.primary.shadePrimary,
                     style = Theme.textStyle.label.medium
                 )

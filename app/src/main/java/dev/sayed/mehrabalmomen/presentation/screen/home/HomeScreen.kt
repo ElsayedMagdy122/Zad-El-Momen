@@ -36,8 +36,8 @@ fun HomeScreen(
     }
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
-            HomeEffect.NavigateToFullPrayersDetails -> {
-                navController.navigate(Route.FullPrayerTimeView)
+            HomeEffect.NavigateToPrayerTimes -> {
+                navController.navigate(Route.PrayerTimes)
             }
 
             HomeEffect.NavigateToCalibrateDevice -> {

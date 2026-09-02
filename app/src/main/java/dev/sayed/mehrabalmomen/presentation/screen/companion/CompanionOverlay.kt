@@ -10,14 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.companion.component.BirdCanvas
 import dev.sayed.mehrabalmomen.presentation.screen.companion.component.DialogueBubble
 import kotlinx.coroutines.delay
@@ -123,13 +121,13 @@ fun CompanionOverlay(
                 .padding(bottom = 90.dp) // Lifted above the bottom navigation bar
         ) {
             AnimatedVisibility(
-                visible = state.dialogueRes != null,
+                visible = state.dialogue != null,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                state.dialogueRes?.let {
+                state.dialogue?.let {
                     DialogueBubble(
-                        text = localizedString(it),
+                        text = it.asString(),
                         modifier = Modifier
                             .widthIn(max = 220.dp)
                             .graphicsLayer { rotationY = -currentRotationY }

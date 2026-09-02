@@ -18,7 +18,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationScreen
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsScreen
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.FullPrayerTimesViewScreen
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
@@ -56,7 +56,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
             MainContainer(rootNavController = navController)
         }
         composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
-        composable<Route.FullPrayerTimeView> { FullPrayerTimesViewScreen(navController) }
+        composable<Route.PrayerTimes> { PrayerTimesScreen(navController) }
         composable<Route.QiblahScreen> { QiblahScreen(navController) }
         composable<Route.PermissionsScreen> { PermissionsScreen(navController) }
         composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }

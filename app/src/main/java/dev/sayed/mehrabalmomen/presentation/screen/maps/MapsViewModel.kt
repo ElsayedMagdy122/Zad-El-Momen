@@ -2,22 +2,23 @@ package dev.sayed.mehrabalmomen.presentation.screen.maps
 
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 
 class MapsViewModel(
     private val settingsRepository: SettingsRepository,
     private val locationRepository: LocationRepository,
-    private val analyticsHelper: AnalyticsHelper
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<MapsUiState, MapsEffect>(MapsUiState()), MapsInteractionListener {
     init {
         loadUserCurrentLocation()
     }
     fun onScreenOpened() {
-        analyticsHelper.logScreen("maps")
+        analyticsTracker.logScreen("maps")
     }
     private fun loadUserCurrentLocation() {
         tryToCall(
@@ -47,15 +48,15 @@ class MapsViewModel(
     override fun onDetectLocationClicked() {
         tryToCall(
             block = { locationRepository.getCurrentDeviceLocation() },
-            onSuccess = { latLng ->
-                onDetectLocationSuccess(latLng.latitude, latLng.longitude)
+            onSuccess = { location ->
+                onDetectLocationSuccess(location.latitude, location.longitude)
             },
             onError = {
                 sendEffect(
                     MapsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.no_internet_connection,
-                            message = R.string.please_connect_to_the_internet_to_continue,
+                            title = UiText.StringResource(R.string.no_internet_connection),
+                            message = UiText.StringResource(R.string.please_connect_to_the_internet_to_continue),
                             icon = R.drawable.ic_close_circle
                         )
                     )
@@ -87,8 +88,8 @@ class MapsViewModel(
                 sendEffect(
                     MapsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.no_internet_connection,
-                            message = R.string.please_connect_to_the_internet_to_continue,
+                            title = UiText.StringResource(R.string.no_internet_connection),
+                            message = UiText.StringResource(R.string.please_connect_to_the_internet_to_continue),
                             icon = R.drawable.ic_close_circle
                         )
                     )
@@ -126,8 +127,8 @@ class MapsViewModel(
                 sendEffect(
                     MapsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.no_internet_connection,
-                            message = R.string.please_connect_to_the_internet_to_continue,
+                            title = UiText.StringResource(R.string.no_internet_connection),
+                            message = UiText.StringResource(R.string.please_connect_to_the_internet_to_continue),
                             icon = R.drawable.ic_close_circle
                         )
                     )
@@ -159,8 +160,8 @@ class MapsViewModel(
                 sendEffect(
                     MapsEffect.ShowToast(
                         ToastDetails(
-                            title = R.string.location_saved,
-                            message = R.string.your_location_has_been_saved_successfully,
+                            title = UiText.StringResource(R.string.location_saved),
+                            message = UiText.StringResource(R.string.your_location_has_been_saved_successfully),
                             icon = R.drawable.ic_check_circle
                         )
                     )

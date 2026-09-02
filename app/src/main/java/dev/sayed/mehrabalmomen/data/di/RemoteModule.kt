@@ -68,6 +68,7 @@ val remoteModule = module {
         BugReportRemoteDataSourceImpl(
             rpcService = get(),
             storageService = get(),
+            deviceInfoProvider = get(),
             supabase = get(),
             context = get()
         )

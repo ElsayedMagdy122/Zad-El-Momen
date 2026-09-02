@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import org.maplibre.android.geometry.LatLng
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -24,7 +23,7 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
-    suspend fun getCurrentOrSavedLocation(): Location {
+    private suspend fun getCurrentOrSavedLocation(): Location {
         val savedLocation = settingsRepository.observeLocation().first()
         if (savedLocation.isValid()) return savedLocation
 
@@ -79,19 +78,19 @@ class LocationRepositoryImpl(val context: Context, val settingsRepository: Setti
         }
 
     @SuppressLint("MissingPermission")
-    override suspend fun getCurrentDeviceLocation(): LatLng =
+    override suspend fun getCurrentDeviceLocation(): Location =
         suspendCancellableCoroutine { cont ->
             fusedLocationClient.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 null
             ).addOnSuccessListener { location ->
                 if (location != null) {
-                    cont.resume(LatLng(location.latitude, location.longitude))
+                    cont.resume(Location(latitude = location.latitude, longitude = location.longitude))
                 } else {
                     fusedLocationClient.lastLocation
                         .addOnSuccessListener { fallback ->
                             if (fallback != null) {
-                                cont.resume(LatLng(fallback.latitude, fallback.longitude))
+                                cont.resume(Location(latitude = fallback.latitude, longitude = fallback.longitude))
                             } else {
                                 cont.resumeWithException(
                                     IllegalStateException("Location unavailable")
