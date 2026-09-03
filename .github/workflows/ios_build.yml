@@ -33,7 +33,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Decode Google Services JSON
-        if: "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 != '' }}"
+        if: secrets.GOOGLE_SERVICES_JSON_BASE64 != ''
         run: |
           mkdir -p app
           echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
