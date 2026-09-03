@@ -3,7 +3,8 @@ name: Build iOS for Appetize
 on:
   workflow_dispatch:
   push:
-    branches: [ refactor/megrate-from-android-to-cmp ]
+    branches: [ master, main, refactor/megrate-from-
+      android-to-cmp ]
 
 jobs:
   build-ios:
@@ -26,16 +27,18 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Build Shared Framework
+        run: ./gradlew :shared:assembleReleaseFullFramework
+
       - name: Build with Xcode
         run: |
-          ./gradlew clean
           xcodebuild clean build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
-            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             ENABLE_PREVIEWS=NO
@@ -50,7 +53,6 @@ jobs:
         uses: appetizeio/github-action-appetize@v1.0.5
         with:
           apiToken: ${{ secrets.APPETIZE_API_TOKEN }}
-          #          publicKey: ${{ secrets.APPETIZE_PUBLIC_KEY }}
           appFile: iosApp.zip
           platform: ios
 
