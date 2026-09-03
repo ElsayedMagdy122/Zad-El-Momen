@@ -34,6 +34,7 @@ kotlin {
                 // Local Database
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.androidx.datastore.preferences)
                 implementation(libs.adhan2)
             }
         }
@@ -41,6 +42,11 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
+                implementation(libs.koin.android)
+                implementation(libs.firebase.analytics)
+                implementation(libs.billing.ktx)
+                implementation(libs.play.services.location)
+                implementation(libs.androidx.work.runtime.ktx)
             }
         }
         
