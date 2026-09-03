@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zad Al-Mu’min</string>
+    <string name="fajr">Fajr</string>
+    <string name="dhuhr">Dhuhr</string>
+    <string name="asr">Asr</string>
+    <string name="maghrib">Maghrib</string>
+    <string name="isha">Isha</string>
+    <string name="am">AM</string>
+    <string name="pm">PM</string>
+    <string name="success">Success</string>
+    <string name="copied_message_successfully">Copied successfully</string>
+</resources>

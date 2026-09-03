@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">زاد المؤمن</string>
+    <string name="fajr">الفجر</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="asr">العصر</string>
+    <string name="maghrib">المغرب</string>
+    <string name="isha">العشاء</string>
+    <string name="am">ص</string>
+    <string name="pm">م</string>
+    <string name="success">نجاح</string>
+    <string name="copied_message_successfully">تم النسخ بنجاح</string>
+</resources>
