@@ -44,6 +44,13 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
+
+            // Maps & Location
+            implementation(libs.maplibre.compose)
+            
+            // Image Loading
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
 
         val androidMain by getting {

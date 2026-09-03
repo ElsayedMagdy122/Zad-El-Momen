@@ -3,8 +3,7 @@ name: Build iOS for Appetize
 on:
   workflow_dispatch:
   push:
-    branches: [ master, main, refactor/megrate-from-
-      android-to-cmp ]
+    branches: [ master, main, refactor/megrate-from-android-to-cmp ]
 
 jobs:
   build-ios:
@@ -23,14 +22,41 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Decode Google Services JSON
+        if: "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 != '' }}"
+        run: |
+          mkdir -p app
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+
+      - name: Create dummy GoogleService-Info.plist
+        run: |
+          mkdir -p iosApp/iosApp
+          echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>BUNDLE_ID</key><string>dev.sayed.mehrabalmomen.ios</string></dict></plist>' > iosApp/iosApp/GoogleService-Info.plist
+
       # Give execution permission to gradlew
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Build Shared Framework
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPPORT_1: ${{ secrets.SUPPORT_1 }}
+          SUPPORT_5: ${{ secrets.SUPPORT_5 }}
+          SUPPORT_10: ${{ secrets.SUPPORT_10 }}
+          SUPPORT_25: ${{ secrets.SUPPORT_25 }}
+          SUPPORT_100: ${{ secrets.SUPPORT_100 }}
         run: ./gradlew :shared:assembleReleaseFullFramework
 
       - name: Build with Xcode
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPPORT_1: ${{ secrets.SUPPORT_1 }}
+          SUPPORT_5: ${{ secrets.SUPPORT_5 }}
+          SUPPORT_10: ${{ secrets.SUPPORT_10 }}
+          SUPPORT_25: ${{ secrets.SUPPORT_25 }}
+          SUPPORT_100: ${{ secrets.SUPPORT_100 }}
         run: |
           xcodebuild clean build \
             -project iosApp/iosApp.xcodeproj \

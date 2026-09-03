@@ -25,13 +25,9 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
 
     if (onboardingComplete == null) return
 
-    // Forced start destination for testing iOS
-    val startDestination: Route = Route.AppRoute
-/*
     val startDestination: Route =
         if (onboardingComplete == true) Route.AppRoute
         else Route.CalculationMethodScreen
-*/
 
     NavHost(
         navController = navController,

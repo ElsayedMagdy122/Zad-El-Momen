@@ -36,7 +36,7 @@ android {
         fun getProp(key: String): String {
             return localProperties.getProperty(key)
                 ?: System.getenv(key)
-                ?: error("Missing property: $key")
+                ?: ""
         }
         buildConfigField("String", "SUPABASE_URL", "\"${getProp("SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_KEY", "\"${getProp("SUPABASE_KEY")}\"")
