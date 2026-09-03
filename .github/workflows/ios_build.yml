@@ -7,7 +7,8 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    
+    timeout-minutes: 40
+
     # Global environment variables for the entire job
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -32,6 +33,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      # Cache Kotlin/Native toolchain (~/.konan) to avoid heavy downloading on every run
+      - name: Cache Kotlin Native Toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/gradle/libs.versions.toml', '**/*.gradle.kts') }}
+          restore-keys: |
+            ${{ runner.os }}-konan-
+
       - name: Decode Google Services JSON
         if: env.GOOGLE_SERVICES_JSON_BASE64 != ''
         run: |
@@ -46,8 +56,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Gradle Clean
-        run: ./gradlew clean
+      # Pre-compile Kotlin Multiplatform iOS framework to prevent timeout inside Xcode
+      - name: Precompile Kotlin Framework
+        run: ./gradlew :shared:embedAndSignAppleFrameworkForXcode
 
       - name: Build with Xcode
         run: |
@@ -57,7 +68,7 @@ jobs:
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
-            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             ENABLE_PREVIEWS=NO
