@@ -2,7 +2,7 @@ name: Build iOS for Appetize
 
 on:
   workflow_dispatch:
-  push: 
+  push:
 
 jobs:
   build-ios:
@@ -48,9 +48,6 @@ jobs:
 
       - name: Gradle Clean
         run: ./gradlew clean
-
-      - name: Build Shared Framework
-        run: ./gradlew :shared:assembleReleaseFullFramework
 
       - name: Build with Xcode
         run: |
