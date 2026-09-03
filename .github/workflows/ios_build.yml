@@ -56,10 +56,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      # Pre-compile Kotlin Multiplatform iOS framework to prevent timeout inside Xcode
-      - name: Precompile Kotlin Framework
-        run: ./gradlew :shared:embedAndSignAppleFrameworkForXcode
-
       - name: Build with Xcode
         run: |
           xcodebuild clean build \
