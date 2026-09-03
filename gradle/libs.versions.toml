@@ -1,48 +1,79 @@
 [versions]
-adhan2 = "0.0.6"
+# ── Core toolchain ──────────────────────────────────────────────
+kotlin = "2.2.20"
 agp = "8.13.1"
-billingKtx = "8.3.0"
-bom = "3.1.4"
-coilCompose = "2.7.0"
-coreSplashscreen = "1.0.1"
-datastorePreferences = "1.2.0"
-workManager = "2.11.2"
-kotlin = "2.2.21"
+ksp = "2.2.20-2.0.2"
+compose-multiplatform = "1.10.0"
+
+# ── AndroidX / Compose ──────────────────────────────────────────
+android-compileSdk = "36"
+android-minSdk = "26"
+android-targetSdk = "36"
 coreKtx = "1.17.0"
-kotlinxDatetime = "0.7.1"
-kotlinxSerializationJson = "1.7.3"
-ktorClientAndroid = "3.4.0"
+coreSplashscreen = "1.0.1"
 lifecycleRuntimeKtx = "2.10.0"
+androidx-lifecycle = "2.8.4" # Downgraded to a more stable KMP version
 activityCompose = "1.12.0"
 composeBom = "2024.09.00"
-koin-bom = "4.1.1"
+navigationCompose = "2.9.6"
+navigationRuntimeKtx = "2.9.6"
+datastorePreferences = "1.2.0"
+materialVersion = "1.12.0"
+
+# ── DI ───────────────────────────────────────────────────────────
+koin = "4.2.1"
+
+# ── Networking / Serialization / Date / Coroutines ──────────────
+ktor = "3.4.0"
+kotlinxDatetime = "0.7.1"
+kotlinxSerializationJson = "1.7.3"
+kotlinxCoroutines = "1.10.1"
+
+# ── Supabase ───────────────────────────────────────────────────
+supabase = "3.1.4"
+
+# ── Firebase ───────────────────────────────────────────────────
 firebaseBom = "34.6.0"
 googleGmsGoogleServices = "4.4.4"
 googleFirebaseCrashlytics = "3.0.6"
 googleFirebaseFirebasePerf = "2.0.2"
-maplibreCompose = "0.11.1"
-jetbrainsKotlinJvm = "2.2.21"
-materialVersion = "1.12.0"
-navigationCompose = "2.9.6"
-navigationRuntimeKtx = "2.9.6"
-playServicesLocation = "21.0.1"
 firebaseMessaging = "25.0.1"
+firebaseAnalytics = "23.2.0"
+
+# ── Local database ───────────────────────────────────────────────
+room = "2.8.4"
+sqlite = "2.6.2"
+
+# ── Image loading ─────────────────────────────────────────────────
+coil = "3.6.1"
+
+# ── Maps & Location ───────────────────────────────────────────────
+maplibreCompose = "0.11.1"
+playServicesLocation = "21.0.1"
+
+# ── Android-only ─────────────────────────────────────────────
+billingKtx = "8.3.0"
+workManager = "2.11.2"
 media3Exoplayer = "1.9.2"
 foundation = "1.10.4"
-firebaseAnalytics = "23.2.0"
+
+# ── Domain-specific ────────────────────────────────────────────────
+adhan2 = "0.0.6"
+
 [libraries]
-adhan2 = { module = "com.batoulapps.adhan:adhan2", version.ref = "adhan2" }
+# AndroidX core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "bom" }
-functions-kt = { module = "io.github.jan-tennert.supabase:functions-kt" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+
+# Multiplatform Lifecycle
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+
+# Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -50,73 +81,91 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
+# Navigation
+jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-lifecycle" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-runtime-ktx = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 
-koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
-koin-core = { module = "io.insert-koin:koin-core" }
-koin-android = { module = "io.insert-koin:koin-android" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
-koin-compose = { module = "io.insert-koin:koin-compose" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+# Koin
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+
+# Supabase
+supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
+supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabase" }
+supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "supabase" }
+supabase-storage = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabase" }
+supabase-functions = { module = "io.github.jan-tennert.supabase:functions-kt", version.ref = "supabase" }
+
+# Ktor
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+
+# Kotlinx
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
+# Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
-maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
-material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
-realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
-storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
-androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
-androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+
+# Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+
+# Coil 3
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+
+# Maps & Location
+maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+
+# Android-only
+billing-ktx = { module = "com.android.billingclient:billing-ktx", version.ref = "billingKtx" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager" }
+androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3Exoplayer" }
+androidx-media = { module = "androidx.media:media", version = "1.6.0" }
+material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+
+# Domain specific
+adhan2 = { module = "com.batoulapps.adhan:adhan2", version.ref = "adhan2" }
+ummalqura-calendar = { module = "com.github.msarhan:ummalqura-calendar", version = "1.1.9" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 google-firebase-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebaseFirebasePerf" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
 [bundles]
-
-#AndroidX Core & Activity & Lifecycle
-androidx-core = ["androidx-core-ktx", "androidx-core-splashscreen", "androidx-lifecycle-runtime-ktx", "androidx-activity-compose", ]
-
-#Jetpack Compose
-compose-ui = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", ]
-compose-debug = ["androidx-compose-ui-tooling", "androidx-compose-ui-test-manifest", ]
-
-#Navigation Compose
-navigation-compose = ["androidx-navigation-compose", "androidx-navigation-runtime-ktx", ]
-
-#Koin
-koin = ["koin-core", "koin-android", "koin-androidx-compose", "koin-compose", "koin-compose-viewmodel", ]
-
-#Supabase
-supabase = ["postgrest-kt", "realtime-kt", "storage-kt", "functions-kt"]
-
-#Firebase (Crashlytics + Performance)
-firebase = ["firebase-crashlytics", "firebase-perf", ]
-
-#Serialization & DateTime
-kotlinx = ["kotlinx-datetime", "kotlinx-serialization-json", ]
-
-#Ktor client
-network = ["ktor-client-android"]
-
-# Maps & Location
-maps-location = ["maplibre-compose", "play-services-location", ]
-
-#Coil
-image-loading = ["coil-compose", ]
-
-# ── Others / Domain specific
+androidx-core = ["androidx-core-ktx", "androidx-core-splashscreen", "androidx-lifecycle-runtime-ktx", "androidx-activity-compose"]
+compose-ui = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3"]
+compose-debug = ["androidx-compose-ui-tooling", "androidx-compose-ui-test-manifest"]
+navigation-compose = ["androidx-navigation-compose", "androidx-navigation-runtime-ktx"]
+koin = ["koin-core", "koin-compose", "koin-compose-viewmodel"]
+supabase = ["supabase-postgrest", "supabase-realtime", "supabase-storage", "supabase-functions"]
+firebase = ["firebase-crashlytics", "firebase-perf"]
+kotlinx = ["kotlinx-datetime", "kotlinx-serialization-json", "kotlinx-coroutines-core"]
+maps-location = ["maplibre-compose"]
+image-loading = ["coil-compose", "coil-network-ktor"]
 others = ["adhan2", "androidx-datastore-preferences", "billing-ktx", "material-v1120"]
