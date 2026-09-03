@@ -1,0 +1,62 @@
+name: Build iOS for Appetize
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ refactor/megrate-from-android-to-cmp ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      # Give execution permission to gradlew
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build with Xcode
+        run: |
+          ./gradlew clean
+          xcodebuild clean build \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build-ios \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            ENABLE_PREVIEWS=NO
+
+      - name: Zip .app bundle
+        run: |
+          APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
+          [ -z "$APP_PATH" ] && { echo "Error: .app bundle not found!"; exit 1; }
+          (cd "$(dirname "$APP_PATH")" && zip -r "$GITHUB_WORKSPACE/iosApp.zip" "$(basename "$APP_PATH")")
+
+      - name: Upload to Appetize
+        uses: appetizeio/github-action-appetize@v1.0.5
+        with:
+          apiToken: ${{ secrets.APPETIZE_API_TOKEN }}
+          #          publicKey: ${{ secrets.APPETIZE_PUBLIC_KEY }}
+          appFile: iosApp.zip
+          platform: ios
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-simulator
+          path: iosApp.zip
+          retention-days: 5

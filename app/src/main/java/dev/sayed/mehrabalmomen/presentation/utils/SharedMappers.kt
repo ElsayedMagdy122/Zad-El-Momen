@@ -1,9 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.utils
 
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
-import dev.sayed.mehrabalmomen.presentation.base.UiIcon
-import dev.sayed.mehrabalmomen.presentation.base.UiText
+import dev.sayed.mehrabalmomen.design_system.utils.UiIcon
+import dev.sayed.mehrabalmomen.design_system.utils.UiText
+import dev.sayed.mehrabalmomen.R 
 
 fun Prayer.toUiIcon(prayerName: Prayer.PrayerName): UiIcon {
     val resId = when(prayerName){

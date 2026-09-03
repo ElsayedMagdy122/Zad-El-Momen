@@ -7,7 +7,8 @@ import android.media.MediaPlayer
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.util.BillingManager
+import dev.sayed.mehrabalmomen.data.util.AndroidBillingManager
+import dev.sayed.mehrabalmomen.domain.repository.donation.DonationManager
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
@@ -25,7 +26,7 @@ class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
-    private val billingManager: BillingManager,
+    private val donationManager: DonationManager,
     private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
@@ -54,7 +55,7 @@ class SettingsViewModel(
         observeTafseer()
         observeSelectedMoazen()
         observeCompanionEnabled()
-        billingManager.queryProducts(supportProductIds)
+        donationManager.queryProducts(supportProductIds)
     }
 
     private var previewPlayer: MediaPlayer? = null
@@ -93,7 +94,7 @@ class SettingsViewModel(
 
     private fun observeBillingData() {
         viewModelScope.launch {
-            billingManager.productDetails.collect { products ->
+            donationManager.productDetails.collect { products ->
                 val available = products.isNotEmpty()
                 updateState {
                     it.copy(isSupportAvailable = available)
@@ -102,7 +103,7 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch {
-            billingManager.purchaseSuccess.collect {
+            donationManager.purchaseSuccess.collect {
                 sendEffect(
                     SettingsEffect.ShowToast(
                         ToastDetails(
@@ -117,7 +118,8 @@ class SettingsViewModel(
     }
 
     fun launchDonationFlow(activity: Activity, productId: String) {
-        billingManager.launchBillingFlow(activity, productId)
+        (donationManager as? AndroidBillingManager)?.setActivity(activity)
+        donationManager.launchDonationFlow(productId)
     }
 
     private fun observeSettings() {
@@ -557,10 +559,10 @@ class SettingsViewModel(
     }
 
     private fun showSupportBottomSheet() {
-        val products = billingManager.productDetails.value
+        val products = donationManager.productDetails.value
         val options = supportProductIds.map { id ->
             val details = products.find { it.productId == id }
-            val price = details?.oneTimePurchaseOfferDetails?.formattedPrice ?: "N/A"
+            val price = details?.formattedPrice ?: "N/A"
             SelectionItem(
                 description = price,
                 text = UiText.StringResource(getSupportName(id))

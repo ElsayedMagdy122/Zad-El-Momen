@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 kotlin {
     androidTarget {
         publishLibraryVariants("release")

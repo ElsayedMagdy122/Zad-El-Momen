@@ -1,0 +1,178 @@
+package dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.DownloadState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.PlayState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.ReciterUiState
+
+@Composable
+fun ReciterItem(
+    state: ReciterUiState,
+    onPlayClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isArabic: Boolean = true
+) {
+    val reciterName = if (isArabic) state.nameAr else state.nameEn
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .then(
+                if (state.isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = Theme.color.primary.primary,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            .background(Theme.color.surfaces.surfaceLow)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PlayButton(
+            playState = state.playState,
+            onPlayClick = onPlayClick,
+            modifier = Modifier.size(40.dp)
+        )
+        ReciterInformation(
+            name = reciterName,
+            isDownloaded = state.downloadState == DownloadState.DOWNLOADED,
+            rewayaName = state.rewayaName,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .weight(1f)
+        )
+        if (state.downloadState != DownloadState.DOWNLOADED) {
+            DownloadButton(
+                downloadState = state.downloadState,
+                downloadProgress = state.downloadProgress,
+                onDownloadClick = onDownloadClick
+            )
+        }
+    }
+}
+
+@Composable
+fun ReciterInformation(
+    name: String,
+    rewayaName: String,
+    isDownloaded: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = name,
+            style = Theme.textStyle.label.medium,
+            color = Theme.color.primary.shadePrimary
+        )
+        Row() {
+            Text(
+                text = rewayaName,
+                style = Theme.textStyle.label.small,
+                color = Theme.color.secondary.shadeSecondary
+            )
+            if (isDownloaded) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_tick_double_02),
+                    contentDescription = null,
+                    tint = Theme.color.semantic.success,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .size(12.dp)
+                )
+                Text(
+                    text = localizedString(R.string.downloaded),
+                    style = Theme.textStyle.label.small,
+                    color = Theme.color.semantic.success
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReciterItemsPreviewContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        ReciterItem(
+            state = ReciterUiState(
+                id = 1,
+                nameAr = "عبد الباسط عبد الصمد", nameEn = "",
+                rewayaName = "حفص عن عاصم - مجود",
+                baseAudioUrl = "",
+                downloadState = DownloadState.NOT_DOWNLOADED,
+                playState = PlayState.RESUME
+            ),
+            onPlayClick = {},
+            onDownloadClick = {}
+        )
+
+        ReciterItem(
+            state = ReciterUiState(
+                id = 2,
+                nameAr = "محمود خليل الحصري", nameEn = "",
+                rewayaName = "ورش عن نافع",
+                baseAudioUrl = "",
+                downloadState = DownloadState.DOWNLOADING,
+                playState = PlayState.LOADING
+            ),
+            onPlayClick = {},
+            onDownloadClick = {}
+        )
+
+        ReciterItem(
+            state = ReciterUiState(
+                id = 3,
+                nameAr = "محمد صديق المنشاوي",
+                nameEn = "",
+                rewayaName = "حفص عن عاصم - معلم",
+                baseAudioUrl = "",
+                downloadState = DownloadState.DOWNLOADED,
+                playState = PlayState.PLAY
+            ),
+            onPlayClick = {},
+            onDownloadClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ReciterItemPreview() {
+    MehrabTheme {
+        ReciterItemsPreviewContent()
+    }
+}
+
+

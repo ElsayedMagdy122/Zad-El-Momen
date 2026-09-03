@@ -6,15 +6,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import com.google.firebase.perf.performance
 import dev.sayed.mehrabalmomen.BuildConfig
-import dev.sayed.mehrabalmomen.data.di.dataModule
-import dev.sayed.mehrabalmomen.domain.di.domainModule
-import dev.sayed.mehrabalmomen.presentation.di.presentationModule
+import dev.sayed.mehrabalmomen.shared.di.initKoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.GlobalContext.startKoin
 import org.maplibre.android.MapLibre
 import java.util.Locale
 
@@ -23,9 +20,8 @@ class MehrabApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startKoin {
+        initKoin {
             androidContext(this@MehrabApplication)
-            modules(presentationModule, domainModule, *dataModule.toTypedArray())
         }
         
         applicationScope.launch {

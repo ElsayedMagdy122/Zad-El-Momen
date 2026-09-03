@@ -45,6 +45,12 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
         }
+
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.ummalqura.calendar)
+            }
+        }
     }
 }
 

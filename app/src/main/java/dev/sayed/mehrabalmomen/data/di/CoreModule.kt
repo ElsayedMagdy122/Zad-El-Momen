@@ -10,7 +10,8 @@ import dev.sayed.mehrabalmomen.data.platform.audio.AndroidAudioPlayer
 import dev.sayed.mehrabalmomen.data.platform.system.AndroidDeviceInfoProvider
 import dev.sayed.mehrabalmomen.data.platform.system.AndroidPermissionProvider
 import dev.sayed.mehrabalmomen.data.util.AndroidLogger
-import dev.sayed.mehrabalmomen.data.util.BillingManager
+import dev.sayed.mehrabalmomen.data.util.AndroidBillingManager
+import dev.sayed.mehrabalmomen.domain.repository.donation.DonationManager
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.notification.NotificationScheduler
@@ -24,7 +25,7 @@ import org.koin.dsl.module
 @OptIn(UnstableApi::class)
 val coreModule = module {
     single { Gson() }
-    single { BillingManager(get()) }
+    single<DonationManager> { AndroidBillingManager(get()) }
     single<AlarmScheduler> { AndroidAlarmScheduler(androidContext()) }
     single<NotificationScheduler> { AndroidNotificationScheduler(androidContext()) }
     factory<AudioPlayer> { AndroidAudioPlayer(androidContext()) }
