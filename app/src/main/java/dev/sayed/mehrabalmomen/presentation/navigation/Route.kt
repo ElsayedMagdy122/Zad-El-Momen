@@ -102,6 +102,11 @@ sealed interface Route {
     }
 
     @Serializable
+    data class Tasmee3Screen(val surahId: Int, val surahName: String) : Route {
+        override val route: String get() = "tasmee3_screen/$surahId"
+    }
+
+    @Serializable
     data object ReportBugScreen : Route {
         override val route = "report_bug"
     }

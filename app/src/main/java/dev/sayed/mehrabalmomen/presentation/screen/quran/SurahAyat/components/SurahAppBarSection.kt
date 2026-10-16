@@ -16,7 +16,8 @@ import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 fun SurahAppBarSection(
     surahName: String,
     onBack: () -> Unit,
-    onSearch: () -> Unit
+    onSearch: () -> Unit,
+    onTasmee3: () -> Unit
 ) {
     QuranAppBar(
         modifier = Modifier
@@ -27,6 +28,10 @@ fun SurahAppBarSection(
         onBackClick = onBack,
         titleColor = Theme.color.primary.shadePrimary,
         actions = listOf(
+            AppBarAction(
+                icon = painterResource(R.drawable.ic_tilawah),
+                onClick = onTasmee3
+            ),
             AppBarAction(
                 icon = painterResource(R.drawable.ic_search),
                 onClick = onSearch

@@ -8,4 +8,5 @@ interface SurahAyatInteractionListener {
     fun onTafseer()
     fun onClickBack()
     fun onClickSearch()
+    fun onClickTasmee3()
 }

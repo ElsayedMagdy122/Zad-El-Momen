@@ -105,6 +105,15 @@ fun SurahAyatScreen(
                     )
                 )
             }
+
+            is SurahAyatEffect.NavigateToTasmee3 -> {
+                navController.navigate(
+                    Route.Tasmee3Screen(
+                        surahId = effect.surahId,
+                        surahName = effect.surahName
+                    )
+                )
+            }
         }
     }
 
@@ -184,7 +193,8 @@ private fun SurahAyatContent(
                 SurahAppBarSection(
                     surahName = surahName,
                     onBack = listener::onClickBack,
-                    onSearch = listener::onClickSearch
+                    onSearch = listener::onClickSearch,
+                    onTasmee3 = listener::onClickTasmee3
                 )
             }
 

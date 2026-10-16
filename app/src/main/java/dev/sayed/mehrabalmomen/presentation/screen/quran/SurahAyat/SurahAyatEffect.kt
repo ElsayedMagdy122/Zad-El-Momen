@@ -12,5 +12,10 @@ sealed interface SurahAyatEffect {
         val englishName: String,
     ) : SurahAyatEffect
 
+    data class NavigateToTasmee3(
+        val surahId: Int,
+        val surahName: String
+    ) : SurahAyatEffect
+
     data class ShowToast(val toast: ToastDetails) : SurahAyatEffect
 }

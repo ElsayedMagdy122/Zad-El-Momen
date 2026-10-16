@@ -24,6 +24,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScre
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchScreen
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.Tasmee3Screen
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
@@ -82,6 +83,14 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 surahId = surah.surahId,
                 arabicName = surah.arabicName,
                 englishName = surah.englishName
+            )
+        }
+        composable<Route.Tasmee3Screen> { entry ->
+            val args = entry.toRoute<Route.Tasmee3Screen>()
+            Tasmee3Screen(
+                surahId = args.surahId,
+                surahName = args.surahName,
+                navController = navController
             )
         }
         composable<Route.SearchAyahScreen> { entry ->

@@ -582,4 +582,14 @@ class SurahAyatViewModel(
             )
         )
     }
+
+    override fun onClickTasmee3() {
+        analyticsTracker.logEvent("on click tasmee3 in surah")
+        sendEffect(
+            SurahAyatEffect.NavigateToTasmee3(
+                surahId = surahId,
+                surahName = screenState.value.arabicName
+            )
+        )
+    }
 }
