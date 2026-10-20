@@ -407,4 +407,37 @@
     <string name="rafiq_tasbih_2">الحمد لله.. دائماً وأبداً ❤️</string>
     <string name="rafiq_tasbih_3">الله أكبر.. الله أكبر.. ❤️</string>
     <string name="rafiq_tasbih_4">لا إله إلا الله.. بها تحيا القلوب ❤️</string>
+
+    <!-- Recitation & Tajweed Error Localization -->
+    <string name="tajweed_rule_normal_madd">المد الطبيعي</string>
+    <string name="tajweed_rule_mottasel_madd">المد المتصل</string>
+    <string name="tajweed_rule_monfasel_madd">المد المنفصل</string>
+    <string name="tajweed_rule_aared_madd">المد العارض للسكون</string>
+    <string name="tajweed_rule_lazem_madd">المد اللازم</string>
+    <string name="tajweed_rule_leen_madd">مد اللين</string>
+    <string name="tajweed_rule_mushaddad_ghunnah">النون أو الميم المشددة</string>
+    <string name="tajweed_rule_shaddah">الشدة</string>
+
+    <string name="tajweed_error_underheld">نقص في %1$s: قمت بمد الصوت %2$.2fث، والمطلوب %3$.2fث</string>
+    <string name="tajweed_error_overheld">زيادة في %1$s: قمت بمد الصوت %2$.2fث، والحد الأقصى المسموح %3$.2fث</string>
+    <string name="tajweed_error_tashkeel">خطأ في التشكيل: المتوقع (%1$s) ونُطِق (%2$s)</string>
+    <string name="tajweed_error_omission">إسقاط حرف: لم يتم نطق (%1$s)</string>
+    <string name="tajweed_error_substitution">خطأ في نطق الحرف: المتوقع (%1$s) ونُطِق (%2$s)</string>
+
+    <string name="tajweed_advice_normal_madd">أعطِ المد الطبيعي حقه بمقدار حركتين دون زيادة أو نقص</string>
+    <string name="tajweed_advice_mottasel_madd">أطل زمن المد بمقدار 4 أو 5 حركات وجوباً</string>
+    <string name="tajweed_advice_monfasel_madd">أطل زمن المد بمقدار 4 حركات جوازاً</string>
+    <string name="tajweed_advice_aared_madd">أعطِ المد العارض للسكون حقه (حركتان، 4، أو 6 حركات)</string>
+    <string name="tajweed_advice_lazem_madd">أطل زمن المد اللازم بمقدار 6 حركات كاملة لزوماً</string>
+    <string name="tajweed_advice_leen_madd">أعطِ حرف اللين زمنه المناسب عند الوقف</string>
+    <string name="tajweed_advice_mushaddad_ghunnah">أعطِ الغنة زمن حركتين كاملتين من الخيشوم</string>
+    <string name="tajweed_advice_shaddah">اضغط على مخرج الحرف المشدد بوضوح</string>
+    <string name="tajweed_advice_overheld">لا تبالغ في مد الصوت وتجاوز الحد المسموح به في الرواية</string>
+    <string name="tajweed_advice_tashkeel">احرص على ضبط الحركة الصحيحة (فتحة، ضمة، كسرة)</string>
+    <string name="tajweed_advice_omission">انطق جميع أحرف الكلمة بوضوح دون بلع أو إسقاط</string>
+    <string name="tajweed_advice_substitution">انطق الحرف من مخرجه الصحيح مع مراعاة صفاته (همس، جهر، ترقيق، تفخيم)</string>
+
+    <string name="recitation_feedback_title">ملاحظات التجويد والنطق</string>
+    <string name="recitation_feedback_on_word">تنبيه على كلمة: %1$s</string>
+    <string name="recitation_feedback_close">فهمت (إغلاق)</string>
 </resources>

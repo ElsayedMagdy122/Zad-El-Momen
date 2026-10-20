@@ -62,3 +62,4 @@ proguard-rules.pro  #
 lint-results*.xml
 lint-results*.html
 test_output/
+powershell.cmd

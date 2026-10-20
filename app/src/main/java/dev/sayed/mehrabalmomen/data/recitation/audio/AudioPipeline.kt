@@ -23,7 +23,10 @@ class AudioPipeline(
         const val SAMPLE_RATE = 16000
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
-        const val CHUNK_MS = 240
+
+        // 480ms = wider acoustic window → CTC model sees more context per frame.
+        // This significantly improves recognition of short syllables, Shaddah, and Ghunnah.
+        const val CHUNK_MS = 480
         const val BYTES_PER_SAMPLE = 2
         const val RECORD_CHUNK_BYTES = (SAMPLE_RATE * 1 * BYTES_PER_SAMPLE * CHUNK_MS) / 1000
     }
@@ -48,13 +51,37 @@ class AudioPipeline(
         Log.d(TAG, "🎙️ [AudioPipeline] Initializing AudioRecord (sampleRate=$SAMPLE_RATE, bufferSize=$bufferSize)...")
 
         try {
+            // UNPROCESSED bypasses Android's noise suppressor, AGC, and echo canceller.
+            // VOICE_RECOGNITION was silently filtering breathy Quranic consonants (ه، ح، خ)
+            // and Madd endings as "background noise". UNPROCESSED delivers the raw signal
+            // that Sherpa-ONNX was trained on. Fallback to MIC if device doesn't support it.
+            val audioSource = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                MediaRecorder.AudioSource.UNPROCESSED
+            } else {
+                MediaRecorder.AudioSource.MIC
+            }
+            Log.d(TAG, "🎙️ [AudioPipeline] Using AudioSource: $audioSource (UNPROCESSED=${android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N})")
+
             audioRecord = AudioRecord(
-                MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                audioSource,
                 SAMPLE_RATE,
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT,
                 bufferSize
             )
+
+            // If UNPROCESSED is not supported on this device, AudioRecord won't init — fall back to MIC
+            if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
+                Log.w(TAG, "⚠️ [AudioPipeline] UNPROCESSED not supported, retrying with MIC...")
+                audioRecord?.release()
+                audioRecord = AudioRecord(
+                    MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    bufferSize
+                )
+            }
 
             if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
                 throw IllegalStateException("AudioRecord failed to initialize.")

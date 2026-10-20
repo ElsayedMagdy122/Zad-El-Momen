@@ -395,4 +395,37 @@
     <string name="rafiq_tasbih_2">Alhamdulillah.. Alhamdulillah.. ❤️</string>
     <string name="rafiq_tasbih_3">Allahu Akbar.. Allahu Akbar.. ❤️</string>
     <string name="rafiq_tasbih_4">La ilaha illallah.. La ilaha illallah.. ❤️</string>
+
+    <!-- Recitation & Tajweed Error Localization -->
+    <string name="tajweed_rule_normal_madd">Normal Madd</string>
+    <string name="tajweed_rule_mottasel_madd">Mottasel Madd</string>
+    <string name="tajweed_rule_monfasel_madd">Monfasel Madd</string>
+    <string name="tajweed_rule_aared_madd">Aared Madd</string>
+    <string name="tajweed_rule_lazem_madd">Lazem Madd</string>
+    <string name="tajweed_rule_leen_madd">Leen Madd</string>
+    <string name="tajweed_rule_mushaddad_ghunnah">Mushaddad Noon/Meem</string>
+    <string name="tajweed_rule_shaddah">Shaddah</string>
+
+    <string name="tajweed_error_underheld">Underheld %1$s: held for %2$.2fs, target is %3$.2fs</string>
+    <string name="tajweed_error_overheld">Overheld %1$s: held for %2$.2fs, allowed maximum is %3$.2fs</string>
+    <string name="tajweed_error_tashkeel">Diacritic error: expected (%1$s), heard (%2$s)</string>
+    <string name="tajweed_error_omission">Omitted letter: missed (%1$s)</string>
+    <string name="tajweed_error_substitution">Letter mismatch: expected (%1$s), heard (%2$s)</string>
+
+    <string name="tajweed_advice_normal_madd">Give the natural Madd its full 2 beats without excess or deficit</string>
+    <string name="tajweed_advice_mottasel_madd">Elongate the vowel for 4 to 5 beats obligatorily</string>
+    <string name="tajweed_advice_monfasel_madd">Elongate the vowel for 4 beats permissibly</string>
+    <string name="tajweed_advice_aared_madd">Give the Aared Madd its proper length (2, 4, or 6 beats upon pause)</string>
+    <string name="tajweed_advice_lazem_madd">Elongate the Lazem Madd for the full 6 beats obligatorily</string>
+    <string name="tajweed_advice_leen_madd">Give the Leen consonant its proper holding time upon pause</string>
+    <string name="tajweed_advice_mushaddad_ghunnah">Give the Ghunnah a full 2-beat nasal resonance</string>
+    <string name="tajweed_advice_shaddah">Hold and press the doubled consonant articulation point clearly</string>
+    <string name="tajweed_advice_overheld">Avoid over-extending the vowel past the allowed length</string>
+    <string name="tajweed_advice_tashkeel">Pay attention to the correct vowel mark (Fatha, Damma, Kasra)</string>
+    <string name="tajweed_advice_omission">Articulate all letters clearly without swallowing or skipping</string>
+    <string name="tajweed_advice_substitution">Articulate the letter from its correct Makhraj with proper attributes</string>
+
+    <string name="recitation_feedback_title">Recitation &amp; Tajweed Feedback</string>
+    <string name="recitation_feedback_on_word">Notice on word: %1$s</string>
+    <string name="recitation_feedback_close">Got it (Close)</string>
 </resources>

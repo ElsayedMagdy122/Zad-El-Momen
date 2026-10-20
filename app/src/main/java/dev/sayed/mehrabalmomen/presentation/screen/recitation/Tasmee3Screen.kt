@@ -179,11 +179,23 @@ fun Tasmee3Screen(
                         Tasmee3MushafSection(
                             verses = uiState.verses,
                             wordStatuses = uiState.wordStatuses,
-                            activeCursor = uiState.activeWordCursor
+                            activeCursor = uiState.activeWordCursor,
+                            onWordClick = { globalWordIdx, wordText ->
+                                viewModel.selectWordForFeedback(globalWordIdx, wordText)
+                            }
                         )
                     }
                 }
             }
+        }
+
+        // Tajweed / Pronunciation Feedback Bottom Sheet (when a word is tapped)
+        uiState.selectedWordFeedback?.let { (wordText, mistakes) ->
+            dev.sayed.mehrabalmomen.presentation.screen.recitation.components.TajweedErrorBottomSheet(
+                wordText = wordText,
+                mistakes = mistakes,
+                onDismiss = viewModel::dismissWordFeedback
+            )
         }
 
         // Floating Control & Feedback Box (Matching TilawahBox Design System)
@@ -192,12 +204,14 @@ fun Tasmee3Screen(
                 .align(Alignment.BottomCenter)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(bottom = 12.dp, start = 16.dp, end = 16.dp),
+            isLoading = uiState.isLoading,
             isRecording = uiState.isRecording,
             recognizedText = uiState.recognizedText,
             lastEvaluatedInfo = uiState.lastEvaluatedWordInfo,
             isTajweed = uiState.isTajweedEnabled,
             onToggleTajweed = viewModel::toggleTajweedMode,
             onToggleRecord = {
+                if (uiState.isLoading) return@Tasmee3FloatingControlBar
                 if (uiState.isRecording) {
                     viewModel.stopRecitationSession()
                 } else {
@@ -219,7 +233,8 @@ fun Tasmee3Screen(
 fun Tasmee3MushafSection(
     verses: List<dev.sayed.mehrabalmomen.data.recitation.data.QuranVerse>,
     wordStatuses: Map<Int, WordStatus>,
-    activeCursor: Int
+    activeCursor: Int,
+    onWordClick: (globalWordIdx: Int, wordText: String) -> Unit = { _, _ -> }
 ) {
     val hafsFont = remember { FontFamily(Font(R.font.hafs)) }
     val primaryColor = Theme.color.primary.primary
@@ -233,10 +248,12 @@ fun Tasmee3MushafSection(
 
                     val isRevealed = status != WordStatus.UNSPOKEN
 
+                    pushStringAnnotation(tag = "WORD_CLICK", annotation = "$globalIdx|$word")
+
                     if (isRevealed) {
                         val wordColor = when (status) {
                             WordStatus.GREEN -> Color(0xFF2E7D32) // 🟢 Correctly recited
-                            WordStatus.YELLOW -> Color(0xFFE65100) // 🟡 Tajweed warning
+                            WordStatus.YELLOW -> Color(0xFFFBC02D) // 🟡 Tajweed warning (Bright Yellow)
                             WordStatus.RED -> Color(0xFFC62828) // 🔴 Skipped / Mispronounced
                             WordStatus.NEUTRAL -> primaryColor
                             WordStatus.UNSPOKEN -> Color.Transparent
@@ -260,6 +277,7 @@ fun Tasmee3MushafSection(
                             append("••••")
                         }
                     }
+                    pop()
                     append(" ")
                 }
 
@@ -276,7 +294,7 @@ fun Tasmee3MushafSection(
         }
     }
 
-    Text(
+    androidx.compose.foundation.text.ClickableText(
         text = annotatedMushafText,
         modifier = Modifier
             .fillMaxWidth()
@@ -288,7 +306,18 @@ fun Tasmee3MushafSection(
             textAlign = TextAlign.Justify,
             textDirection = TextDirection.Rtl,
             platformStyle = PlatformTextStyle(includeFontPadding = false)
-        )
+        ),
+        onClick = { offset ->
+            annotatedMushafText.getStringAnnotations(tag = "WORD_CLICK", start = offset, end = offset)
+                .firstOrNull()?.let { annotation ->
+                    val parts = annotation.item.split("|")
+                    if (parts.size >= 2) {
+                        val gIdx = parts[0].toIntOrNull() ?: return@let
+                        val wText = parts[1]
+                        onWordClick(gIdx, wText)
+                    }
+                }
+        }
     )
 }
 
@@ -298,6 +327,7 @@ fun Tasmee3MushafSection(
 @Composable
 fun Tasmee3FloatingControlBar(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     isRecording: Boolean,
     recognizedText: String,
     lastEvaluatedInfo: String,
@@ -348,34 +378,60 @@ fun Tasmee3FloatingControlBar(
                             .size(12.dp)
                             .scale(pulseScale)
                             .background(
-                                color = if (isRecording) Color(0xFF2E7D32) else Color.Gray,
+                                color = when {
+                                    isLoading -> Theme.color.primary.primary
+                                    isRecording -> Color(0xFF2E7D32)
+                                    else -> Color.Gray
+                                },
                                 shape = CircleShape
                             )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = if (isRecording) "الميكروفون يستمع لتلاوتك..." else "التسميع متوقف",
+                        text = when {
+                            isLoading -> "جاري تجهيز المصحف الشريف..."
+                            isRecording -> "الميكروفون يستمع لتلاوتك..."
+                            else -> "التسميع متوقف (اضغط للبدء)"
+                        },
                         style = Theme.textStyle.label.medium,
-                        color = if (isRecording) Color(0xFF2E7D32) else Theme.color.semantic.shadeTertiary,
+                        color = when {
+                            isLoading -> Theme.color.primary.primary
+                            isRecording -> Color(0xFF2E7D32)
+                            else -> Theme.color.semantic.shadeTertiary
+                        },
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                // Main Action Button (Play / Stop)
+                // Main Action Button (Play / Stop / Loading)
                 Box(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .background(if (isRecording) Color(0xFFC62828) else Theme.color.primary.primary)
-                        .clickable { onToggleRecord() },
+                        .background(
+                            when {
+                                isLoading -> Theme.color.primary.shadePrimary
+                                isRecording -> Color(0xFFC62828)
+                                else -> Theme.color.primary.primary
+                            }
+                        )
+                        .clickable(enabled = !isLoading) { onToggleRecord() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(if (isRecording) R.drawable.ic_pause else R.drawable.ic_play),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(if (isRecording) R.drawable.ic_pause else R.drawable.ic_play),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
             }
 

@@ -45,10 +45,6 @@ class SherpaEngine(private val context: Context) {
     var currentStreamEpoch = 0
         private set
 
-    private var cachedTokensField: java.lang.reflect.Field? = null
-    private var cachedTimestampsField: java.lang.reflect.Field? = null
-    private var reflectionChecked = false
-
     fun initialize(): Boolean {
         if (isInitialized) {
             Log.d(TAG, "🟢 [SherpaEngine] Already initialized.")
@@ -131,56 +127,47 @@ class SherpaEngine(private val context: Context) {
 
             if (text.isNotEmpty()) {
                 // ─────────────────────────────────────────────────────────────
-                // KEY: Read real per-token timestamps from the result object.
+                // KEY: Read real per-token timestamps via the Kotlin-generated
+                // property getters — result.tokens / result.timestamps.
                 //
-                // OnlineRecognizerResult exposes:
-                //   result.tokens       — List<String>: individual phoneme tokens
-                //   result.timestamps   — List<Float>:  seconds from stream start
+                // OnlineRecognizerResult is a Kotlin *data class* whose fields
+                // are `private final`. Java reflection via `getField("tokens")`
+                // only finds PUBLIC fields, so it threw NoSuchFieldException
+                // every call and silently fell back to fake 80ms timestamps.
                 //
-                // If the AAR version does NOT expose these fields, we degrade
-                // gracefully to splitting result.text and spacing timestamps
-                // 80ms apart (still better than fixed 100ms intervals).
+                // The correct approach is to call the generated getters:
+                //   result.tokens      -> getTokens():  Array<String>
+                //   result.timestamps  -> getTimestamps(): FloatArray
+                //
+                // Fallback (split by space + 80ms spacing) is kept only if the
+                // AAR is an older build that genuinely lacks these fields.
                 // ─────────────────────────────────────────────────────────────
-                var rawTokens: List<String>
-                var rawTimestamps: List<Double>
+                val rawTokens: List<String>
+                val rawTimestamps: List<Double>
 
-                try {
-                    if (!reflectionChecked) {
-                        try {
-                            cachedTokensField = result.javaClass.getField("tokens")
-                            cachedTimestampsField = result.javaClass.getField("timestamps")
-                        } catch (_: Exception) {}
-                        reflectionChecked = true
-                    }
+                val tokArray: Array<String>? = try { result.tokens } catch (_: Throwable) { null }
+                val tsArray:  FloatArray?     = try { result.timestamps } catch (_: Throwable) { null }
 
-                    @Suppress("UNCHECKED_CAST")
-                    val tokArray = cachedTokensField?.get(result) as? Array<String>
-                    val tsArray  = cachedTimestampsField?.get(result)
-
-                    if (tokArray != null && tokArray.isNotEmpty()) {
-                        rawTokens = tokArray.toList()
-                        rawTimestamps = when (tsArray) {
-                            is FloatArray  -> tsArray.map { it.toDouble() }
-                            is DoubleArray -> tsArray.toList()
-                            is Array<*>    -> tsArray.map { (it as Number).toDouble() }
-                            else           -> List(tokArray.size) { i -> (i + 1) * 0.08 }
-                        }
-                    } else {
-                        rawTokens = text.split(" ").filter { it.isNotBlank() }
-                        rawTimestamps = List(rawTokens.size) { i -> (i + 1) * 0.08 }
-                    }
-                } catch (_: Exception) {
-                    rawTokens = text.split(" ").filter { it.isNotBlank() }
+                if (tokArray != null && tokArray.isNotEmpty()) {
+                    // ✅ Real per-phoneme CTC data from Sherpa-ONNX
+                    rawTokens     = tokArray.toList()
+                    rawTimestamps = tsArray?.map { it.toDouble() }
+                        ?: List(tokArray.size) { i -> (i + 1) * 0.08 }
+                    Log.d(TAG, "✅ [SherpaEngine] Using real Sherpa tokens (${rawTokens.size})")
+                } else {
+                    // ⚠️ Fallback only when AAR truly has no token API
+                    rawTokens     = text.split(" ").filter { it.isNotBlank() }
                     rawTimestamps = List(rawTokens.size) { i -> (i + 1) * 0.08 }
+                    Log.w(TAG, "⚠️ [SherpaEngine] Fallback: AAR has no token API — using word-split + fake timestamps")
                 }
 
                 _transcriptionStream.tryEmit(
                     TranscriptionResult(
-                        text       = text,
-                        isFinal    = isFinal,
-                        startTime  = System.currentTimeMillis(),
-                        tokens     = rawTokens,
-                        timestamps = rawTimestamps.take(rawTokens.size),
+                        text        = text,
+                        isFinal     = isFinal,
+                        startTime   = System.currentTimeMillis(),
+                        tokens      = rawTokens,
+                        timestamps  = rawTimestamps.take(rawTokens.size),
                         streamEpoch = currentStreamEpoch
                     )
                 )

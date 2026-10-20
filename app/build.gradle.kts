@@ -187,6 +187,7 @@ dependencies {
 
     // Others (domain specific)
     implementation(libs.bundles.others)
+    implementation(files("libs/sherpa-onnx-1.13.8.aar"))
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.work.runtime.ktx)

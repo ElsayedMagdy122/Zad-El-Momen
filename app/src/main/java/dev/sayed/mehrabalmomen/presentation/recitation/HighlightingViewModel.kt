@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
+
 enum class WordStatus {
     UNSPOKEN, GREEN, RED, YELLOW, NEUTRAL
 }
@@ -27,9 +29,11 @@ data class RecitationUiState(
     val surahName: String = "",
     val verses: List<QuranVerse> = emptyList(),
     val wordStatuses: Map<Int, WordStatus> = emptyMap(),
+    val wordMistakes: Map<Int, List<ReciterMistake>> = emptyMap(),
+    val selectedWordFeedback: Pair<String, List<ReciterMistake>>? = null,
     val activeWordCursor: Int = 0,
     val recognizedText: String = "",
-    val isTajweedEnabled: Boolean = false,
+    val isTajweedEnabled: Boolean = true,
     val lastEvaluatedWordInfo: String = ""
 )
 
@@ -50,11 +54,16 @@ class HighlightingViewModel(
     val uiState: StateFlow<RecitationUiState> = _uiState.asStateFlow()
 
     private val wordStatuses = mutableMapOf<Int, WordStatus>()
-    private val sequencer = DictationSequencer { wordId, status, cleanAsr ->
+    private val wordMistakes = mutableMapOf<Int, List<ReciterMistake>>()
+
+    private val sequencer = DictationSequencer { wordId, status, cleanAsr, mistakes ->
         wordStatuses[wordId] = status
+        if (mistakes.isNotEmpty()) {
+            wordMistakes[wordId] = mistakes
+        }
         val statusSymbol = when (status) {
             WordStatus.GREEN  -> "🟢 صحيح"
-            WordStatus.YELLOW -> "🟡 تنبيه تجويد"
+            WordStatus.YELLOW -> "🟡 تنبيه تجويد (${mistakes.size})"
             WordStatus.RED    -> "🔴 خطأ / سقطت"
             else              -> ""
         }
@@ -62,20 +71,37 @@ class HighlightingViewModel(
         _uiState.update {
             it.copy(
                 wordStatuses = wordStatuses.toMap(),
+                wordMistakes = wordMistakes.toMap(),
                 activeWordCursor = wordId + 1,
                 lastEvaluatedWordInfo = infoText
             )
         }
     }
 
+    fun selectWordForFeedback(globalWordId: Int, wordText: String) {
+        val mistakes = wordMistakes[globalWordId]
+        if (!mistakes.isNullOrEmpty()) {
+            _uiState.update { it.copy(selectedWordFeedback = wordText to mistakes) }
+        }
+    }
+
+    fun dismissWordFeedback() {
+        _uiState.update { it.copy(selectedWordFeedback = null) }
+    }
+
     private var lastProcessedText = ""
+    private var isExpectingNewSegment = false
+    private val initDeferred = kotlinx.coroutines.CompletableDeferred<Unit>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true) }
-            sherpaEngine.initialize()
-            quranRepository.loadData()
-            _uiState.update { it.copy(isLoading = false) }
+            try {
+                sherpaEngine.initialize()
+                quranRepository.loadData()
+            } finally {
+                initDeferred.complete(Unit)
+            }
         }
         observeAudioStream()
         observeAsrStream()
@@ -106,14 +132,17 @@ class HighlightingViewModel(
                 // Ignore isolated single-character acoustic blips or silence noise
                 if (cleanText.length < 2) return@collect
 
+                val isNewSegment = isExpectingNewSegment || result.isFinal
+                if (isExpectingNewSegment) isExpectingNewSegment = false
+
                 // Dedup guard
-                if (cleanText == lastProcessedText && !result.isFinal) return@collect
+                if (cleanText == lastProcessedText && !isNewSegment) return@collect
                 lastProcessedText = cleanText
 
                 _uiState.update { it.copy(recognizedText = cleanText) }
 
                 // Feed character-level durations to sequencer on background worker
-                sequencer.syncStream(cleanText, processed.charDurations, result.isFinal)
+                sequencer.syncStream(cleanText, processed.charDurations, isNewSegment)
             }
         }
     }
@@ -121,6 +150,7 @@ class HighlightingViewModel(
     fun setTargetSurah(surahNum: Int, name: String = "") {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true, targetSurah = surahNum, surahName = name) }
+            initDeferred.await()
             val verses = quranRepository.getVersesForSurah(surahNum)
 
             val allWords = verses.flatMap { it.phonemeWords }
@@ -129,6 +159,7 @@ class HighlightingViewModel(
 
             withContext(Dispatchers.Main) {
                 wordStatuses.clear()
+                wordMistakes.clear()
                 lastProcessedText = ""
                 tokenProcessor.reset()
                 sherpaEngine.resetBuffer()
@@ -153,6 +184,8 @@ class HighlightingViewModel(
                         surahName = name,
                         verses = verses,
                         wordStatuses = emptyMap(),
+                        wordMistakes = emptyMap(),
+                        selectedWordFeedback = null,
                         activeWordCursor = 0,
                         recognizedText = ""
                     )
@@ -173,10 +206,14 @@ class HighlightingViewModel(
     }
 
     fun startRecitationSession() {
+        if (_uiState.value.isLoading || _uiState.value.verses.isEmpty()) {
+            return
+        }
         wordStatuses.clear()
         lastProcessedText = ""
         tokenProcessor.reset()
         sherpaEngine.resetBuffer()
+        isExpectingNewSegment = true
 
         _uiState.update {
             it.copy(

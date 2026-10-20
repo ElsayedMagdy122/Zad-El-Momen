@@ -99,3 +99,20 @@ class ShaddahRule : TajweedRule(LangName("الشدة", "Shaddah"), 1.5) {
         RecitationSpeed.slow -> AcousticThreshold(0.240, 0.300, 1.000)
     }
 }
+
+class MottaselMaddPauseRule(harakat: Int = 4) : TajweedRule(LangName("المد المتصل موقوفا عليه", "Mottasel Madd (Pause)"), harakat) {
+    override fun getThreshold(speed: RecitationSpeed): AcousticThreshold = when (speed) {
+        RecitationSpeed.fast -> AcousticThreshold(0.350, 0.480, 1.500)
+        RecitationSpeed.normal -> AcousticThreshold(0.450, 0.600, 2.000)
+        RecitationSpeed.slow -> AcousticThreshold(0.650, 0.900, 2.500)
+    }
+}
+
+class LeenMaddRule(harakat: Int = 2) : TajweedRule(LangName("مد اللين", "Leen Madd"), harakat) {
+    override fun getThreshold(speed: RecitationSpeed): AcousticThreshold = when (speed) {
+        RecitationSpeed.fast -> AcousticThreshold(0.120, 0.240, 1.800)
+        RecitationSpeed.normal -> AcousticThreshold(0.300, 0.600, 2.200)
+        RecitationSpeed.slow -> AcousticThreshold(0.500, 1.080, 2.500)
+    }
+}
+
