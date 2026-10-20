@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.util.BillingManager
+import dev.sayed.mehrabalmomen.domain.billing.BillingEvent
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
@@ -54,7 +55,6 @@ class SettingsViewModel(
         observeTafseer()
         observeSelectedMoazen()
         observeCompanionEnabled()
-        billingManager.queryProducts(supportProductIds)
     }
 
     private var previewPlayer: MediaPlayer? = null
@@ -93,7 +93,7 @@ class SettingsViewModel(
 
     private fun observeBillingData() {
         viewModelScope.launch {
-            billingManager.productDetails.collect { products ->
+            billingManager.products.collect { products ->
                 val available = products.isNotEmpty()
                 updateState {
                     it.copy(isSupportAvailable = available)
@@ -102,22 +102,28 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch {
-            billingManager.purchaseSuccess.collect {
-                sendEffect(
-                    SettingsEffect.ShowToast(
-                        ToastDetails(
-                            title = UiText.StringResource(R.string.success),
-                            message = UiText.StringResource(R.string.thank_you_for_support),
-                            icon = R.drawable.ic_check_circle
+            billingManager.events.collect { event ->
+                when (event) {
+                    BillingEvent.Success -> {
+                        sendEffect(
+                            SettingsEffect.ShowToast(
+                                ToastDetails(
+                                    title = UiText.StringResource(R.string.success),
+                                    message = UiText.StringResource(R.string.thank_you_for_support),
+                                    icon = R.drawable.ic_check_circle
+                                )
+                            )
                         )
-                    )
-                )
+                    }
+                    BillingEvent.Pending -> {}
+                    BillingEvent.ProcessingError, BillingEvent.GeneralError -> {}
+                }
             }
         }
     }
 
     fun launchDonationFlow(activity: Activity, productId: String) {
-        billingManager.launchBillingFlow(activity, productId)
+        billingManager.donate(activity, productId)
     }
 
     private fun observeSettings() {
@@ -557,10 +563,10 @@ class SettingsViewModel(
     }
 
     private fun showSupportBottomSheet() {
-        val products = billingManager.productDetails.value
+        val products = billingManager.products.value
         val options = supportProductIds.map { id ->
-            val details = products.find { it.productId == id }
-            val price = details?.oneTimePurchaseOfferDetails?.formattedPrice ?: "N/A"
+            val donationProduct = products.find { it.id == id }
+            val price = donationProduct?.price ?: "N/A"
             SelectionItem(
                 description = price,
                 text = UiText.StringResource(getSupportName(id))
