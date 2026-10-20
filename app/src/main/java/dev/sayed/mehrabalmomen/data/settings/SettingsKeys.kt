@@ -21,6 +21,11 @@ object SettingsKeys {
     val SELECTED_MOAZEN = stringPreferencesKey("selected_moazen")
     val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
     val ALARMS_SCHEDULED = booleanPreferencesKey("alarms_scheduled")
+    val FIRST_LAUNCH_TIME = longPreferencesKey("first_launch_time")
+    val APP_LAUNCH_COUNT = intPreferencesKey("app_launch_count")
+    val LAST_DONATION_PROMPT_TIME = longPreferencesKey("last_donation_prompt_time")
+    val HAS_DONATED = booleanPreferencesKey("has_donated")
+    val NEXT_DONATION_PROMPT_TIME = longPreferencesKey("next_donation_prompt_time")
 
     // Companion Keys
     val LAST_INTERACTION_MILLIS = longPreferencesKey("companion_last_interaction")

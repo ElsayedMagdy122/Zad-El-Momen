@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
         
         lifecycleScope.launch {
             companionRepository.updateLastInteraction(System.currentTimeMillis())
+            settingsRepository.recordAppLaunch(System.currentTimeMillis())
         }
 
         setContent {

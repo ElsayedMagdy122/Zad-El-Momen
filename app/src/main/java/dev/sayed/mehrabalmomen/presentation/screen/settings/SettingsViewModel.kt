@@ -14,6 +14,7 @@ import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
@@ -105,6 +106,9 @@ class SettingsViewModel(
             billingManager.events.collect { event ->
                 when (event) {
                     BillingEvent.Success -> {
+                        viewModelScope.launch {
+                            settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, System.currentTimeMillis())
+                        }
                         sendEffect(
                             SettingsEffect.ShowToast(
                                 ToastDetails(
@@ -601,6 +605,12 @@ class SettingsViewModel(
     }
 
     override fun onDialogDismiss() {
+        val dialog = screenState.value.dialog
+        if (dialog?.type == SettingsUiState.SelectionDialogType.SUPPORT) {
+            viewModelScope.launch {
+                settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, System.currentTimeMillis())
+            }
+        }
         updateState { it.copy(dialog = null) }
     }
 

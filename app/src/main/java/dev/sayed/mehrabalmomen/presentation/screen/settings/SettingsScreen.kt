@@ -216,7 +216,7 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
-    settingsViewModel: SettingsViewModel,
+    settingsViewModel: SettingsViewModel? = null,
     items: List<SelectionItem>,
     title: UiText,
     description: UiText,
@@ -243,7 +243,7 @@ fun SettingsBottomSheet(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (isMoazen) {
+            if (isMoazen && settingsViewModel != null) {
                 SingleSelectionContentWithPreview(
                     items = items,
                     selectedIndex = currentSelected,
@@ -276,6 +276,17 @@ fun SettingsBottomSheet(
                 })
         }
 
+    }
+}
+
+fun getSupportName(id: String): Int {
+    return when (id) {
+        BuildConfig.SUPPORT_1 -> R.string.support_1
+        BuildConfig.SUPPORT_5 -> R.string.support_2
+        BuildConfig.SUPPORT_10 -> R.string.support_3
+        BuildConfig.SUPPORT_25 -> R.string.support_4
+        BuildConfig.SUPPORT_100 -> R.string.support_5
+        else -> 0
     }
 }
 
