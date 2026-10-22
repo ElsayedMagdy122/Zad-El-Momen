@@ -439,5 +439,5 @@
     <string name="azkar_quran_verse_reference">[النحل: 53]</string>
     <string name="azkar_done_check">تم ✓</string>
     <string name="azkar_times_format">%1$d مرة</string>
-    <string name="azkar_dhikr_count_format">%1$d ذكراً</string>
+    <string name="azkar_dhikr_count_format">%1$d ذكر</string>
 </resources>

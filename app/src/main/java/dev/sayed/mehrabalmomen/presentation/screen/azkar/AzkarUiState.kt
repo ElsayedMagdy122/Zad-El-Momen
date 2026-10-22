@@ -38,7 +38,7 @@ fun getIconForCategory(title: String): Int {
         AzkarType.WAKE.domainTitle -> AzkarType.WAKE.iconRes
         AzkarType.QURAN_DUA.domainTitle -> AzkarType.QURAN_DUA.iconRes
         AzkarType.PROPHETS_DUA.domainTitle -> AzkarType.PROPHETS_DUA.iconRes
-        else -> R.drawable.ic_sunrise
+        else -> R.drawable.ic_azkar_selected
     }
 }
 
