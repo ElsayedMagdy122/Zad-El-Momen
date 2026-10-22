@@ -3,22 +3,44 @@ package dev.sayed.mehrabalmomen.presentation.screen.azkar
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarCategory
-
 
 data class AzkarUiState(
     val isLoading: Boolean = false,
-    val categories: List<AzkarCategoryUiModel> = emptyList()
+    val categories: List<AzkarCategoryUiModel> = emptyList(),
+    val isAddCategoryBottomSheetOpen: Boolean = false,
+    val newCategoryTitle: String = "",
+    val streak: Int = 0,
+    val completedCountToday: Int = 0,
+    val remainingCount: Int = 0,
+    val completionPercentage: Int = 0,
+    val totalAzkarCount: Int = 0,
+    val historyMap: Map<String, Int> = emptyMap(),
+    val selectedFilter: AzkarTimeFilter = AzkarTimeFilter.YEAR
 )
-fun AzkarCategory.toUiModel(): AzkarCategoryUiModel {
-    return AzkarCategoryUiModel(
-        type = title.toAzkarType()
-    )
+
+enum class AzkarTimeFilter {
+    DAY, WEEK, MONTH, YEAR
 }
 
 data class AzkarCategoryUiModel(
-    val type: AzkarType
+    val title: String,
+    @DrawableRes val iconRes: Int,
+    val itemCount: Int
 )
+
+fun getIconForCategory(title: String): Int {
+    return when (title) {
+        AzkarType.MORNING.domainTitle -> AzkarType.MORNING.iconRes
+        AzkarType.EVENING.domainTitle -> AzkarType.EVENING.iconRes
+        AzkarType.AFTER_PRAYER.domainTitle -> AzkarType.AFTER_PRAYER.iconRes
+        AzkarType.TASBIH.domainTitle -> AzkarType.TASBIH.iconRes
+        AzkarType.SLEEP.domainTitle -> AzkarType.SLEEP.iconRes
+        AzkarType.WAKE.domainTitle -> AzkarType.WAKE.iconRes
+        AzkarType.QURAN_DUA.domainTitle -> AzkarType.QURAN_DUA.iconRes
+        AzkarType.PROPHETS_DUA.domainTitle -> AzkarType.PROPHETS_DUA.iconRes
+        else -> R.drawable.ic_sunrise
+    }
+}
 
 enum class AzkarType(
     @StringRes val titleRes: Int,

@@ -407,4 +407,37 @@
     <string name="rafiq_tasbih_2">الحمد لله.. دائماً وأبداً ❤️</string>
     <string name="rafiq_tasbih_3">الله أكبر.. الله أكبر.. ❤️</string>
     <string name="rafiq_tasbih_4">لا إله إلا الله.. بها تحيا القلوب ❤️</string>
+
+    <string name="azkar_categories">الفئات</string>
+    <string name="azkar_your_statistics">إحصائياتك</string>
+    <string name="azkar_welcome">أهلاً بك</string>
+    <string name="azkar_keep_tongue">اجعل لسانك رطباً بذكر الله</string>
+    <string name="azkar_days_streak">أيام متتالية</string>
+    <string name="azkar_remaining">الأذكار المتبقية</string>
+    <string name="azkar_completed">الأذكار المكتملة</string>
+    <string name="azkar_total">إجمالي الأذكار</string>
+    <string name="azkar_percentage">النسبة</string>
+    <string name="azkar_of_daily">من الأذكار اليومية</string>
+    <string name="azkar_add_category">إضافة فئة أذكار جديدة</string>
+    <string name="azkar_category_name_hint">أدخل اسم الفئة (مثلا: أذكار الصباح الخاصة)</string>
+    <string name="azkar_save_category">حفظ الفئة</string>
+    <string name="azkar_filter_day">يوم</string>
+    <string name="azkar_filter_week">أسبوع</string>
+    <string name="azkar_filter_month">شهر</string>
+    <string name="azkar_filter_year">عام</string>
+    <string name="azkar_activity_log">سجل النشاط</string>
+    <string name="azkar_less">أقل</string>
+    <string name="azkar_more">أكثر</string>
+    <string name="azkar_add_dhikr">إضافة ذكر جديد</string>
+    <string name="azkar_content_hint">نص الذكر</string>
+    <string name="azkar_repeat_count_hint">عدد التكرار (مثلا: 3)</string>
+    <string name="azkar_description_hint">فضل الذكر / الوصف (اختياري)</string>
+    <string name="azkar_reference_hint">المرجع / التخريج (اختياري)</string>
+    <string name="azkar_save_dhikr">حفظ الذكر</string>
+    <string name="azkar_allah_says">قال تعالى:</string>
+    <string name="azkar_quran_verse_morning"><![CDATA[﴿ وَمَا أَصْبَحَ مِنْ نِعْمَةٍ فَمِنَ اللَّهِ ﴾]]></string>
+    <string name="azkar_quran_verse_reference">[النحل: 53]</string>
+    <string name="azkar_done_check">تم ✓</string>
+    <string name="azkar_times_format">%1$d مرة</string>
+    <string name="azkar_dhikr_count_format">%1$d ذكراً</string>
 </resources>
