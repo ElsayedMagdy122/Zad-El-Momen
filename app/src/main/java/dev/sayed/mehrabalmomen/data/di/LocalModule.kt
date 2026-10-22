@@ -9,12 +9,17 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 private const val DATASTORE_NAME = "location_prefs"
 private const val RECITATION_DATASTORE_NAME = "recitation_prefs"
+private const val AZKAR_DATASTORE_NAME = "azkar_prefs"
 
 val Context.locationDataStore by preferencesDataStore(name = DATASTORE_NAME)
 val Context.recitationDataStore by preferencesDataStore(name = RECITATION_DATASTORE_NAME)
+val Context.azkarDataStore by preferencesDataStore(name = AZKAR_DATASTORE_NAME)
 
 val localModule = module {
     single { get<Context>().locationDataStore }
+    single(qualifier = org.koin.core.qualifier.named("azkar_prefs")) {
+        get<Context>().azkarDataStore
+    }
     single(qualifier = org.koin.core.qualifier.named("recitation_prefs")) {
         get<Context>().recitationDataStore
     }
@@ -28,9 +33,17 @@ val localModule = module {
             androidContext(),
             AppDatabase::class.java,
             "mehrab_database"
-        ).build()
+        )
+        .build()
     }
     single { get<AppDatabase>().bookmarkDao() }
     single { get<AppDatabase>().downloadedReciterDao() }
-    single<AzkarLocalDataSource> { AzkarLocalDataSource(get(), get()) }
+    single { get<AppDatabase>().azkarDao() }
+    single<AzkarLocalDataSource> { 
+        AzkarLocalDataSource(
+            context = androidContext(),
+            azkarDao = get(),
+            json = get()
+        )
+    }
 }
