@@ -1,131 +1,104 @@
-# Zad El Momen - Your Favourite Islamic App
+# زاد المؤمن (Zad El Momen)
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Platform-Android-green.svg" alt="Platform">
-  <img src="https://img.shields.io/badge/Language-Kotlin-blue.svg" alt="Language">
-  <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-orange.svg" alt="UI">
-  <img src="https://img.shields.io/badge/Architecture-MVVM-red.svg" alt="Architecture">
-  <img src="https://img.shields.io/badge/DI-Koin-yellow.svg" alt="DI">
-  <a href='https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen&pcampaignid=web_share'><img alt='Get it on Google Play' src='https://img.shields.io/badge/Google%20Play-Get%20it%20on-black?logo=google-play&logoColor=white' vertical-align='middle' /></a>
+> تطبيق إسلامي متكامل ومطور بعناية ليكون رفيقك اليومي في العبادة والذكر، مبني باستخدام أحدث تقنيات أندرويد المعاصرة ومعمارية هندسية نظيفة (Clean Architecture).
 
-</div>
+---
 
-**Zad El Momen** is an Islamic application providing everything a Muslim needs to perform worship easily and accurately. It offers the complete Holy Quran with Tafsir, highly accurate daily prayer times based on your geographical location, and a Qibla finder to facilitate prayer anywhere.
+## 🌟 غلاف التطبيق (Cover)
 
-The app also features Muslim Azkar, Azan alerts, Al Quran Al-Kareem Radio and customizable settings for calculation methods and school of thought (Mathhab), providing a personalized and comfortable user experience through a simple and smooth interface.
+> ![زاد المؤمن - غلاف التطبيق](https://www.google.com/url?sa=E&source=gmail&q=https://lh3.googleusercontent.com/a/ACg8ocL...) 
+*(ملاحظة: يمكنك استبدال أو استخدام صورة الغلاف أعلاه للتعريف بالتطبيق)*
 
-##  Features
+---
 
-### 📖 **Holy Quran & Tafsir**
-- **Complete Quran**: Full access to the Holy Quran.
-- **Tafsir Integration**: Detailed interpretation and meanings for better understanding.
-- **Bookmarks**: Mark and save your favorite verses for quick access anytime.
-- **Smart Search**: Quickly find verses by keywords, words, or phrases across the Holy Quran.
+## 📖 نظرة عامة (Overview)
 
-### 🕋 **Worship & Devotion**
-- **Accurate Prayer Times**: High-precision timings based on your specific location.
-- **Azan Alerts**: Stay notified for every prayer with timely alerts.
-- **Qibla Finder**: Easily locate the direction of the Kaaba from anywhere in the world.
-- **Azkar**: A comprehensive collection of morning, evening, and daily supplications.
+تطبيق **زاد المؤمن** هو تطبيق أندرويد احترافي يهدف لتلبية احتياجات المسلم اليومية من مواقيت الصلاة، القرآن الكريم، الأذكار، تحديد القبلة، الاستماع للإذاعات الإسلامية، والتنبيهات المخصصة. تم تصميم التطبيق وتطويره وفقاً لأفضل الممارسات الهندسية (Clean Architecture & MVVM) باستخدام لغة Kotlin ونظام واجهات المستخدم التصريحي Jetpack Compose.
 
-###  **Personalized Experience**
-- **Localization Support**: Full support for both **Arabic** and **English** languages.
-- **Quran Font Size Control**: Easily adjust the Holy Quran text size for comfortable reading.
-- **Customizable Settings**: Adjust calculation methods and schools of thought (Mathhab) to suit your preferences.
-- **Modern UI**: A simple, smooth, and responsive interface built with Jetpack Compose.
-- **Dark/Light Theme**: Support for system-wide theme preferences.
+---
 
-###  **Technical Excellence**
-- **Offline Support**: Access essential features and previously loaded content without an internet connection.
-- **Supabase Backend**: Robust data management and services.
-- **Firebase Integration**: Real-time analytics, crash reporting, and cloud messaging.
+## ✨ المميزات الرئيسية (Features)
 
-##  Tech Stack
+| الميزة | الوصف التقني والوظيفي |
+| :--- | :--- |
+| **مواقيت الصلاة والأذان (Prayer Times)** | حساب دقيق لمواقيت الصلاة بناءً على الموقع الجغرافي وطرق الحساب المعتمدة مع إشعارات الأذان التلقائية وجدولة التنبيهات عبر `AlarmManager` و `Foreground Service`. |
+| **تحديد اتجاه القبلة (Qiblah)** | بوصلة دقيقة ومتقدمة لحساب اتجاه القبلة استناداً إلى الحساسات والخدمات الجغرافية (`LocationRepository`). |
+| **القرآن الكريم (Holy Quran)** | تصفح المصحف الشريف بالرسم العثماني، التفسير الميسر والمختصر، الحفظ، الإشارات المرجعية (`BookmarkDao`)، ومتابعة تقدم القراءة. |
+| **التلاوات الصوتية (Audio Recitations)** | الاستماع للقرآن الكريم بصوت نخبة من القراء، مع إمكانية التحميل والاستماع في الخلفية دون إنترنت باستخدام `ExoPlayer` (Media3) و `WorkManager`. |
+| **حصن المسلم والأذكار (Azkar & Duas)** | مكتبة شاملة للأذكار والأدعية مقسمة في تصنيفات مع إحصاءات وسجل الاستخدام (`AzkarDao` & Room Database). |
+| **الإذاعة الإسلامية (Islamic Radio)** | بث مباشر للإذاعات الإسلامية وقرآن الفجر والمحاضرات عبر مشغل وسائط مدمج وخدمة خلفية (`RadioPlayerService`). |
+| **الرفيق والمزاج (Companion & Mood)** | تفاعلات واجهات ذكية ومحتوى متجدد يتناسب مع حالة المستخدم اليومية والتذكيرات الذكية. |
+| **الإبلاغ عن المشاكل والدعم (Support & Bug Reports)** | إرسال بلاغات الأخطاء والتبرعات لدعم التطبيق عبر `Supabase` و `Google Play Billing`. |
 
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose
-- **Architecture**: MVVM + Clean Architecture
-- **Dependency Injection**: Koin
-- **Backend**: Supabase (PostgREST, Realtime, Storage, Functions)
-- **Local Database**: Room + DataStore Preferences
-- **Networking**: Ktor (via Supabase SDK)
-- **Asynchronous**: Kotlin Coroutines & Flow
-- **Media**: Media3 ExoPlayer (audio playback)
-- **Notifications**: Firebase Cloud Messaging (FCM)
-- **Analytics & Monitoring**: Firebase Crashlytics + Performance
-- **Maps & Location**: MapLibre Compose + Google Location Services
-- **Calendar**: Umm al-Qura Calendar
-- **Billing**: Google Play Billing
+---
 
-##  App Architecture
-The app follows **Clean Architecture** principles with **MVVM** pattern, organized into layers:
+## 🏛️ البنية الهيكلية والتقنية (Architecture & Tech Stack)
 
-- **Presentation**: Jetpack Compose UI, ViewModels, and State management.
-- **Domain**: Pure business logic, Use Cases, and Repository interfaces.
-- **Data**: Repository implementations, Remote (Supabase) and Local (Room) data sources, and mappers.
-- **Design System**: Reusable UI components and design tokens.
+يتبع المشروع معمارية **Clean Architecture** المفصولة إلى ثلاث طبقات رئيسية:
+1. **Presentation Layer**: واجهات المستخدم بـ Jetpack Compose و Material 3، مع إدارة الحالة عبر ViewModel.
+2. **Domain Layer**: نماذج الكيانات (Entities)، حالات الاستخدام (Use Cases)، واجهات المستودعات (Interfaces).
+3. **Data Layer**: المستودعات (Repositories)، مصادر البيانات المحلية (Room Database, SharedPreferences)، مصادر البيانات السحابية (`Supabase` و `Firebase`).
 
-##  Setup Instructions
+### التقنيات والمكتبات المستخدمة:
+- **لغة البرمجة**: Kotlin 2.0+
+- **واجهات المستخدم**: Jetpack Compose & Material 3
+- **حقن التبعيات (DI)**: Koin BOM
+- **قاعدة البيانات المحلية**: Room (مع KSP)
+- **الشبكات والسحاب**: Supabase (PostgreSQL, RPC, Storage) & Ktor / Retrofit
+- **خدمات فايربيز (Firebase)**: Firebase Analytics, Crashlytics, Cloud Messaging (FCM), Firebase Performance
+- **الوسائط المتعددة والصوت**: AndroidX Media3 ExoPlayer
+- **إدارة المهام في الخلفية**: WorkManager
 
-### 1. Clone the Repository
+---
 
-```bash
-git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
-cd Zad-El-Momen
-```
+## ⚙️ متطلبات التشغيل والتطوير (Prerequisites)
 
-### 2. Create Configuration Files
-Create a `local.properties` file in the root directory (if not present) and add your Supabase credentials:
-```properties
-SUPABASE_URL="your_supabase_url"
-SUPABASE_KEY="your_supabase_key"
-# Support levels (IDs for in-app or tracking)
-SUPPORT_1="id_1"
-SUPPORT_5="id_5"
-SUPPORT_10="id_10"
-SUPPORT_25="id_25"
-SUPPORT_100="id_100"
-```
+- **Android Studio**: إصدار Ladybug أو أحدث.
+- **JDK**: Java 11 أو أحدث.
+- **Android SDK**: Compile SDK 36, Min SDK 26.
+- **Gradle**: 8.x+
 
-### 3. Add Firebase Configuration
-Add your `google-services.json` file to the `app/` directory.
+---
 
-### 4. Build and Run
-1. Open the project in Android Studio  
-2. Sync the project with Gradle files  
-3. Build the project (**Build > Make Project**)  
-4. Run on device or emulator (**Run > Run 'app'**)
+## 📱 واجهات وشاشات التطبيق (App Screenshots & Showcase)
 
-## 📸 Screenshots
-   
+### 1. القرآن الكريم (Holy Quran)
+> ![القرآن الكريم](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *تصفح سور القرآن الكريم والتلاوة بتأنٍ وسهولة.*
 
-<table>
-  <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/7cce4da5-dbc6-41e7-be75-6c56de76d85c" alt="الصفحة الرئيسية" width="180"><br><b>Home screen</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/4cb991e3-cbd1-47fb-b212-1b614945e73e" alt="وضع القراءة" width="180"><br><b>Reading mode</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/5822aa2c-396e-4cdb-9b0e-c4a9ab970892" alt="مواقيت الصلاة" width="180"><br><b>Prayers times</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/63324b1f-d3d5-461a-a893-bfa19b46d1ee" alt="سور القرآن الكريم" width="180"><br><b>Surah list</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/58b6ffa6-4ea1-468e-98d4-a0151e1ebef4" alt="الأذكار" width="180"><br><b>Azkar</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/90e08c9d-ff79-421f-a2ac-13c2d12cc52a" alt="راديو" width="180"><br><b>Radio</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/70573336-85ec-46c0-a56b-fc71088ba7e0" alt="تفسير الآيات" width="180"><br><b>Tafsir</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/11c1d188-e1ba-4a21-a6c5-0acb34cbda7c" alt="القبلة" width="180"><br><b>Qibla</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/0f339955-21bd-45a8-b36d-f0e77c314694" alt="الاعدادت" width="180"><br><b>Settings</b></td>
-  </tr>
-</table>
+### 2. التلاوات والقراء (Audio Recitations)
+> ![التلاوات والقراء](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *اختيار القارئ المفضّل والاستماع للتلاوات.*
 
-## 🤝 Contributing
+### 3. الإذاعات الإسلامية (Islamic Radio)
+> ![الإذاعات الإسلامية](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *استمع إلى البث المباشر لإذاعات القرآن الكريم.*
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+### 4. الإعدادات والتفضيلات الشخصية (Settings)
+> ![الإعدادات](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *تخصيص الخط، التفسير، والمظهر حسب رغبتك.*
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+### 5. مواقيت الصلاة والأذان (Prayer Times)
+> ![مواقيت الصلاة](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *متابعة أوقات الصلاة والوقت المتبقي للصلاة القادمة.*
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/Wird`)
-3. Commit your Changes (`git commit -m 'Add wird section'`)
-4. Push to the Branch (`git push origin feature/Wird`)
-5. Open a Pull Request
+### 6. الأذكار اليومية (Daily Azkar)
+> ![الأذكار اليومية](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *حصن المسلم وأذكار الصباح والمساء ومتابعة التقدم.*
 
+### 7. البحث والعلامات المرجعية (Search & Bookmarks)
+> ![البحث والعلامات](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *البحث الفوري في الآيات وحفظ المواضع للعودة إليها.*
 
+### 8. رفيق يومك (Daily Companion)
+> ![رفيق يومك](https://www.google.com/url?sa=E&source=gmail&q=...)
+> *مواقيت صلاتك ووردك القرآني في مكان واحد.*
+
+---
+
+## 🔗 روابط سريعة (Quick Links)
+
+- [English Documentation (README_EN.md)](README_EN.md)
+- [Setup & Build Guide (SETUP.md)](SETUP.md)
+- [Contributing Guidelines (CONTRIBUTING.md)](CONTRIBUTING.md)
+- [License (LICENSE.md)](LICENSE.md)
