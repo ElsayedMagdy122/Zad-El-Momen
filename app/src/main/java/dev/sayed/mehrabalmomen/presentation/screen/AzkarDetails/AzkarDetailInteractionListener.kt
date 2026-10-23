@@ -11,4 +11,5 @@ interface AzkarDetailInteractionListener {
     fun onNewReferenceChanged(v: String)
     fun onSaveNewDhikr()
     fun onPlayAll()
+    fun onCopyDhikr(content: String)
 }

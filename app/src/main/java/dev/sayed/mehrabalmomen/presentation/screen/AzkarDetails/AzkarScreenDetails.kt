@@ -38,7 +38,12 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.getBackgroundImageForCategory
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +54,8 @@ fun AzkarDetailScreen(
     viewModel: AzkarDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
+    val clipboardManager = LocalClipboardManager.current
+    var toast by remember { mutableStateOf<ToastDetails?>(null) }
 
     LaunchedEffect(title) {
         viewModel.loadAzkar(title)
@@ -58,140 +65,174 @@ fun AzkarDetailScreen(
         when (effect) {
             AzkarDetailEffect.NavigateBack -> navController.popBackStack()
             is AzkarDetailEffect.ShowError -> {}
+            is AzkarDetailEffect.CopyText -> {
+                clipboardManager.setText(AnnotatedString(effect.text))
+            }
+            is AzkarDetailEffect.ShowToast -> {
+                toast = effect.toast
+            }
         }
     }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.systemBars),
-        containerColor = Theme.color.surfaces.surface,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = viewModel::onOpenAddDhikrBottomSheet,
-                containerColor = Theme.color.primary.primary,
-                contentColor = Theme.color.surfaces.surface,
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Dhikr")
+    LaunchedEffect(toast) {
+        toast?.let {
+            val current = it
+            delay(2000)
+            if (toast == current) {
+                toast = null
             }
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
-            AppBar(
-                title = state.title,
-                onBackClick = viewModel::onClickBack
-            )
+    }
 
-            // Scrollable Grid of Items
-            LazyVerticalStaggeredGrid(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Theme.color.surfaces.surface)
+            .windowInsetsPadding(WindowInsets.systemBars)
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = Color.Transparent,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = viewModel::onOpenAddDhikrBottomSheet,
+                    containerColor = Theme.color.primary.primary,
+                    contentColor = Theme.color.surfaces.surface,
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Dhikr")
+                }
+            }
+        ) { paddingValues ->
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                columns = StaggeredGridCells.Adaptive(320.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalItemSpacing = 16.dp,
-                contentPadding = PaddingValues(bottom = 16.dp)
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
             ) {
-                // 0. Top Category Banner Image Card (Clean image without text overlay)
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(Theme.color.primary.primary)
-                    ) {
-                        Image(
-                            painter = painterResource(getBackgroundImageForCategory(state.title)),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                AppBar(
+                    title = state.title,
+                    onBackClick = viewModel::onClickBack
+                )
+
+                // Scrollable Grid of Items
+                LazyVerticalStaggeredGrid(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    columns = StaggeredGridCells.Adaptive(320.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalItemSpacing = 16.dp,
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
+                    // 0. Top Category Banner Image Card (Clean image without text overlay)
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(Theme.color.primary.primary)
+                        ) {
+                            Image(
+                                painter = painterResource(getBackgroundImageForCategory(state.title)),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+
+                    itemsIndexed(state.items) { index, item ->
+                        val remainingCount = state.itemCounts[index] ?: (item.count.toIntOrNull() ?: 1)
+                        AzkarItemCard(
+                            index = index + 1,
+                            item = item,
+                            remainingCount = remainingCount,
+                            onCountClick = {
+                                viewModel.onDecrementCount(index)
+                            },
+                            onCopyClick = {
+                                viewModel.onCopyDhikr(item.content)
+                            }
                         )
                     }
                 }
+            }
 
-                itemsIndexed(state.items) { index, item ->
-                    val remainingCount = state.itemCounts[index] ?: (item.count.toIntOrNull() ?: 1)
-                    AzkarItemCard(
-                        index = index + 1,
-                        item = item,
-                        remainingCount = remainingCount,
-                        onCountClick = {
-                            viewModel.onDecrementCount(index)
-                        }
-                    )
+            if (state.isAddDhikrBottomSheetOpen) {
+                BottomSheetDs(
+                    onDismiss = viewModel::onDismissAddDhikrBottomSheet
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = localizedString(R.string.azkar_add_dhikr),
+                            style = Theme.textStyle.title.medium,
+                            color = Theme.color.primary.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        OutlinedTextField(
+                            value = state.newContent,
+                            onValueChange = viewModel::onNewContentChanged,
+                            placeholder = { Text(localizedString(R.string.azkar_content_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+
+                        OutlinedTextField(
+                            value = state.newCount,
+                            onValueChange = viewModel::onNewCountChanged,
+                            placeholder = { Text(localizedString(R.string.azkar_repeat_count_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+
+                        OutlinedTextField(
+                            value = state.newDescription,
+                            onValueChange = viewModel::onNewDescriptionChanged,
+                            placeholder = { Text(localizedString(R.string.azkar_description_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+
+                        OutlinedTextField(
+                            value = state.newReference,
+                            onValueChange = viewModel::onNewReferenceChanged,
+                            placeholder = { Text(localizedString(R.string.azkar_reference_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp),
+                            colors = textFieldColors()
+                        )
+
+                        PrimaryButton(
+                            text = localizedString(R.string.azkar_save_dhikr),
+                            onClick = viewModel::onSaveNewDhikr,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
 
-        if (state.isAddDhikrBottomSheetOpen) {
-            BottomSheetDs(
-                onDismiss = viewModel::onDismissAddDhikrBottomSheet
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = localizedString(R.string.azkar_add_dhikr),
-                        style = Theme.textStyle.title.medium,
-                        color = Theme.color.primary.primary,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    OutlinedTextField(
-                        value = state.newContent,
-                        onValueChange = viewModel::onNewContentChanged,
-                        placeholder = { Text(localizedString(R.string.azkar_content_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = textFieldColors()
-                    )
-
-                    OutlinedTextField(
-                        value = state.newCount,
-                        onValueChange = viewModel::onNewCountChanged,
-                        placeholder = { Text(localizedString(R.string.azkar_repeat_count_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = textFieldColors()
-                    )
-
-                    OutlinedTextField(
-                        value = state.newDescription,
-                        onValueChange = viewModel::onNewDescriptionChanged,
-                        placeholder = { Text(localizedString(R.string.azkar_description_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = textFieldColors()
-                    )
-
-                    OutlinedTextField(
-                        value = state.newReference,
-                        onValueChange = viewModel::onNewReferenceChanged,
-                        placeholder = { Text(localizedString(R.string.azkar_reference_hint), style = Theme.textStyle.body.small, color = Theme.color.secondary.shadeSecondary) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = textFieldColors()
-                    )
-
-                    PrimaryButton(
-                        text = localizedString(R.string.azkar_save_dhikr),
-                        onClick = viewModel::onSaveNewDhikr,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
+        toast?.let {
+            PrimaryToast(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 24.dp),
+                data = it,
+                isSuccess = state.messageState
+            )
         }
     }
 }
@@ -213,6 +254,7 @@ fun AzkarItemCard(
     item: AzkarItem,
     remainingCount: Int,
     onCountClick: () -> Unit,
+    onCopyClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -229,7 +271,7 @@ fun AzkarItemCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = {},
+                onClick = onCopyClick,
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(

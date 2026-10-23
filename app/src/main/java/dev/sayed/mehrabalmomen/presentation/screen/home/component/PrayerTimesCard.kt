@@ -75,7 +75,7 @@ fun PrayerTimesCard(
             itemsIndexed(prayerTimesUiState.prayers) { index, prayer ->
                 PrayerItem(
                     prayer = prayer,
-                    isNextPrayer = prayer == prayerTimesUiState.nextPrayer
+                    isNextPrayer = prayer.isUpComing
                 )
             }
         }
