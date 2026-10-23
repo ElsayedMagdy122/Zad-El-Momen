@@ -12,5 +12,7 @@ data class AzkarItemDto(
     @SerialName("description")
     val description: String? = null,
     @SerialName("reference")
-    val reference: String? = null
+    val reference: String? = null,
+    @SerialName("category")
+    val category: String? = null
 )
