@@ -1,10 +1,13 @@
 package dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails
 
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -134,5 +137,20 @@ class AzkarDetailViewModel(
             index to (item.count.toIntOrNull() ?: 1)
         }.toMap()
         updateState { it.copy(itemCounts = resetCounts) }
+    }
+
+    override fun onCopyDhikr(content: String) {
+        if (content.isBlank()) return
+        sendEffect(AzkarDetailEffect.CopyText(content))
+        updateState { it.copy(messageState = true) }
+        sendEffect(
+            AzkarDetailEffect.ShowToast(
+                ToastDetails(
+                    title = UiText.StringResource(R.string.success),
+                    message = UiText.StringResource(R.string.copied_message_successfully),
+                    icon = R.drawable.ic_check_circle
+                )
+            )
+        )
     }
 }
