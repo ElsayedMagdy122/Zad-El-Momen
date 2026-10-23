@@ -11,5 +11,6 @@ data class AzkarDetailUiState(
     val newContent: String = "",
     val newCount: String = "1",
     val newDescription: String = "",
-    val newReference: String = ""
+    val newReference: String = "",
+    val messageState: Boolean = true
 )
