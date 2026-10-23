@@ -6,7 +6,7 @@
 
 ## 🌟 App Cover & Banner
 
-> ![Zad El Momen Cover](https://www.google.com/url?sa=E&source=gmail&q=https://lh3.googleusercontent.com/a/ACg8ocL...)
+> ![Zad El Momen Cover](docs/images/cover.png)
 
 ---
 
@@ -62,42 +62,47 @@ The project adheres to **Clean Architecture**, divided into three core layers:
 ## 📱 App Screenshots & Showcase
 
 ### 1. Holy Quran Reader
-> ![Holy Quran](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Holy Quran](docs/images/quran.png)
 > *Browse Surahs and read verses with ease.*
 
 ### 2. Audio Recitations & Reciters
-> ![Audio Recitations](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Audio Recitations](docs/images/recitations.png)
 > *Choose your favorite reciter and listen to audio.*
 
 ### 3. Islamic Radio
-> ![Islamic Radio](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Islamic Radio](docs/images/radio.png)
 > *Live streaming of Quran and Islamic lectures.*
 
 ### 4. Personalization & Settings
-> ![Settings](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Settings](docs/images/settings.png)
 > *Customize font, Tafseer, and theme preferences.*
 
 ### 5. Prayer Times & Azan
-> ![Prayer Times](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Prayer Times](docs/images/prayer.png)
 > *Track prayer times and countdowns.*
 
 ### 6. Daily Azkar
-> ![Daily Azkar](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Daily Azkar](docs/images/azkar.png)
 > *Morning and evening remembrances and progress tracker.*
 
 ### 7. Search & Bookmarks
-> ![Search & Bookmarks](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Search & Bookmarks](docs/images/search.png)
 > *Instant verse search and position saving.*
 
 ### 8. Daily Companion
-> ![Daily Companion](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![Daily Companion](docs/images/companion.png)
 > *Your prayers and Quranic daily goal in one place.*
+
+---
+
+## ⚖️ License
+This project is licensed under the **GNU General Public License v3.0 (GPLv3)**. This license permits code study, personal learning, and usage while legally prohibiting anyone from rebranding it as proprietary, closing its source, or publishing it under their own name on app stores without open-sourcing their work and preserving attribution. See [LICENSE.md](LICENSE.md) for details.
 
 ---
 
 ## 🔗 Quick Links
 
-- [Arabic Documentation (README.md)](README.md)
+- [English Documentation (README_EN.md)](README_EN.md)
 - [Setup & Build Guide (SETUP.md)](SETUP.md)
 - [Contributing Guidelines (CONTRIBUTING.md)](CONTRIBUTING.md)
 - [License (LICENSE.md)](LICENSE.md)

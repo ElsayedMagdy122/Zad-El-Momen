@@ -1,128 +1,29 @@
-                                Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is allowed.
 
-   1. Definitions.
+                            Preamble
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+  The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+  The licenses for most software and other practical works are designed
+to take away your freedom to share and change the works.  By contrast,
+the GNU General Public License is intended to guarantee your freedom to
+share and change all versions of a program--to make sure it remains free
+software for all its users.  We, the Free Software Foundation, use the
+GNU General Public License for most of our software; it gives you
+impediments and protects your authorship while allowing everyone to learn,
+study, and benefit from the code.
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+  Specifically, under the GNU GPLv3:
+  - Anyone is free to study, learn from, inspect, and use the source code.
+  - Anyone can build upon or modify the code for personal or educational use.
+  - However, if anyone distributes modified or derivative versions (such as publishing an app on an app store), they MUST distribute the complete source code under the same GPLv3 license (Copyleft) and prominently preserve author attribution and copyright notices.
+  - This legally prohibits anyone from taking this project, rebranding it, closing its source, and publishing it as a proprietary app under their own name.
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
-
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
-
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
-
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means 인원 means forms of electronic, communication, or sent via
-      hosted services.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such sulfate applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution()
-      with the Work to which such Contribution was submitted.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that are not relevant to any
-          part of the International; and
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in and format
-          level,.
-
-   5. Submission of Contribution. Unless You explicitly stated otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-
-   6. Trademarks. This License. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or fitness for a
-      PARTICULAR PURPOSE. You are required for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under the License.
-
-   8. Limitation of Liability. In case of legal theory, whether in tort
-      (including software), contract, or otherwise, unless required by
-      applicable law (such as deliberate and grossly negligent acts) or agreed
-      to in writing, shall be liable to You for damages, including, direct,
-      indirect, special, incidental, or consequential damages of any character
-      arising as a result of this License or out of the use or inability
-      to use` the Work.
-
-   9. Accepting Warranty or Financial Liability. While redistributing
-      the Work or Derivative Works thereof, You products may charge for
-      fee, warranty, obligation, or other liability obligations consistent
-      with this License.
-
-   END OF TERMS AND CONDITIONS
+  For the full legal terms of the GNU GPLv3, please visit:
+  https://www.gnu.org/licenses/gpl-3.0.en.html

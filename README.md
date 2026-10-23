@@ -6,8 +6,7 @@
 
 ## 🌟 غلاف التطبيق (Cover)
 
-> ![زاد المؤمن - غلاف التطبيق](https://www.google.com/url?sa=E&source=gmail&q=https://lh3.googleusercontent.com/a/ACg8ocL...) 
-*(ملاحظة: يمكنك استبدال أو استخدام صورة الغلاف أعلاه للتعريف بالتطبيق)*
+> ![زاد المؤمن - غلاف التطبيق](docs/images/cover.png)
 
 ---
 
@@ -63,36 +62,41 @@
 ## 📱 واجهات وشاشات التطبيق (App Screenshots & Showcase)
 
 ### 1. القرآن الكريم (Holy Quran)
-> ![القرآن الكريم](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![القرآن الكريم](docs/images/quran.png)
 > *تصفح سور القرآن الكريم والتلاوة بتأنٍ وسهولة.*
 
 ### 2. التلاوات والقراء (Audio Recitations)
-> ![التلاوات والقراء](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![التلاوات والقراء](docs/images/recitations.png)
 > *اختيار القارئ المفضّل والاستماع للتلاوات.*
 
 ### 3. الإذاعات الإسلامية (Islamic Radio)
-> ![الإذاعات الإسلامية](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![الإذاعات الإسلامية](docs/images/radio.png)
 > *استمع إلى البث المباشر لإذاعات القرآن الكريم.*
 
 ### 4. الإعدادات والتفضيلات الشخصية (Settings)
-> ![الإعدادات](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![الإعدادات](docs/images/settings.png)
 > *تخصيص الخط، التفسير، والمظهر حسب رغبتك.*
 
 ### 5. مواقيت الصلاة والأذان (Prayer Times)
-> ![مواقيت الصلاة](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![مواقيت الصلاة](docs/images/prayer.png)
 > *متابعة أوقات الصلاة والوقت المتبقي للصلاة القادمة.*
 
 ### 6. الأذكار اليومية (Daily Azkar)
-> ![الأذكار اليومية](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![الأذكار اليومية](docs/images/azkar.png)
 > *حصن المسلم وأذكار الصباح والمساء ومتابعة التقدم.*
 
 ### 7. البحث والعلامات المرجعية (Search & Bookmarks)
-> ![البحث والعلامات](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![البحث والعلامات](docs/images/search.png)
 > *البحث الفوري في الآيات وحفظ المواضع للعودة إليها.*
 
 ### 8. رفيق يومك (Daily Companion)
-> ![رفيق يومك](https://www.google.com/url?sa=E&source=gmail&q=...)
+> ![رفيق يومك](docs/images/companion.png)
 > *مواقيت صلاتك ووردك القرآني في مكان واحد.*
+
+---
+
+## ⚖️ الترخيص (License)
+هذا المشروع مرخص تحت رخصة **GNU General Public License v3.0 (GPLv3)**. تتيح لك الرخصة قراءة الكود، التعلم منه، والاستفادة منه تعليمياً وشخصياً، بينما تمنع قانونياً أي شخص من إعادة نشر التطبيق كمشروع مغلق المصدر أو نسبه لنفسه على المتاجر دون فتح مصدره وحفظ الحقوق. للمزيد من التفاصيل راجع [LICENSE.md](LICENSE.md).
 
 ---
 

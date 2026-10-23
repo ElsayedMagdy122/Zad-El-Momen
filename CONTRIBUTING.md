@@ -1,8 +1,8 @@
 # Contributing to Zad El Momen
 
-Thank you for your interest in contributing to **Zad El Momen**! We welcome contributions from developers, designers, and the open-source community to make this Islamic companion app even better.
+Thank you for your interest in contributing to **Zad El Momen**! We welcome contributions from developers, designers, and the open-source community.
 
-Please follow these guidelines to ensure a smooth contribution process.
+Please note that this project is licensed under the **GNU General Public License v3.0 (GPLv3)**. By contributing, you agree that your contributions will be licensed under the same terms.
 
 ---
 
@@ -37,7 +37,6 @@ git checkout -b feature/amazing-new-feature
 ### 3. Development Workflow
 - Follow Kotlin coding conventions and Android best practices.
 - Respect the **Clean Architecture** boundaries (`presentation`, `domain`, `data`).
-- Do not introduce unnecessary dependencies; check existing Koin modules and build configurations before adding new libraries.
 - Test your changes locally on an emulator or physical device.
 
 ### 4. Submitting a Pull Request (PR)
@@ -46,12 +45,4 @@ git checkout -b feature/amazing-new-feature
    git push origin feature/amazing-new-feature
    ```
 2. Open a Pull Request on the main repository.
-3. Provide a clear description of the problem solved or feature added, along with testing details or screenshots if applicable.
-
----
-
-## 📝 Code Style Guidelines
-
-- **Kotlin**: Use idiomatic Kotlin features (coroutines, flows, data classes).
-- **Jetpack Compose**: Use stateless/stateful composable patterns, proper modifiers, and Material 3 design tokens.
-- **Naming Conventions**: Use camelCase for variables/functions and PascalCase for classes/composables.
+3. Provide a clear description of the problem solved or feature added.
