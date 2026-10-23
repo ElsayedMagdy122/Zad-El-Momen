@@ -395,4 +395,37 @@
     <string name="rafiq_tasbih_2">Alhamdulillah.. Alhamdulillah.. ❤️</string>
     <string name="rafiq_tasbih_3">Allahu Akbar.. Allahu Akbar.. ❤️</string>
     <string name="rafiq_tasbih_4">La ilaha illallah.. La ilaha illallah.. ❤️</string>
+
+    <string name="azkar_categories">Categories</string>
+    <string name="azkar_your_statistics">Your Statistics</string>
+    <string name="azkar_welcome">Welcome</string>
+    <string name="azkar_keep_tongue">Keep your tongue moist with the remembrance of Allah</string>
+    <string name="azkar_days_streak">Days Streak</string>
+    <string name="azkar_remaining">Remaining Azkar</string>
+    <string name="azkar_completed">Completed Azkar</string>
+    <string name="azkar_total">Total Azkar</string>
+    <string name="azkar_percentage">Percentage</string>
+    <string name="azkar_of_daily">of daily azkar</string>
+    <string name="azkar_add_category">Add New Category</string>
+    <string name="azkar_category_name_hint">Enter category name (e.g., Morning Adhkar)</string>
+    <string name="azkar_save_category">Save Category</string>
+    <string name="azkar_filter_day">Day</string>
+    <string name="azkar_filter_week">Week</string>
+    <string name="azkar_filter_month">Month</string>
+    <string name="azkar_filter_year">Year</string>
+    <string name="azkar_activity_log">Activity Log</string>
+    <string name="azkar_less">Less</string>
+    <string name="azkar_more">More</string>
+    <string name="azkar_add_dhikr">Add New Dhikr</string>
+    <string name="azkar_content_hint">Dhikr content</string>
+    <string name="azkar_repeat_count_hint">Repeat count (e.g. 3)</string>
+    <string name="azkar_description_hint">Virtue / Description (Optional)</string>
+    <string name="azkar_reference_hint">Reference / Source (Optional)</string>
+    <string name="azkar_save_dhikr">Save Dhikr</string>
+    <string name="azkar_allah_says">Allah says:</string>
+    <string name="azkar_quran_verse_morning"><![CDATA[﴿ وَمَا أَصْبَحَ مِنْ نِعْمَةٍ فَمِنَ اللَّهِ ﴾]]></string>
+    <string name="azkar_quran_verse_reference">[An-Nahl: 53]</string>
+    <string name="azkar_done_check">Done ✓</string>
+    <string name="azkar_times_format">%1$d times</string>
+    <string name="azkar_dhikr_count_format">%1$d dhikrs</string>
 </resources>
