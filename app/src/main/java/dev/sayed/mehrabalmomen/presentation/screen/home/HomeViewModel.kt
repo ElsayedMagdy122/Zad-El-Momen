@@ -245,7 +245,7 @@ class HomeViewModel(
 
                 updateState { current ->
                     val updatedList = current.prayers.map {
-                        it.copy(isUpComing = (it.name == nextUi.name))
+                        it.copy(isUpComing = (it.prayerName != null && it.prayerName == nextUi.prayerName))
                     }
 
                     current.copy(
