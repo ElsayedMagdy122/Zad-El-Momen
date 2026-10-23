@@ -26,13 +26,13 @@ class PrayerNotificationsRepositoryImpl(
         prayer: Prayer.PrayerName
     ): Flow<Boolean> =
         dataStore.data.map {
-            it[SettingsKeys.prayerKey(prayer)] ?: false
+            it[SettingsKeys.prayerKey(prayer)] ?: true
         }
 
     override fun observeAll(): Flow<Map<Prayer.PrayerName, Boolean>> =
         dataStore.data.map { prefs ->
             val map = Prayer.PrayerName.entries.associateWith { prayer ->
-                prefs[SettingsKeys.prayerKey(prayer)] ?: false
+                prefs[SettingsKeys.prayerKey(prayer)] ?: true
             }
             map
         }
