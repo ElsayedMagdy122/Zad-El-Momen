@@ -32,56 +32,62 @@ class AndroidAudioPlayer(
     private val playerScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var progressJob: Job? = null
 
+    @Volatile
+    private var isReleased = false
+
     private val _playerState = MutableStateFlow(AudioPlayerState())
     override val playerState: StateFlow<AudioPlayerState> = _playerState.asStateFlow()
 
-    init {
-        setupPlayerListener()
+    private val playerListener = object : Player.Listener {
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            if (isReleased) return
+            val status = when (playbackState) {
+                Player.STATE_BUFFERING -> AudioPlayerStatus.BUFFERING
+                Player.STATE_READY -> if (exoPlayer.isPlaying) AudioPlayerStatus.PLAYING else AudioPlayerStatus.PAUSED
+                Player.STATE_ENDED -> AudioPlayerStatus.ENDED
+                Player.STATE_IDLE -> AudioPlayerStatus.IDLE
+                else -> AudioPlayerStatus.IDLE
+            }
+
+            _playerState.update { 
+                it.copy(
+                    status = status,
+                    durationMs = exoPlayer.duration.coerceAtLeast(0L)
+                ) 
+            }
+
+            if (exoPlayer.isPlaying) startProgressTracker() else stopProgressTracker()
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if (isReleased) return
+            _playerState.update {
+                it.copy(
+                    status = if (isPlaying) AudioPlayerStatus.PLAYING else AudioPlayerStatus.PAUSED
+                )
+            }
+            if (isPlaying) startProgressTracker() else stopProgressTracker()
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            if (isReleased) return
+            stopProgressTracker()
+            _playerState.update {
+                it.copy(
+                    status = AudioPlayerStatus.ERROR,
+                    errorMessage = error.message
+                )
+            }
+        }
     }
 
-    private fun setupPlayerListener() {
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                val status = when (playbackState) {
-                    Player.STATE_BUFFERING -> AudioPlayerStatus.BUFFERING
-                    Player.STATE_READY -> if (exoPlayer.isPlaying) AudioPlayerStatus.PLAYING else AudioPlayerStatus.PAUSED
-                    Player.STATE_ENDED -> AudioPlayerStatus.ENDED
-                    Player.STATE_IDLE -> AudioPlayerStatus.IDLE
-                    else -> AudioPlayerStatus.IDLE
-                }
-
-                _playerState.update { 
-                    it.copy(
-                        status = status,
-                        durationMs = exoPlayer.duration.coerceAtLeast(0L)
-                    ) 
-                }
-
-                if (exoPlayer.isPlaying) startProgressTracker() else stopProgressTracker()
-            }
-
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                _playerState.update {
-                    it.copy(
-                        status = if (isPlaying) AudioPlayerStatus.PLAYING else AudioPlayerStatus.PAUSED
-                    )
-                }
-                if (isPlaying) startProgressTracker() else stopProgressTracker()
-            }
-
-            override fun onPlayerError(error: PlaybackException) {
-                stopProgressTracker()
-                _playerState.update {
-                    it.copy(
-                        status = AudioPlayerStatus.ERROR,
-                        errorMessage = error.message
-                    )
-                }
-            }
-        })
+    init {
+        exoPlayer.addListener(playerListener)
     }
 
     override fun play(source: AudioSource, startPositionMs: Long) {
+        if (isReleased) return
+
         val uri = when (source) {
             is AudioSource.RemoteUrl -> source.url.toUri()
             is AudioSource.LocalFile -> Uri.fromFile(File(source.path))
@@ -98,19 +104,19 @@ class AndroidAudioPlayer(
 
         _playerState.update { it.copy(currentSource = source, status = AudioPlayerStatus.BUFFERING) }
 
-        exoPlayer.stop()
-        exoPlayer.clearMediaItems()
         exoPlayer.setMediaItem(MediaItem.fromUri(uri), startPositionMs)
         exoPlayer.prepare()
         exoPlayer.play()
     }
 
     override fun pause() {
+        if (isReleased) return
         exoPlayer.pause()
         stopProgressTracker()
     }
 
     override fun resume() {
+        if (isReleased) return
         if (exoPlayer.playbackState == Player.STATE_ENDED) {
             exoPlayer.seekTo(0)
         }
@@ -118,27 +124,35 @@ class AndroidAudioPlayer(
     }
 
     override fun stop() {
+        if (isReleased) return
         exoPlayer.stop()
-        exoPlayer.clearMediaItems()
         stopProgressTracker()
         _playerState.update { AudioPlayerState() }
     }
 
     override fun seekTo(positionMs: Long) {
+        if (isReleased) return
         exoPlayer.seekTo(positionMs)
         _playerState.update { it.copy(currentPositionMs = positionMs) }
     }
 
     override fun release() {
+        if (isReleased) return
+        isReleased = true
+
         stopProgressTracker()
-        exoPlayer.release()
         playerScope.cancel()
+
+        exoPlayer.removeListener(playerListener)
+        exoPlayer.stop()
+        exoPlayer.release()
     }
 
     private fun startProgressTracker() {
+        if (isReleased) return
         stopProgressTracker()
         progressJob = playerScope.launch {
-            while (isActive) {
+            while (isActive && !isReleased) {
                 _playerState.update {
                     it.copy(
                         currentPositionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
