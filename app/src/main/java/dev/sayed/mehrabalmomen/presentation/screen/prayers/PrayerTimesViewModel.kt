@@ -1,8 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.notification.NotificationScheduler
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
@@ -56,11 +58,28 @@ class PrayerTimesViewModel(
     }
 
     /**
-     * Updates the UI state with the current battery optimization status.
+     * Updates the UI state with the current battery optimization status and brand instructions.
      */
     fun refreshBatteryStatus() {
         val isIgnoring = batteryOptimizationRepository.isIgnoringBatteryOptimizations()
-        updateState { it.copy(isBatteryOptimizationEnabled = isIgnoring) }
+        viewModelScope.launch {
+            try {
+                val language = settingsRepository.observeAppSettings().first().language
+                val isArabic = language == AppSettings.Language.ARABIC
+                val instructions = batteryOptimizationRepository.getBrandInstructions(
+                    manufacturer = Build.MANUFACTURER,
+                    isArabic = isArabic
+                )
+                updateState {
+                    it.copy(
+                        isBatteryOptimizationEnabled = isIgnoring,
+                        batteryInstructions = instructions
+                    )
+                }
+            } catch (e: Exception) {
+                updateState { it.copy(isBatteryOptimizationEnabled = isIgnoring) }
+            }
+        }
     }
 
     private fun scheduleAlarmsIfNeeded() {
@@ -202,6 +221,7 @@ class PrayerTimesViewModel(
     }
 
     fun onBatteryWarningClick() {
+        refreshBatteryStatus()
         updateState { it.copy(showBatteryDialog = true) }
     }
 

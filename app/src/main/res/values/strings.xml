@@ -1,6 +1,6 @@
 <resources>
 <!--    <string name="app_name">Mehrab Al Momen</string>-->
-    <string name="app_name">Zad Al-Mu’min</string>
+    <string name="app_name">Zad Al-Mu\'min</string>
     <string name="fajr">Fajr</string>
     <string name="sunrise">Sunrise</string>
     <string name="dhuhr">Dhuhr</string>
@@ -70,7 +70,7 @@
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
     <string name="time_remaining">Time remaining</string>
-    <string name="today_s_full_timetable">Today’s Full Timetable</string>
+    <string name="today_s_full_timetable">Today\'s Full Timetable</string>
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="general">General</string>
@@ -141,7 +141,7 @@
     <string name="quran">Quran Kareem</string>
     <string name="ayat">%1$d Ayat</string>
     <string name="sur">Sur</string>
-    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you’re offline.</string>
+    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you\'re offline.</string>
     <string name="check_your_connection_and_try_again">Check your connection and try again</string>
     <string name="re_try">Re-try</string>
     <string name="success">Success</string>
@@ -346,6 +346,8 @@
     <string name="faq_a3">Go to Settings -> Support -> Report a Bug to send us your reports or suggestions.</string>
     <string name="faq_q4">Is the Qiblah compass accurate?</string>
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
+    <string name="faq_q5">How to make the Azan screen appear automatically on Xiaomi, Samsung, and Huawei?</string>
+    <string name="faq_a5">To ensure the Azan screen opens automatically at prayer time on Xiaomi (HyperOS/MIUI), Samsung, Huawei, and Oppo devices, please go to phone Settings → Apps → Zad Al-Momen → Permissions, and ensure you enable: 1) Display pop-up windows while running in the background / Appear on top. 2) Show on Lock screen. 3) Autostart and set Battery to Unrestricted.</string>
     <string name="battery_settings_title">Notification Optimization</string>
     <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
     <string name="companion_mode">Companion Mode</string>
@@ -428,4 +430,18 @@
     <string name="azkar_done_check">Done ✓</string>
     <string name="azkar_times_format">%1$d times</string>
     <string name="azkar_dhikr_count_format">%1$d dhikrs</string>
+
+    <!-- Azan Screen -->
+    <string name="azan">Azan</string>
+    <string name="azan_prayer_time">PRAYER TIME</string>
+    <string name="azan_stop">Stop Azan</string>
+    <string name="azan_open_app">Open Prayer Times</string>
+    <string name="azan_jumuah">Jumu\'ah</string>
+    <string name="time_for_prayer">It is time for prayer</string>
+    <string name="prayer_of_format">%1$s Prayer</string>
+    <string name="azan_is_playing">Azan is playing</string>
+    <string name="next_prayer_dot_format">Next prayer • %1$s</string>
+    <string name="mute_sound">Mute Sound</string>
+    <string name="unmute_sound">Unmute Sound</string>
+    <string name="location_unknown">Unknown</string>
 </resources>

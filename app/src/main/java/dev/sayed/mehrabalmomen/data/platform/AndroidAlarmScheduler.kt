@@ -11,7 +11,9 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import dev.sayed.mehrabalmomen.presentation.reciver.AzanAlarmReceiver
 import dev.sayed.mehrabalmomen.presentation.reciver.DailyRefreshReceiver
 import dev.sayed.mehrabalmomen.presentation.reciver.ReminderAlarmReceiver
+import dev.sayed.mehrabalmomen.presentation.screen.azan.AzanActivity
 import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_NAME_KEY
+import dev.sayed.mehrabalmomen.presentation.utils.Constants.PRAYER_TIME_MILLIS_KEY
 
 /**
  * Android implementation of [AlarmScheduler] using [AlarmManager].
@@ -40,10 +42,30 @@ class AndroidAlarmScheduler(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val showIntent = if (task is AlarmTask.Prayer) {
+            val activityIntent = Intent(context, AzanActivity::class.java).apply {
+                addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+                putExtra(PRAYER_NAME_KEY, task.prayerName)
+                putExtra(PRAYER_TIME_MILLIS_KEY, task.prayerTimeMillis)
+            }
+            PendingIntent.getActivity(
+                context,
+                requestCode,
+                activityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } else {
+            pendingIntent
+        }
+
         try {
             // Prefer setAlarmClock for maximum precision as it's highly visible to the system
             alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(triggerAtMillis, pendingIntent),
+                AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
                 pendingIntent
             )
         } catch (e: SecurityException) {
@@ -81,6 +103,7 @@ class AndroidAlarmScheduler(
             is AlarmTask.Prayer -> {
                 Intent(context, AzanAlarmReceiver::class.java).apply {
                     putExtra(PRAYER_NAME_KEY, task.prayerName)
+                    putExtra(PRAYER_TIME_MILLIS_KEY, task.prayerTimeMillis)
                 }
             }
             is AlarmTask.DailyRefresh -> {
