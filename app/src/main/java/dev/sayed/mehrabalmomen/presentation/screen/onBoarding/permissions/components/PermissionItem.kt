@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,8 @@ fun PermissionItem(
     description: Int,
     isGranted: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -81,15 +83,23 @@ fun PermissionItem(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(if (isGranted) Color.Transparent else Theme.color.primary.primary)
-                .clickable(enabled = !isGranted) { onClick() }
+                .clickable(enabled = !isGranted && !isLoading) { onClick() }
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = localizedString(if (isGranted) R.string.granted else R.string.allow),
-                style = Theme.textStyle.label.medium,
-                color = if (isGranted) Theme.color.primary.primary else Theme.color.primary.onPrimary
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = Theme.color.primary.onPrimary,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = localizedString(if (isGranted) R.string.granted else R.string.allow),
+                    style = Theme.textStyle.label.medium,
+                    color = if (isGranted) Theme.color.primary.primary else Theme.color.primary.onPrimary
+                )
+            }
         }
     }
 }

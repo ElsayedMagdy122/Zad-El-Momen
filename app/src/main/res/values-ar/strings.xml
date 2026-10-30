@@ -48,6 +48,7 @@
 
     <string name="location_permission">إذن الموقع</string>
     <string name="location_permission_desc">نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة.</string>
+    <string name="location_services_disabled">خدمات الموقع معطلة. يرجى تفعيل GPS للحصول على مواقيت الصلاة بدقة.</string>
     <string name="notification_permission">إذن الإشعارات</string>
     <string name="notification_permission_desc">استلام تنبيهات الأذان والأذكار في وقتها.</string>
     <string name="alarm_permission">إذن المنبه الدقيق</string>

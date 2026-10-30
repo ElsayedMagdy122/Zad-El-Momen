@@ -33,6 +33,7 @@
     <string name="tilt_and_rotate_the_device_to_cover_all_axes_for_complete_calibration">Tilt and rotate the device to cover all axes for complete calibration.</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">We need your location to calculate accurate prayer times and determine the Qibla direction.</string>
+    <string name="location_services_disabled">Location services are disabled. Please turn on GPS to calculate accurate prayer times.</string>
     <string name="notification_permission">Notification Permission</string>
     <string name="notification_permission_desc">Receive Azan and Azkar reminders on time.</string>
     <string name="alarm_permission">Exact Alarm Permission</string>

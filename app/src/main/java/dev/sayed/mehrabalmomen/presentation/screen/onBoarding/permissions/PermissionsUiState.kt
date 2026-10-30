@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.R
 
 data class PermissionsUiState(
     val isLoading: Boolean = false,
+    val isLocationLoading: Boolean = false,
     val isButtonEnabled: Boolean = false,
     val isLocationPermissionGranted: Boolean = false,
     val isNotificationPermissionGranted: Boolean = false,

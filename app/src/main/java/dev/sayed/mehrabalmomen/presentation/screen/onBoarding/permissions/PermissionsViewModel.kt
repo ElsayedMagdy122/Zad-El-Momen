@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.UiText
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class PermissionsViewModel(
@@ -19,7 +20,11 @@ class PermissionsViewModel(
 ) : BaseViewModel<PermissionsUiState, PermissionsEffect>(PermissionsUiState()), PermissionsInteractionListener {
 
     override fun onClickAllowLocationAccess() {
-        sendEffect(PermissionsEffect.RequestLocationPermission)
+        if (permissionProvider.hasLocationPermission()) {
+            sendEffect(PermissionsEffect.RequestEnableGps)
+        } else {
+            sendEffect(PermissionsEffect.RequestLocationPermission)
+        }
     }
 
     override fun onClickAllowNotificationAccess() {
@@ -47,17 +52,23 @@ class PermissionsViewModel(
     }
 
     fun updateInitialPermissions() {
-        updateState {
-            it.copy(
-                isLocationPermissionGranted = permissionProvider.hasLocationPermission(),
-                isNotificationPermissionGranted = permissionProvider.hasNotificationPermission(),
-                isAlarmPermissionGranted = permissionProvider.canScheduleExactAlarms(),
-                isBackgroundPermissionGranted = permissionProvider.isIgnoringBatteryOptimizations(),
-                isNotificationPermissionRequired = permissionProvider.isNotificationPermissionRequired(),
-                isAlarmPermissionRequired = permissionProvider.isExactAlarmPermissionRequired()
-            )
+        viewModelScope.launch {
+            val savedLocation = settingsRepository.observeLocation().first()
+            val hasSavedLocation = savedLocation.latitude != 0.0 && savedLocation.longitude != 0.0
+            val isLocationGranted = permissionProvider.hasLocationPermission() && hasSavedLocation
+
+            updateState {
+                it.copy(
+                    isLocationPermissionGranted = isLocationGranted,
+                    isNotificationPermissionGranted = permissionProvider.hasNotificationPermission(),
+                    isAlarmPermissionGranted = permissionProvider.canScheduleExactAlarms(),
+                    isBackgroundPermissionGranted = permissionProvider.isIgnoringBatteryOptimizations(),
+                    isNotificationPermissionRequired = permissionProvider.isNotificationPermissionRequired(),
+                    isAlarmPermissionRequired = permissionProvider.isExactAlarmPermissionRequired()
+                )
+            }
+            checkIfAllPermissionsGranted()
         }
-        checkIfAllPermissionsGranted()
     }
 
     private fun checkIfAllPermissionsGranted() {
@@ -65,19 +76,44 @@ class PermissionsViewModel(
         val allGranted = state.isLocationPermissionGranted && 
                         state.isNotificationPermissionGranted && 
                         state.isAlarmPermissionGranted &&
-                        state.isBackgroundPermissionGranted
+                        state.isBackgroundPermissionGranted &&
+                        !state.isLocationLoading
         
         updateState { it.copy(isButtonEnabled = allGranted) }
     }
 
     fun onLocationGranted() {
+        sendEffect(PermissionsEffect.RequestEnableGps)
+    }
+
+    fun onGpsEnabled() {
         viewModelScope.launch {
             handleLocationPermissionGranted()
         }
     }
 
+    fun onGpsDenied() {
+        updateState {
+            it.copy(
+                isLocationPermissionGranted = false,
+                isLocationLoading = false
+            )
+        }
+        sendEffect(
+            PermissionsEffect.ShowToast(
+                ToastDetails(
+                    title = UiText.StringResource(R.string.error),
+                    message = UiText.StringResource(R.string.location_services_disabled),
+                    icon = R.drawable.ic_close_circle
+                )
+            )
+        )
+        checkIfAllPermissionsGranted()
+    }
+
     private suspend fun handleLocationPermissionGranted() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(isLocationLoading = true) }
+        checkIfAllPermissionsGranted()
         try {
             val isNetworkAvailable = networkConnectionRepository.isCurrentlyConnected()
             if (!isNetworkAvailable) {
@@ -86,7 +122,8 @@ class PermissionsViewModel(
                     message = UiText.StringResource(R.string.no_internet_connection),
                     icon = R.drawable.ic_close_circle
                 )))
-                updateState { it.copy(isLoading = false, isLocationPermissionGranted = false) }
+                updateState { it.copy(isLocationLoading = false, isLocationPermissionGranted = false) }
+                checkIfAllPermissionsGranted()
                 return
             }
 
@@ -94,18 +131,19 @@ class PermissionsViewModel(
             settingsRepository.saveLocation(location)
             updateState {
                 it.copy(
-                    isLoading = false,
+                    isLocationLoading = false,
                     isLocationPermissionGranted = true
                 )
             }
             checkIfAllPermissionsGranted()
         } catch (e: Exception) {
-            updateState { it.copy(isLoading = false, isLocationPermissionGranted = false) }
+            updateState { it.copy(isLocationLoading = false, isLocationPermissionGranted = false) }
             sendEffect(PermissionsEffect.ShowToast(ToastDetails(
                 title = UiText.StringResource(R.string.error),
                 message = UiText.StringResource(R.string.error),
                 icon = R.drawable.ic_close_circle
             )))
+            checkIfAllPermissionsGranted()
         }
     }
 
@@ -113,7 +151,7 @@ class PermissionsViewModel(
         updateState {
             it.copy(
                 isLocationPermissionGranted = false,
-                isLoading = false
+                isLocationLoading = false
             )
         }
         checkIfAllPermissionsGranted()
