@@ -12,6 +12,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.azan.AzanViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahViewModel
@@ -49,6 +50,7 @@ val presentationModule = module {
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
     viewModelOf(::CompanionViewModel)
+    viewModelOf(::AzanViewModel)
     
     factory(named("quran")) { get<AudioPlayer>() }
     single(named("radio")) { get<AudioPlayer>() }

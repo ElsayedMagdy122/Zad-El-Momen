@@ -5,7 +5,7 @@ package dev.sayed.mehrabalmomen.domain.model
  */
 sealed class AlarmTask {
     /** Triggers the Azan/Prayer notification service. */
-    data class Prayer(val prayerName: String) : AlarmTask()
+    data class Prayer(val prayerName: String, val prayerTimeMillis: Long = 0L) : AlarmTask()
 
     /** Triggers a background refresh of prayer times (usually at midnight). */
     object DailyRefresh : AlarmTask()

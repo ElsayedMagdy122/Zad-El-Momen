@@ -358,6 +358,8 @@
     <string name="faq_a3">اذهب إلى الإعدادات -> الدعم -> الإبلاغ عن مشكلة لإرسال تقاريرك أو اقتراحاتك لنا.</string>
     <string name="faq_q4">هل بوصلة القبلة دقيقة؟</string>
     <string name="faq_a4">نعم، ولكنها تعتمد على مستشعرات جهازك. نوصي بمعايرة البوصلة من خلال تحريك هاتفك بشكل رقم 8 إذا لاحظت أي عدم دقة.</string>
+    <string name="faq_q5">كيف أجعل شاشة الأذان تفتح تلقائياً في أجهزة شاومي وسامسونج وهواوي؟</string>
+    <string name="faq_a5">لضمان فتح شاشة الأذان تلقائياً عند وقت الصلاة في واجهات شاومي (HyperOS/MIUI)، وسامسونج، وهواوي، وأوبو، يرجى التوجه إلى إعدادات الهاتف ← التطبيقات ← زاد المؤمن ← الأذونات، وتأكيد تفعيل: 1) الظهور فوق التطبيقات الأخرى (Display pop-up windows). 2) العرض على شاشة القفل (Show on Lock screen). 3) التشغيل التلقائي وإلغاء قيود توفير البطارية.</string>
     <string name="battery_settings_title">تحسين استقبال التنبيهات</string>
     <string name="battery_optimization_description">هذه الخطوات ضرورية لضمان عمل الأذان بكفاءة وفي وقته المحدد على جهازك.</string>
     <string name="companion_mode">وضع الرفيق</string>
@@ -440,4 +442,18 @@
     <string name="azkar_done_check">تم ✓</string>
     <string name="azkar_times_format">%1$d مرة</string>
     <string name="azkar_dhikr_count_format">%1$d ذكر</string>
+
+    <!-- Azan Screen -->
+    <string name="azan">الأذان</string>
+    <string name="azan_prayer_time">وقت الصلاة</string>
+    <string name="azan_stop">إيقاف الأذان</string>
+    <string name="azan_open_app">فتح مواقيت الصلاة</string>
+    <string name="azan_jumuah">الجمعة</string>
+    <string name="time_for_prayer">حان وقت الصلاة</string>
+    <string name="prayer_of_format">صلاة %1$s</string>
+    <string name="azan_is_playing">الأذان قيد التشغيل</string>
+    <string name="next_prayer_dot_format">الصلاة التالية • %1$s</string>
+    <string name="mute_sound">كتم الصوت</string>
+    <string name="unmute_sound">إلغاء الكتم</string>
+    <string name="location_unknown">غير معروف</string>
 </resources>
