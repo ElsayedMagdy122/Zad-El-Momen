@@ -36,7 +36,11 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.components.BatteryOptimizationDialog
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerCard
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
+import dev.sayed.mehrabalmomen.presentation.utils.AutoPermissionRequester
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import dev.sayed.mehrabalmomen.presentation.utils.rememberBatteryOptimizationLauncher
+import dev.sayed.mehrabalmomen.presentation.utils.rememberExactAlarmPermissionLauncher
+import dev.sayed.mehrabalmomen.presentation.utils.rememberNotificationPermissionLauncher
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.ExperimentalTime
 
@@ -50,7 +54,6 @@ fun PrayerTimesScreen(
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
@@ -65,33 +68,26 @@ fun PrayerTimesScreen(
         }
     }
 
-    val notificationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
+    val notificationLauncher = rememberNotificationPermissionLauncher()
+    val exactAlarmLauncher = rememberExactAlarmPermissionLauncher()
+    val batteryOptimizationLauncher = rememberBatteryOptimizationLauncher()
 
-        if (!granted) {
-            Toast.makeText(context, "Notification permission denied", Toast.LENGTH_SHORT).show()
-        }
-    }
+    // Automatically prompt missing permissions directly with system dialogs on screen entry
+    AutoPermissionRequester()
 
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
 
             PrayerTimesEffect.RequestExactAlarm -> {
-                context.startActivity(
-                    Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                )
+                exactAlarmLauncher()
             }
 
             PrayerTimesEffect.RequestNotificationPermission -> {
-                notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                notificationLauncher()
             }
 
             PrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", context.packageName, null)
-                }
-                context.startActivity(intent)
+                batteryOptimizationLauncher()
             }
 
             PrayerTimesEffect.NavigateBack -> {
