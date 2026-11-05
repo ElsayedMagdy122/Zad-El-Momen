@@ -40,6 +40,7 @@
     <string name="alarm_permission_desc">Required to play the Azan exactly on time, even when the device is idle.</string>
     <string name="background_permission">Run in Background</string>
     <string name="background_permission_desc">Allow the app to run in the background without battery restrictions to ensure reminders work accurately.</string>
+    <string name="permission_optional_important">(Optional, but important)</string>
     <string name="granted">Granted</string>
     <string name="allow">Allow</string>
     <string name="set_up_permissions">Set up permissions</string>

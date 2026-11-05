@@ -235,6 +235,7 @@ private fun PermissionsContent(
                         title = R.string.notification_permission,
                         description = R.string.notification_permission_desc,
                         isGranted = state.isNotificationPermissionGranted,
+                        isOptional = true,
                         onClick = { listener.onClickAllowNotificationAccess() }
                     )
                 }
@@ -258,6 +259,7 @@ private fun PermissionsContent(
                     title = R.string.background_permission,
                     description = R.string.background_permission_desc,
                     isGranted = state.isBackgroundPermissionGranted,
+                    isOptional = true,
                     onClick = { listener.onClickAllowBackgroundAccess() }
                 )
             }

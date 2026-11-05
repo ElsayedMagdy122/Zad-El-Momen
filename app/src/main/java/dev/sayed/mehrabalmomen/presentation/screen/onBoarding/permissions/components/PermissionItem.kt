@@ -36,7 +36,8 @@ fun PermissionItem(
     isGranted: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    isOptional: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -64,11 +65,23 @@ fun PermissionItem(
         Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = localizedString(title),
-                style = Theme.textStyle.title.medium,
-                color = Theme.color.primary.shadePrimary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = localizedString(title),
+                    style = Theme.textStyle.title.medium,
+                    color = Theme.color.primary.shadePrimary
+                )
+                if (isOptional) {
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = localizedString(R.string.permission_optional_important),
+                        style = Theme.textStyle.label.small,
+                        color = Theme.color.secondary.shadeSecondary
+                    )
+                }
+            }
             Text(
                 text = localizedString(description),
                 style = Theme.textStyle.body.small,

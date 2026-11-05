@@ -26,6 +26,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.ReminderItem
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.TimePickerDialog
+import dev.sayed.mehrabalmomen.presentation.utils.AutoPermissionRequester
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -33,6 +34,8 @@ fun ReminderSettingsScreen(
     navController: NavController,
     viewModel: ReminderSettingsViewModel = koinViewModel()
 ) {
+    // Automatically prompt missing permissions directly with system dialogs on screen entry
+    AutoPermissionRequester()
 
     val state by viewModel.screenState.collectAsState()
 
