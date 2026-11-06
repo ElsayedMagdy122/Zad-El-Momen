@@ -19,13 +19,19 @@ class ReminderSchedulerRepositoryImpl(
         }
         val reminders = settingsRepository.observeAllReminders().first()
         reminders.forEach { reminder ->
-            val task = AlarmTask.Reminder(reminder.type.name)
-            alarmScheduler.cancel(reminder.type.alarmId, task)
+            val requestCode = (1000L + reminder.id).toInt()
+            val task = AlarmTask.Reminder(
+                reminderId = reminder.id,
+                title = reminder.title,
+                body = reminder.description,
+                typeName = reminder.type?.name
+            )
+            alarmScheduler.cancel(requestCode, task)
 
             if (reminder.isEnabled) {
-                val strategy = TriggerStrategyFactory.getStrategy(reminder.type.recurrence)
+                val strategy = TriggerStrategyFactory.getStrategy(reminder.recurrence)
                 val triggerMillis = strategy.calculateNextTrigger(reminder.hour, reminder.minute)
-                alarmScheduler.schedule(reminder.type.alarmId, triggerMillis, task)
+                alarmScheduler.schedule(requestCode, triggerMillis, task)
             }
         }
         return RescheduleResult.Success

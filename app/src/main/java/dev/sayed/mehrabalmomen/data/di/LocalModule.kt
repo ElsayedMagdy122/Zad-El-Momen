@@ -3,6 +3,8 @@ package dev.sayed.mehrabalmomen.data.di
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import org.koin.android.ext.koin.androidContext
@@ -34,11 +36,26 @@ val localModule = module {
             AppDatabase::class.java,
             "mehrab_database"
         )
+        .addCallback(object : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                db.execSQL("""
+                    INSERT INTO reminders (title, description, hour, minute, recurrence, isEnabled, reminderType)
+                    VALUES 
+                    ('أذكار الصباح', 'لا تنس أذكار الصباح والتحصين', 7, 0, 'DAILY', 1, 'MORNING_AZKAR'),
+                    ('أذكار المساء', 'لا تنس أذكار المساء لحفظك ونور صدرك', 17, 0, 'DAILY', 1, 'EVENING_AZKAR'),
+                    ('الورد القرآني اليومي', 'حان وقت وردك القرآني اليومي', 20, 0, 'DAILY', 1, 'DAILY_WORD'),
+                    ('سنن الجمعة', 'أكثر من الصلاة على النبي واقرأ سورة الكهف', 9, 0, 'WEEKLY_THURSDAY', 1, 'FRIDAY_SUNNAN')
+                """.trimIndent())
+            }
+        })
+        .fallbackToDestructiveMigration(true)
         .build()
     }
     single { get<AppDatabase>().bookmarkDao() }
     single { get<AppDatabase>().downloadedReciterDao() }
     single { get<AppDatabase>().azkarDao() }
+    single { get<AppDatabase>().reminderDao() }
     single<AzkarLocalDataSource> { 
         AzkarLocalDataSource(
             context = androidContext(),
