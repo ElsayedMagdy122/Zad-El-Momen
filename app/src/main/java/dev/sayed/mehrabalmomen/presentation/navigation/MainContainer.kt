@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.navigation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -51,6 +52,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
+@SuppressLint("NewApi")
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun MainContainer(
@@ -92,9 +94,9 @@ fun MainContainer(
             unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.prayer),
-            selectedIcon = painterResource(R.drawable.ic_prayer_times_selected),
-            unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
+            title = localizedString(R.string.azan),
+            selectedIcon = painterResource(R.drawable.ic_azan_selected),
+            unselectedIcon = painterResource(R.drawable.ic_azan_not_selected)
         ),
         NavItem(
             title = localizedString(R.string.azkar),
