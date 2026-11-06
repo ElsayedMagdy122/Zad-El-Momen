@@ -12,6 +12,8 @@ import dev.sayed.mehrabalmomen.data.quran.audio.local.entity.DownloadedReciterEn
 import dev.sayed.mehrabalmomen.data.quran.audio.local.entity.VerseTimingEntity
 import dev.sayed.mehrabalmomen.data.quran.text.local.dao.BookmarkDao
 import dev.sayed.mehrabalmomen.data.quran.text.local.dto.BookmarkEntity
+import dev.sayed.mehrabalmomen.data.reminders.local.dao.ReminderDao
+import dev.sayed.mehrabalmomen.data.reminders.local.entity.ReminderEntity
 
 @Database(
     entities = [
@@ -22,13 +24,14 @@ import dev.sayed.mehrabalmomen.data.quran.text.local.dto.BookmarkEntity
         AzkarCustomItemEntity::class,
         AzkarStatsEntity::class,
         AzkarHistoryEntity::class,
+        ReminderEntity::class,
     ],
-    // new version 3 not 4
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookmarkDao(): BookmarkDao
     abstract fun downloadedReciterDao(): DownloadedReciterDao
     abstract fun azkarDao(): AzkarDao
+    abstract fun reminderDao(): ReminderDao
 }
