@@ -10,6 +10,11 @@ sealed class AlarmTask {
     /** Triggers a background refresh of prayer times (usually at midnight). */
     object DailyRefresh : AlarmTask()
 
-    /** Triggers a general reminder notification (e.g., Azkar). */
-    data class Reminder(val typeName: String) : AlarmTask()
+    /** Triggers a general reminder notification (e.g., Azkar or custom). */
+    data class Reminder(
+        val reminderId: Long = 0L,
+        val title: String = "",
+        val body: String = "",
+        val typeName: String? = null
+    ) : AlarmTask()
 }

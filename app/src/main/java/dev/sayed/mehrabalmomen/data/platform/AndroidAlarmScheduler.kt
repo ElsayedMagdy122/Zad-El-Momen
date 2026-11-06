@@ -111,6 +111,9 @@ class AndroidAlarmScheduler(
             }
             is AlarmTask.Reminder -> {
                 Intent(context, ReminderAlarmReceiver::class.java).apply {
+                    putExtra("REMINDER_ID", task.reminderId)
+                    putExtra("REMINDER_TITLE", task.title)
+                    putExtra("REMINDER_BODY", task.body)
                     putExtra("REMINDER_TYPE_EXTRA", task.typeName)
                 }
             }

@@ -446,4 +446,8 @@
     <string name="mute_sound">Mute Sound</string>
     <string name="unmute_sound">Unmute Sound</string>
     <string name="location_unknown">Unknown</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="period">Period</string>
 </resources>

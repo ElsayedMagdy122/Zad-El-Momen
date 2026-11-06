@@ -34,7 +34,8 @@ fun TimePickerDialog(
     initialMinute: Int,
     onDismiss: () -> Unit,
     onConfirm: (hour: Int, minute: Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String = localizedString(R.string.reminder_time)
 ) {
     var selectedHour by remember { mutableIntStateOf(initialHour) }
     var selectedMinute by remember { mutableIntStateOf(initialMinute) }
@@ -49,7 +50,7 @@ fun TimePickerDialog(
                     .align(Alignment.TopStart)
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(Theme.color.surfaces.surface)
+                    .background(Theme.color.surfaces.surfaceHigh)
                     .clickable { onDismiss() },
                 contentAlignment = Alignment.Center
             ) {
@@ -59,6 +60,7 @@ fun TimePickerDialog(
                     tint = Theme.color.primary.primary
                 )
             }
+
             Column(
                 modifier = Modifier
                     .padding(top = 12.dp)
@@ -66,13 +68,14 @@ fun TimePickerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = localizedString(R.string.choose_time),
+                    text = title,
                     textAlign = TextAlign.Center,
                     style = Theme.textStyle.title.medium,
                     color = Theme.color.primary.shadePrimary
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+
                 TimeWheelPicker(
                     initialHour = initialHour,
                     initialMinute = initialMinute
@@ -83,7 +86,7 @@ fun TimePickerDialog(
 
                 Text(
                     modifier = Modifier
-                        .padding(top = 24.dp, end = 8.dp)
+                        .padding(top = 20.dp, end = 8.dp)
                         .align(Alignment.End)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
