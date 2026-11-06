@@ -62,7 +62,15 @@ class PrayerAlarmService : Service() {
         return START_NOT_STICKY
     }
 
+    private var isMuted = false
+
+    private fun setMutedInternal(muted: Boolean) {
+        isMuted = muted
+        audioPlayer.setVolume(if (muted) 0f else 1f)
+    }
+
     private fun stopAzanInternal() {
+        audioPlayer.setVolume(1f)
         audioPlayer.stop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
@@ -138,6 +146,9 @@ class PrayerAlarmService : Service() {
             val selectedMoazen = settingsRepository.observeSelectedMoazen().first()
                 .removeSuffix(".mp3")
             audioPlayer.play(AudioSource.LocalResource(selectedMoazen))
+            if (isMuted) {
+                audioPlayer.setVolume(0f)
+            }
         }
 
         serviceScope.launch {
@@ -151,6 +162,7 @@ class PrayerAlarmService : Service() {
 
     override fun onDestroy() {
         instance = null
+        audioPlayer.setVolume(1f)
         audioPlayer.release()
         serviceScope.cancel()
         super.onDestroy()
@@ -175,6 +187,10 @@ class PrayerAlarmService : Service() {
 
         fun stopAzan() {
             instance?.stopAzanInternal()
+        }
+
+        fun setMuted(muted: Boolean) {
+            instance?.setMutedInternal(muted)
         }
     }
 }

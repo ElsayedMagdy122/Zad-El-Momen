@@ -44,6 +44,12 @@ interface AudioPlayer {
     fun seekTo(positionMs: Long)
 
     /**
+     * Sets the player volume.
+     * @param volume Volume level from 0.0 (silent) to 1.0 (max).
+     */
+    fun setVolume(volume: Float)
+
+    /**
      * Releases system resources held by the player.
      */
     fun release()
