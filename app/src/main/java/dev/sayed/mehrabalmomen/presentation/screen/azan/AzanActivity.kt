@@ -85,7 +85,10 @@ class AzanActivity : ComponentActivity() {
                         state = state,
                         onDismiss = { stopAzanAndFinish() },
                         onOpenApp = { openMainActivity() },
-                        onToggleMute = { azanViewModel.toggleMute() }
+                        onToggleMute = {
+                            val isMuted = azanViewModel.toggleMute()
+                            PrayerAlarmService.setMuted(isMuted)
+                        }
                     )
                 }
             }

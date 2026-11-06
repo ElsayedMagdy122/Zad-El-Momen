@@ -2,7 +2,9 @@ package dev.sayed.mehrabalmomen.presentation.screen.azan
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +14,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.util.Calendar
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 data class AzanUiState(
     val prayerName: Prayer.PrayerName = Prayer.PrayerName.ZUHR,
@@ -29,8 +35,10 @@ data class AzanUiState(
     val isMuted: Boolean = false
 )
 
+@OptIn(ExperimentalTime::class)
 class AzanViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val prayerRepository: PrayerRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AzanUiState())
@@ -70,26 +78,57 @@ class AzanViewModel(
     }
 
     fun setPrayerInfo(prayerName: Prayer.PrayerName, prayerTimeMillis: Long) {
-        val formatted = formatTime(prayerTimeMillis)
-        val nextPrayer = getNextPrayerEnum(prayerName)
-        val nextTimeMillis = prayerTimeMillis + (3 * 60 * 60 * 1000L) + (28 * 60 * 1000L)
-        val nextFormatted = formatTime(nextTimeMillis)
+        val baseMillis = if (prayerTimeMillis > 0L) prayerTimeMillis else System.currentTimeMillis()
+        val formatted = formatTime(baseMillis)
 
         _state.update {
             it.copy(
                 prayerName = prayerName,
-                prayerTimeMillis = prayerTimeMillis,
+                prayerTimeMillis = baseMillis,
                 prayerTimeFormatted = formatted.first,
-                isAm = formatted.second,
-                nextPrayerName = nextPrayer,
-                nextPrayerTimeFormatted = nextFormatted.first,
-                nextPrayerIsAm = nextFormatted.second
+                isAm = formatted.second
             )
+        }
+
+        viewModelScope.launch {
+            try {
+                val appSettings = settingsRepository.observeAppSettings().first()
+                val prayerSettings = appSettings.prayerSettings
+                val currentInstant = Instant.fromEpochMilliseconds(baseMillis + 1000L)
+                val date = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+                val nextPrayer = prayerRepository.getNextPrayer(
+                    instant = currentInstant,
+                    madhab = prayerSettings.madhab,
+                    calculationMethod = prayerSettings.calculationMethod,
+                    location = Location(
+                        latitude = prayerSettings.location.latitude,
+                        longitude = prayerSettings.location.longitude
+                    ),
+                    date = date
+                )
+
+                val nextTimeMillis = nextPrayer.time.toEpochMilliseconds()
+                val nextFormatted = formatTime(nextTimeMillis)
+
+                _state.update {
+                    it.copy(
+                        nextPrayerName = nextPrayer.name,
+                        nextPrayerTimeFormatted = nextFormatted.first,
+                        nextPrayerIsAm = nextFormatted.second
+                    )
+                }
+            } catch (_: Exception) {
+                val fallbackNext = getNextPrayerEnum(prayerName)
+                _state.update { it.copy(nextPrayerName = fallbackNext) }
+            }
         }
     }
 
-    fun toggleMute() {
-        _state.update { it.copy(isMuted = !it.isMuted) }
+    fun toggleMute(): Boolean {
+        val newMuteState = !_state.value.isMuted
+        _state.update { it.copy(isMuted = newMuteState) }
+        return newMuteState
     }
 
     private fun getNextPrayerEnum(current: Prayer.PrayerName): Prayer.PrayerName = when (current) {

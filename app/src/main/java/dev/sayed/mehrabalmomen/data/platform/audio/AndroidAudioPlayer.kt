@@ -136,6 +136,11 @@ class AndroidAudioPlayer(
         _playerState.update { it.copy(currentPositionMs = positionMs) }
     }
 
+    override fun setVolume(volume: Float) {
+        if (isReleased) return
+        exoPlayer.volume = volume.coerceIn(0f, 1f)
+    }
+
     override fun release() {
         if (isReleased) return
         isReleased = true
