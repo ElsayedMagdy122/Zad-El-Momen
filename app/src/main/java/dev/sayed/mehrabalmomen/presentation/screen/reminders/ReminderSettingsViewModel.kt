@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.reminders
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.model.RecurrencePattern
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
+import dev.sayed.mehrabalmomen.domain.model.ReminderType
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -48,6 +49,7 @@ class ReminderSettingsViewModel(
             it.copy(
                 isBottomSheetOpen = true,
                 editingReminderId = null,
+                isEditingPrePrayer = false,
                 reminderTitle = "",
                 reminderDescription = "",
                 reminderHour = now.get(Calendar.HOUR_OF_DAY),
@@ -63,6 +65,7 @@ class ReminderSettingsViewModel(
             it.copy(
                 isBottomSheetOpen = true,
                 editingReminderId = reminder.id,
+                isEditingPrePrayer = reminder.type == ReminderType.BEFORE_PRAYER,
                 reminderTitle = reminder.title,
                 reminderDescription = reminder.description,
                 reminderHour = reminder.hour,
@@ -77,7 +80,8 @@ class ReminderSettingsViewModel(
         updateState {
             it.copy(
                 isBottomSheetOpen = false,
-                editingReminderId = null
+                editingReminderId = null,
+                isEditingPrePrayer = false
             )
         }
     }
@@ -108,13 +112,23 @@ class ReminderSettingsViewModel(
         }
     }
 
+    fun onPrePrayerDurationSelected(minutes: Int) {
+        updateState {
+            it.copy(reminderMinute = minutes)
+        }
+    }
+
     fun onRecurrenceSelected(recurrence: RecurrencePattern) {
         updateState { it.copy(reminderRecurrence = recurrence) }
     }
 
     fun onSaveReminder() {
         val current = screenState.value
-        val title = current.reminderTitle.trim()
+        val title = if (current.isEditingPrePrayer) {
+            if (current.reminderTitle.isBlank()) "التنبيه قبل الصلاة" else current.reminderTitle
+        } else {
+            current.reminderTitle.trim()
+        }
         if (title.isBlank()) return
 
         viewModelScope.launch {
@@ -126,11 +140,11 @@ class ReminderSettingsViewModel(
                 id = current.editingReminderId ?: 0L,
                 title = title,
                 description = current.reminderDescription.trim(),
-                hour = current.reminderHour,
+                hour = if (current.isEditingPrePrayer) 0 else current.reminderHour,
                 minute = current.reminderMinute,
-                recurrence = current.reminderRecurrence,
+                recurrence = if (current.isEditingPrePrayer) RecurrencePattern.DAILY else current.reminderRecurrence,
                 isEnabled = existingReminder?.isEnabled ?: true,
-                type = existingReminder?.type
+                type = existingReminder?.type ?: if (current.isEditingPrePrayer) ReminderType.BEFORE_PRAYER else null
             )
 
             settingsRepository.saveReminder(config)
@@ -138,7 +152,8 @@ class ReminderSettingsViewModel(
             updateState {
                 it.copy(
                     isBottomSheetOpen = false,
-                    editingReminderId = null
+                    editingReminderId = null,
+                    isEditingPrePrayer = false
                 )
             }
         }

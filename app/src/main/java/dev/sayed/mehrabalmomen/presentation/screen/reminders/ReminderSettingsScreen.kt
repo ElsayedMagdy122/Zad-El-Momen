@@ -43,6 +43,7 @@ import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
+import dev.sayed.mehrabalmomen.domain.model.ReminderType
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.StateMessage
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.AddReminderBottomSheet
@@ -106,9 +107,10 @@ fun ReminderSettingsScreen(
                             items = state.reminders,
                             key = { it.id }
                         ) { reminder ->
+                            val canDelete = reminder.type != ReminderType.BEFORE_PRAYER
                             val dismissState = rememberSwipeToDismissBoxState(
                                 confirmValueChange = { dismissValue ->
-                                    if (dismissValue == SwipeToDismissBoxValue.EndToStart) {
+                                    if (canDelete && dismissValue == SwipeToDismissBoxValue.EndToStart) {
                                         pendingDeleteItem = reminder
                                         false
                                     } else false
@@ -118,27 +120,29 @@ fun ReminderSettingsScreen(
                             SwipeToDismissBox(
                                 state = dismissState,
                                 enableDismissFromStartToEnd = false,
-                                enableDismissFromEndToStart = true,
+                                enableDismissFromEndToStart = canDelete,
                                 backgroundContent = {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical = 6.dp)
-                                            .clip(RoundedCornerShape(16.dp))
-                                            .background(
-                                                if (Theme.isDark) Theme.color.semantic.error.copy(alpha = 0.2f)
-                                                else Color(0xFFFEE4E2)
-                                            ),
-                                        contentAlignment = Alignment.CenterEnd
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_trash),
-                                            contentDescription = "حذف التنبيه",
-                                            tint = Theme.color.semantic.error,
+                                    if (canDelete) {
+                                        Box(
                                             modifier = Modifier
-                                                .padding(end = 16.dp)
-                                                .size(22.dp)
-                                        )
+                                                .fillMaxSize()
+                                                .padding(vertical = 6.dp)
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(
+                                                    if (Theme.isDark) Theme.color.semantic.error.copy(alpha = 0.2f)
+                                                    else Color(0xFFFEE4E2)
+                                                ),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.ic_trash),
+                                                contentDescription = "حذف التنبيه",
+                                                tint = Theme.color.semantic.error,
+                                                modifier = Modifier
+                                                    .padding(end = 16.dp)
+                                                    .size(22.dp)
+                                            )
+                                        }
                                     }
                                 }
                             ) {
@@ -201,7 +205,9 @@ fun ReminderSettingsScreen(
             onRecurrenceSelect = viewModel::onRecurrenceSelected,
             onSaveClick = viewModel::onSaveReminder,
             onDismiss = viewModel::onCloseBottomSheet,
-            isEditMode = state.editingReminderId != null
+            isEditMode = state.editingReminderId != null,
+            isPrePrayerMode = state.isEditingPrePrayer,
+            onMinuteChange = viewModel::onPrePrayerDurationSelected
         )
     }
 

@@ -50,7 +50,9 @@ fun AddReminderBottomSheet(
     onSaveClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    isEditMode: Boolean = false
+    isEditMode: Boolean = false,
+    isPrePrayerMode: Boolean = false,
+    onMinuteChange: ((Int) -> Unit)? = null
 ) {
     val language = LocalAppLocale.current
 
@@ -77,27 +79,33 @@ fun AddReminderBottomSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isEditMode) "تعديل التنبيه" else "إضافة تنبيه جديد",
+                text = when {
+                    isPrePrayerMode -> "تعديل التنبيه قبل الصلاة"
+                    isEditMode -> "تعديل التنبيه"
+                    else -> "إضافة تنبيه جديد"
+                },
                 style = Theme.textStyle.title.medium,
                 color = Theme.color.primary.primary,
                 fontWeight = FontWeight.Bold
             )
 
-            // Title input matching design: "اسم التذكير"
-            AppTextField(
-                value = title,
-                hint = "أذكار الصباح",
-                onValueChanged = onTitleChange,
-                title = "اسم التذكير",
-                containerColor = Theme.color.surfaces.surfaceLow,
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (!isPrePrayerMode) {
+                // Title input matching design: "اسم التذكير"
+                AppTextField(
+                    value = title,
+                    hint = "أذكار الصباح",
+                    onValueChanged = onTitleChange,
+                    title = "اسم التذكير",
+                    containerColor = Theme.color.surfaces.surfaceLow,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             // Description input matching design: "نص التنبيه"
             AppTextField(
                 value = description,
-                hint = "لا تنسَ أذكار الصباح والتحصين",
+                hint = if (isPrePrayerMode) "اقترب موعد الأذان، استعد للوضوء والصلاة" else "لا تنسَ أذكار الصباح والتحصين",
                 onValueChanged = onDescriptionChange,
                 title = "نص التنبيه",
                 containerColor = Theme.color.surfaces.surfaceLow,
@@ -105,75 +113,107 @@ fun AddReminderBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Time Selector Card
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Theme.color.surfaces.surfaceLow)
-                    .clickable { onTimeClick() }
-                    .padding(14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Theme.color.primary.primary.copy(alpha = 0.12f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_reminder),
-                            contentDescription = null,
-                            tint = Theme.color.primary.primary,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
+            if (isPrePrayerMode) {
+                // Duration selection for pre-prayer: 5, 10, 15, 20 minutes
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "وقت التنبيه",
+                        text = "التنبيه قبل الأذان بـ",
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.primary.shadePrimary
                     )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        val durationOptions = listOf(
+                            5 to "٥ دقائق",
+                            10 to "١٠ دقائق",
+                            15 to "١٥ دقيقة",
+                            20 to "٢٠ دقيقة"
+                        )
+
+                        durationOptions.forEach { (mins, label) ->
+                            Chip(
+                                text = label,
+                                isSelected = minute == mins,
+                                onClick = { onMinuteChange?.invoke(mins) },
+                                shape = RoundedCornerShape(100.dp),
+                                textStyle = Theme.textStyle.label.medium
+                            )
+                        }
+                    }
+                }
+            } else {
+                // Time Selector Card
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Theme.color.surfaces.surfaceLow)
+                        .clickable { onTimeClick() }
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Theme.color.primary.primary.copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_reminder),
+                                contentDescription = null,
+                                tint = Theme.color.primary.primary,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                        Text(
+                            text = "وقت التنبيه",
+                            style = Theme.textStyle.label.medium,
+                            color = Theme.color.primary.shadePrimary
+                        )
+                    }
+
+                    Text(
+                        text = formattedTime,
+                        style = Theme.textStyle.title.medium,
+                        color = Theme.color.primary.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
-                Text(
-                    text = formattedTime,
-                    style = Theme.textStyle.title.medium,
-                    color = Theme.color.primary.primary,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            // Recurrence Chips
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = "التكرار",
-                    style = Theme.textStyle.label.medium,
-                    color = Theme.color.primary.shadePrimary
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val recurrenceOptions = listOf(
-                        RecurrencePattern.DAILY to "يومي",
-                        RecurrencePattern.WEEKLY to "أسبوعي",
-                        RecurrencePattern.ONCE to "مرة واحدة"
+                // Recurrence Chips
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "التكرار",
+                        style = Theme.textStyle.label.medium,
+                        color = Theme.color.primary.shadePrimary
                     )
 
-                    recurrenceOptions.forEach { (pattern, label) ->
-                        Chip(
-                            text = label,
-                            isSelected = selectedRecurrence == pattern,
-                            onClick = { onRecurrenceSelect(pattern) },
-                            shape = RoundedCornerShape(100.dp),
-                            textStyle = Theme.textStyle.label.medium
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        val recurrenceOptions = listOf(
+                            RecurrencePattern.DAILY to "يومي",
+                            RecurrencePattern.WEEKLY to "أسبوعي",
+                            RecurrencePattern.ONCE to "مرة واحدة"
                         )
+
+                        recurrenceOptions.forEach { (pattern, label) ->
+                            Chip(
+                                text = label,
+                                isSelected = selectedRecurrence == pattern,
+                                onClick = { onRecurrenceSelect(pattern) },
+                                shape = RoundedCornerShape(100.dp),
+                                textStyle = Theme.textStyle.label.medium
+                            )
+                        }
                     }
                 }
             }
@@ -183,7 +223,7 @@ fun AddReminderBottomSheet(
             PrimaryButton(
                 text = localizedString(R.string.save),
                 onClick = onSaveClick,
-                isEnabled = title.isNotBlank(),
+                isEnabled = if (isPrePrayerMode) description.isNotBlank() else title.isNotBlank(),
                 modifier = Modifier.fillMaxWidth()
             )
         }

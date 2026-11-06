@@ -7,6 +7,7 @@ data class ReminderUiState(
     val reminders: List<ReminderConfig> = emptyList(),
     val isBottomSheetOpen: Boolean = false,
     val editingReminderId: Long? = null,
+    val isEditingPrePrayer: Boolean = false,
     val reminderTitle: String = "",
     val reminderDescription: String = "",
     val reminderHour: Int = 8,

@@ -86,7 +86,18 @@ fun ReminderItem(
 
     val icon = getReminderIcon(config)
     val title = getReminderTitle(config)
-    val recurrenceLabel = getRecurrenceText(config.recurrence)
+    val recurrenceLabel = if (config.type == ReminderType.BEFORE_PRAYER) {
+        "كل صلاة"
+    } else {
+        getRecurrenceText(config.recurrence)
+    }
+
+    val timeBadgeText = if (config.type == ReminderType.BEFORE_PRAYER) {
+        val duration = config.minute.coerceAtLeast(1)
+        "قبل الأذان بـ $duration دقيقة".toLocalizedDigits(language)
+    } else {
+        formattedTime
+    }
 
     val descriptionText = config.description.ifBlank {
         when (config.type) {
@@ -94,6 +105,7 @@ fun ReminderItem(
             ReminderType.EVENING_AZKAR -> "لا تنس أذكار المساء لحفظك ونور صدرك"
             ReminderType.DAILY_WORD -> "حان وقت وردك القرآني اليومي"
             ReminderType.FRIDAY_SUNNAN -> "سنن الجمعة وقراءة سورة الكهف والصلاة على النبي"
+            ReminderType.BEFORE_PRAYER -> "اقترب موعد الأذان، استعد للوضوء والصلاة"
             null -> ""
         }
     }
@@ -183,7 +195,7 @@ fun ReminderItem(
                     modifier = Modifier.size(16.dp)
                 )
                 Text(
-                    text = formattedTime,
+                    text = timeBadgeText,
                     color = Theme.color.secondary.shadeSecondary,
                     style = Theme.textStyle.label.small
                 )
@@ -379,6 +391,21 @@ private fun ReminderItemPreview() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            ReminderItem(
+                config = ReminderConfig(
+                    id = 0L,
+                    title = "التنبيه قبل الصلاة",
+                    description = "اقترب موعد الأذان، استعد للوضوء والصلاة",
+                    hour = 0,
+                    minute = 15,
+                    recurrence = RecurrencePattern.DAILY,
+                    isEnabled = true,
+                    type = ReminderType.BEFORE_PRAYER
+                ),
+                onToggle = {},
+                onEditClick = {}
+            )
+
             ReminderItem(
                 config = ReminderConfig(
                     id = 1L,
