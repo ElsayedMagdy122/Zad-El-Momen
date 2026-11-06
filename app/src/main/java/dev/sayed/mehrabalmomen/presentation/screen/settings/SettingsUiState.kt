@@ -99,7 +99,8 @@ data class SettingsUiState(
         FAQ,
         PRIVACY_POLICY,
         CONTACT_US,
-        COMPANION
+        COMPANION,
+        WIDGET
     }
 
     enum class QuranFontSize(val resId: Int, val sizeSp: Int) {

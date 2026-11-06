@@ -21,6 +21,7 @@ class BootReceiver : BroadcastReceiver() {
                 prayerUseCase.rescheduleTodayPrayerAlarms()
                 val reminderScheduler = GlobalContext.get().get<ReminderSchedulerRepository>()
                 reminderScheduler.rescheduleAll()
+                dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(context)
             } finally {
                 pendingResult.finish()
             }

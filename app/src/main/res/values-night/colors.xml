@@ -2,4 +2,12 @@
 <resources>
     <color name="splash_bg">#000000</color>
     <color name="surface">#FF000000</color>
+    <!-- Widget Colors Dark Mode -->
+    <color name="widget_card_bg">#FF0E1017</color>
+    <color name="widget_card_stroke">#FF2A2520</color>
+    <color name="widget_text_secondary">#FFC5A059</color>
+    <color name="widget_text_primary">#FFE6D2B5</color>
+    <color name="widget_text_header">#FFBEC0CC</color>
+    <color name="widget_item_highlight_bg">#2EC5A059</color>
+    <color name="widget_item_highlight_stroke">#99C5A059</color>
 </resources>
