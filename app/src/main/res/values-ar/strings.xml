@@ -462,4 +462,10 @@
     <string name="hour">الساعة</string>
     <string name="minute">الدقيقة</string>
     <string name="period">الفترة</string>
+    <string name="prayer_times_widget">ويدجت مواقيت الصلاة</string>
+    <string name="prayer_widget_desc">عرض مواقيت الصلاة اليومية على الشاشة الرئيسية</string>
+    <string name="widget_pin_success">تمت إضافة ويدجت مواقيت الصلاة إلى الشاشة الرئيسية</string>
+    <string name="widget_pin_manual_guide">لإضافة الويدجت، اضغط مطولاً على الشاشة الرئيسية، ثم اختر التطبيقات المصغرة (Widgets) واختَر زاد المؤمن.</string>
+    <string name="next_prayer">الصلاة القادمة</string>
+    <string name="set_location_to_view_prayers">اضغط لتحديد الموقع وعرض مواقيت الصلاة</string>
 </resources>

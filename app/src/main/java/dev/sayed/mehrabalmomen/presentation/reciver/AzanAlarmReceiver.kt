@@ -67,5 +67,8 @@ class AzanAlarmReceiver : BroadcastReceiver() {
         } else {
             context.startService(serviceIntent)
         }
+
+        // 4. Update prayer widget to highlight next prayer
+        dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(context)
     }
 }
