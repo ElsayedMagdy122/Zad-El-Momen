@@ -12,4 +12,5 @@ sealed interface SettingsEffect {
     data object NavigateToPrivacy : SettingsEffect
     data object NavigateToContactUs : SettingsEffect
     data object NavigateToNotifications : SettingsEffect
+    data object RequestPinWidget : SettingsEffect
 }

@@ -143,9 +143,9 @@ private fun PreviewBottomNavigationBar() {
                 unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
             ),
             NavItem(
-                title = "Prayer Times",
-                selectedIcon = painterResource(R.drawable.ic_prayer_times_selected),
-                unselectedIcon = painterResource(R.drawable.ic_prayer_times_not_selected)
+                title = "Azan",
+                selectedIcon = painterResource(R.drawable.ic_azan_selected),
+                unselectedIcon = painterResource(R.drawable.ic_azan_not_selected)
             ),
             NavItem(
                 title = "Radio",

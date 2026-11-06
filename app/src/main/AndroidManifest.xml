@@ -85,6 +85,22 @@
             android:name=".presentation.reciver.ReminderAlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <receiver
+            android:name=".presentation.widget.PrayerTimesWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.sayed.mehrabalmomen.action.REFRESH_PRAYER_WIDGET" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prayer_times_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".presentation.widget.PrayerTimesWidgetPinReceiver"
+            android:exported="false" />
         <service
             android:name=".presentation.service.MyFirebaseMessagingService"
             android:exported="false">

@@ -147,6 +147,9 @@ class SettingsViewModel(
                 }
                 rebuildSections()
                 prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+                org.koin.core.context.GlobalContext.getOrNull()?.get<Context>()?.let { appContext ->
+                    dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(appContext)
+                }
             }
         }
     }
@@ -281,6 +284,12 @@ class SettingsViewModel(
                         title = UiText.StringResource(R.string.moazen),
                         description = getMoazenName(state.selectedMoazen),
                         action = SettingsUiState.SettingsAction.MOAZEN
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_prayer_times_selected,
+                        title = UiText.StringResource(R.string.prayer_times_widget),
+                        description = UiText.StringResource(R.string.prayer_widget_desc),
+                        action = SettingsUiState.SettingsAction.WIDGET
                     )
                 )
             ),
@@ -540,6 +549,7 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
             SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
             SettingsUiState.SettingsAction.COMPANION -> toggleCompanion()
+            SettingsUiState.SettingsAction.WIDGET -> sendEffect(SettingsEffect.RequestPinWidget)
             else -> {}
         }
     }

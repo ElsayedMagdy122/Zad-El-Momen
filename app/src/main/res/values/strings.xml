@@ -450,4 +450,10 @@
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
     <string name="period">Period</string>
+    <string name="prayer_times_widget">Prayer Times Widget</string>
+    <string name="prayer_widget_desc">Display daily prayer times on the home screen</string>
+    <string name="widget_pin_success">Prayer times widget added to home screen</string>
+    <string name="widget_pin_manual_guide">To add the widget, long press on your home screen, select Widgets, and choose Zad Al-Mu\'min.</string>
+    <string name="next_prayer">Next Prayer</string>
+    <string name="set_location_to_view_prayers">Tap to set location and view prayer times</string>
 </resources>
