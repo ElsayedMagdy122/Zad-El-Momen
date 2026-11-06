@@ -3,26 +3,26 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_background">
+    android:background="@drawable/widget_background"
+    android:layoutDirection="rtl">
 
-    <!-- 1. Background Art: Mosque Silhouette in Top-End Corner -->
+    <!-- 1. Background Artwork: Mosque Silhouette at Top-End (Left in RTL) -->
     <ImageView
         android:id="@+id/iv_widget_mosque_bg"
-        android:layout_width="140dp"
-        android:layout_height="90dp"
+        android:layout_width="135dp"
+        android:layout_height="85dp"
         android:layout_gravity="top|end"
         android:alpha="0.85"
         android:contentDescription="@null"
         android:scaleType="fitEnd"
         android:src="@drawable/ic_mosque_light_bg" />
 
-    <!-- 2. Background Art: Mosque Column on the Start -->
+    <!-- 2. Background Artwork: Mosque Column at Center-Start (Right in RTL) -->
     <ImageView
-        android:layout_width="20dp"
+        android:layout_width="22dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical|start"
-        android:layout_marginStart="14dp"
-        android:alpha="0.35"
+        android:layout_marginStart="18dp"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/mosque_column" />
@@ -36,9 +36,9 @@
         android:paddingStart="12dp"
         android:paddingTop="10dp"
         android:paddingEnd="12dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="6dp">
 
-        <!-- Header: Hijri Date on Start & Next Prayer Summary on End -->
+        <!-- Header: Hijri Date on Start & Next Prayer on End -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <!-- Prayers Row (5 Equal Columns) -->
+        <!-- Prayers Row (5 Equal Columns without vertical borders or box highlights) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -99,12 +99,10 @@
                 android:id="@+id/container_fajr"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/widget_item_normal"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="3dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="2dp">
 
                 <TextView
@@ -112,16 +110,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_time_fajr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="3dp"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -129,13 +127,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/iv_indicator_fajr"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_triangle_down"
                     android:visibility="invisible" />
@@ -146,12 +144,10 @@
                 android:id="@+id/container_dhuhr"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/widget_item_normal"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="3dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="2dp">
 
                 <TextView
@@ -159,16 +155,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_time_dhuhr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="3dp"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -176,13 +172,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/iv_indicator_dhuhr"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_triangle_down"
                     android:visibility="invisible" />
@@ -193,12 +189,10 @@
                 android:id="@+id/container_asr"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/widget_item_normal"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="3dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="2dp">
 
                 <TextView
@@ -206,16 +200,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_time_asr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="3dp"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -223,13 +217,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/iv_indicator_asr"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_triangle_down"
                     android:visibility="invisible" />
@@ -240,12 +234,10 @@
                 android:id="@+id/container_maghrib"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/widget_item_normal"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="3dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="2dp">
 
                 <TextView
@@ -253,16 +245,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_time_maghrib"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="3dp"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -270,13 +262,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/iv_indicator_maghrib"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_triangle_down"
                     android:visibility="invisible" />
@@ -287,12 +279,10 @@
                 android:id="@+id/container_isha"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="2dp"
                 android:layout_weight="1"
-                android:background="@drawable/widget_item_normal"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="3dp"
+                android:paddingTop="2dp"
                 android:paddingBottom="2dp">
 
                 <TextView
@@ -300,16 +290,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_time_isha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="3dp"
                     android:textColor="@color/widget_text_primary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -317,13 +307,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/widget_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/iv_indicator_isha"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_marginTop="1dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_triangle_down"
                     android:visibility="invisible" />

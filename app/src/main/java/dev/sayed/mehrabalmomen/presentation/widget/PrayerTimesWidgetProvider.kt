@@ -68,7 +68,24 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-        val views = RemoteViews(context.packageName, R.layout.widget_prayer_times)
+        val koin = GlobalContext.getOrNull()
+        if (koin == null) return
+
+        val settingsRepository = koin.get<SettingsRepository>()
+        val prayerRepository = koin.get<PrayerRepository>()
+
+        val appSettings = settingsRepository.observeAppSettings().first()
+        val prayerSettings = appSettings.prayerSettings
+        val location = prayerSettings.location
+        val language = appSettings.language
+
+        // Choose layout direction matching app language (RTL for Arabic, LTR for English)
+        val layoutRes = if (language == AppSettings.Language.ARABIC) {
+            R.layout.widget_prayer_times
+        } else {
+            R.layout.widget_prayer_times_ltr
+        }
+        val views = RemoteViews(context.packageName, layoutRes)
 
         // PendingIntent to launch MainActivity when clicking the widget
         val mainIntent = Intent(context, MainActivity::class.java).apply {
@@ -86,20 +103,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
         val isNightMode = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         val mosqueBgRes = if (isNightMode) R.drawable.ic_mosque_dark_bg else R.drawable.ic_mosque_light_bg
         views.setImageViewResource(R.id.iv_widget_mosque_bg, mosqueBgRes)
-
-        val koin = GlobalContext.getOrNull()
-        if (koin == null) {
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-            return
-        }
-
-        val settingsRepository = koin.get<SettingsRepository>()
-        val prayerRepository = koin.get<PrayerRepository>()
-
-        val appSettings = settingsRepository.observeAppSettings().first()
-        val prayerSettings = appSettings.prayerSettings
-        val location = prayerSettings.location
-        val language = appSettings.language
 
         // Create localized Context according to the app's selected language
         val locale = Locale(language.code)
@@ -154,7 +157,7 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
             "${localizedContext.getString(R.string.next_prayer)}: $nextPrayerName"
         )
 
-        // 3. Bind 5 Prayers with full localization of names, times, and صباحًا/مساءً (AM/PM)
+        // 3. Bind 5 Prayers with full localization and small downward triangle indicator only
         for (prayer in dailyPrayers) {
             val isNext = prayer.name == nextPrayer.name
             val formatted = format(prayer.time, timeZone)
@@ -166,11 +169,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
                     views.setTextViewText(R.id.tv_name_fajr, localizedContext.getString(R.string.fajr))
                     views.setTextViewText(R.id.tv_time_fajr, timeText)
                     views.setTextViewText(R.id.tv_ampm_fajr, amPmText)
-                    views.setInt(
-                        R.id.container_fajr,
-                        "setBackgroundResource",
-                        if (isNext) R.drawable.widget_item_highlight else R.drawable.widget_item_normal
-                    )
                     views.setViewVisibility(
                         R.id.iv_indicator_fajr,
                         if (isNext) View.VISIBLE else View.INVISIBLE
@@ -180,11 +178,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
                     views.setTextViewText(R.id.tv_name_dhuhr, localizedContext.getString(R.string.dhuhr))
                     views.setTextViewText(R.id.tv_time_dhuhr, timeText)
                     views.setTextViewText(R.id.tv_ampm_dhuhr, amPmText)
-                    views.setInt(
-                        R.id.container_dhuhr,
-                        "setBackgroundResource",
-                        if (isNext) R.drawable.widget_item_highlight else R.drawable.widget_item_normal
-                    )
                     views.setViewVisibility(
                         R.id.iv_indicator_dhuhr,
                         if (isNext) View.VISIBLE else View.INVISIBLE
@@ -194,11 +187,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
                     views.setTextViewText(R.id.tv_name_asr, localizedContext.getString(R.string.asr))
                     views.setTextViewText(R.id.tv_time_asr, timeText)
                     views.setTextViewText(R.id.tv_ampm_asr, amPmText)
-                    views.setInt(
-                        R.id.container_asr,
-                        "setBackgroundResource",
-                        if (isNext) R.drawable.widget_item_highlight else R.drawable.widget_item_normal
-                    )
                     views.setViewVisibility(
                         R.id.iv_indicator_asr,
                         if (isNext) View.VISIBLE else View.INVISIBLE
@@ -208,11 +196,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
                     views.setTextViewText(R.id.tv_name_maghrib, localizedContext.getString(R.string.maghrib))
                     views.setTextViewText(R.id.tv_time_maghrib, timeText)
                     views.setTextViewText(R.id.tv_ampm_maghrib, amPmText)
-                    views.setInt(
-                        R.id.container_maghrib,
-                        "setBackgroundResource",
-                        if (isNext) R.drawable.widget_item_highlight else R.drawable.widget_item_normal
-                    )
                     views.setViewVisibility(
                         R.id.iv_indicator_maghrib,
                         if (isNext) View.VISIBLE else View.INVISIBLE
@@ -222,11 +205,6 @@ class PrayerTimesWidgetProvider : AppWidgetProvider() {
                     views.setTextViewText(R.id.tv_name_isha, localizedContext.getString(R.string.isha))
                     views.setTextViewText(R.id.tv_time_isha, timeText)
                     views.setTextViewText(R.id.tv_ampm_isha, amPmText)
-                    views.setInt(
-                        R.id.container_isha,
-                        "setBackgroundResource",
-                        if (isNext) R.drawable.widget_item_highlight else R.drawable.widget_item_normal
-                    )
                     views.setViewVisibility(
                         R.id.iv_indicator_isha,
                         if (isNext) View.VISIBLE else View.INVISIBLE
