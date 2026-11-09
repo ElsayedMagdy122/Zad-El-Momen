@@ -29,7 +29,7 @@ fun SurahAppBarSection(
         titleColor = Theme.color.primary.shadePrimary,
         actions = listOf(
             AppBarAction(
-                icon = painterResource(R.drawable.ic_tilawah),
+                icon = painterResource(R.drawable.ic_mic),
                 onClick = onTasmee3
             ),
             AppBarAction(

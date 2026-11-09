@@ -7,42 +7,26 @@ import dev.sayed.mehrabalmomen.data.recitation.audio.AudioPipeline
 import dev.sayed.mehrabalmomen.data.recitation.data.QuranRepository
 import dev.sayed.mehrabalmomen.data.recitation.data.QuranVerse
 import dev.sayed.mehrabalmomen.data.recitation.engine.AsrTokenProcessor
+import dev.sayed.mehrabalmomen.data.recitation.engine.ModelDownloadState
+import dev.sayed.mehrabalmomen.data.recitation.engine.RecitationModelDownloader
 import dev.sayed.mehrabalmomen.data.recitation.engine.SherpaEngine
 import dev.sayed.mehrabalmomen.data.recitation.tracking.DictationSequencer
-import dev.sayed.mehrabalmomen.data.recitation.tracking.MatchingStrictness
-import dev.sayed.mehrabalmomen.data.recitation.tracking.TrackerConfig
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
-
-enum class WordStatus {
-    UNSPOKEN, GREEN, RED, YELLOW, NEUTRAL
-}
-
-data class RecitationUiState(
-    val isRecording: Boolean = false,
-    val isLoading: Boolean = false,
-    val targetSurah: Int = 1,
-    val surahName: String = "",
-    val verses: List<QuranVerse> = emptyList(),
-    val wordStatuses: Map<Int, WordStatus> = emptyMap(),
-    val wordMistakes: Map<Int, List<ReciterMistake>> = emptyMap(),
-    val selectedWordFeedback: Pair<String, List<ReciterMistake>>? = null,
-    val activeWordCursor: Int = 0,
-    val recognizedText: String = "",
-    val isTajweedEnabled: Boolean = true,
-    val lastEvaluatedWordInfo: String = ""
-)
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationUiState
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
 
 /**
  * State Management ViewModel for AI Quran Recitation and Tajweed Verification.
  * Strictly adheres to speech-synchronous word revealing and omission tracking.
  */
 class HighlightingViewModel(
-    application: Application
+    application: Application,
+    private val modelDownloader: RecitationModelDownloader
 ) : AndroidViewModel(application) {
 
     private val audioPipeline = AudioPipeline()
@@ -91,20 +75,117 @@ class HighlightingViewModel(
 
     private var lastProcessedText = ""
     private var isExpectingNewSegment = false
-    private val initDeferred = kotlinx.coroutines.CompletableDeferred<Unit>()
+    private val initDeferred = CompletableDeferred<Unit>()
 
     init {
+        observeDownloadState()
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { it.copy(isLoading = true) }
             try {
+                if (!modelDownloader.isModelReady()) {
+                    _uiState.update { it.copy(showDownloadDialog = true, isLoading = false) }
+                    quranRepository.loadData()
+                    initDeferred.complete(Unit)
+                    return@launch
+                }
                 sherpaEngine.initialize()
                 quranRepository.loadData()
             } finally {
+                _uiState.update { it.copy(isLoading = false) }
                 initDeferred.complete(Unit)
             }
         }
         observeAudioStream()
         observeAsrStream()
+    }
+
+    private fun observeDownloadState() {
+        viewModelScope.launch {
+            modelDownloader.downloadState.collect { state ->
+                when (state) {
+                    is ModelDownloadState.Downloading -> {
+                        _uiState.update {
+                            it.copy(
+                                isDownloadingModel = true,
+                                isProcessingModel = false,
+                                downloadProgress = state.progress,
+                                downloadFileStatus = state.currentFile,
+                                downloadError = null
+                            )
+                        }
+                    }
+                    is ModelDownloadState.Processing -> {
+                        _uiState.update {
+                            it.copy(
+                                isDownloadingModel = false,
+                                isProcessingModel = true,
+                                downloadFileStatus = state.message,
+                                downloadError = null
+                            )
+                        }
+                    }
+                    is ModelDownloadState.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isDownloadingModel = false,
+                                isProcessingModel = false,
+                                downloadError = state.message
+                            )
+                        }
+                    }
+                    is ModelDownloadState.Ready -> {
+                        _uiState.update {
+                            it.copy(
+                                isDownloadingModel = false,
+                                isProcessingModel = false,
+                                showDownloadDialog = false,
+                                downloadError = null
+                            )
+                        }
+                        sherpaEngine.initialize()
+                        quranRepository.loadData()
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    fun startModelDownload() {
+        _uiState.update { it.copy(isDownloadingModel = true, downloadError = null) }
+        try {
+            dev.sayed.mehrabalmomen.data.recitation.engine.RecitationDownloadService.start(getApplication())
+        } catch (e: Exception) {
+            viewModelScope.launch(Dispatchers.IO) {
+                val success = modelDownloader.downloadAndPrepareModels()
+                if (success) {
+                    _uiState.update { it.copy(isDownloadingModel = false, showDownloadDialog = false) }
+                    sherpaEngine.initialize()
+                    quranRepository.loadData()
+                }
+            }
+        }
+    }
+
+    fun retryDownload() {
+        startModelDownload()
+    }
+
+    fun dismissDownloadDialog() {
+        cancelDownload()
+    }
+
+    fun cancelDownload() {
+        dev.sayed.mehrabalmomen.data.recitation.engine.RecitationDownloadService.stop(getApplication())
+        modelDownloader.resetState()
+        _uiState.update {
+            it.copy(
+                isDownloadingModel = false,
+                isProcessingModel = false,
+                showDownloadDialog = false,
+                downloadError = null
+            )
+        }
     }
 
     private fun observeAudioStream() {
@@ -122,136 +203,92 @@ class HighlightingViewModel(
             sherpaEngine.transcriptionStream.collect { result ->
                 if (!_uiState.value.isRecording) return@collect
 
-                // Epoch guard: reject stale results from a previous recording session
                 if (result.streamEpoch != sherpaEngine.currentStreamEpoch) return@collect
 
-                val processed = tokenProcessor.process(result)
-                if (processed.isEmpty) return@collect
+                tokenProcessor.process(result)
 
-                val cleanText = processed.text.trim()
-                // Ignore isolated single-character acoustic blips or silence noise
-                if (cleanText.length < 2) return@collect
+                val fullNewText = result.text.trim()
 
-                val isNewSegment = isExpectingNewSegment || result.isFinal
-                if (isExpectingNewSegment) isExpectingNewSegment = false
-
-                // Dedup guard
-                if (cleanText == lastProcessedText && !isNewSegment) return@collect
-                lastProcessedText = cleanText
-
-                _uiState.update { it.copy(recognizedText = cleanText) }
-
-                // Feed character-level durations to sequencer on background worker
-                sequencer.syncStream(cleanText, processed.charDurations, isNewSegment)
-            }
-        }
-    }
-
-    fun setTargetSurah(surahNum: Int, name: String = "") {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isLoading = true, targetSurah = surahNum, surahName = name) }
-            initDeferred.await()
-            val verses = quranRepository.getVersesForSurah(surahNum)
-
-            val allWords = verses.flatMap { it.phonemeWords }
-            val boundaries = calculateBoundaries(allWords)
-            val fullPhonemes = allWords.joinToString("")
-
-            withContext(Dispatchers.Main) {
-                wordStatuses.clear()
-                wordMistakes.clear()
-                lastProcessedText = ""
-                tokenProcessor.reset()
-                sherpaEngine.resetBuffer()
-
-                sequencer.config = TrackerConfig(
-                    enableEarlyMatching = false,
-                    matchingStrictness = MatchingStrictness.normal
-                )
-                sequencer.setSurahReference(
-                    phonemes = fullPhonemes,
-                    boundaries = boundaries,
-                    surahNum = surahNum,
-                    tajweed = _uiState.value.isTajweedEnabled,
-                    startWord = 0,
-                    forceClear = true
-                )
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        targetSurah = surahNum,
-                        surahName = name,
-                        verses = verses,
-                        wordStatuses = emptyMap(),
-                        wordMistakes = emptyMap(),
-                        selectedWordFeedback = null,
-                        activeWordCursor = 0,
-                        recognizedText = ""
-                    )
+                if (fullNewText.isNotEmpty()) {
+                    sequencer.syncStream(fullNewText, result.timestamps, isExpectingNewSegment)
+                    lastProcessedText = fullNewText
+                    isExpectingNewSegment = false
+                    _uiState.update { it.copy(recognizedText = fullNewText) }
                 }
             }
         }
     }
 
-    private fun calculateBoundaries(words: List<String>): List<Int> {
-        val bounds = mutableListOf<Int>()
-        var cursor = 0
-        for (w in words) {
-            bounds.add(cursor)
-            cursor += w.replace(" ", "").length
-        }
-        bounds.add(cursor)
-        return bounds
-    }
+    fun setTargetSurah(surahId: Int, name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            initDeferred.await()
 
-    fun startRecitationSession() {
-        if (_uiState.value.isLoading || _uiState.value.verses.isEmpty()) {
-            return
-        }
-        wordStatuses.clear()
-        lastProcessedText = ""
-        tokenProcessor.reset()
-        sherpaEngine.resetBuffer()
-        isExpectingNewSegment = true
+            val verses = quranRepository.getVersesForSurah(surahId)
+            val allPhonemes = verses.flatMap { it.phonemeWords }
 
-        _uiState.update {
-            it.copy(
-                isRecording = true,
-                wordStatuses = emptyMap(),
-                activeWordCursor = 0,
-                recognizedText = ""
-            )
-        }
+            val joinedPhonemes = allPhonemes.joinToString("")
+            val boundaries = mutableListOf<Int>()
+            var cur = 0
+            for (p in allPhonemes) {
+                cur += p.length
+                boundaries.add(cur)
+            }
 
-        val verses = _uiState.value.verses
-        if (verses.isNotEmpty()) {
-            val allWords = verses.flatMap { it.phonemeWords }
-            val boundaries = calculateBoundaries(allWords)
-            val fullPhonemes = allWords.joinToString("")
             sequencer.setSurahReference(
-                phonemes = fullPhonemes,
+                phonemes = joinedPhonemes,
                 boundaries = boundaries,
-                surahNum = _uiState.value.targetSurah,
-                tajweed = _uiState.value.isTajweedEnabled,
-                startWord = 0,
-                forceClear = true
+                surahNum = surahId,
+                tajweed = _uiState.value.isTajweedEnabled
             )
+
+            wordStatuses.clear()
+            wordMistakes.clear()
+
+            _uiState.update {
+                it.copy(
+                    targetSurah = surahId,
+                    surahName = name,
+                    verses = verses,
+                    wordStatuses = emptyMap(),
+                    wordMistakes = emptyMap(),
+                    selectedWordFeedback = null,
+                    activeWordCursor = 0,
+                    recognizedText = "",
+                    lastEvaluatedWordInfo = ""
+                )
+            }
         }
-
-        audioPipeline.startStreaming(onError = {
-            _uiState.update { state -> state.copy(isRecording = false) }
-        })
-    }
-
-    fun stopRecitationSession() {
-        _uiState.update { it.copy(isRecording = false) }
-        audioPipeline.stopStreaming()
     }
 
     fun toggleTajweedMode(enabled: Boolean) {
         _uiState.update { it.copy(isTajweedEnabled = enabled) }
         sequencer.isTajweed = enabled
+    }
+
+    fun startRecitationSession() {
+        if (_uiState.value.isRecording) return
+        viewModelScope.launch(Dispatchers.IO) {
+            initDeferred.await()
+            if (!modelDownloader.isModelReady()) {
+                _uiState.update { it.copy(showDownloadDialog = true) }
+                return@launch
+            }
+            sherpaEngine.initialize()
+            audioPipeline.startStreaming()
+            sherpaEngine.resetBuffer()
+            lastProcessedText = ""
+            isExpectingNewSegment = true
+            _uiState.update { it.copy(isRecording = true) }
+        }
+    }
+
+    fun stopRecitationSession() {
+        if (!_uiState.value.isRecording) return
+        viewModelScope.launch(Dispatchers.IO) {
+            audioPipeline.stopStreaming()
+            sherpaEngine.resetBuffer()
+            _uiState.update { it.copy(isRecording = false) }
+        }
     }
 
     override fun onCleared() {

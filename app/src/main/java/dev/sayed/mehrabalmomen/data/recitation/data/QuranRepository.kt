@@ -30,8 +30,15 @@ class QuranRepository(private val context: Context) {
         if (versesObj != null) return
         try {
             Log.d(TAG, "📖 [QuranRepository] Loading ordered_quran_phonemes.json...")
-            val jsonString = context.assets.open("ordered_quran_phonemes.json").bufferedReader(Charsets.UTF_8).use {
-                it.readText()
+            val internalFile = java.io.File(context.filesDir, "ordered_quran_phonemes.json")
+            val jsonString = if (internalFile.exists() && internalFile.length() > 0) {
+                Log.d(TAG, "📂 Loading phonemes from internal storage: ${internalFile.absolutePath}")
+                internalFile.readText(Charsets.UTF_8)
+            } else {
+                Log.d(TAG, "📂 Loading phonemes from APK assets...")
+                context.assets.open("ordered_quran_phonemes.json").bufferedReader(Charsets.UTF_8).use {
+                    it.readText()
+                }
             }
             val root = JSONObject(jsonString)
             versesObj = root.optJSONObject("verses") ?: root
@@ -60,31 +67,35 @@ class QuranRepository(private val context: Context) {
             val pList = verseObj.optJSONArray("aya_phonemes_list") ?: verseObj.optJSONArray("phoneme_words")
             if (pList != null && pList.length() > 0) {
                 for (i in 0 until pList.length()) {
-                    val p = pList.optString(i, "").trim()
+                    val p = pList.optString(i, "").trim().replace("{", "").replace("}", "")
                     if (p.isNotEmpty()) phonemesList.add(p)
                 }
             }
 
-            // Clean display words from Uthmani text
-            val rawWords = uthmani.trim().split("\\s+".toRegex()).filter { it.isNotBlank() }
+            // Clean display words from Uthmani text (strip any {} braces or ayah numbers inside braces)
+            val cleanUthmani = uthmani
+                .replace(Regex("\\{[^}]*\\}"), "")
+                .replace("{", "")
+                .replace("}", "")
+                .trim()
 
-            val finalDisplayWords: List<String>
+            val rawWords = cleanUthmani.split("\\s+".toRegex()).filter { it.isNotBlank() }
+
             val finalPhonemeWords: List<String>
 
-            if (phonemesList.isNotEmpty()) {
+            val rawDisplay = if (phonemesList.isNotEmpty()) {
                 finalPhonemeWords = phonemesList
-                // Align display words to match phoneme list size if possible
-                if (rawWords.size == phonemesList.size) {
-                    finalDisplayWords = rawWords
-                } else if (rawWords.isNotEmpty()) {
-                    finalDisplayWords = rawWords
-                } else {
-                    finalDisplayWords = phonemesList
-                }
+                if (rawWords.size == phonemesList.size) rawWords
+                else if (rawWords.isNotEmpty()) rawWords
+                else phonemesList
             } else {
                 finalPhonemeWords = rawWords
-                finalDisplayWords = rawWords
+                rawWords
             }
+
+            val finalDisplayWords = rawDisplay.map { w ->
+                w.replace("{", "").replace("}", "").replace("﴿", "").replace("﴾", "").trim()
+            }.filter { it.isNotBlank() }
 
             list.add(
                 QuranVerse(

@@ -13,7 +13,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 /**
- * Production-grade Audio Recording Pipeline tailored for Quranic speech with debug logging.
+ * Production-grade Audio Recording Pipeline tailored for Quranic speech with VAD & silence filtering.
  */
 class AudioPipeline(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -25,10 +25,10 @@ class AudioPipeline(
         const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
 
         // 480ms = wider acoustic window → CTC model sees more context per frame.
-        // This significantly improves recognition of short syllables, Shaddah, and Ghunnah.
         const val CHUNK_MS = 480
         const val BYTES_PER_SAMPLE = 2
         const val RECORD_CHUNK_BYTES = (SAMPLE_RATE * 1 * BYTES_PER_SAMPLE * CHUNK_MS) / 1000
+        private const val SILENCE_RMS_THRESHOLD = 0.002f
     }
 
     private var audioRecord: AudioRecord? = null
@@ -51,10 +51,6 @@ class AudioPipeline(
         Log.d(TAG, "🎙️ [AudioPipeline] Initializing AudioRecord (sampleRate=$SAMPLE_RATE, bufferSize=$bufferSize)...")
 
         try {
-            // UNPROCESSED bypasses Android's noise suppressor, AGC, and echo canceller.
-            // VOICE_RECOGNITION was silently filtering breathy Quranic consonants (ه، ح، خ)
-            // and Madd endings as "background noise". UNPROCESSED delivers the raw signal
-            // that Sherpa-ONNX was trained on. Fallback to MIC if device doesn't support it.
             val audioSource = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 MediaRecorder.AudioSource.UNPROCESSED
             } else {
@@ -70,7 +66,6 @@ class AudioPipeline(
                 bufferSize
             )
 
-            // If UNPROCESSED is not supported on this device, AudioRecord won't init — fall back to MIC
             if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
                 Log.w(TAG, "⚠️ [AudioPipeline] UNPROCESSED not supported, retrying with MIC...")
                 audioRecord?.release()
@@ -109,7 +104,12 @@ class AudioPipeline(
                         }
 
                         val chunkCopy = Float32List(sampleCount) { i -> floatBuffer[i] }
-                        _audioChunks.emit(chunkCopy)
+                        val rms = calculateRms(chunkCopy)
+
+                        // VAD Silence Filter: Only emit audio chunks when voice energy exceeds background noise threshold
+                        if (rms >= SILENCE_RMS_THRESHOLD) {
+                            _audioChunks.emit(chunkCopy)
+                        }
                     }
                 }
             }
@@ -118,6 +118,15 @@ class AudioPipeline(
             Log.e(TAG, "❌ [AudioPipeline] Error starting audio stream: ${e.message}", e)
             onError(e)
         }
+    }
+
+    private fun calculateRms(buffer: Float32List): Float {
+        var sum = 0.0f
+        for (i in 0 until buffer.size) {
+            val sample = buffer[i]
+            sum += sample * sample
+        }
+        return Math.sqrt((sum / buffer.size).toDouble()).toFloat()
     }
 
     fun stopStreaming() {

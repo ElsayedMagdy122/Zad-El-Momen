@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.data.recitation.engine
 
 import android.content.Context
 import android.util.Log
+import java.io.File
 import com.k2fsa.sherpa.onnx.OnlineRecognizer
 import com.k2fsa.sherpa.onnx.OnlineRecognizerConfig
 import com.k2fsa.sherpa.onnx.OnlineStream
@@ -40,6 +41,7 @@ class SherpaEngine(private val context: Context) {
 
     private var onlineRecognizer: OnlineRecognizer? = null
     private var onlineStream: OnlineStream? = null
+    private var lastLoggedText = ""
 
     private var isInitialized = false
     var currentStreamEpoch = 0
@@ -100,8 +102,13 @@ class SherpaEngine(private val context: Context) {
             } else {
                 Log.e(TAG, "❌ [SherpaEngine] recognizer or stream is null after init!")
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e(TAG, "❌ [SherpaEngine] Init failed: ${e.message}", e)
+            val corruptModel = File(context.filesDir, "zipformer_p_arabic_v3.1.int8.onnx")
+            if (corruptModel.exists()) {
+                Log.w(TAG, "⚠️ Deleting corrupted model file (${corruptModel.length()} bytes)...")
+                corruptModel.delete()
+            }
             isInitialized = false
         }
         return isInitialized
@@ -171,7 +178,10 @@ class SherpaEngine(private val context: Context) {
                         streamEpoch = currentStreamEpoch
                     )
                 )
-                Log.d(TAG, "🎯 ASR text=\"$text\" tokens=${rawTokens.size} isFinal=$isFinal")
+                if (text != lastLoggedText) {
+                    Log.d(TAG, "🎯 ASR text=\"$text\" tokens=${rawTokens.size} isFinal=$isFinal")
+                    lastLoggedText = text
+                }
             }
             true
         } catch (e: Exception) {

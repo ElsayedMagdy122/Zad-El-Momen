@@ -3,7 +3,7 @@ package dev.sayed.mehrabalmomen.data.recitation.tracking
 import android.util.Log
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ErrorExplainer
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
-import dev.sayed.mehrabalmomen.presentation.recitation.WordStatus
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
 import kotlin.math.max
 import kotlin.math.min
 
