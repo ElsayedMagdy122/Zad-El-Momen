@@ -33,45 +33,38 @@ class DictationSequencer(
 
     private val matcher = QuranDictationMatcher()
     var config = TrackerConfig(
-        enableEarlyMatching = false,
+        enableEarlyMatching = true,
         matchingStrictness = MatchingStrictness.normal
     )
 
     val wordCount: Int get() = max(0, wordBoundaries.size - 1)
 
     // ── Pending Madd tail drain ──────────────────────────────────────────────
-    // After a word is committed (Green/Yellow), if it ended with a Madd vowel
-    // (ا، و، ي), the reciter may hold it for several hundred ms. During this
-    // hold, Sherpa keeps emitting the vowel token, which would otherwise get
-    // fed into the DTW window of the *next* word and confuse the matcher.
-    // pendingTail stores the expected trailing phonemes so syncStream() can
-    // absorb them before advancing to the next word's match window.
+    // After a word is committed early, reserve trailing unuttered phonemes
+    // so upcoming words cannot match against leftovers.
     private var pendingTail: String? = null
 
-    private val MADD_CHARS = setOf('ا', 'آ', 'و', 'ي', 'ى', 'ۥ', 'ۦ', 'ٰ')
-
-    private fun enqueueTail(refWord: String) {
-        val tail = refWord.trimEnd { ch -> ch !in MADD_CHARS }
-        pendingTail = if (tail.isNotEmpty() && MADD_CHARS.any { it in tail }) tail else null
-    }
-
     private fun drainPendingTail() {
+        if (!config.enableEarlyMatching) {
+            pendingTail = null
+            return
+        }
         val tail = pendingTail ?: return
         if (tail.isEmpty()) { pendingTail = null; return }
 
         var tailIdx = 0
         while (asrCharAnchor < currentSegmentAsrText.length && tailIdx < tail.length) {
-            val asrCode      = currentSegmentAsrText[asrCharAnchor].code
-            val expectedCode = tail[tailIdx].code
+            val asrCode = currentSegmentAsrText[asrCharAnchor]
+            val expectedCode = tail[tailIdx]
 
             when {
                 asrCode == expectedCode -> { asrCharAnchor++; tailIdx++ }
-                asrCode in MADD_CHARS.map { it.code } && expectedCode in MADD_CHARS.map { it.code } -> {
+                PhoneticCostEngine.isMaddVowel(expectedCode) && PhoneticCostEngine.isMaddVowel(asrCode) -> {
                     // Absorb prolonged duplicate vowel frames without advancing tailIdx
                     asrCharAnchor++
                 }
                 else -> {
-                    // Reciter has moved on — lift the shield immediately
+                    // Reciter has moved on to next word — lift shield immediately
                     pendingTail = null
                     return
                 }
@@ -134,124 +127,128 @@ class DictationSequencer(
         return fullPhonemes.substring(start, min(end, fullPhonemes.length))
     }
 
-    private fun isWaslMergeCandidate(wordId: Int): Boolean {
-        val w = getRefWord(wordId)
-        if (w.isEmpty()) return false
-        val lastChar = w.last()
-        return lastChar == 'ن' || lastChar == 'م' || lastChar == 'ں' || lastChar == 'ۢ' || lastChar == 'ً' || lastChar == 'ٌ' || lastChar == 'ٍ'
-    }
-
     private fun processSequence() {
         val totalWords = wordCount
         if (totalWords == 0) return
 
         while (asrCharAnchor < currentSegmentAsrText.length && targetWordCursor < totalWords) {
-            // ── Drain any prolonged Madd vowels from the previously committed word ──
-            drainPendingTail()
-            if (pendingTail != null) break  // Still draining — wait for more audio
+            // Drain unuttered Madd/tail phonemes before matching next word
+            if (config.enableEarlyMatching && !isTajweed && pendingTail != null) {
+                drainPendingTail()
+                if (pendingTail != null) break
+            }
 
             val unconsumed = currentSegmentAsrText.substring(asrCharAnchor)
             if (unconsumed.isBlank()) break
 
             val tsStart = min(asrCharAnchor, currentSegmentTimestamps.size)
-            val unconsumedTs = if (tsStart < currentSegmentTimestamps.size) currentSegmentTimestamps.subList(tsStart, currentSegmentTimestamps.size) else emptyList()
-
-            val currentRef = getRefWord(targetWordCursor)
-            Log.v(TAG, "🔍 [EVAL] Word #$targetWordCursor (Ref: \"$currentRef\") vs Incoming ASR: \"$unconsumed\"")
+            val unconsumedTs = if (tsStart < currentSegmentTimestamps.size) {
+                currentSegmentTimestamps.subList(tsStart, currentSegmentTimestamps.size)
+            } else {
+                emptyList()
+            }
 
             var matched = false
             var waitingForPartial = false
 
-            val dynamicMaxSkip = if (isWaslMergeCandidate(targetWordCursor)) 2 else config.maxSkipWords
-            val maxSkip = if (unconsumed.length >= 4) dynamicMaxSkip else 0
+            val maxSkip = min(config.maxSkipWords, totalWords - 1 - targetWordCursor)
 
             for (skip in 0..maxSkip) {
-                val testWordId = targetWordCursor + skip
-                if (testWordId >= totalWords) break
+                val startW = targetWordCursor + skip
 
-                val refStart = wordBoundaries[testWordId]
-                val refEnd = if (testWordId + 1 < wordBoundaries.size) wordBoundaries[testWordId + 1] else fullPhonemes.length
-                val testRef = fullPhonemes.substring(refStart, min(refEnd, fullPhonemes.length))
+                for (merge in 1..2) {
+                    val endW = startW + merge - 1
+                    if (endW >= totalWords) break
 
-                val matchStart = if (skip > 0 && isWaslMergeCandidate(targetWordCursor)) wordBoundaries[targetWordCursor] else refStart
+                    val refStart = wordBoundaries[startW]
+                    val refEnd = if (endW + 1 < wordBoundaries.size) wordBoundaries[endW + 1] else fullPhonemes.length
 
-                val result = matcher.matchWord(
-                    asrText = unconsumed,
-                    asrTimestamps = unconsumedTs,
-                    fullPhonemes = fullPhonemes,
-                    refStart = matchStart,
-                    refEnd = refEnd,
-                    config = config,
-                    isTajweed = isTajweed
-                )
+                    val result = matcher.matchWord(
+                        asrText = unconsumed,
+                        asrTimestamps = unconsumedTs,
+                        fullPhonemes = fullPhonemes,
+                        refStart = refStart,
+                        refEnd = refEnd,
+                        config = config,
+                        isTajweed = isTajweed
+                    )
 
-                if (result != null) {
-                    if (result.isPartial) {
-                        if (skip == 0) {
-                            Log.d(TAG, "⏳ [WAITING] Word #$testWordId (\"$testRef\") is currently being spoken... (ASR: \"$unconsumed\")")
-                            waitingForPartial = true
-                            break
-                        } else {
-                            continue
-                        }
-                    }
-
-                    if (result.tokensConsumed > 0) {
-                        for (s in 0 until skip) {
-                            val skippedWordId = targetWordCursor + s
-                            val skippedRef = getRefWord(skippedWordId)
-                            if (isWaslMergeCandidate(skippedWordId)) {
-                                Log.i(TAG, "🔗 [WASL MERGE] Word #$skippedWordId (\"$skippedRef\") absorbed via Wasl/Ikhfaa -> Marked GREEN")
-                                commitWordStatus(skippedWordId, WordStatus.GREEN, "")
+                    if (result != null) {
+                        if (result.isPartial) {
+                            if (skip == 0) {
+                                waitingForPartial = true
+                                break
                             } else {
-                                Log.w(TAG, "🔴 [RESULT: RED] Word #$skippedWordId (\"$skippedRef\") was SKIPPED -> Marked RED")
-                                commitWordStatus(skippedWordId, WordStatus.RED, "")
+                                continue
                             }
                         }
 
-                        val mistakes = if (isTajweed) {
-                            ErrorExplainer.evaluateWord(
-                                wordId = testWordId,
-                                fullPhonemes = fullPhonemes,
-                                wordBoundaries = wordBoundaries,
-                                cleanAsr = result.cleanAsr,
-                                timestamps = result.timestamps,
-                                alignments = result.trace,
-                                speed = config.recitationSpeed,
-                                isTajweedEnabled = isTajweed
-                            )
-                        } else {
-                            emptyList()
-                        }
-
-                        val finalStatus = when {
-                            mistakes.any { it.severity == dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterErrorSeverity.TAJWEED || it.severity == dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterErrorSeverity.TASHKEEL } || result.pathCost > 0.15 -> {
-                                android.util.Log.i(TAG, "🟡 [RESULT: YELLOW] Word #$testWordId (\"$testRef\") Tajweed/Tashkeel slip (${mistakes.size} mistakes, cost: ${"%.2f".format(result.pathCost)})")
-                                WordStatus.YELLOW
+                        if (result.tokensConsumed > 0) {
+                            if (merge > 1 && !isValidMerge(result, startW, endW, unconsumed)) {
+                                continue
                             }
-                            else -> {
-                                android.util.Log.i(TAG, "🟢 [RESULT: GREEN] Word #$testWordId (\"$testRef\") MATCHED PERFECTLY -> Marked GREEN (cost: ${"%.2f".format(result.pathCost)})")
-                                WordStatus.GREEN
+
+                            // 1. Commit skipped words RED
+                            for (s in 0 until skip) {
+                                val skippedId = targetWordCursor + s
+                                commitWordStatus(skippedId, WordStatus.RED, "")
                             }
+
+                            // 2. Evaluate Tajweed mistakes if Tajweed mode is active
+                            val mistakes = if (isTajweed && result.trace.isNotEmpty()) {
+                                ErrorExplainer.evaluateWord(
+                                    wordId = startW,
+                                    fullPhonemes = fullPhonemes,
+                                    wordBoundaries = wordBoundaries,
+                                    cleanAsr = result.cleanAsr,
+                                    timestamps = result.timestamps,
+                                    alignments = result.trace,
+                                    speed = config.recitationSpeed,
+                                    isTajweedEnabled = isTajweed
+                                )
+                            } else {
+                                emptyList()
+                            }
+
+                            val finalStatus = when {
+                                isTajweed && (mistakes.isNotEmpty() || result.hasTajweedError) -> WordStatus.YELLOW
+                                else -> WordStatus.GREEN
+                            }
+
+                            // Commit matched/merged words
+                            for (m in 0 until merge) {
+                                val w = startW + m
+                                commitWordStatus(w, finalStatus, result.cleanAsr, mistakes)
+                            }
+
+                            asrCharAnchor += result.tokensConsumed
+                            targetWordCursor = endW + 1
+                            matched = true
+                            lastReanchorAttemptOffset = -1
+                            lastReanchorAttemptLen = -1
+
+                            // Tail reservation for early matching
+                            if (config.enableEarlyMatching && !isTajweed) {
+                                val wordRefEnd = if (endW + 1 < wordBoundaries.size) wordBoundaries[endW + 1] else fullPhonemes.length
+                                var lastMatchedRef = -1
+                                for (k in result.trace.size - 1 downTo 0) {
+                                    if (result.trace[k].opType != "delete") {
+                                        lastMatchedRef = result.trace[k].refIdx
+                                        break
+                                    }
+                                }
+                                if (lastMatchedRef != -1 && lastMatchedRef < wordRefEnd - 1) {
+                                    pendingTail = fullPhonemes.substring(lastMatchedRef + 1, wordRefEnd)
+                                    drainPendingTail()
+                                } else {
+                                    pendingTail = null
+                                }
+                            }
+                            break
                         }
-
-                        commitWordStatus(testWordId, finalStatus, result.cleanAsr, mistakes)
-
-                        asrCharAnchor += result.tokensConsumed
-                        targetWordCursor = testWordId + 1
-                        matched = true
-                        lastReanchorAttemptOffset = -1
-                        lastReanchorAttemptLen = -1
-
-                        // Enqueue tail drain for any trailing Madd vowels in committed word
-                        enqueueTail(testRef)
-                        break
                     }
                 }
-            }
-
-            if (waitingForPartial) {
-                break
+                if (matched || waitingForPartial) break
             }
 
             if (!matched) {
@@ -262,7 +259,6 @@ class DictationSequencer(
                         continue
                     }
                 }
-                Log.d(TAG, "⏸️ [HOLD] No match at Word #$targetWordCursor (\"$currentRef\"). Holding cursor until speech aligns.")
                 break
             }
         }
@@ -275,6 +271,54 @@ class DictationSequencer(
             currentSegmentTimestamps = if (trim < currentSegmentTimestamps.size) currentSegmentTimestamps.subList(trim, currentSegmentTimestamps.size) else emptyList()
             asrCharAnchor = keepCushion
         }
+    }
+
+    private fun isValidMerge(
+        result: WordMatchResult,
+        startW: Int,
+        endW: Int,
+        asrText: String
+    ): Boolean {
+        if (startW == endW) return true
+
+        for (w in startW..endW) {
+            val refStart = wordBoundaries[w]
+            val refEnd = if (w + 1 < wordBoundaries.size) wordBoundaries[w + 1] else fullPhonemes.length
+            val wordLen = refEnd - refStart
+
+            val forgiveStart = if (w > startW) min(2, wordLen / 3) else 0
+            val forgiveEnd = if (w < endW) min(2, wordLen / 3) else 0
+
+            val coreStart = refStart + forgiveStart
+            val coreEnd = refEnd - forgiveEnd
+            val coreLen = coreEnd - coreStart
+
+            if (coreLen <= 0) continue
+
+            var coreCost = 0.0
+
+            for (align in result.trace) {
+                if (align.refIdx in coreStart until coreEnd) {
+                    when (align.opType) {
+                        "delete" -> coreCost += config.standardDeletionCost
+                        "replace" -> {
+                            if (align.predIdx in asrText.indices && align.refIdx in fullPhonemes.indices) {
+                                val asrCode = asrText[align.predIdx]
+                                val refCode = fullPhonemes[align.refIdx]
+                                coreCost += PhoneticCostEngine.getSubstitutionCost(asrCode, refCode)
+                            } else {
+                                coreCost += config.standardInsertionCost
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((coreCost / coreLen) > config.defaultMaxPathCost) {
+                return false
+            }
+        }
+        return true
     }
 
     private var lastReanchorAttemptOffset = -1

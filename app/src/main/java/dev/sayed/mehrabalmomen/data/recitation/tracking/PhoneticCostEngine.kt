@@ -5,7 +5,7 @@ package dev.sayed.mehrabalmomen.data.recitation.tracking
  */
 object PhoneticCostEngine {
     
-    private fun isZeroCostMarker(code: Char): Boolean {
+    fun isZeroCostMarker(code: Char): Boolean {
         return code == '\u0686' || // Qalqalah release burst
                code == '\u06DC' || // Sakt
                code == '\u0619' || // Ishmam

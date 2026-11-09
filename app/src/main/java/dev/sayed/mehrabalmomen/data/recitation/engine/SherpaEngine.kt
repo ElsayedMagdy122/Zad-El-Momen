@@ -47,10 +47,12 @@ class SherpaEngine(private val context: Context) {
     var currentStreamEpoch = 0
         private set
 
-    fun initialize(): Boolean {
+    private val lock = Any()
+
+    fun initialize(): Boolean = synchronized(lock) {
         if (isInitialized) {
             Log.d(TAG, "🟢 [SherpaEngine] Already initialized.")
-            return true
+            return@synchronized true
         }
         try {
             Log.d(TAG, "🔄 [SherpaEngine] Extracting VFS assets for Sherpa-ONNX...")
@@ -66,9 +68,6 @@ class SherpaEngine(private val context: Context) {
                 modelConfig.provider = "cpu"
                 modelConfig.debug = false // set true only for deep debugging
 
-                // Assign the Zipformer2-CTC model path
-                // Try direct property access first (Kotlin data-class generated getter),
-                // fall back to reflection for older AAR builds.
                 try {
                     modelConfig.zipformer2Ctc.model = modelPath
                     Log.d(TAG, "📂 [SherpaEngine] Assigned model via direct property.")
@@ -111,18 +110,17 @@ class SherpaEngine(private val context: Context) {
             }
             isInitialized = false
         }
-        return isInitialized
+        return@synchronized isInitialized
     }
 
-    fun transcribe(chunk: Float32List, isFinal: Boolean = false): Boolean {
+    fun transcribe(chunk: Float32List, isFinal: Boolean = false): Boolean = synchronized(lock) {
         val recognizer = onlineRecognizer
         val stream = onlineStream
         if (!isInitialized || recognizer == null || stream == null) {
-            Log.w(TAG, "⚠️ [SherpaEngine] transcribe() called before init!")
-            return false
+            return@synchronized false
         }
 
-        return try {
+        return@synchronized try {
             stream.acceptWaveform(chunk.toFloatArray(), 16000)
 
             while (recognizer.isReady(stream)) {
@@ -133,22 +131,6 @@ class SherpaEngine(private val context: Context) {
             val text = result.text.trim()
 
             if (text.isNotEmpty()) {
-                // ─────────────────────────────────────────────────────────────
-                // KEY: Read real per-token timestamps via the Kotlin-generated
-                // property getters — result.tokens / result.timestamps.
-                //
-                // OnlineRecognizerResult is a Kotlin *data class* whose fields
-                // are `private final`. Java reflection via `getField("tokens")`
-                // only finds PUBLIC fields, so it threw NoSuchFieldException
-                // every call and silently fell back to fake 80ms timestamps.
-                //
-                // The correct approach is to call the generated getters:
-                //   result.tokens      -> getTokens():  Array<String>
-                //   result.timestamps  -> getTimestamps(): FloatArray
-                //
-                // Fallback (split by space + 80ms spacing) is kept only if the
-                // AAR is an older build that genuinely lacks these fields.
-                // ─────────────────────────────────────────────────────────────
                 val rawTokens: List<String>
                 val rawTimestamps: List<Double>
 
@@ -156,16 +138,12 @@ class SherpaEngine(private val context: Context) {
                 val tsArray:  FloatArray?     = try { result.timestamps } catch (_: Throwable) { null }
 
                 if (tokArray != null && tokArray.isNotEmpty()) {
-                    // ✅ Real per-phoneme CTC data from Sherpa-ONNX
                     rawTokens     = tokArray.toList()
                     rawTimestamps = tsArray?.map { it.toDouble() }
                         ?: List(tokArray.size) { i -> (i + 1) * 0.08 }
-                    Log.d(TAG, "✅ [SherpaEngine] Using real Sherpa tokens (${rawTokens.size})")
                 } else {
-                    // ⚠️ Fallback only when AAR truly has no token API
                     rawTokens     = text.split(" ").filter { it.isNotBlank() }
                     rawTimestamps = List(rawTokens.size) { i -> (i + 1) * 0.08 }
-                    Log.w(TAG, "⚠️ [SherpaEngine] Fallback: AAR has no token API — using word-split + fake timestamps")
                 }
 
                 _transcriptionStream.tryEmit(
@@ -190,7 +168,7 @@ class SherpaEngine(private val context: Context) {
         }
     }
 
-    fun resetBuffer() {
+    fun resetBuffer() = synchronized(lock) {
         currentStreamEpoch++
         try {
             onlineStream?.release()
@@ -201,7 +179,7 @@ class SherpaEngine(private val context: Context) {
         }
     }
 
-    fun destroy() {
+    fun destroy() = synchronized(lock) {
         isInitialized = false
         try { onlineStream?.release()     } catch (_: Exception) {}
         try { onlineRecognizer?.release() } catch (_: Exception) {}

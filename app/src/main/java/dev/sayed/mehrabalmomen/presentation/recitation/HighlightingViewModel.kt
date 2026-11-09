@@ -202,17 +202,17 @@ class HighlightingViewModel(
         viewModelScope.launch(Dispatchers.Default) {
             sherpaEngine.transcriptionStream.collect { result ->
                 if (!_uiState.value.isRecording) return@collect
-
                 if (result.streamEpoch != sherpaEngine.currentStreamEpoch) return@collect
 
-                tokenProcessor.process(result)
+                val processed = tokenProcessor.process(result)
+                if (processed.isEmpty) return@collect
+
+                sequencer.syncStream(processed.text, processed.charDurations, isExpectingNewSegment)
+                lastProcessedText = processed.text
+                isExpectingNewSegment = false
 
                 val fullNewText = result.text.trim()
-
                 if (fullNewText.isNotEmpty()) {
-                    sequencer.syncStream(fullNewText, result.timestamps, isExpectingNewSegment)
-                    lastProcessedText = fullNewText
-                    isExpectingNewSegment = false
                     _uiState.update { it.copy(recognizedText = fullNewText) }
                 }
             }
@@ -227,7 +227,7 @@ class HighlightingViewModel(
             val allPhonemes = verses.flatMap { it.phonemeWords }
 
             val joinedPhonemes = allPhonemes.joinToString("")
-            val boundaries = mutableListOf<Int>()
+            val boundaries = mutableListOf(0)
             var cur = 0
             for (p in allPhonemes) {
                 cur += p.length
@@ -274,6 +274,7 @@ class HighlightingViewModel(
                 return@launch
             }
             sherpaEngine.initialize()
+            tokenProcessor.reset()
             audioPipeline.startStreaming()
             sherpaEngine.resetBuffer()
             lastProcessedText = ""
@@ -284,10 +285,11 @@ class HighlightingViewModel(
 
     fun stopRecitationSession() {
         if (!_uiState.value.isRecording) return
+        _uiState.update { it.copy(isRecording = false) }
         viewModelScope.launch(Dispatchers.IO) {
             audioPipeline.stopStreaming()
             sherpaEngine.resetBuffer()
-            _uiState.update { it.copy(isRecording = false) }
+            tokenProcessor.reset()
         }
     }
 

@@ -24,20 +24,21 @@ enum class RecitationSpeed { fast, normal, slow }
 enum class MatchingStrictness {
     easy, normal, hard;
     // Calibrated to accept authentic pronunciation variations while strictly rejecting incorrect words
-    val defaultMaxPathCost: Double get() = when (this) { easy -> 0.32; normal -> 0.26; hard -> 0.20 }
-    val shortWordPathCost: Double get() = when (this) { easy -> 0.26; normal -> 0.22; hard -> 0.18 }
-    val mediumWordPathCost: Double get() = when (this) { easy -> 0.28; normal -> 0.24; hard -> 0.19 }
-    val maxSkipWords: Int get() = when (this) { easy -> 2; normal -> 2; hard -> 1 }
-    val acousticConfusionCost: Double get() = when (this) { easy -> 0.15; normal -> 0.22; hard -> 0.30 }
-    val standardInsertionCost: Double get() = when (this) { easy -> 0.60; normal -> 0.75; hard -> 0.90 }
-    val standardDeletionCost: Double get() = when (this) { easy -> 0.75; normal -> 0.85; hard -> 1.00 }
+    val defaultMaxPathCost: Double get() = when (this) { easy -> 0.40; normal -> 0.30; hard -> 0.25 }
+    val shortWordPathCost: Double get() = when (this) { easy -> 0.30; normal -> 0.25; hard -> 0.20 }
+    val mediumWordPathCost: Double get() = when (this) { easy -> 0.35; normal -> 0.28; hard -> 0.23 }
+    val maxSkipWords: Int get() = when (this) { easy -> 1; normal -> 2; hard -> 3 }
+    val acousticConfusionCost: Double get() = when (this) { easy -> 0.15; normal -> 0.25; hard -> 0.35 }
+    val standardInsertionCost: Double get() = when (this) { easy -> 0.50; normal -> 0.75; hard -> 1.00 }
+    val standardDeletionCost: Double get() = when (this) { easy -> 0.80; normal -> 1.00; hard -> 1.00 }
+    val maxTokenDurationAllowed: Double get() = when (this) { easy -> 3.0; normal -> 2.5; hard -> 2.0 }
 }
 
 data class TrackerConfig(
     val recitationSpeed: RecitationSpeed = RecitationSpeed.normal,
     val matchingStrictness: MatchingStrictness = MatchingStrictness.normal,
-    val enableEarlyMatching: Boolean = false,
-    val enableAutoReanchor: Boolean = true,
+    val enableEarlyMatching: Boolean = true,
+    val enableAutoReanchor: Boolean = false,
     val reanchorStallThreshold: Int = 24
 ) {
     val defaultMaxPathCost: Double get() = matchingStrictness.defaultMaxPathCost
@@ -47,11 +48,13 @@ data class TrackerConfig(
     val acousticConfusionCost: Double get() = matchingStrictness.acousticConfusionCost
     val standardInsertionCost: Double get() = matchingStrictness.standardInsertionCost
     val standardDeletionCost: Double get() = matchingStrictness.standardDeletionCost
+    val maxTokenDurationAllowed: Double get() = matchingStrictness.maxTokenDurationAllowed
 }
 
 /**
  * Semi-Global DTW Matcher for Quranic Recitation.
  * Features Free Start alignment, calibrated thresholds, and diagnostic logging.
+ * Matches Flutter reference implementation with zero-allocation optimizations.
  */
 class QuranDictationMatcher {
     companion object {
@@ -103,7 +106,7 @@ class QuranDictationMatcher {
             bt[i * stride] = 2
         }
 
-        // Core DP Fill
+        // Core DP Fill with tie-breaking in favor of deletion (matching Flutter)
         for (i in 1..m) {
             val aCode = asrText[i - 1]
             val row = i * stride
@@ -126,7 +129,8 @@ class QuranDictationMatcher {
                 val del = dp[row + j - 1] + delCost
                 val ins = dp[prev + j] + insCost
 
-                if (sub <= del && sub <= ins) {
+                // Use sub < del instead of sub <= del to break ties in favor of deletions
+                if (sub < del && sub <= ins) {
                     dp[row + j] = sub
                     bt[row + j] = 0 // match/sub
                 } else if (del <= ins) {
@@ -139,56 +143,85 @@ class QuranDictationMatcher {
             }
         }
 
-        // Effective reference length (excluding non-phonetic markers)
+        // Effective reference length: collapse consecutive identical Madd vowels and skip zero-cost markers
         var effN = 0
         for (j in 0 until n) {
             val code = fullPhonemes[refStart + j]
-            if (code == '\u0640' || code == '\u0686' || code == '\u06DC' || code == '\u0619' || code == '\u06EA') continue
+            if (PhoneticCostEngine.isZeroCostMarker(code)) continue
+            if (j > 0 && code == fullPhonemes[refStart + j - 1] && PhoneticCostEngine.isMaddVowel(code)) {
+                continue
+            }
             effN++
         }
         if (effN < 1) effN = 1
 
-        val threshold = when {
-            effN <= 3 -> config.shortWordPathCost
-            effN <= 6 -> config.mediumWordPathCost
-            else -> config.defaultMaxPathCost
+        var threshold = config.defaultMaxPathCost
+        if (effN <= 3) {
+            threshold = min(threshold, config.shortWordPathCost)
+        } else if (effN <= 7) {
+            threshold = min(threshold, config.mediumWordPathCost)
+        } else {
+            threshold = min(threshold, config.defaultMaxPathCost)
         }
 
         var bestI = -1
         var bestCost = Double.POSITIVE_INFINITY
 
-        // Must consume reasonable speech (at least half the word's phonetic length)
-        val minTokensNeeded = max(1, (effN * 0.50).toInt())
-
+        val allowEarlyBreak = config.enableEarlyMatching && !isTajweed && effN >= 4
         for (i in 1..m) {
             val norm = dp[i * stride + n] / effN
-            if (norm <= threshold && i >= minTokensNeeded) {
-                if (norm < bestCost) {
+            if (norm <= threshold) {
+                if (if (allowEarlyBreak) norm < bestCost else norm <= bestCost) {
                     bestI = i
                     bestCost = norm
+                    if (allowEarlyBreak && bestCost == 0.0) break
                 }
             }
         }
 
-        // Partial Detection: check if user is mid-word
+        // Partial Detection: Strict frontier rule matching Flutter
         var isPartial = false
-        if (bestI > 0 && bestI == m) {
+        if (isTajweed && bestI > 0 && bestI == m) {
             var curJ = n
+            var hasCoreConsonantMissing = false
+
             while (curJ > 0 && bt[bestI * stride + curJ].toInt() == 1) {
                 val rCode = fullPhonemes[refStart + curJ - 1]
-                if (!PhoneticCostEngine.isTashkeel(rCode)) {
-                    isPartial = true
+                val isRepeated = curJ > 1 && rCode == fullPhonemes[refStart + curJ - 2]
+
+                if (!PhoneticCostEngine.isTashkeel(rCode) &&
+                    !PhoneticCostEngine.isZeroCostMarker(rCode) &&
+                    !isRepeated
+                ) {
+                    hasCoreConsonantMissing = true
                     break
                 }
                 curJ--
             }
-        } else if (bestI < 0) {
-            val minPrefix = min(n, 2)
-            for (j in minPrefix until n) {
-                if (m <= j && dp[m * stride + j] / j <= threshold) {
+
+            if (hasCoreConsonantMissing) {
+                isPartial = true
+            } else if (curJ > 0 && bt[bestI * stride + curJ].toInt() == 0) {
+                val asrCode = asrText[bestI - 1]
+                val refCode = fullPhonemes[refStart + curJ - 1]
+
+                if (PhoneticCostEngine.isTashkeel(asrCode) && PhoneticCostEngine.isTashkeel(refCode)) {
+                    isPartial = false
+                } else if (PhoneticCostEngine.getSubstitutionCost(asrCode, refCode) > 0.0) {
                     isPartial = true
-                    break
                 }
+            }
+        } else if (bestI < 0) {
+            val minJ = if (n > 2) 2 else 1
+            val startI = max(1, m - 2)
+            for (i in startI..m) {
+                for (j in minJ until n) {
+                    if (dp[i * stride + j] / j <= threshold) {
+                        isPartial = true
+                        break
+                    }
+                }
+                if (isPartial) break
             }
         }
 
@@ -212,7 +245,6 @@ class QuranDictationMatcher {
         var cj = n
         val rawTrace = mutableListOf<PhonemeGroupAlignment>()
         val ts = mutableListOf<Double>()
-        var matchCount = 0
 
         while (cj > 0) {
             if (ci == 0) {
@@ -228,7 +260,6 @@ class QuranDictationMatcher {
                 val asrCode = asrText[ci - 1]
                 val refCode = fullPhonemes[gRef]
                 val isMatch = PhoneticCostEngine.getSubstitutionCost(asrCode, refCode) == 0.0
-                if (isMatch) matchCount++
                 rawTrace.add(PhonemeGroupAlignment(if (isMatch) "match" else "replace", gRef, ci - 1))
                 if (ci - 1 < asrTimestamps.size) ts.add(asrTimestamps[ci - 1])
                 ci--
@@ -242,7 +273,6 @@ class QuranDictationMatcher {
             }
         }
 
-        // Tajweed error detection (minor acoustic duration or prolongation slip)
         val hasTajweedSlip = isTajweed && (bestCost > 0.15)
 
         return WordMatchResult(
