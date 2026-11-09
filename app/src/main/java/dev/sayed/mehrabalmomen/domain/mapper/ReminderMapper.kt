@@ -15,12 +15,14 @@ fun ReminderType.toNotification(): ReminderNotification {
             ReminderType.EVENING_AZKAR -> "أذكار المساء"
             ReminderType.FRIDAY_SUNNAN -> "سنن الجمعة"
             ReminderType.DAILY_WORD -> "الورد اليومي"
+            ReminderType.BEFORE_PRAYER -> "التنبيه قبل الصلاة"
         },
         body = when (this) {
             ReminderType.MORNING_AZKAR -> "لا تنس أذكار الصباح"
             ReminderType.EVENING_AZKAR -> "لا تنس أذكار المساء"
             ReminderType.FRIDAY_SUNNAN -> "أكثر من الصلاة على النبي واقرأ سورة الكهف"
             ReminderType.DAILY_WORD -> "حان وقت وردك القرآني اليومي"
+            ReminderType.BEFORE_PRAYER -> "اقترب موعد الأذان، استعد للوضوء والصلاة"
         }
     )
 }

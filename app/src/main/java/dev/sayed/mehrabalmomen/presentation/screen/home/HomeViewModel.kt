@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
@@ -34,6 +35,7 @@ class HomeViewModel(
     private val readingProgressRepository: ReadingProgressRepository,
     private val settingsRepository: SettingsRepository,
     private val quranRepository: QuranRepository,
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
@@ -44,6 +46,15 @@ class HomeViewModel(
     init {
         observeLocationChanges()
         observeContinueTilawah()
+        scheduleAlarms()
+    }
+
+    private fun scheduleAlarms() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+            } catch (_: Exception) {}
+        }
     }
 
 
@@ -234,7 +245,7 @@ class HomeViewModel(
 
                 updateState { current ->
                     val updatedList = current.prayers.map {
-                        it.copy(isUpComing = (it.name == nextUi.name))
+                        it.copy(isUpComing = (it.prayerName != null && it.prayerName == nextUi.prayerName))
                     }
 
                     current.copy(

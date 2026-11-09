@@ -1,6 +1,6 @@
 <resources>
 <!--    <string name="app_name">Mehrab Al Momen</string>-->
-    <string name="app_name">Zad Al-Mu’min</string>
+    <string name="app_name">Zad Al-Mu\'min</string>
     <string name="fajr">Fajr</string>
     <string name="sunrise">Sunrise</string>
     <string name="dhuhr">Dhuhr</string>
@@ -33,12 +33,14 @@
     <string name="tilt_and_rotate_the_device_to_cover_all_axes_for_complete_calibration">Tilt and rotate the device to cover all axes for complete calibration.</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">We need your location to calculate accurate prayer times and determine the Qibla direction.</string>
+    <string name="location_services_disabled">Location services are disabled. Please turn on GPS to calculate accurate prayer times.</string>
     <string name="notification_permission">Notification Permission</string>
     <string name="notification_permission_desc">Receive Azan and Azkar reminders on time.</string>
     <string name="alarm_permission">Exact Alarm Permission</string>
     <string name="alarm_permission_desc">Required to play the Azan exactly on time, even when the device is idle.</string>
     <string name="background_permission">Run in Background</string>
     <string name="background_permission_desc">Allow the app to run in the background without battery restrictions to ensure reminders work accurately.</string>
+    <string name="permission_optional_important">(Optional, but important)</string>
     <string name="granted">Granted</string>
     <string name="allow">Allow</string>
     <string name="set_up_permissions">Set up permissions</string>
@@ -70,7 +72,7 @@
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
     <string name="time_remaining">Time remaining</string>
-    <string name="today_s_full_timetable">Today’s Full Timetable</string>
+    <string name="today_s_full_timetable">Today\'s Full Timetable</string>
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="general">General</string>
@@ -141,7 +143,7 @@
     <string name="quran">Quran Kareem</string>
     <string name="ayat">%1$d Ayat</string>
     <string name="sur">Sur</string>
-    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you’re offline.</string>
+    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you\'re offline.</string>
     <string name="check_your_connection_and_try_again">Check your connection and try again</string>
     <string name="re_try">Re-try</string>
     <string name="success">Success</string>
@@ -346,6 +348,8 @@
     <string name="faq_a3">Go to Settings -> Support -> Report a Bug to send us your reports or suggestions.</string>
     <string name="faq_q4">Is the Qiblah compass accurate?</string>
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
+    <string name="faq_q5">How to make the Azan screen appear automatically on Xiaomi, Samsung, and Huawei?</string>
+    <string name="faq_a5">To ensure the Azan screen opens automatically at prayer time on Xiaomi (HyperOS/MIUI), Samsung, Huawei, and Oppo devices, please go to phone Settings → Apps → Zad Al-Momen → Permissions, and ensure you enable: 1) Display pop-up windows while running in the background / Appear on top. 2) Show on Lock screen. 3) Autostart and set Battery to Unrestricted.</string>
     <string name="battery_settings_title">Notification Optimization</string>
     <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
     <string name="companion_mode">Companion Mode</string>
@@ -395,6 +399,63 @@
     <string name="rafiq_tasbih_2">Alhamdulillah.. Alhamdulillah.. ❤️</string>
     <string name="rafiq_tasbih_3">Allahu Akbar.. Allahu Akbar.. ❤️</string>
     <string name="rafiq_tasbih_4">La ilaha illallah.. La ilaha illallah.. ❤️</string>
+
+    <string name="azkar_categories">Categories</string>
+    <string name="azkar_your_statistics">Your Statistics</string>
+    <string name="azkar_welcome">Welcome</string>
+    <string name="azkar_keep_tongue">Keep your tongue moist with the remembrance of Allah</string>
+    <string name="azkar_days_streak">Days Streak</string>
+    <string name="azkar_remaining">Remaining Azkar</string>
+    <string name="azkar_completed">Completed Azkar</string>
+    <string name="azkar_total">Total Azkar</string>
+    <string name="azkar_percentage">Percentage</string>
+    <string name="azkar_of_daily">of daily azkar</string>
+    <string name="azkar_add_category">Add New Category</string>
+    <string name="azkar_category_name_hint">Enter category name (e.g., Morning Adhkar)</string>
+    <string name="azkar_save_category">Save Category</string>
+    <string name="azkar_filter_day">Day</string>
+    <string name="azkar_filter_week">Week</string>
+    <string name="azkar_filter_month">Month</string>
+    <string name="azkar_filter_year">Year</string>
+    <string name="azkar_activity_log">Activity Log</string>
+    <string name="azkar_less">Less</string>
+    <string name="azkar_more">More</string>
+    <string name="azkar_add_dhikr">Add New Dhikr</string>
+    <string name="azkar_content_hint">Dhikr content</string>
+    <string name="azkar_repeat_count_hint">Repeat count (e.g. 3)</string>
+    <string name="azkar_description_hint">Virtue / Description (Optional)</string>
+    <string name="azkar_reference_hint">Reference / Source (Optional)</string>
+    <string name="azkar_save_dhikr">Save Dhikr</string>
+    <string name="azkar_allah_says">Allah says:</string>
+    <string name="azkar_quran_verse_morning"><![CDATA[﴿ وَمَا أَصْبَحَ مِنْ نِعْمَةٍ فَمِنَ اللَّهِ ﴾]]></string>
+    <string name="azkar_quran_verse_reference">[An-Nahl: 53]</string>
+    <string name="azkar_done_check">Done ✓</string>
+    <string name="azkar_times_format">%1$d times</string>
+    <string name="azkar_dhikr_count_format">%1$d dhikrs</string>
+
+    <!-- Azan Screen -->
+    <string name="azan">Azan</string>
+    <string name="azan_prayer_time">PRAYER TIME</string>
+    <string name="azan_stop">Stop Azan</string>
+    <string name="azan_open_app">Open Prayer Times</string>
+    <string name="azan_jumuah">Jumu\'ah</string>
+    <string name="time_for_prayer">It is time for prayer</string>
+    <string name="prayer_of_format">%1$s Prayer</string>
+    <string name="azan_is_playing">Azan is playing</string>
+    <string name="next_prayer_dot_format">Next prayer • %1$s</string>
+    <string name="mute_sound">Mute Sound</string>
+    <string name="unmute_sound">Unmute Sound</string>
+    <string name="location_unknown">Unknown</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="period">Period</string>
+    <string name="prayer_times_widget">Prayer Times Widget</string>
+    <string name="prayer_widget_desc">Display daily prayer times on the home screen</string>
+    <string name="widget_pin_success">Prayer times widget added to home screen</string>
+    <string name="widget_pin_manual_guide">To add the widget, long press on your home screen, select Widgets, and choose Zad Al-Mu\'min.</string>
+    <string name="next_prayer">Next Prayer</string>
+    <string name="set_location_to_view_prayers">Tap to set location and view prayer times</string>
 
     <!-- Recitation & Tajweed Error Localization -->
     <string name="tajweed_rule_normal_madd">Normal Madd</string>

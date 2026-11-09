@@ -23,6 +23,8 @@ class DailyRefreshReceiver : BroadcastReceiver() {
                 val reminderScheduler = GlobalContext.get().get<ReminderSchedulerRepository>()
                 reminderScheduler.rescheduleAll()
 
+                dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(context)
+
                 Log.d("AZAN_DEBUG", "Daily refresh successfully finished")
             } catch (e: Exception) {
                 Log.e("AZAN_DEBUG", "Error during daily rollover refresh", e)

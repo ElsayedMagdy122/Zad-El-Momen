@@ -9,4 +9,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="splash_bg">#FFFFFF</color>
     <color name="surface">#FFF2F4F7</color>
+    <!-- Widget Colors Light Mode -->
+    <color name="widget_card_bg">#FFFFFFFF</color>
+    <color name="widget_card_stroke">#FFE8E4DF</color>
+    <color name="widget_text_secondary">#FF997D56</color>
+    <color name="widget_text_primary">#FF66481F</color>
+    <color name="widget_text_header">#FF3E4252</color>
+    <color name="widget_item_highlight_bg">#18997D56</color>
+    <color name="widget_item_highlight_stroke">#55997D56</color>
 </resources>

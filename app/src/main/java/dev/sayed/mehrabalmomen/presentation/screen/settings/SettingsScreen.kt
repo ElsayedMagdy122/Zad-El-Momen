@@ -3,9 +3,15 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 import SettingsUiState
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Build
+import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetPinReceiver
+import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -118,6 +124,12 @@ fun SettingsScreen(
             SettingsEffect.NavigateToFAQ -> {
                 navController.navigate(Route.FAQScreen)
             }
+
+            SettingsEffect.RequestPinWidget -> {
+                requestPinPrayerWidget(context) { details ->
+                    toast = details
+                }
+            }
         }
     }
     LaunchedEffect(toast) {
@@ -216,7 +228,7 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
-    settingsViewModel: SettingsViewModel,
+    settingsViewModel: SettingsViewModel? = null,
     items: List<SelectionItem>,
     title: UiText,
     description: UiText,
@@ -243,7 +255,7 @@ fun SettingsBottomSheet(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (isMoazen) {
+            if (isMoazen && settingsViewModel != null) {
                 SingleSelectionContentWithPreview(
                     items = items,
                     selectedIndex = currentSelected,
@@ -276,6 +288,17 @@ fun SettingsBottomSheet(
                 })
         }
 
+    }
+}
+
+fun getSupportName(id: String): Int {
+    return when (id) {
+        BuildConfig.SUPPORT_1 -> R.string.support_1
+        BuildConfig.SUPPORT_5 -> R.string.support_2
+        BuildConfig.SUPPORT_10 -> R.string.support_3
+        BuildConfig.SUPPORT_25 -> R.string.support_4
+        BuildConfig.SUPPORT_100 -> R.string.support_5
+        else -> 0
     }
 }
 
@@ -399,6 +422,7 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
                     SettingsUiState.SettingsAction.NOTIFICATIONS -> listener.onNotifications()
                     SettingsUiState.SettingsAction.FAQ -> listener.onItemClick(item.action)
+                    SettingsUiState.SettingsAction.WIDGET -> listener.onItemClick(item.action)
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -460,4 +484,30 @@ fun Context.findActivity(): Activity? {
         currentContext = currentContext.baseContext
     }
     return currentContext as? Activity
+}
+
+private fun requestPinPrayerWidget(context: Context, onShowToast: (ToastDetails) -> Unit) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val provider = ComponentName(context, PrayerTimesWidgetProvider::class.java)
+        if (appWidgetManager != null && appWidgetManager.isRequestPinAppWidgetSupported) {
+            val successIntent = Intent(context, PrayerTimesWidgetPinReceiver::class.java)
+            val successPendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                successIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            appWidgetManager.requestPinAppWidget(provider, null, successPendingIntent)
+            return
+        }
+    }
+
+    onShowToast(
+        ToastDetails(
+            title = UiText.StringResource(R.string.prayer_times_widget),
+            message = UiText.StringResource(R.string.widget_pin_manual_guide),
+            icon = R.drawable.ic_prayer_times_selected
+        )
+    )
 }

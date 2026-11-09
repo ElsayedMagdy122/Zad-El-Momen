@@ -89,9 +89,9 @@ fun PermissionsScreen(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.onLocationGranted()
+            viewModel.onGpsEnabled()
         } else {
-            viewModel.onLocationDenied()
+            viewModel.onGpsDenied()
         }
     }
 
@@ -160,11 +160,20 @@ fun PermissionsScreen(
                 val client = LocationServices.getSettingsClient(context)
 
                 client.checkLocationSettings(builder.build())
+                    .addOnSuccessListener {
+                        viewModel.onGpsEnabled()
+                    }
                     .addOnFailureListener { exception ->
                         if (exception is ResolvableApiException) {
-                            enableGpsLauncher.launch(
-                                IntentSenderRequest.Builder(exception.resolution).build()
-                            )
+                            try {
+                                enableGpsLauncher.launch(
+                                    IntentSenderRequest.Builder(exception.resolution).build()
+                                )
+                            } catch (e: Exception) {
+                                viewModel.onGpsDenied()
+                            }
+                        } else {
+                            viewModel.onGpsDenied()
                         }
                     }
             }
@@ -214,6 +223,7 @@ private fun PermissionsContent(
                     title = R.string.location_permission,
                     description = R.string.location_permission_desc,
                     isGranted = state.isLocationPermissionGranted,
+                    isLoading = state.isLocationLoading,
                     onClick = { listener.onClickAllowLocationAccess() }
                 )
             }
@@ -225,6 +235,7 @@ private fun PermissionsContent(
                         title = R.string.notification_permission,
                         description = R.string.notification_permission_desc,
                         isGranted = state.isNotificationPermissionGranted,
+                        isOptional = true,
                         onClick = { listener.onClickAllowNotificationAccess() }
                     )
                 }
@@ -248,6 +259,7 @@ private fun PermissionsContent(
                     title = R.string.background_permission,
                     description = R.string.background_permission_desc,
                     isGranted = state.isBackgroundPermissionGranted,
+                    isOptional = true,
                     onClick = { listener.onClickAllowBackgroundAccess() }
                 )
             }

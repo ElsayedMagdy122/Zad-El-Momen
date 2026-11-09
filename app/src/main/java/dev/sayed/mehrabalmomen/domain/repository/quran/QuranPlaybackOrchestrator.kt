@@ -22,31 +22,38 @@ class QuranPlaybackOrchestrator {
     ): NextAction {
         val currentTiming = timings.find { it.verseNumber == currentAyahId } ?: return NextAction.None
 
-        // Check if we reached the end of the current ayah (with a small buffer)
-        if (currentPositionMs >= currentTiming.endTimeMs - 250) {
-            
-            // Handle Repetition
-            if (repeatCount > 0 && currentRepeatIteration < repeatCount - 1) {
+        // 1. Handle Repetition (if repeat is active, check near end of current ayah)
+        if (repeatCount > 0 && currentPositionMs >= currentTiming.endTimeMs - 250) {
+            if (currentRepeatIteration < repeatCount - 1) {
                 return NextAction.RepeatAyah(currentRepeatIteration + 1, currentTiming.startTimeMs)
             }
-            
-            // Handle Continuity
-            if (!isContinuousReading) {
+        }
+
+        // 2. If continuous reading is OFF (!isContinuousReading), play current ayah to its end and stop
+        if (!isContinuousReading) {
+            if (currentPositionMs >= currentTiming.endTimeMs) {
                 return NextAction.StopAtAyah(currentTiming.startTimeMs)
             }
-            
-            // Check for end of Surah
+            return NextAction.None
+        }
+
+        // 3. If continuous reading is ON, check if we reached or passed the end of the current ayah
+        if (currentPositionMs >= currentTiming.endTimeMs - 250) {
             if (currentAyahId >= totalAyatCount) {
                 return NextAction.FinishPlayback
             }
-            
-            return NextAction.None // Let it flow to the next ayah naturally if continuous
+            if (currentPositionMs >= currentTiming.endTimeMs) {
+                val nextAyahId = currentAyahId + 1
+                if (nextAyahId <= totalAyatCount) {
+                    return NextAction.MoveToAyah(nextAyahId)
+                }
+            }
         }
 
-        // Detect if the player naturally moved to a new ayah (from the stream)
-        val detectedTiming = timings.find { currentPositionMs >= it.startTimeMs && currentPositionMs < it.endTimeMs }
-        if (detectedTiming != null && detectedTiming.verseNumber != currentAyahId) {
-            return NextAction.MoveToAyah(detectedTiming.verseNumber)
+        // 4. Check for natural progression to next ayah in continuous mode
+        val activeTiming = timings.find { currentPositionMs >= it.startTimeMs && currentPositionMs < it.endTimeMs }
+        if (activeTiming != null && activeTiming.verseNumber != currentAyahId) {
+            return NextAction.MoveToAyah(activeTiming.verseNumber)
         }
 
         return NextAction.None

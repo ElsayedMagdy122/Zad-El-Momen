@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.BuildConfig
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.util.BillingManager
+import dev.sayed.mehrabalmomen.domain.billing.BillingEvent
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
@@ -54,7 +56,6 @@ class SettingsViewModel(
         observeTafseer()
         observeSelectedMoazen()
         observeCompanionEnabled()
-        billingManager.queryProducts(supportProductIds)
     }
 
     private var previewPlayer: MediaPlayer? = null
@@ -93,7 +94,7 @@ class SettingsViewModel(
 
     private fun observeBillingData() {
         viewModelScope.launch {
-            billingManager.productDetails.collect { products ->
+            billingManager.products.collect { products ->
                 val available = products.isNotEmpty()
                 updateState {
                     it.copy(isSupportAvailable = available)
@@ -102,22 +103,31 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch {
-            billingManager.purchaseSuccess.collect {
-                sendEffect(
-                    SettingsEffect.ShowToast(
-                        ToastDetails(
-                            title = UiText.StringResource(R.string.success),
-                            message = UiText.StringResource(R.string.thank_you_for_support),
-                            icon = R.drawable.ic_check_circle
+            billingManager.events.collect { event ->
+                when (event) {
+                    BillingEvent.Success -> {
+                        viewModelScope.launch {
+                            settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, System.currentTimeMillis())
+                        }
+                        sendEffect(
+                            SettingsEffect.ShowToast(
+                                ToastDetails(
+                                    title = UiText.StringResource(R.string.success),
+                                    message = UiText.StringResource(R.string.thank_you_for_support),
+                                    icon = R.drawable.ic_check_circle
+                                )
+                            )
                         )
-                    )
-                )
+                    }
+                    BillingEvent.Pending -> {}
+                    BillingEvent.ProcessingError, BillingEvent.GeneralError -> {}
+                }
             }
         }
     }
 
     fun launchDonationFlow(activity: Activity, productId: String) {
-        billingManager.launchBillingFlow(activity, productId)
+        billingManager.donate(activity, productId)
     }
 
     private fun observeSettings() {
@@ -137,6 +147,9 @@ class SettingsViewModel(
                 }
                 rebuildSections()
                 prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+                org.koin.core.context.GlobalContext.getOrNull()?.get<Context>()?.let { appContext ->
+                    dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(appContext)
+                }
             }
         }
     }
@@ -271,6 +284,12 @@ class SettingsViewModel(
                         title = UiText.StringResource(R.string.moazen),
                         description = getMoazenName(state.selectedMoazen),
                         action = SettingsUiState.SettingsAction.MOAZEN
+                    ),
+                    SettingsUiState.SettingsItemUiState(
+                        icon = R.drawable.ic_prayer_times_selected,
+                        title = UiText.StringResource(R.string.prayer_times_widget),
+                        description = UiText.StringResource(R.string.prayer_widget_desc),
+                        action = SettingsUiState.SettingsAction.WIDGET
                     )
                 )
             ),
@@ -530,6 +549,7 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
             SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
             SettingsUiState.SettingsAction.COMPANION -> toggleCompanion()
+            SettingsUiState.SettingsAction.WIDGET -> sendEffect(SettingsEffect.RequestPinWidget)
             else -> {}
         }
     }
@@ -557,10 +577,10 @@ class SettingsViewModel(
     }
 
     private fun showSupportBottomSheet() {
-        val products = billingManager.productDetails.value
+        val products = billingManager.products.value
         val options = supportProductIds.map { id ->
-            val details = products.find { it.productId == id }
-            val price = details?.oneTimePurchaseOfferDetails?.formattedPrice ?: "N/A"
+            val donationProduct = products.find { it.id == id }
+            val price = donationProduct?.price ?: "N/A"
             SelectionItem(
                 description = price,
                 text = UiText.StringResource(getSupportName(id))
@@ -595,6 +615,12 @@ class SettingsViewModel(
     }
 
     override fun onDialogDismiss() {
+        val dialog = screenState.value.dialog
+        if (dialog?.type == SettingsUiState.SelectionDialogType.SUPPORT) {
+            viewModelScope.launch {
+                settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, System.currentTimeMillis())
+            }
+        }
         updateState { it.copy(dialog = null) }
     }
 

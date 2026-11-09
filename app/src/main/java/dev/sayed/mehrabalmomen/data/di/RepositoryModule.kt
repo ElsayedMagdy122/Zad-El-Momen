@@ -71,13 +71,15 @@ val repositoryModule = module {
     }
 
     single<ReminderSettingsRepository> {
-        ReminderSettingsRepositoryImpl(dataStore = get())
+        ReminderSettingsRepositoryImpl(reminderDao = get())
     }
 
     single<ReminderSchedulerRepository> {
         ReminderSchedulerRepositoryImpl(
             settingsRepository = get(),
-            alarmScheduler = get()
+            alarmScheduler = get(),
+            prayerRepository = get(),
+            appSettingsRepository = get()
         )
     }
     single<QuranAudioRepository> { 

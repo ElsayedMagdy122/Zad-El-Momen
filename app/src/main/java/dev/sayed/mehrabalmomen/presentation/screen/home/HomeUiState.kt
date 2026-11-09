@@ -1,5 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home
 
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.base.UiIcon
 import dev.sayed.mehrabalmomen.presentation.base.UiText
 
@@ -17,6 +18,7 @@ data class HomeUiState(
     )
 
     data class PrayerUiState(
+        val prayerName: Prayer.PrayerName? = null,
         val name: UiText = UiText.DynamicString(""),
         val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,

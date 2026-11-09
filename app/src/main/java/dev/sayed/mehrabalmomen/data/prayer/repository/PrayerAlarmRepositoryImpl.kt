@@ -24,11 +24,11 @@ class PrayerAlarmRepositoryImpl(
 
     private fun scheduleEnabledPrayerAlarms(prayers: List<PrayerAlarm>) {
         prayers.forEach { prayer ->
-            alarmScheduler.cancel(prayer.id, AlarmTask.Prayer(prayer.name.name))
+            alarmScheduler.cancel(prayer.id, AlarmTask.Prayer(prayer.name.name, prayer.timeMillis))
         }
 
         prayers.filter { it.enabled }.forEach { prayer ->
-            alarmScheduler.schedule(prayer.id, prayer.timeMillis, AlarmTask.Prayer(prayer.name.name))
+            alarmScheduler.schedule(prayer.id, prayer.timeMillis, AlarmTask.Prayer(prayer.name.name, prayer.timeMillis))
         }
     }
 

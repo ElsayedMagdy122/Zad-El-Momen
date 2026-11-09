@@ -32,7 +32,8 @@ fun FAQScreen(
         Pair(R.string.faq_q1, R.string.faq_a1),
         Pair(R.string.faq_q2, R.string.faq_a2),
         Pair(R.string.faq_q3, R.string.faq_a3),
-        Pair(R.string.faq_q4, R.string.faq_a4)
+        Pair(R.string.faq_q4, R.string.faq_a4),
+        Pair(R.string.faq_q5, R.string.faq_a5)
     )
 
     Box(

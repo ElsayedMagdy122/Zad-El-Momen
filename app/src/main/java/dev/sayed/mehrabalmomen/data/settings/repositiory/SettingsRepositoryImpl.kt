@@ -9,14 +9,127 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class SettingsRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
+
+    companion object {
+        private const val DAY_IN_MILLIS = 24L * 60L * 60L * 1000L
+        private const val NEW_USER_GRACE_PERIOD_MILLIS = 3L * DAY_IN_MILLIS // 3 days grace
+        private const val NEW_USER_MIN_LAUNCHES = 2                         // At least 2 launches
+        private const val COOL_DOWN_NOT_NOW_MILLIS = 20L * DAY_IN_MILLIS     // 20 days if not now
+        private const val COOL_DOWN_LATER_MILLIS = 4L * DAY_IN_MILLIS        // 4 days if later
+    }
+
+    override val lastDonationPromptTimeFlow: Flow<Long> = dataStore.data.map { prefs ->
+        prefs[SettingsKeys.LAST_DONATION_PROMPT_TIME] ?: 0L
+    }
+
+    override val hasDonatedFlow: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[SettingsKeys.HAS_DONATED] ?: false
+    }
+
+    override suspend fun setLastDonationPromptTime(timeMs: Long) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.LAST_DONATION_PROMPT_TIME] = timeMs
+        }
+    }
+
+    private suspend fun getFirstLaunchTime(): Long {
+        return dataStore.data.map { prefs ->
+            prefs[SettingsKeys.FIRST_LAUNCH_TIME] ?: 0L
+        }.first()
+    }
+
+    private suspend fun getAppLaunchCount(): Int {
+        return dataStore.data.map { prefs ->
+            prefs[SettingsKeys.APP_LAUNCH_COUNT] ?: 0
+        }.first()
+    }
+
+    private suspend fun getNextDonationPromptTime(): Long {
+        return dataStore.data.map { prefs ->
+            prefs[SettingsKeys.NEXT_DONATION_PROMPT_TIME] ?: 0L
+        }.first()
+    }
+
+    private suspend fun setNextDonationPromptTime(timeMs: Long) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.NEXT_DONATION_PROMPT_TIME] = timeMs
+        }
+    }
+
+    override suspend fun recordAppLaunch(currentTimeMs: Long) {
+        dataStore.edit { prefs ->
+            val firstLaunch = prefs[SettingsKeys.FIRST_LAUNCH_TIME] ?: 0L
+            if (firstLaunch == 0L) {
+                prefs[SettingsKeys.FIRST_LAUNCH_TIME] = currentTimeMs
+            }
+            val count = prefs[SettingsKeys.APP_LAUNCH_COUNT] ?: 0
+            prefs[SettingsKeys.APP_LAUNCH_COUNT] = count + 1
+        }
+    }
+
+    override suspend fun shouldShowDonationPrompt(currentTimeMs: Long): Boolean {
+        // 1. If user already donated, never prompt automatically
+        val hasDonated = hasDonatedFlow.first()
+        if (hasDonated) return false
+
+        val firstLaunchTime = getFirstLaunchTime()
+        val launchCount = getAppLaunchCount()
+
+        // 2. New user protection (Grace period: at least 3 days + at least 2 launches)
+        if (firstLaunchTime == 0L || (currentTimeMs - firstLaunchTime) < NEW_USER_GRACE_PERIOD_MILLIS || launchCount < NEW_USER_MIN_LAUNCHES) {
+            return false
+        }
+
+        // 3. Check next prompt schedule
+        val nextPromptTime = getNextDonationPromptTime()
+        if (nextPromptTime == 0L) {
+            val lastTime = lastDonationPromptTimeFlow.first()
+            if (lastTime == 0L) {
+                return true
+            } else {
+                return (currentTimeMs - lastTime) >= COOL_DOWN_LATER_MILLIS
+            }
+        }
+
+        return currentTimeMs >= nextPromptTime
+    }
+
+    override suspend fun onDonationPromptAction(action: DonationPromptAction, currentTimeMs: Long) {
+        setLastDonationPromptTime(currentTimeMs)
+        when (action) {
+            DonationPromptAction.DONATED -> {
+                setHasDonated(true)
+                setNextDonationPromptTime(Long.MAX_VALUE)
+            }
+            DonationPromptAction.NOT_NOW -> {
+                val randomDays = (10..15).random()
+                setNextDonationPromptTime(currentTimeMs + (randomDays * DAY_IN_MILLIS))
+            }
+            DonationPromptAction.LATER -> {
+                setNextDonationPromptTime(currentTimeMs + COOL_DOWN_LATER_MILLIS)
+            }
+            DonationPromptAction.DISMISSED -> {
+                val randomDays = (2..4).random()
+                setNextDonationPromptTime(currentTimeMs + (randomDays * DAY_IN_MILLIS))
+            }
+        }
+    }
+
+    override suspend fun setHasDonated(hasDonated: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.HAS_DONATED] = hasDonated
+        }
+    }
     override suspend fun saveMadhab(madhab: Madhab) {
         dataStore.edit { it[SettingsKeys.MADHAB] = madhab.name }
     }
