@@ -1,11 +1,8 @@
 package dev.sayed.mehrabalmomen.presentation.screen.qiblah
 
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,21 +13,16 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.DirectionCard
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.KaabaOnCircle
@@ -42,68 +34,28 @@ fun QiblahScreen(
     viewModel: QiblahViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
-    val animatedDirection by animateFloatAsState(targetValue = state.direction)
+    val animatedAngle by animateFloatAsState(
+        targetValue = state.relativeAngle,
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        label = "QiblahRotationAnimation"
+    )
 
-    HandleCompassSensor(viewModel = viewModel)
     LaunchedEffect(Unit) {
         viewModel.onScreenOpened()
     }
+
     QiblahScreenContent(
         navController = navController,
-       state = state
+        state = state,
+        animatedAngle = animatedAngle
     )
-
-}
-
-@Composable
-private fun HandleCompassSensor(viewModel: QiblahViewModel) {
-    val context = LocalContext.current
-    val sensorManager =
-        remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
-
-    DisposableEffect(Unit) {
-
-        val listener = object : SensorEventListener {
-
-            override fun onSensorChanged(event: SensorEvent) {
-                if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
-
-                    val rotationMatrix = FloatArray(9)
-                    SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-
-                    val orientation = FloatArray(3)
-                    SensorManager.getOrientation(rotationMatrix, orientation)
-
-                    val azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()
-                    val normalized = (azimuth + 360f) % 360f
-
-                    viewModel.updateDirection(normalized)
-                }
-            }
-
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-        }
-
-        val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-
-        if (rotationSensor != null) {
-            sensorManager.registerListener(
-                listener,
-                rotationSensor,
-                SensorManager.SENSOR_DELAY_GAME
-            )
-        }
-
-        onDispose {
-            sensorManager.unregisterListener(listener)
-        }
-    }
 }
 
 @Composable
 private fun QiblahScreenContent(
     navController: NavController,
-    state: QiblahUiState
+    state: QiblahUiState,
+    animatedAngle: Float
 ) {
     Column(
         modifier = Modifier
@@ -117,14 +69,19 @@ private fun QiblahScreenContent(
 
         AppBar(
             onBackClick = { navController.popBackStack() },
-            title = localizedString(R.string.qiblah),
+            title = localizedString(R.string.qiblah)
         )
 
         KaabaOnCircle(
-            directionDegrees = state.direction,
+            animatedAngle = animatedAngle,
+            isAligned = state.isAligned,
             modifier = Modifier.padding(vertical = 64.dp)
         )
 
-        DirectionCard(locationUiState = state.location,direction =state.direction)
+        DirectionCard(
+            locationUiState = state.location,
+            qiblaOffset = state.qiblaOffset,
+            isAligned = state.isAligned
+        )
     }
 }

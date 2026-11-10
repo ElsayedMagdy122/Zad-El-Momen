@@ -1,5 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.qiblah.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,16 +22,22 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 
 @Composable
 fun KaabaOnCircle(
-    directionDegrees: Float,
+    animatedAngle: Float,
+    isAligned: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val isAligned = kotlin.math.abs(directionDegrees) <= 5f
+    val borderColor by animateColorAsState(
+        targetValue = if (isAligned) Theme.color.semantic.success else Theme.color.secondary.secondaryText,
+        animationSpec = tween(durationMillis = 300),
+        label = "BorderColorAnimation"
+    )
+
     Box(
         modifier = modifier
             .clip(CircleShape)
             .border(
                 width = 5.dp,
-                color = if (isAligned) Theme.color.semantic.success else Theme.color.secondary.secondaryText,
+                color = borderColor,
                 shape = CircleShape
             )
             .background(Theme.color.surfaces.surface),
@@ -41,7 +50,7 @@ fun KaabaOnCircle(
                 .padding(6.dp)
                 .size(200.dp)
                 .graphicsLayer {
-                    rotationZ = directionDegrees
+                    rotationZ = animatedAngle
                 },
             tint = Theme.color.primary.primary
         )
