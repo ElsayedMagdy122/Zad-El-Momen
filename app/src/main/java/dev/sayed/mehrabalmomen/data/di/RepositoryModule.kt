@@ -43,7 +43,7 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
-    single<QiblahRepository> { QiblahRepositoryImpl() }
+    single<QiblahRepository> { QiblahRepositoryImpl(get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
