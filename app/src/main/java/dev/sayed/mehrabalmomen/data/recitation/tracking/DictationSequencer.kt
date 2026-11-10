@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.data.recitation.tracking
 
-import android.util.Log
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ErrorExplainer
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
@@ -15,7 +14,6 @@ class DictationSequencer(
     private val onWordEvent: (wordId: Int, status: WordStatus, cleanAsr: String, mistakes: List<ReciterMistake>) -> Unit
 ) {
     companion object {
-        private const val TAG = "Tasmee3Tracker"
     }
 
     var wordBoundaries = listOf<Int>()
@@ -99,7 +97,6 @@ class DictationSequencer(
         }
 
         targetWordCursor = startWord.coerceIn(0, wordCount)
-        Log.d(TAG, "📖 [REFERENCE] Surah $surahNum loaded: $wordCount words. Starting at cursor: $targetWordCursor")
     }
 
     fun syncStream(asrText: String, timestamps: List<Double>, isNewSegment: Boolean) {
@@ -355,14 +352,11 @@ class DictationSequencer(
 
         if (result == null) {
             if (unconsumedLen >= 50) {
-                Log.w(TAG, "⚠️ [STALL ESCAPE] Unconsumed speech ($unconsumedLen chars) stalled. Advancing anchor to escape deadlock.")
                 asrCharAnchor += min(15, unconsumedLen / 3)
                 return true
             }
             return false
         }
-
-        Log.i(TAG, "⚓ [AUTO RE-ANCHOR] Stalled at word $targetWordCursor -> Re-anchoring to word ${result.wordIndex} (dist: ${result.dist}, offset: ${result.probeOffset})")
 
         if (result.wordIndex > targetWordCursor) {
             for (w in targetWordCursor until result.wordIndex) {
@@ -417,7 +411,6 @@ class DictationSequencer(
         for (i in 1 until candidateWords.size) {
             val c = candidateWords[i]
             if (kotlin.math.abs(c.wordIndex - best.wordIndex) > 2 && (c.dist - best.dist) < 3) {
-                Log.w(TAG, "⚠️ [RE-ANCHOR AMBIGUITY] Suppressed jump between word ${best.wordIndex} and ${c.wordIndex}")
                 return null
             }
         }

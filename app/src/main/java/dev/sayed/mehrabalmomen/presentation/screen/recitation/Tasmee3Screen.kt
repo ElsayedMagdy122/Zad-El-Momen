@@ -46,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
@@ -111,9 +112,14 @@ fun Tasmee3Screen(
     val isCustomRange = startAyah > 1 || endAyah != -1
     val endDisplay = if (endAyah > 0) endAyah else uiState.verses.lastOrNull()?.ayah ?: ""
     val titleText = if (isCustomRange) {
-        "تسميع $surahName (${startAyah.toString().toLocalizedDigits(appLocale)} - ${endDisplay.toString().toLocalizedDigits(appLocale)})"
+        localizedString(
+            R.string.tasmee3_title_range,
+            surahName,
+            startAyah.toString().toLocalizedDigits(appLocale),
+            endDisplay.toString().toLocalizedDigits(appLocale)
+        )
     } else {
-        "تسميع سورة $surahName"
+        localizedString(R.string.tasmee3_title_full, surahName)
     }
 
     Box(
@@ -179,6 +185,23 @@ fun Tasmee3Screen(
                 val verseChunks = remember(uiState.verses) {
                     if (uiState.verses.size <= 8) listOf(uiState.verses)
                     else uiState.verses.chunked(6)
+                }
+
+                val hasBismillah = startAyah == 1 && surahId != 1 && surahId != 9
+                val activeChunkIndex = remember(uiState.activeWordCursor, verseChunks) {
+                    verseChunks.indexOfFirst { chunk ->
+                        val start = chunk.firstOrNull()?.globalStartIndex ?: 0
+                        val end = chunk.lastOrNull()?.let { it.globalStartIndex + it.phonemeWords.size } ?: 0
+                        uiState.activeWordCursor in start until end
+                    }
+                }
+
+                // Smoothly animated auto-scroll to keep the reciting cursor in comfortable view
+                LaunchedEffect(activeChunkIndex, uiState.isRecording) {
+                    if (uiState.isRecording && activeChunkIndex >= 0) {
+                        val targetItemIndex = if (hasBismillah) activeChunkIndex + 1 else activeChunkIndex
+                        scrollState.animateScrollToItem(targetItemIndex)
+                    }
                 }
 
                 LazyColumn(

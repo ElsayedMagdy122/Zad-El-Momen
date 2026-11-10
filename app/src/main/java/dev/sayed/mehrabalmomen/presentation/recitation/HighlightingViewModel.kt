@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationUiState
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.cleanWordText
 
 /**
  * State Management ViewModel for AI Quran Recitation and Tajweed Verification.
@@ -51,7 +52,18 @@ class HighlightingViewModel(
             WordStatus.RED    -> "🔴 خطأ / سقطت"
             else              -> ""
         }
-        val infoText = "كلمة #${wordId + 1}: $statusSymbol ${if (cleanAsr.isNotEmpty()) "(\"$cleanAsr\")" else ""}"
+
+        val targetWord = _uiState.value.verses
+            .firstOrNull { wordId in it.globalStartIndex until (it.globalStartIndex + it.displayWords.size) }
+            ?.let { verse ->
+                verse.displayWords.getOrNull(wordId - verse.globalStartIndex)?.let { cleanWordText(it) }
+            } ?: cleanAsr
+
+        val infoText = if (targetWord.isNotEmpty()) {
+            "« $targetWord »  $statusSymbol"
+        } else {
+            "كلمة #${wordId + 1}: $statusSymbol ${if (cleanAsr.isNotEmpty()) "(\"$cleanAsr\")" else ""}"
+        }
         
         val totalWords = _uiState.value.verses.sumOf { it.phonemeWords.size }
         val isFinished = totalWords > 0 && (wordId + 1 >= totalWords)
@@ -81,22 +93,22 @@ class HighlightingViewModel(
         val errorPercentage = if (totalWords > 0) (error * 100) / totalWords else 0
         val accuracyPercentage = (100 - errorPercentage).coerceIn(0, 100)
 
-        val (ratingTitle, ratingMessage) = when {
+        val (ratingTitleRes, ratingMessageRes) = when {
             accuracyPercentage >= 95 -> Pair(
-                "ما شاء الله! تلاوة متقنة وممتازة 🌟",
-                "أتممت التسميع بأعلى درجات الإتقان والضبط، بارك الله فيك ونفع بك القرآن الكريم."
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_excellent_title,
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_excellent_msg
             )
             accuracyPercentage >= 85 -> Pair(
-                "أحسنت! تلاوة جيدة جداً 👏",
-                "حفظ متقن ومبارك مع بعض الملاحظات البسيطة، استمر في المراجعة والارتقاء."
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_very_good_title,
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_very_good_msg
             )
             accuracyPercentage >= 70 -> Pair(
-                "تلاوة جيدة وعمل مبارك 👍",
-                "أتممت التسميع بنجاح، يُنصح بمراجعة المواضع التي سقطت أو أخطأت فيها لتثبيت الحفظ."
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_good_title,
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_good_msg
             )
             else -> Pair(
-                "محاولة مباركة ومأجورة 💪",
-                "استمر في التكرار والمراجعة لتثبيت الآيات الكريمة وإتقان حفظها بإذن الله."
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_retry_title,
+                dev.sayed.mehrabalmomen.R.string.recitation_rating_retry_msg
             )
         }
 
@@ -106,8 +118,8 @@ class HighlightingViewModel(
             warningWords = warning,
             errorWords = error,
             accuracyPercentage = accuracyPercentage,
-            ratingTitle = ratingTitle,
-            ratingMessage = ratingMessage
+            ratingTitleRes = ratingTitleRes,
+            ratingMessageRes = ratingMessageRes
         )
 
         _uiState.update {

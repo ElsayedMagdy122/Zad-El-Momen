@@ -2,10 +2,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
 
 /**
@@ -43,6 +44,8 @@ fun RecitationDownloadDialog(
     onCancel: () -> Unit,
     onRetry: () -> Unit
 ) {
+    val appLocale = LocalAppLocale.current
+
     PrimaryDialog(
         onDismiss = onCancel,
         backgroundColor = Theme.color.surfaces.surface
@@ -96,10 +99,10 @@ fun RecitationDownloadDialog(
 
                 Text(
                     text = when {
-                        errorText != null -> "تعذر تنزيل ملفات النموذج"
-                        isProcessing -> "جاري تجهيز وتثبيت النموذج"
-                        isDownloading -> "جاري تنزيل نموذج التسميع"
-                        else -> "تنزيل نموذج التعرف الصوتي"
+                        errorText != null -> localizedString(R.string.recitation_download_error_title)
+                        isProcessing -> localizedString(R.string.recitation_download_processing_title)
+                        isDownloading -> localizedString(R.string.recitation_download_in_progress_title)
+                        else -> localizedString(R.string.recitation_download_prompt_title)
                     },
                     textAlign = TextAlign.Center,
                     style = Theme.textStyle.title.medium,
@@ -110,7 +113,7 @@ fun RecitationDownloadDialog(
 
                 if (errorText != null) {
                     Text(
-                        text = "حدث خطأ أثناء التنزيل:\n$errorText",
+                        text = localizedString(R.string.recitation_download_error_prefix, errorText),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.body.small,
                         color = Color.Red
@@ -126,7 +129,7 @@ fun RecitationDownloadDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "إعادة المحاولة",
+                            text = localizedString(R.string.recitation_download_retry),
                             color = Theme.color.primary.onPrimary,
                             style = Theme.textStyle.label.medium,
                             fontWeight = FontWeight.Bold
@@ -137,7 +140,7 @@ fun RecitationDownloadDialog(
                         modifier = Modifier
                             .clickable { onCancel() }
                             .padding(vertical = 8.dp),
-                        text = "إلغاء والرجوع",
+                        text = localizedString(R.string.recitation_download_cancel),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.secondary.shadeSecondary
@@ -151,7 +154,7 @@ fun RecitationDownloadDialog(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...",
+                        text = localizedString(R.string.recitation_download_processing_msg),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
@@ -161,7 +164,7 @@ fun RecitationDownloadDialog(
                         modifier = Modifier
                             .clickable { onCancel() }
                             .padding(vertical = 8.dp),
-                        text = "إلغاء والرجوع",
+                        text = localizedString(R.string.recitation_download_cancel),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.secondary.shadeSecondary
@@ -176,7 +179,10 @@ fun RecitationDownloadDialog(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "جاري تنزيل نموذج التعرف الصوتي... (${(progress * 100).toInt()}%)",
+                        text = localizedString(
+                            R.string.recitation_download_progress_msg,
+                            (progress * 100).toInt().toString().toLocalizedDigits(appLocale)
+                        ),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
@@ -193,7 +199,7 @@ fun RecitationDownloadDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "إلغاء التحميل والرجوع",
+                            text = localizedString(R.string.recitation_download_cancel_long),
                             color = Theme.color.primary.primary,
                             style = Theme.textStyle.label.medium,
                             fontWeight = FontWeight.Bold
@@ -201,7 +207,7 @@ fun RecitationDownloadDialog(
                     }
                 } else {
                     Text(
-                        text = "تتطلب ميزة التسميع تنزيل نموذج الذكاء الاصطناعي (حجمه حوالي 70 ميجابايت) لمرة واحدة فقط لتتمكن من استخدام الميزة.",
+                        text = localizedString(R.string.recitation_download_intro_msg),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
@@ -217,7 +223,7 @@ fun RecitationDownloadDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "تنزيل الموديل الآن",
+                            text = localizedString(R.string.recitation_download_confirm),
                             color = Theme.color.primary.onPrimary,
                             style = Theme.textStyle.label.medium,
                             fontWeight = FontWeight.Bold
@@ -228,7 +234,7 @@ fun RecitationDownloadDialog(
                         modifier = Modifier
                             .clickable { onCancel() }
                             .padding(vertical = 8.dp),
-                        text = "إلغاء والرجوع",
+                        text = localizedString(R.string.recitation_download_cancel),
                         textAlign = TextAlign.Center,
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.secondary.shadeSecondary

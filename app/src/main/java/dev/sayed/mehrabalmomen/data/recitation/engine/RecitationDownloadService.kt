@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.presentation.base.MainActivity
@@ -31,7 +30,6 @@ class RecitationDownloadService : Service() {
     private var downloadJob: Job? = null
 
     companion object {
-        private const val TAG = "RecitationDownloadService"
         private const val CHANNEL_ID = "recitation_download_channel"
         private const val NOTIFICATION_ID = 20261
 
@@ -93,12 +91,10 @@ class RecitationDownloadService : Service() {
                             notificationManager.notify(NOTIFICATION_ID, notification)
                         }
                         is ModelDownloadState.Ready -> {
-                            Log.d(TAG, "🎉 Download completed via Foreground Service!")
                             stopForeground(STOP_FOREGROUND_REMOVE)
                             stopSelf()
                         }
                         is ModelDownloadState.Error -> {
-                            Log.e(TAG, "❌ Download error via Foreground Service: ${state.message}")
                             stopForeground(STOP_FOREGROUND_REMOVE)
                             stopSelf()
                         }

@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.data.recitation.data
 
 import android.content.Context
-import android.util.Log
 import org.json.JSONObject
 
 data class QuranVerse(
@@ -19,7 +18,6 @@ data class QuranVerse(
  */
 class QuranRepository(private val context: Context) {
     companion object {
-        private const val TAG = "QuranRepository"
         private val BRACES_REGEX = Regex("\\{[^}]*\\}")
         private val WHITESPACE_REGEX = Regex("\\s+")
     }
@@ -31,22 +29,17 @@ class QuranRepository(private val context: Context) {
     fun loadData() {
         if (versesObj != null) return
         try {
-            Log.d(TAG, "📖 [QuranRepository] Loading ordered_quran_phonemes.json...")
             val internalFile = java.io.File(context.filesDir, "ordered_quran_phonemes.json")
             val jsonString = if (internalFile.exists() && internalFile.length() > 0) {
-                Log.d(TAG, "📂 Loading phonemes from internal storage: ${internalFile.absolutePath}")
                 internalFile.readText(Charsets.UTF_8)
             } else {
-                Log.d(TAG, "📂 Loading phonemes from APK assets...")
                 context.assets.open("ordered_quran_phonemes.json").bufferedReader(Charsets.UTF_8).use {
                     it.readText()
                 }
             }
             val root = JSONObject(jsonString)
             versesObj = root.optJSONObject("verses") ?: root
-            Log.d(TAG, "✅ [QuranRepository] Successfully loaded ordered_quran_phonemes.json (${versesObj?.length() ?: 0} verses)")
-        } catch (e: Exception) {
-            Log.e(TAG, "❌ [QuranRepository] Error loading ordered_quran_phonemes.json: ${e.message}", e)
+        } catch (_: Exception) {
         }
     }
 

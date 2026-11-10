@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
 
 /**
@@ -66,7 +67,7 @@ fun RecitationDisclaimerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "تنبيه مهم بشأن التسميع",
+                    text = localizedString(R.string.recitation_disclaimer_title),
                     textAlign = TextAlign.Center,
                     style = Theme.textStyle.title.medium,
                     color = Theme.color.primary.shadePrimary
@@ -76,7 +77,7 @@ fun RecitationDisclaimerDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp, start = 8.dp, end = 8.dp),
-                    text = "يعتمد نموذج التسميع على التعرف على الكلمات القرآنية وترتيب الآيات لمساعدتك في مراجعة وتثبيت الحفظ فقط، ولا يقوم بالتدقيق على أحكام التجويد أو مخارج الحروف.\n\nهذه الميزة وسيلة مساعدة تقريبية ولا تُغني بأي حال عن التلقي والمشافهة والعرض على شيخ أو معلم متقن ومجاز.",
+                    text = localizedString(R.string.recitation_disclaimer_message),
                     textAlign = TextAlign.Center,
                     style = Theme.textStyle.body.small,
                     color = Theme.color.secondary.shadeSecondary
@@ -92,7 +93,7 @@ fun RecitationDisclaimerDialog(
                         ) {
                             onDismiss()
                         },
-                    text = "فهمت ذلك",
+                    text = localizedString(R.string.recitation_disclaimer_confirm),
                     textAlign = TextAlign.End,
                     style = Theme.textStyle.label.medium,
                     color = Theme.color.primary.primary

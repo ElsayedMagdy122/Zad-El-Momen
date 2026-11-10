@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.data.recitation.engine
 
 import android.content.Context
-import android.util.Log
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import io.ktor.client.HttpClient
@@ -43,7 +42,6 @@ class RecitationModelDownloader(
     private val httpClient: HttpClient
 ) {
     companion object {
-        private const val TAG = "RecitationModelDownloader"
         private const val BUCKET_NAME = "recitation-models"
         private const val MERGED_MODEL_NAME = "zipformer_p_arabic_v3.1.int8.onnx"
 
@@ -84,7 +82,6 @@ class RecitationModelDownloader(
         }
 
         try {
-            Log.d(TAG, "🔄 [RecitationModelDownloader] Checking and downloading model files...")
             val targetModelFile = File(context.filesDir, MERGED_MODEL_NAME)
             val part1ZipFile = File(context.cacheDir, "model1.zip")
             val part2ZipFile = File(context.cacheDir, "model2.zip")
@@ -94,13 +91,11 @@ class RecitationModelDownloader(
             // Step 1: Verify model integrity (If missing or corrupted, delete and re-download)
             if (!isFileValid(targetModelFile, MIN_VALID_MODEL_SIZE)) {
                 if (targetModelFile.exists()) {
-                    Log.w(TAG, "⚠️ Target model file is corrupted/incomplete (${targetModelFile.length()} bytes vs required $MIN_VALID_MODEL_SIZE). Re-downloading...")
                     targetModelFile.delete()
                 }
 
                 // Download part 1 if not cached
                 if (!part1ZipFile.exists() || part1ZipFile.length() < 10000000L) {
-                    Log.d(TAG, "📥 Streaming model1.zip...")
                     streamDownloadToFile(
                         fileName = "model1.zip",
                         outputFile = part1ZipFile,
@@ -112,15 +107,13 @@ class RecitationModelDownloader(
                 // Download part 2 if not cached
                 if (!part2ZipFile.exists() || part2ZipFile.length() < 10000000L) {
                     try {
-                        Log.d(TAG, "📥 Streaming model2.zip...")
                         streamDownloadToFile(
                             fileName = "model2.zip",
                             outputFile = part2ZipFile,
                             baseProgress = 0.40f,
                             progressWeight = 0.40f
                         )
-                    } catch (e: Exception) {
-                        Log.w(TAG, "model2.zip stream skipped or failed: ${e.message}")
+                    } catch (_: Exception) {
                     }
                 }
 
@@ -136,11 +129,9 @@ class RecitationModelDownloader(
 
                 // Check if single part alone is complete
                 if (sourcePart1.length() >= MIN_VALID_MODEL_SIZE) {
-                    Log.d(TAG, "📦 Part 1 alone is a complete ONNX model (${sourcePart1.length()} bytes). Copying...")
                     sourcePart1.copyTo(targetModelFile, overwrite = true)
                 } else if (sourcePart1.exists() && sourcePart2.exists() && sourcePart2.length() > 0L) {
                     // Concatenate unzipped raw part 1 + unzipped raw part 2
-                    Log.d(TAG, "🧩 Merging unzipped raw parts (${sourcePart1.length()} + ${sourcePart2.length()} bytes) into $MERGED_MODEL_NAME...")
                     FileOutputStream(targetModelFile).use { out ->
                         sourcePart1.inputStream().use { in1 -> in1.copyTo(out) }
                         sourcePart2.inputStream().use { in2 -> in2.copyTo(out) }
@@ -152,8 +143,6 @@ class RecitationModelDownloader(
                 if (part2ZipFile.exists()) part2ZipFile.delete()
                 if (part1RawFile.exists()) part1RawFile.delete()
                 if (part2RawFile.exists()) part2RawFile.delete()
-
-                Log.d(TAG, "✅ Target model processed (${targetModelFile.length()} bytes)")
             }
 
             // Step 2: Verify & Download Auxiliary Assets
@@ -164,13 +153,11 @@ class RecitationModelDownloader(
                 val assetFile = File(context.filesDir, assetName)
                 if (!isFileValid(assetFile, minSize)) {
                     if (assetFile.exists()) {
-                        Log.w(TAG, "⚠️ Asset $assetName is incomplete (${assetFile.length()} bytes). Re-downloading...")
                         assetFile.delete()
                     }
 
                     val baseProgress = 0.85f + (index.toFloat() / totalAssets.toFloat()) * 0.14f
                     val weight = 0.14f / totalAssets.toFloat()
-                    Log.d(TAG, "📥 Streaming asset: $assetName...")
                     streamDownloadToFile(
                         fileName = assetName,
                         outputFile = assetFile,
@@ -188,15 +175,12 @@ class RecitationModelDownloader(
 
             _downloadState.value = ModelDownloadState.Processing("جاري تهيئة محرك الذكاء الاصطناعي...")
             _downloadState.value = ModelDownloadState.Ready
-            Log.d(TAG, "🎉 [RecitationModelDownloader] All models & assets downloaded & verified successfully!")
             true
         } catch (e: Exception) {
             if (e is kotlinx.coroutines.CancellationException) {
-                Log.d(TAG, "🛑 [RecitationModelDownloader] Download job cancelled by user.")
                 _downloadState.value = ModelDownloadState.Idle
                 throw e
             }
-            Log.e(TAG, "❌ [RecitationModelDownloader] Download failed: ${e.message}", e)
             _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "فشل تنزيل ملفات النموذج")
             false
         }
@@ -213,19 +197,16 @@ class RecitationModelDownloader(
                 var entry = zipIn.nextEntry
                 while (entry != null) {
                     if (!entry.isDirectory) {
-                        Log.d(TAG, "📦 Unzipping entry '${entry.name}' (${entry.size} bytes)...")
                         FileOutputStream(outputFile).use { out ->
                             zipIn.copyTo(out)
                         }
-                        Log.d(TAG, "✅ Unzipped entry size: ${outputFile.length()} bytes")
                         return outputFile.exists() && outputFile.length() > 0L
                     }
                     zipIn.closeEntry()
                     entry = zipIn.nextEntry
                 }
             }
-        } catch (e: Exception) {
-            Log.w(TAG, "File is not a zip archive: ${e.message}")
+        } catch (_: Exception) {
         }
         return false
     }

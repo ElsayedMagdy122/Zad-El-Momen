@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.data.recitation.tracking
 
-import android.util.Log
 import kotlin.math.max
 import kotlin.math.min
 

@@ -13,8 +13,10 @@ data class RecitationCompletionResult(
     val warningWords: Int,
     val errorWords: Int,
     val accuracyPercentage: Int,
-    val ratingTitle: String,
-    val ratingMessage: String
+    val ratingTitle: String = "",
+    val ratingMessage: String = "",
+    val ratingTitleRes: Int = 0,
+    val ratingMessageRes: Int = 0
 )
 
 data class RecitationUiState(

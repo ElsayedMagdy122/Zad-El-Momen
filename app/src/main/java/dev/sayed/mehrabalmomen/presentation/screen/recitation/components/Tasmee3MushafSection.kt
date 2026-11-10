@@ -1,10 +1,14 @@
 package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +38,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.recitation.getAyahEndGlyph
 
 /**
  * Renders verses in an authentic, justified Mus'haf flow using Hafs calligraphy and 3-color status protocol.
- * Optimized with localized chunk state observation to eliminate lag in large Surahs.
+ * Features a soft, seamless fade-in text appearance animation as each word is recited.
  */
 @Composable
 fun Tasmee3MushafSection(
@@ -58,7 +62,25 @@ fun Tasmee3MushafSection(
         wordStatuses.filterKeys { it in chunkStartIndex until chunkEndIndex }
     }
 
-    val annotatedMushafText = remember(verses, chunkStatuses) {
+    // Localized cursor tracking: Only the single chunk containing the active cursor recomputes
+    val isCursorInThisChunk = activeCursor in chunkStartIndex..(chunkEndIndex + 1)
+    val localCursor = if (isCursorInThisChunk) activeCursor else -1
+
+    // Eye-friendly, soft and soothing appearance animation for newly spoken words
+    // Starts at a gentle 0.60f contrast (avoiding dark flicker/strobe) and smoothly settles to full depth (1.0f)
+    val appearAlpha = remember { Animatable(1f) }
+    LaunchedEffect(localCursor) {
+        if (localCursor > 0) {
+            appearAlpha.snapTo(0.60f)
+            appearAlpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 240, easing = FastOutSlowInEasing)
+            )
+        }
+    }
+
+    val currentAlpha = appearAlpha.value
+    val annotatedMushafText = remember(verses, chunkStatuses, localCursor, currentAlpha) {
         buildAnnotatedString {
             verses.forEach { verse ->
                 verse.displayWords.forEachIndexed { wordIdx, word ->
@@ -69,34 +91,37 @@ fun Tasmee3MushafSection(
                     val status = chunkStatuses[globalIdx] ?: WordStatus.UNSPOKEN
 
                     val isRevealed = status != WordStatus.UNSPOKEN
+                    val isJustSpoken = (localCursor > 0 && globalIdx == localCursor - 1)
 
                     pushStringAnnotation(tag = "WORD_CLICK", annotation = "$globalIdx|$cleanWord")
 
                     if (isRevealed) {
                         val wordColor = when (status) {
-                            WordStatus.GREEN -> Color(0xFF2E7D32) // 🟢 Correctly recited
-                            WordStatus.YELLOW -> Color(0xFFFBC02D) // 🟡 Tajweed warning (Bright Yellow)
-                            WordStatus.RED -> Color(0xFFC62828) // 🔴 Skipped / Mispronounced
+                            WordStatus.GREEN -> Color(0xFF2E7D32) // 🟢 Serene Quranic Emerald
+                            WordStatus.YELLOW -> Color(0xFFD48806) // 🟡 Warm golden amber (easy on eyes)
+                            WordStatus.RED -> Color(0xFFD32F2F) // 🔴 Soft crimson
                             WordStatus.NEUTRAL -> primaryColor
                             WordStatus.UNSPOKEN -> Color.Transparent
                         }
+                        // Newly uttered word gently glides into full color without harsh flashes or background boxes
+                        val wordAlpha = if (isJustSpoken) currentAlpha else 1f
                         withStyle(
                             SpanStyle(
-                                color = wordColor,
+                                color = wordColor.copy(alpha = wordAlpha),
                                 fontWeight = FontWeight.Bold
                             )
                         ) {
                             append(cleanWord)
                         }
                     } else {
-                        // Unspoken word placeholder: subtle, elegant dots in Hafs proportions
+                        // Unspoken word placeholder: soft, low-contrast elegant dots in Hafs proportions
                         withStyle(
                             SpanStyle(
-                                color = Color.LightGray.copy(alpha = 0.55f),
+                                color = Color(0xFFBDBDBD).copy(alpha = 0.40f),
                                 fontWeight = FontWeight.Normal
                             )
                         ) {
-                            append("••••")
+                            append("•••")
                         }
                     }
                     pop()

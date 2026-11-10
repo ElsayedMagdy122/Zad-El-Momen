@@ -2,10 +2,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -258,8 +261,14 @@ private fun SurahAyatContent(
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(bottom = 16.dp)
                 .padding(horizontal = 16.dp),
-            enter = fadeIn(tween(150)),
-            exit = fadeOut(tween(150))
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(durationMillis = 250)
+            ) + fadeOut(tween(200))
         ) {
             TilawahBox(
                 readerName = readerName ?: localizedString(R.string.select_reciter),

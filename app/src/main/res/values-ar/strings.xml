@@ -501,4 +501,66 @@
     <string name="recitation_feedback_title">ملاحظات التجويد والنطق</string>
     <string name="recitation_feedback_on_word">تنبيه على كلمة: %1$s</string>
     <string name="recitation_feedback_close">فهمت (إغلاق)</string>
+
+    <!-- Tasmee3 & Recitation Feature -->
+    <string name="tasmee3_title_full">تسميع سورة %1$s</string>
+    <string name="tasmee3_title_range">تسميع %1$s (%2$s - %3$s)</string>
+    <string name="tasmee3_session_title">جلسة التسميع الصوتي</string>
+    <string name="tasmee3_session_active">جلسة التسميع الصوتي (نشطة)</string>
+    <string name="tasmee3_status_ongoing">مستمر</string>
+    <string name="tasmee3_status_ready">جاهز</string>
+    <string name="tasmee3_status_initializing">جاري تهيئة نموذج الذكاء الاصطناعي...</string>
+    <string name="tasmee3_status_listening">جاري الاستماع... اقرأ بوضوح</string>
+    <string name="tasmee3_status_prompt">اضغط على المايك للبدء في التسميع</string>
+
+    <string name="tasmee3_range_title">تحديد نطاق التسميع</string>
+    <string name="tasmee3_range_surah_info">سورة %1$s • عدد الآيات: %2$s آية</string>
+    <string name="tasmee3_mode_full_surah">السورة كاملة</string>
+    <string name="tasmee3_mode_full_surah_desc">من الآية ١ إلى الآية %1$s</string>
+    <string name="tasmee3_mode_custom_range">تحديد مقطع من الآيات</string>
+    <string name="tasmee3_mode_custom_range_desc">تسميع جزء محدد من السورة</string>
+    <string name="tasmee3_from_ayah">من الآية</string>
+    <string name="tasmee3_to_ayah">إلى الآية</string>
+    <string name="tasmee3_start_button">بدء التسميع</string>
+    <string name="tasmee3_error_start_range">بداية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_end_range">نهاية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_start_greater">آية البداية يجب أن تكون أصغر من أو تساوي آية النهاية</string>
+
+    <string name="recitation_disclaimer_title">تنبيه مهم بشأن التسميع</string>
+    <string name="recitation_disclaimer_message">يعتمد نموذج التسميع على التعرف على الكلمات القرآنية وترتيب الآيات لمساعدتك في مراجعة وتثبيت الحفظ فقط، ولا يقوم بالتدقيق على أحكام التجويد أو مخارج الحروف.\n\nهذه الميزة وسيلة مساعدة تقريبية ولا تُغني بأي حال عن التلقي والمشافهة والعرض على شيخ أو معلم متقن ومجاز.</string>
+    <string name="recitation_disclaimer_confirm">فهمت ذلك</string>
+
+    <string name="recitation_download_error_title">تعذر تنزيل ملفات النموذج</string>
+    <string name="recitation_download_processing_title">جاري تجهيز وتثبيت النموذج</string>
+    <string name="recitation_download_in_progress_title">جاري تنزيل نموذج التسميع</string>
+    <string name="recitation_download_prompt_title">تنزيل نموذج التعرف الصوتي</string>
+    <string name="recitation_download_error_prefix">حدث خطأ أثناء التنزيل:\n%1$s</string>
+    <string name="recitation_download_retry">إعادة المحاولة</string>
+    <string name="recitation_download_cancel">إلغاء والرجوع</string>
+    <string name="recitation_download_processing_msg">تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...</string>
+    <string name="recitation_download_progress_msg">جاري تنزيل نموذج التعرف الصوتي... (%1$s%%)</string>
+    <string name="recitation_download_cancel_long">إلغاء التحميل والرجوع</string>
+    <string name="recitation_download_intro_msg">تتطلب ميزة التسميع تنزيل نموذج الذكاء الاصطناعي (حجمه حوالي 70 ميجابايت) لمرة واحدة فقط لتتمكن من استخدام الميزة.</string>
+    <string name="recitation_download_confirm">تنزيل الموديل الآن</string>
+
+    <string name="recitation_result_title">نتيجة التسميع</string>
+    <string name="recitation_result_surah_prefix">سورة %1$s</string>
+    <string name="recitation_result_correct">صحيحة</string>
+    <string name="recitation_result_errors">أخطاء</string>
+    <string name="recitation_result_words">الكلمات</string>
+    <string name="recitation_result_accuracy">نسبة الإتقان</string>
+    <string name="recitation_result_guide_title">دليل ألوان التسميع في المصحف:</string>
+    <string name="recitation_result_green_meaning">اللون الأخضر: كلمات قُرِئت بشكل صحيح وبنطق سليم.</string>
+    <string name="recitation_result_red_meaning">اللون الأحمر: كلمات حدث فيها خطأ في النطق أو سقطت أثناء التسميع.</string>
+    <string name="recitation_result_restart">إعادة التسميع من البداية</string>
+    <string name="recitation_result_review">مراجعة الآيات</string>
+
+    <string name="recitation_rating_excellent_title">ما شاء الله! تلاوة متقنة وممتازة 🌟</string>
+    <string name="recitation_rating_excellent_msg">أتممت التسميع بأعلى درجات الإتقان والضبط، بارك الله فيك ونفع بك القرآن الكريم.</string>
+    <string name="recitation_rating_very_good_title">أحسنت! تلاوة جيدة جداً 👏</string>
+    <string name="recitation_rating_very_good_msg">حفظ متقن ومبارك مع بعض الملاحظات البسيطة، استمر في المراجعة والارتقاء.</string>
+    <string name="recitation_rating_good_title">تلاوة جيدة وعمل مبارك 👍</string>
+    <string name="recitation_rating_good_msg">أتممت التسميع بنجاح، يُنصح بمراجعة المواضع التي سقطت أو أخطأت فيها لتثبيت الحفظ.</string>
+    <string name="recitation_rating_retry_title">محاولة مباركة ومأجورة 💪</string>
+    <string name="recitation_rating_retry_msg">استمر في التكرار والمراجعة لتثبيت الآيات الكريمة وإتقان حفظها بإذن الله.</string>
 </resources>

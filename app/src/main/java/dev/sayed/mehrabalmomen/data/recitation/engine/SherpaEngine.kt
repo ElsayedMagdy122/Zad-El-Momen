@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.data.recitation.engine
 
 import android.content.Context
-import android.util.Log
 import java.io.File
 import com.k2fsa.sherpa.onnx.OnlineRecognizer
 import com.k2fsa.sherpa.onnx.OnlineRecognizerConfig
@@ -32,16 +31,12 @@ data class TranscriptionResult(
  * These timestamps are what drive the Tajweed duration matrix.
  */
 class SherpaEngine(private val context: Context) {
-    companion object {
-        private const val TAG = "SherpaEngine"
-    }
 
     private val _transcriptionStream = MutableSharedFlow<TranscriptionResult>(replay = 0, extraBufferCapacity = 64)
     val transcriptionStream: SharedFlow<TranscriptionResult> = _transcriptionStream.asSharedFlow()
 
     private var onlineRecognizer: OnlineRecognizer? = null
     private var onlineStream: OnlineStream? = null
-    private var lastLoggedText = ""
 
     private var isInitialized = false
     var currentStreamEpoch = 0
@@ -51,27 +46,21 @@ class SherpaEngine(private val context: Context) {
 
     fun initialize(): Boolean = synchronized(lock) {
         if (isInitialized) {
-            Log.d(TAG, "🟢 [SherpaEngine] Already initialized.")
             return@synchronized true
         }
         try {
-            Log.d(TAG, "🔄 [SherpaEngine] Extracting VFS assets for Sherpa-ONNX...")
             val modelPath = AssetExtractor.extractAssetIfNeeded(context, "zipformer_p_arabic_v3.1.int8.onnx")
             val tokensPath = AssetExtractor.extractAssetIfNeeded(context, "tokens.txt")
-
-            Log.d(TAG, "📂 [SherpaEngine] Model: $modelPath")
-            Log.d(TAG, "📂 [SherpaEngine] Tokens: $tokensPath")
 
             val config = OnlineRecognizerConfig().apply {
                 modelConfig.tokens = tokensPath
                 modelConfig.numThreads = 2
                 modelConfig.provider = "cpu"
-                modelConfig.debug = false // set true only for deep debugging
+                modelConfig.debug = false
 
                 try {
                     modelConfig.zipformer2Ctc.model = modelPath
-                    Log.d(TAG, "📂 [SherpaEngine] Assigned model via direct property.")
-                } catch (e: Throwable) {
+                } catch (_: Throwable) {
                     try {
                         val z2Field = modelConfig.javaClass.getField("zipformer2Ctc")
                         val z2Config = z2Field.get(modelConfig)
@@ -85,8 +74,7 @@ class SherpaEngine(private val context: Context) {
                             val modelField = z2Config?.javaClass?.getDeclaredField("model")
                             modelField?.isAccessible = true
                             modelField?.set(z2Config, modelPath)
-                        } catch (ex: Exception) {
-                            Log.e(TAG, "❌ [SherpaEngine] Could not set model path: ${ex.message}")
+                        } catch (_: Exception) {
                         }
                     }
                 }
@@ -96,16 +84,9 @@ class SherpaEngine(private val context: Context) {
             onlineStream = onlineRecognizer?.createStream()
 
             isInitialized = onlineRecognizer != null && onlineStream != null
-            if (isInitialized) {
-                Log.d(TAG, "✅ [SherpaEngine] Initialized OK. Epoch=$currentStreamEpoch")
-            } else {
-                Log.e(TAG, "❌ [SherpaEngine] recognizer or stream is null after init!")
-            }
-        } catch (e: Throwable) {
-            Log.e(TAG, "❌ [SherpaEngine] Init failed: ${e.message}", e)
+        } catch (_: Throwable) {
             val corruptModel = File(context.filesDir, "zipformer_p_arabic_v3.1.int8.onnx")
             if (corruptModel.exists()) {
-                Log.w(TAG, "⚠️ Deleting corrupted model file (${corruptModel.length()} bytes)...")
                 corruptModel.delete()
             }
             isInitialized = false
@@ -156,14 +137,9 @@ class SherpaEngine(private val context: Context) {
                         streamEpoch = currentStreamEpoch
                     )
                 )
-                if (text != lastLoggedText) {
-                    Log.d(TAG, "🎯 ASR text=\"$text\" tokens=${rawTokens.size} isFinal=$isFinal")
-                    lastLoggedText = text
-                }
             }
             true
-        } catch (e: Exception) {
-            Log.e(TAG, "❌ [SherpaEngine] transcribe error: ${e.message}", e)
+        } catch (_: Exception) {
             false
         }
     }
@@ -173,9 +149,7 @@ class SherpaEngine(private val context: Context) {
         try {
             onlineStream?.release()
             onlineStream = onlineRecognizer?.createStream()
-            Log.d(TAG, "🔄 [SherpaEngine] Buffer reset. Epoch=$currentStreamEpoch")
-        } catch (e: Exception) {
-            Log.e(TAG, "❌ [SherpaEngine] resetBuffer error: ${e.message}", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -185,6 +159,5 @@ class SherpaEngine(private val context: Context) {
         try { onlineRecognizer?.release() } catch (_: Exception) {}
         onlineStream    = null
         onlineRecognizer = null
-        Log.d(TAG, "🛑 [SherpaEngine] Destroyed.")
     }
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
-import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,7 +16,6 @@ class AudioPipeline(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 ) {
     companion object {
-        private const val TAG = "AudioPipeline"
         const val SAMPLE_RATE = 16000
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
@@ -40,18 +38,15 @@ class AudioPipeline(
     @SuppressLint("MissingPermission")
     fun startStreaming(onError: (Exception) -> Unit = {}) {
         if (isRecording) {
-            Log.w(TAG, "⚠️ [AudioPipeline] startStreaming called while already recording.")
             return
         }
 
         val minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT)
         val bufferSize = maxOf(minBufferSize, RECORD_CHUNK_BYTES * 2)
-        Log.d(TAG, "🎙️ [AudioPipeline] Initializing AudioRecord (sampleRate=$SAMPLE_RATE, bufferSize=$bufferSize)...")
 
         try {
             // VOICE_RECOGNITION is specifically tuned on Android for ASR without aggressive noise-gating
             val audioSource = MediaRecorder.AudioSource.VOICE_RECOGNITION
-            Log.d(TAG, "🎙️ [AudioPipeline] Using AudioSource: VOICE_RECOGNITION ($audioSource)")
 
             audioRecord = AudioRecord(
                 audioSource,
@@ -62,7 +57,6 @@ class AudioPipeline(
             )
 
             if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
-                Log.w(TAG, "⚠️ [AudioPipeline] VOICE_RECOGNITION not supported, retrying with MIC...")
                 audioRecord?.release()
                 audioRecord = AudioRecord(
                     MediaRecorder.AudioSource.MIC,
@@ -79,7 +73,6 @@ class AudioPipeline(
 
             audioRecord?.startRecording()
             isRecording = true
-            Log.d(TAG, "🟢 [AudioPipeline] Audio recording started successfully.")
 
             recordingJob = scope.launch(Dispatchers.IO) {
                 val readBuffer = ShortArray(1024)
@@ -105,7 +98,6 @@ class AudioPipeline(
             }
         } catch (e: Exception) {
             isRecording = false
-            Log.e(TAG, "❌ [AudioPipeline] Error starting audio stream: ${e.message}", e)
             onError(e)
         }
     }
@@ -118,9 +110,7 @@ class AudioPipeline(
         try {
             audioRecord?.stop()
             audioRecord?.release()
-            Log.d(TAG, "🛑 [AudioPipeline] Audio recording stopped and released.")
-        } catch (e: Exception) {
-            Log.e(TAG, "❌ [AudioPipeline] Error stopping audio recorder: ${e.message}", e)
+        } catch (_: Exception) {
         }
         audioRecord = null
     }

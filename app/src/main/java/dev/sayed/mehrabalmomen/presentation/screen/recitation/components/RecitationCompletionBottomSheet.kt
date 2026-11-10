@@ -1,5 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +23,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +41,7 @@ import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationCompletionResult
 
@@ -50,6 +60,23 @@ fun RecitationCompletionBottomSheet(
 ) {
     val appLocale = LocalAppLocale.current
 
+    var isAnimated by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        isAnimated = true
+    }
+
+    val animatedAccuracy by animateIntAsState(
+        targetValue = if (isAnimated) result.accuracyPercentage else 0,
+        animationSpec = tween(durationMillis = 850, easing = FastOutSlowInEasing),
+        label = "accuracyCountAnim"
+    )
+
+    val animatedProgress by animateFloatAsState(
+        targetValue = if (isAnimated) (result.accuracyPercentage / 100f).coerceIn(0f, 1f) else 0f,
+        animationSpec = tween(durationMillis = 850, easing = FastOutSlowInEasing),
+        label = "accuracySweepAnim"
+    )
+
     BottomSheetDs(
         onDismiss = onDismiss,
         modifier = modifier
@@ -66,14 +93,14 @@ fun RecitationCompletionBottomSheet(
             ) {
                 Column {
                     Text(
-                        text = "نتيجة التسميع",
+                        text = localizedString(R.string.recitation_result_title),
                         style = Theme.textStyle.title.medium,
                         color = Theme.color.primary.primary,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "سورة $surahName",
+                        text = localizedString(R.string.recitation_result_surah_prefix, surahName),
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
                     )
@@ -114,7 +141,7 @@ fun RecitationCompletionBottomSheet(
                                 color = Theme.color.primary.primary
                             )
                             Text(
-                                text = "صحيحة",
+                                text = localizedString(R.string.recitation_result_correct),
                                 fontSize = 11.sp,
                                 color = Theme.color.secondary.shadeSecondary
                             )
@@ -136,7 +163,7 @@ fun RecitationCompletionBottomSheet(
                                 color = Theme.color.primary.primary
                             )
                             Text(
-                                text = "أخطاء",
+                                text = localizedString(R.string.recitation_result_errors),
                                 fontSize = 11.sp,
                                 color = Theme.color.secondary.shadeSecondary
                             )
@@ -158,7 +185,7 @@ fun RecitationCompletionBottomSheet(
                                 color = Theme.color.primary.primary
                             )
                             Text(
-                                text = "الكلمات",
+                                text = localizedString(R.string.recitation_result_words),
                                 fontSize = 11.sp,
                                 color = Theme.color.secondary.shadeSecondary
                             )
@@ -172,14 +199,14 @@ fun RecitationCompletionBottomSheet(
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(
-                                progress = { (result.accuracyPercentage / 100f).coerceIn(0f, 1f) },
+                                progress = { animatedProgress },
                                 modifier = Modifier.fillMaxSize(),
                                 color = if (result.accuracyPercentage >= 85) Color(0xFF4CAF50) else Theme.color.primary.primary,
                                 trackColor = Theme.color.surfaces.surfaceHigh,
                                 strokeWidth = 5.dp
                             )
                             Text(
-                                text = "${result.accuracyPercentage.toString().toLocalizedDigits(appLocale)}%",
+                                text = "${animatedAccuracy.toString().toLocalizedDigits(appLocale)}%",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Theme.color.primary.primary
@@ -187,7 +214,7 @@ fun RecitationCompletionBottomSheet(
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "نسبة الإتقان",
+                            text = localizedString(R.string.recitation_result_accuracy),
                             fontSize = 10.sp,
                             color = Theme.color.secondary.shadeSecondary
                         )
@@ -205,7 +232,7 @@ fun RecitationCompletionBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "دليل ألوان التسميع في المصحف:",
+                    text = localizedString(R.string.recitation_result_guide_title),
                     style = Theme.textStyle.label.small,
                     color = Theme.color.primary.primary,
                     fontWeight = FontWeight.Bold
@@ -223,7 +250,7 @@ fun RecitationCompletionBottomSheet(
                             .background(Color(0xFF4CAF50))
                     )
                     Text(
-                        text = "اللون الأخضر: كلمات قُرِئت بشكل صحيح وبنطق سليم.",
+                        text = localizedString(R.string.recitation_result_green_meaning),
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
                     )
@@ -241,7 +268,7 @@ fun RecitationCompletionBottomSheet(
                             .background(Theme.color.semantic.error)
                     )
                     Text(
-                        text = "اللون الأحمر: كلمات حدث فيها خطأ في النطق أو سقطت أثناء التسميع.",
+                        text = localizedString(R.string.recitation_result_red_meaning),
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
                     )
@@ -275,14 +302,14 @@ fun RecitationCompletionBottomSheet(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = result.ratingTitle,
+                        text = if (result.ratingTitleRes != 0) localizedString(result.ratingTitleRes) else result.ratingTitle,
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.primary.primary,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = result.ratingMessage,
+                        text = if (result.ratingMessageRes != 0) localizedString(result.ratingMessageRes) else result.ratingMessage,
                         style = Theme.textStyle.body.small,
                         color = Theme.color.secondary.shadeSecondary
                     )
@@ -293,7 +320,7 @@ fun RecitationCompletionBottomSheet(
 
             // Primary Restart Button
             PrimaryButton(
-                text = "إعادة التسميع من البداية",
+                text = localizedString(R.string.recitation_result_restart),
                 onClick = onRestart,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -309,7 +336,7 @@ fun RecitationCompletionBottomSheet(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "مراجعة الآيات",
+                    text = localizedString(R.string.recitation_result_review),
                     style = Theme.textStyle.label.medium,
                     color = Theme.color.secondary.shadeSecondary
                 )
