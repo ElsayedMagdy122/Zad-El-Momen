@@ -62,6 +62,7 @@ class PrayerTimesViewModel(
      */
     fun refreshBatteryStatus() {
         val isIgnoring = batteryOptimizationRepository.isIgnoringBatteryOptimizations()
+        val hasOverlay = permissionProvider.canDrawOverlays()
         viewModelScope.launch {
             try {
                 val language = settingsRepository.observeAppSettings().first().language
@@ -73,11 +74,17 @@ class PrayerTimesViewModel(
                 updateState {
                     it.copy(
                         isBatteryOptimizationEnabled = isIgnoring,
+                        isOverlayPermissionGranted = hasOverlay,
                         batteryInstructions = instructions
                     )
                 }
             } catch (e: Exception) {
-                updateState { it.copy(isBatteryOptimizationEnabled = isIgnoring) }
+                updateState {
+                    it.copy(
+                        isBatteryOptimizationEnabled = isIgnoring,
+                        isOverlayPermissionGranted = hasOverlay
+                    )
+                }
             }
         }
     }
@@ -230,8 +237,12 @@ class PrayerTimesViewModel(
     }
 
     override fun onOpenSettingsClicked() {
-        sendEffect(PrayerTimesEffect.RequestIgnoreBatteryOptimization)
+        sendEffect(PrayerTimesEffect.OpenAppSettings)
         onDismissBatteryDialog()
+    }
+
+    override fun onOpenOverlaySettingsClicked() {
+        sendEffect(PrayerTimesEffect.RequestOverlayPermission)
     }
 
     override fun onSkipForNowClicked() {
@@ -275,8 +286,14 @@ class PrayerTimesViewModel(
             sendEffect(PrayerTimesEffect.RequestExactAlarm)
             return
         }
+        if (!permissionProvider.canDrawOverlays()) {
+            refreshBatteryStatus()
+            updateState { it.copy(showBatteryDialog = true) }
+            return
+        }
         if (!batteryOptimizationRepository.isIgnoringBatteryOptimizations()) {
-            sendEffect(PrayerTimesEffect.ShowBatteryOptimizationDialog)
+            refreshBatteryStatus()
+            updateState { it.copy(showBatteryDialog = true) }
             return
         }
     }

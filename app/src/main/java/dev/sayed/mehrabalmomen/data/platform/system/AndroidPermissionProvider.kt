@@ -55,6 +55,14 @@ class AndroidPermissionProvider(
         return powerManager.isIgnoringBatteryOptimizations(context.packageName)
     }
 
+    override fun canDrawOverlays(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            android.provider.Settings.canDrawOverlays(context)
+        } else {
+            true
+        }
+    }
+
     override fun isNotificationPermissionRequired(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     }

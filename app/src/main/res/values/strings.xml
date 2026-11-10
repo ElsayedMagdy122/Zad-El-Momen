@@ -350,8 +350,13 @@
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
     <string name="faq_q5">How to make the Azan screen appear automatically on Xiaomi, Samsung, and Huawei?</string>
     <string name="faq_a5">To ensure the Azan screen opens automatically at prayer time on Xiaomi (HyperOS/MIUI), Samsung, Huawei, and Oppo devices, please go to phone Settings → Apps → Zad Al-Momen → Permissions, and ensure you enable: 1) Display pop-up windows while running in the background / Appear on top. 2) Show on Lock screen. 3) Autostart and set Battery to Unrestricted.</string>
+    <string name="faq_q6">Why is the \"Display over other apps\" permission required and how do I enable it?</string>
+    <string name="faq_a6">The \"Display over other apps\" permission is required on all devices so that Zad Al-Momen can launch the full Azan screen and alert you at the exact prayer time, even when your phone is locked or you are using another app. You can enable it by clicking the warning icon in Prayer Times → \"Enable Display Permission\", or via phone Settings → Apps → Zad Al-Momen → Display over other apps (or Appear on top) and turning it ON.</string>
     <string name="battery_settings_title">Notification Optimization</string>
     <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
+    <string name="overlay_permission_title">Display Over Other Apps</string>
+    <string name="overlay_permission_description">This permission is required on all devices so the Azan screen can appear automatically at prayer time even when the screen is locked or another app is open.</string>
+    <string name="enable_overlay_permission">Enable Display Permission</string>
     <string name="companion_mode">Companion Mode</string>
 
     <!-- Rafiq's spiritual messages -->

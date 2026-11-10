@@ -14,6 +14,7 @@ data class PrayerTimesUiState(
     val nextPrayer: PrayerUiState = PrayerUiState(),
     val prayerNotifications: List<PrayerNotificationUiState> = emptyList(),
     val isBatteryOptimizationEnabled: Boolean = false,
+    val isOverlayPermissionGranted: Boolean = true,
     val showBatteryDialog: Boolean = false,
     val batteryInstructions: List<String> = emptyList()
 ) {

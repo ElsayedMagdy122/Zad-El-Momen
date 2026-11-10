@@ -18,6 +18,9 @@ interface PermissionProvider {
     /** Checks if the app is ignoring battery optimizations (Background permission). */
     fun isIgnoringBatteryOptimizations(): Boolean
 
+    /** Checks if the app has permission to draw overlays (Display over other apps). */
+    fun canDrawOverlays(): Boolean
+
     /** Returns true if notification permission is required for the current platform. */
     fun isNotificationPermissionRequired(): Boolean
 
