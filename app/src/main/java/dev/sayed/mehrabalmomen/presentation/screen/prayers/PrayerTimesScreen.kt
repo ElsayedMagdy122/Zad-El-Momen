@@ -38,6 +38,8 @@ import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerC
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
 import dev.sayed.mehrabalmomen.presentation.utils.AutoPermissionRequester
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import dev.sayed.mehrabalmomen.presentation.utils.openAppSettings
+import dev.sayed.mehrabalmomen.presentation.utils.openOverlaySettings
 import dev.sayed.mehrabalmomen.presentation.utils.rememberBatteryOptimizationLauncher
 import dev.sayed.mehrabalmomen.presentation.utils.rememberExactAlarmPermissionLauncher
 import dev.sayed.mehrabalmomen.presentation.utils.rememberNotificationPermissionLauncher
@@ -52,6 +54,7 @@ fun PrayerTimesScreen(
     navController: NavController,
     viewModel: PrayerTimesViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val countdownTime by viewModel.countdownTime.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -88,6 +91,14 @@ fun PrayerTimesScreen(
 
             PrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
                 batteryOptimizationLauncher()
+            }
+
+            PrayerTimesEffect.RequestOverlayPermission -> {
+                openOverlaySettings(context)
+            }
+
+            PrayerTimesEffect.OpenAppSettings -> {
+                openAppSettings(context)
             }
 
             PrayerTimesEffect.NavigateBack -> {
@@ -143,7 +154,8 @@ fun PrayerTimesScreen(
         BatteryOptimizationDialog(
             instructions = state.batteryInstructions,
             onDismiss = viewModel::onDismissBatteryDialog,
-            listener = viewModel
+            listener = viewModel,
+            isOverlayPermissionGranted = state.isOverlayPermissionGranted
         )
     }
 }

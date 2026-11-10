@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -336,40 +337,54 @@ fun AzkarCategoryCard(
 ) {
     Column(
         modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 145.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
             .clickable(onClick = onClick)
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(horizontal = 8.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(Theme.color.surfaces.surfaceHigh),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Icon(
-                painter = painterResource(iconRes),
-                contentDescription = title,
-                tint = Theme.color.primary.primary,
-                modifier = Modifier.size(24.dp)
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(Theme.color.surfaces.surfaceHigh),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(iconRes),
+                    contentDescription = title,
+                    tint = Theme.color.primary.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Text(
+                text = title,
+                style = Theme.textStyle.body.medium.copy(
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                color = Theme.color.primary.primary,
+                textAlign = TextAlign.Center,
+                minLines = 2,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
             )
         }
-        Text(
-            text = title,
-            style = Theme.textStyle.title.small,
-            color = Theme.color.primary.primary,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            maxLines = 1
-        )
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = localizedString(R.string.azkar_dhikr_count_format, itemCount),
-            style = Theme.textStyle.body.small,
+            style = Theme.textStyle.body.small.copy(fontSize = 11.sp),
             color = Theme.color.secondary.shadeSecondary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            maxLines = 1
         )
     }
 }
