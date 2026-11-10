@@ -87,7 +87,11 @@ fun requestIgnoreBatteryOptimizations(
         val packageName = context.packageName
 
         if (powerManager?.isIgnoringBatteryOptimizations(packageName) == true) {
-            onAlreadyIgnored?.invoke()
+            if (onAlreadyIgnored != null) {
+                onAlreadyIgnored.invoke()
+            } else {
+                openAppSettings(context)
+            }
             return
         }
 
@@ -187,5 +191,64 @@ fun canScheduleExactAlarms(context: Context): Boolean {
         alarmManager?.canScheduleExactAlarms() ?: true
     } else {
         true
+    }
+}
+
+/**
+ * Checks whether the app has permission to draw overlays (Display over other apps).
+ */
+fun canDrawOverlays(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        Settings.canDrawOverlays(context)
+    } else {
+        true
+    }
+}
+
+/**
+ * Opens the system settings screen for "Display over other apps" for this app.
+ */
+fun openOverlaySettings(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        try {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:${context.packageName}")
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        } catch (_: Exception) {
+            try {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            } catch (_: Exception) {
+                openAppSettings(context)
+            }
+        }
+    } else {
+        openAppSettings(context)
+    }
+}
+
+/**
+ * Opens application details settings in Android system settings.
+ */
+fun openAppSettings(context: Context) {
+    try {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    } catch (_: Exception) {
+        try {
+            val intent = Intent(Settings.ACTION_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        } catch (_: Exception) {}
     }
 }

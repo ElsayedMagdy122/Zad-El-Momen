@@ -5,5 +5,7 @@ interface PrayerTimesEffect {
     object RequestExactAlarm : PrayerTimesEffect
     object RequestIgnoreBatteryOptimization : PrayerTimesEffect
     object RequestNotificationPermission : PrayerTimesEffect
+    object RequestOverlayPermission : PrayerTimesEffect
+    object OpenAppSettings : PrayerTimesEffect
     object ShowBatteryOptimizationDialog : PrayerTimesEffect
 }
