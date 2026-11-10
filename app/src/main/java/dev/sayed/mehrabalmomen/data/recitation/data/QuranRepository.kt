@@ -20,6 +20,8 @@ data class QuranVerse(
 class QuranRepository(private val context: Context) {
     companion object {
         private const val TAG = "QuranRepository"
+        private val BRACES_REGEX = Regex("\\{[^}]*\\}")
+        private val WHITESPACE_REGEX = Regex("\\s+")
     }
 
     private var versesObj: JSONObject? = null
@@ -74,12 +76,12 @@ class QuranRepository(private val context: Context) {
 
             // Clean display words from Uthmani text (strip any {} braces or ayah numbers inside braces)
             val cleanUthmani = uthmani
-                .replace(Regex("\\{[^}]*\\}"), "")
+                .replace(BRACES_REGEX, "")
                 .replace("{", "")
                 .replace("}", "")
                 .trim()
 
-            val rawWords = cleanUthmani.split("\\s+".toRegex()).filter { it.isNotBlank() }
+            val rawWords = cleanUthmani.split(WHITESPACE_REGEX).filter { it.isNotBlank() }
 
             val finalPhonemeWords: List<String>
 
