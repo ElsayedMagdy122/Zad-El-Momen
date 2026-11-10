@@ -27,3 +27,18 @@ fun cleanWordText(word: String): String {
         .replace("﴾", "")
         .trim()
 }
+
+/**
+ * Returns the authentic Uthmani Ayah end glyph from the Hafs font.
+ * In the Hafs font (R.font.hafs), glyphs from U+FC00 upwards represent the authentic
+ * ornamental Ayah frame with the verse number embedded inside it (e.g. Ayah 1 -> \uFC00, Ayah 2 -> \uFC01, etc.).
+ */
+fun getAyahEndGlyph(ayahNumber: Int): String {
+    return if (ayahNumber in 1..286) {
+        val charCode = 0xFC00 + (ayahNumber - 1)
+        "${charCode.toChar()}"
+    } else {
+        toArabicNumerals(ayahNumber)
+    }
+}
+

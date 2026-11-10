@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import androidx.compose.runtime.Composable
@@ -174,7 +175,12 @@ fun Tasmee3Screen(
                     LoadingContainer()
                 }
             } else {
-                // Mushaf Continuous Flow Text Area
+                // Mushaf Continuous Flow Text Area - Chunked for 60fps performance in large Surahs
+                val verseChunks = remember(uiState.verses) {
+                    if (uiState.verses.size <= 8) listOf(uiState.verses)
+                    else uiState.verses.chunked(6)
+                }
+
                 LazyColumn(
                     state = scrollState,
                     modifier = Modifier
@@ -193,9 +199,12 @@ fun Tasmee3Screen(
                         }
                     }
 
-                    item {
+                    items(
+                        items = verseChunks,
+                        key = { chunk -> chunk.firstOrNull()?.ayah ?: 0 }
+                    ) { chunk ->
                         Tasmee3MushafSection(
-                            verses = uiState.verses,
+                            verses = chunk,
                             wordStatuses = uiState.wordStatuses,
                             activeCursor = uiState.activeWordCursor,
                             onWordClick = { globalWordIdx, wordText ->
