@@ -7,6 +7,7 @@ import dev.sayed.mehrabalmomen.data.platform.AndroidAlarmScheduler
 import dev.sayed.mehrabalmomen.data.platform.AndroidNotificationScheduler
 import dev.sayed.mehrabalmomen.data.platform.analytics.AndroidAnalyticsTracker
 import dev.sayed.mehrabalmomen.data.platform.audio.AndroidAudioPlayer
+import dev.sayed.mehrabalmomen.data.platform.sensor.CompassSensorManager
 import dev.sayed.mehrabalmomen.data.platform.system.AndroidDeviceInfoProvider
 import dev.sayed.mehrabalmomen.data.platform.system.AndroidPermissionProvider
 import dev.sayed.mehrabalmomen.data.util.AndroidLogger
@@ -25,6 +26,7 @@ import org.koin.dsl.module
 val coreModule = module {
     single { Gson() }
     single { BillingManager(get()) }
+    single { CompassSensorManager(androidContext()) }
     single<AlarmScheduler> { AndroidAlarmScheduler(androidContext()) }
     single<NotificationScheduler> { AndroidNotificationScheduler(androidContext()) }
     factory<AudioPlayer> { AndroidAudioPlayer(androidContext()) }
