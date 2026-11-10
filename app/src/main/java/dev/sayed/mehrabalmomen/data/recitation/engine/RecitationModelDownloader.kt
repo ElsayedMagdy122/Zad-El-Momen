@@ -13,9 +13,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
 sealed class ModelDownloadState {
@@ -29,12 +32,12 @@ sealed class ModelDownloadState {
 /**
  * Enterprise-grade Remote Downloader for AI Recitation Models and Assets.
  *
- * Includes automatic integrity & corruption verification per file:
- * 1. Smart Zip extraction & split merge: Automatically unzips individual zip parts before concatenating raw binary slices.
- * 2. Strict Size Validation: Verifies that merged model meets full 72.7MB size threshold (72,700,000 bytes).
- * 3. Cache Reuse & Resiliency: Reuses cached files and handles HTTP 200 validation.
- * 4. Corruption Auto-healing: Automatically detects truncated/corrupted files, deletes them, and re-fetches them.
- * 5. Real-time streaming progress: Smooth 1% -> 100% updates.
+ * Features:
+ * 1. Resilient & Smart Cache: Inspects existing ONNX model, individual Zip parts, and auxiliary assets before downloading.
+ * 2. Zip Archive Integrity Validation: Uses java.util.zip.ZipFile central directory checks to guarantee parts are 100% complete before unzipping.
+ * 3. Non-destructive Failure Recovery: Never wipes a valid, heavy ONNX model if an auxiliary asset fails.
+ * 4. Safe Concurrency: Uses Mutex lock to prevent duplicate concurrent download tasks.
+ * 5. Informative Real-time States: Seamlessly reports Downloading and Processing progress for both UI and Foreground Service.
  */
 class RecitationModelDownloader(
     private val context: Context,
@@ -45,7 +48,7 @@ class RecitationModelDownloader(
         private const val BUCKET_NAME = "recitation-models"
         private const val MERGED_MODEL_NAME = "zipformer_p_arabic_v3.1.int8.onnx"
 
-        // Strict threshold: ONNX model MUST be at least 72,700,000 bytes (72.7 MB)
+        // Strict threshold: ONNX model MUST be at least 72,700,000 bytes (~72.7 MB)
         private const val EXPECTED_MODEL_SIZE = 72705392L
         private const val MIN_VALID_MODEL_SIZE = 72700000L
 
@@ -61,8 +64,26 @@ class RecitationModelDownloader(
     private val _downloadState = MutableStateFlow<ModelDownloadState>(ModelDownloadState.Idle)
     val downloadState: Flow<ModelDownloadState> = _downloadState.asStateFlow()
 
+    private val downloadMutex = Mutex()
+
+    fun isDownloading(): Boolean {
+        val current = _downloadState.value
+        return current is ModelDownloadState.Downloading || current is ModelDownloadState.Processing
+    }
+
     private fun isFileValid(file: File, minExpectedSize: Long): Boolean {
         return file.exists() && file.length() >= minExpectedSize
+    }
+
+    private fun isZipFileValid(file: File): Boolean {
+        if (!file.exists() || file.length() < 1024L) return false
+        return try {
+            ZipFile(file).use { zip ->
+                zip.entries().hasMoreElements()
+            }
+        } catch (_: Exception) {
+            false
+        }
     }
 
     fun isModelReady(): Boolean {
@@ -81,108 +102,121 @@ class RecitationModelDownloader(
             return@withContext true
         }
 
-        try {
-            val targetModelFile = File(context.filesDir, MERGED_MODEL_NAME)
-            val part1ZipFile = File(context.cacheDir, "model1.zip")
-            val part2ZipFile = File(context.cacheDir, "model2.zip")
-            val part1RawFile = File(context.cacheDir, "part1.raw")
-            val part2RawFile = File(context.cacheDir, "part2.raw")
+        downloadMutex.withLock {
+            if (isModelReady()) {
+                _downloadState.value = ModelDownloadState.Ready
+                return@withContext true
+            }
 
-            // Step 1: Verify model integrity (If missing or corrupted, delete and re-download)
-            if (!isFileValid(targetModelFile, MIN_VALID_MODEL_SIZE)) {
-                if (targetModelFile.exists()) {
-                    targetModelFile.delete()
-                }
+            try {
+                val targetModelFile = File(context.filesDir, MERGED_MODEL_NAME)
+                val partsDir = File(context.filesDir, "recitation_parts").apply { mkdirs() }
+                val part1ZipFile = File(partsDir, "model1.zip")
+                val part2ZipFile = File(partsDir, "model2.zip")
+                val part1RawFile = File(partsDir, "part1.raw")
+                val part2RawFile = File(partsDir, "part2.raw")
 
-                // Download part 1 if not cached
-                if (!part1ZipFile.exists() || part1ZipFile.length() < 10000000L) {
-                    streamDownloadToFile(
-                        fileName = "model1.zip",
-                        outputFile = part1ZipFile,
-                        baseProgress = 0.0f,
-                        progressWeight = 0.40f
-                    )
-                }
+                // Step 1: Check if main ONNX model is already fully downloaded and valid
+                if (!isFileValid(targetModelFile, MIN_VALID_MODEL_SIZE)) {
+                    if (targetModelFile.exists()) {
+                        targetModelFile.delete()
+                    }
 
-                // Download part 2 if not cached
-                if (!part2ZipFile.exists() || part2ZipFile.length() < 10000000L) {
-                    try {
+                    // Download part 1 if not cached and valid
+                    if (!isZipFileValid(part1ZipFile)) {
+                        if (part1ZipFile.exists()) part1ZipFile.delete()
                         streamDownloadToFile(
-                            fileName = "model2.zip",
-                            outputFile = part2ZipFile,
-                            baseProgress = 0.40f,
+                            fileName = "model1.zip",
+                            outputFile = part1ZipFile,
+                            baseProgress = 0.0f,
                             progressWeight = 0.40f
                         )
-                    } catch (_: Exception) {
+                    }
+
+                    // Download part 2 if not cached and valid
+                    if (!isZipFileValid(part2ZipFile)) {
+                        if (part2ZipFile.exists()) part2ZipFile.delete()
+                        try {
+                            streamDownloadToFile(
+                                fileName = "model2.zip",
+                                outputFile = part2ZipFile,
+                                baseProgress = 0.40f,
+                                progressWeight = 0.40f
+                            )
+                        } catch (_: Exception) {
+                            // model2 may be optional if part 1 alone contains full model
+                        }
+                    }
+
+                    _downloadState.value = ModelDownloadState.Processing("جاري فك ضغط وتجهيز نماذج التسميع...")
+
+                    // Unzip part 1
+                    val part1Unzipped = extractFileFromZip(part1ZipFile, part1RawFile)
+                    val sourcePart1 = if (part1Unzipped) part1RawFile else part1ZipFile
+
+                    // Unzip part 2 if available
+                    val part2Unzipped = extractFileFromZip(part2ZipFile, part2RawFile)
+                    val sourcePart2 = if (part2Unzipped) part2RawFile else part2ZipFile
+
+                    // Merge or copy
+                    if (sourcePart1.length() >= MIN_VALID_MODEL_SIZE) {
+                        sourcePart1.copyTo(targetModelFile, overwrite = true)
+                    } else if (sourcePart1.exists() && sourcePart2.exists() && sourcePart2.length() > 0L) {
+                        FileOutputStream(targetModelFile).use { out ->
+                            sourcePart1.inputStream().use { in1 -> in1.copyTo(out) }
+                            sourcePart2.inputStream().use { in2 -> in2.copyTo(out) }
+                        }
+                    }
+
+                    if (!isFileValid(targetModelFile, MIN_VALID_MODEL_SIZE)) {
+                        if (targetModelFile.exists()) targetModelFile.delete()
+                        throw IllegalStateException("فشل فك وتجميع ملف النموذج الرئيسي (${targetModelFile.length()} بايت)")
+                    }
+
+                    // Cleanup intermediate parts only after target ONNX model is verified
+                    if (part1ZipFile.exists()) part1ZipFile.delete()
+                    if (part2ZipFile.exists()) part2ZipFile.delete()
+                    if (part1RawFile.exists()) part1RawFile.delete()
+                    if (part2RawFile.exists()) part2RawFile.delete()
+                }
+
+                // Step 2: Download Auxiliary Assets individually (skip any file that is already valid)
+                val assetEntries = REQUIRED_ASSETS_WITH_MIN_SIZE.entries.toList()
+                val totalAssets = assetEntries.size
+
+                assetEntries.forEachIndexed { index, (assetName, minSize) ->
+                    val assetFile = File(context.filesDir, assetName)
+                    if (!isFileValid(assetFile, minSize)) {
+                        if (assetFile.exists()) {
+                            assetFile.delete()
+                        }
+
+                        val baseProgress = 0.85f + (index.toFloat() / totalAssets.toFloat()) * 0.14f
+                        val weight = 0.14f / totalAssets.toFloat()
+                        streamDownloadToFile(
+                            fileName = assetName,
+                            outputFile = assetFile,
+                            baseProgress = baseProgress,
+                            progressWeight = weight
+                        )
                     }
                 }
 
-                _downloadState.value = ModelDownloadState.Processing("جاري فك ضغط وتجميع ملفات النموذج...")
-
-                // Unzip part 1 if it's a zip archive
-                val part1Unzipped = extractFileFromZip(part1ZipFile, part1RawFile)
-                val sourcePart1 = if (part1Unzipped) part1RawFile else part1ZipFile
-
-                // Unzip part 2 if it's a zip archive
-                val part2Unzipped = extractFileFromZip(part2ZipFile, part2RawFile)
-                val sourcePart2 = if (part2Unzipped) part2RawFile else part2ZipFile
-
-                // Check if single part alone is complete
-                if (sourcePart1.length() >= MIN_VALID_MODEL_SIZE) {
-                    sourcePart1.copyTo(targetModelFile, overwrite = true)
-                } else if (sourcePart1.exists() && sourcePart2.exists() && sourcePart2.length() > 0L) {
-                    // Concatenate unzipped raw part 1 + unzipped raw part 2
-                    FileOutputStream(targetModelFile).use { out ->
-                        sourcePart1.inputStream().use { in1 -> in1.copyTo(out) }
-                        sourcePart2.inputStream().use { in2 -> in2.copyTo(out) }
-                    }
+                if (!isModelReady()) {
+                    throw IllegalStateException("بعض ملفات التسميع المساعدة غير مكتملة. يرجى إعادة المحاولة.")
                 }
 
-                // Cleanup temporary cache files
-                if (part1ZipFile.exists()) part1ZipFile.delete()
-                if (part2ZipFile.exists()) part2ZipFile.delete()
-                if (part1RawFile.exists()) part1RawFile.delete()
-                if (part2RawFile.exists()) part2RawFile.delete()
-            }
-
-            // Step 2: Verify & Download Auxiliary Assets
-            val assetEntries = REQUIRED_ASSETS_WITH_MIN_SIZE.entries.toList()
-            val totalAssets = assetEntries.size
-
-            assetEntries.forEachIndexed { index, (assetName, minSize) ->
-                val assetFile = File(context.filesDir, assetName)
-                if (!isFileValid(assetFile, minSize)) {
-                    if (assetFile.exists()) {
-                        assetFile.delete()
-                    }
-
-                    val baseProgress = 0.85f + (index.toFloat() / totalAssets.toFloat()) * 0.14f
-                    val weight = 0.14f / totalAssets.toFloat()
-                    streamDownloadToFile(
-                        fileName = assetName,
-                        outputFile = assetFile,
-                        baseProgress = baseProgress,
-                        progressWeight = weight
-                    )
+                _downloadState.value = ModelDownloadState.Processing("جاري تهيئة محرك الذكاء الاصطناعي...")
+                _downloadState.value = ModelDownloadState.Ready
+                true
+            } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) {
+                    _downloadState.value = ModelDownloadState.Idle
+                    throw e
                 }
+                _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "فشل تنزيل ملفات النموذج")
+                false
             }
-
-            if (!isModelReady()) {
-                val currentSize = targetModelFile.length()
-                if (targetModelFile.exists()) targetModelFile.delete()
-                throw IllegalStateException("ملف الموديل المحمل غير مكتمل ($currentSize بايت بدلاً من $EXPECTED_MODEL_SIZE بايت). يرجى التأكد من التنزيل بنجاح.")
-            }
-
-            _downloadState.value = ModelDownloadState.Processing("جاري تهيئة محرك الذكاء الاصطناعي...")
-            _downloadState.value = ModelDownloadState.Ready
-            true
-        } catch (e: Exception) {
-            if (e is kotlinx.coroutines.CancellationException) {
-                _downloadState.value = ModelDownloadState.Idle
-                throw e
-            }
-            _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "فشل تنزيل ملفات النموذج")
-            false
         }
     }
 

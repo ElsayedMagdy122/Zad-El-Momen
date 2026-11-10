@@ -21,7 +21,7 @@ data class RecitationCompletionResult(
 
 data class RecitationUiState(
     val isRecording: Boolean = false,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val isDownloadingModel: Boolean = false,
     val isProcessingModel: Boolean = false,
     val showDownloadDialog: Boolean = false,

@@ -111,14 +111,7 @@ fun SurahAyatScreen(
             }
 
             is SurahAyatEffect.NavigateToTasmee3 -> {
-                navController.navigate(
-                    Route.Tasmee3Screen(
-                        surahId = effect.surahId,
-                        surahName = effect.surahName,
-                        startAyah = effect.startAyah,
-                        endAyah = effect.endAyah
-                    )
-                )
+                // Handled directly on button confirmation for immediate zero-lag navigation
             }
         }
     }
@@ -182,7 +175,17 @@ fun SurahAyatScreen(
                 surahName = state.arabicName,
                 totalAyat = state.ayat.size,
                 onDismiss = viewModel::onDismissTasmee3Range,
-                onConfirm = viewModel::onConfirmTasmee3Range
+                onConfirm = { startAyah, endAyah ->
+                    viewModel.onDismissTasmee3Range()
+                    navController.navigate(
+                        Route.Tasmee3Screen(
+                            surahId = surahId,
+                            surahName = state.arabicName,
+                            startAyah = startAyah,
+                            endAyah = endAyah
+                        )
+                    )
+                }
             )
         }
     }

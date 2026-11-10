@@ -22,12 +22,13 @@ import org.koin.android.ext.android.inject
 
 /**
  * Foreground Service for robust, uninterrupted remote model downloading.
- * Continues downloading in background with live notification progress even if user minimizes app.
+ * Continues downloading in background with live notification progress even if user minimizes app or navigates away.
  */
 class RecitationDownloadService : Service() {
 
     private val downloader: RecitationModelDownloader by inject()
     private var downloadJob: Job? = null
+    private var serviceScope: CoroutineScope? = null
 
     companion object {
         private const val CHANNEL_ID = "recitation_download_channel"
@@ -65,11 +66,22 @@ class RecitationDownloadService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START_DOWNLOAD -> {
-                val notification = buildNotification("جاري بدء تنزيل النموذج...", 0)
+                if (downloadJob?.isActive == true) {
+                    // Download is already in progress, keep running without interrupting
+                    return START_NOT_STICKY
+                }
+                val notification = buildNotification(
+                    contentText = getString(R.string.recitation_download_in_progress_title),
+                    progress = 0,
+                    isIndeterminate = true
+                )
                 startForeground(NOTIFICATION_ID, notification)
                 observeProgressAndStart()
             }
             ACTION_STOP_DOWNLOAD -> {
+                downloadJob?.cancel()
+                serviceScope?.cancel()
+                downloader.resetState()
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
             }
@@ -79,7 +91,9 @@ class RecitationDownloadService : Service() {
 
     private fun observeProgressAndStart() {
         downloadJob?.cancel()
+        serviceScope?.cancel()
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        serviceScope = scope
         downloadJob = scope.launch {
             launch {
                 downloader.downloadState.collectLatest { state ->
@@ -87,10 +101,33 @@ class RecitationDownloadService : Service() {
                     when (state) {
                         is ModelDownloadState.Downloading -> {
                             val percent = (state.progress * 100).toInt()
-                            val notification = buildNotification("جاري تنزيل نموذج التعرف الصوتي... ($percent%)", percent)
+                            val text = getString(R.string.recitation_download_progress_msg, percent.toString())
+                            val notification = buildNotification(
+                                contentText = text,
+                                progress = percent,
+                                isIndeterminate = false
+                            )
+                            notificationManager.notify(NOTIFICATION_ID, notification)
+                        }
+                        is ModelDownloadState.Processing -> {
+                            val text = state.message.ifBlank {
+                                getString(R.string.recitation_download_notification_processing)
+                            }
+                            val notification = buildNotification(
+                                contentText = text,
+                                progress = 0,
+                                isIndeterminate = true
+                            )
                             notificationManager.notify(NOTIFICATION_ID, notification)
                         }
                         is ModelDownloadState.Ready -> {
+                            val notification = buildNotification(
+                                contentText = getString(R.string.recitation_download_notification_ready),
+                                progress = 100,
+                                isIndeterminate = false,
+                                showCancelAction = false
+                            )
+                            notificationManager.notify(NOTIFICATION_ID, notification)
                             stopForeground(STOP_FOREGROUND_REMOVE)
                             stopSelf()
                         }
@@ -111,17 +148,22 @@ class RecitationDownloadService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "تنزيل نموذج التسميع",
+                getString(R.string.recitation_download_notification_channel),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "إشعارات تقدم تنزيل نموذج التعرف الصوتي للتسميع"
+                description = getString(R.string.recitation_download_notification_channel_desc)
             }
             val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+            manager?.createNotificationChannel(channel)
         }
     }
 
-    private fun buildNotification(contentText: String, progress: Int): android.app.Notification {
+    private fun buildNotification(
+        contentText: String,
+        progress: Int,
+        isIndeterminate: Boolean = false,
+        showCancelAction: Boolean = true
+    ): android.app.Notification {
         val openAppIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
@@ -132,19 +174,38 @@ class RecitationDownloadService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("تنسيق نماذج التسميع بالذكاء الاصطناعي")
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(getString(R.string.recitation_download_notification_title))
             .setContentText(contentText)
             .setSmallIcon(R.drawable.ic_download_01)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .setProgress(100, progress, progress == 0)
+            .setProgress(100, progress, isIndeterminate)
             .setContentIntent(pendingIntent)
-            .build()
+
+        if (showCancelAction) {
+            val stopIntent = Intent(this, RecitationDownloadService::class.java).apply {
+                action = ACTION_STOP_DOWNLOAD
+            }
+            val stopPendingIntent = PendingIntent.getService(
+                this,
+                1,
+                stopIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            builder.addAction(
+                R.drawable.ic_close,
+                getString(R.string.recitation_download_cancel_action),
+                stopPendingIntent
+            )
+        }
+
+        return builder.build()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         downloadJob?.cancel()
+        serviceScope?.cancel()
     }
 }

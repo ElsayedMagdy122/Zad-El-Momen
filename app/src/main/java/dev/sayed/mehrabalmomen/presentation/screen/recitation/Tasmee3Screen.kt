@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.recitation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -108,10 +109,21 @@ fun Tasmee3Screen(
     }
 
     val isDownloadRequired = uiState.showDownloadDialog || uiState.isDownloadingModel || uiState.isProcessingModel || uiState.downloadError != null
+    val isContentLoading = uiState.isLoading || uiState.verses.isEmpty()
+
+    // Safe BackHandler: if downloading in background, allow user to navigate back safely while keeping download alive
+    BackHandler {
+        if (uiState.isDownloadingModel || uiState.isProcessingModel) {
+            navController.popBackStack()
+        } else {
+            viewModel.dismissDownloadDialog()
+            navController.popBackStack()
+        }
+    }
 
     val isCustomRange = startAyah > 1 || endAyah != -1
     val endDisplay = if (endAyah > 0) endAyah else uiState.verses.lastOrNull()?.ayah ?: ""
-    val titleText = if (isCustomRange) {
+    val titleText = if (isCustomRange && endDisplay.toString().isNotEmpty()) {
         localizedString(
             R.string.tasmee3_title_range,
             surahName,
@@ -136,7 +148,14 @@ fun Tasmee3Screen(
                     .fillMaxWidth()
                     .background(Theme.color.surfaces.surface),
                 title = titleText,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    if (uiState.isDownloadingModel || uiState.isProcessingModel) {
+                        navController.popBackStack()
+                    } else {
+                        viewModel.dismissDownloadDialog()
+                        navController.popBackStack()
+                    }
+                },
                 titleColor = Theme.color.primary.shadePrimary,
                 actions = listOf(
                     AppBarAction(
@@ -155,6 +174,9 @@ fun Tasmee3Screen(
                     statusText = uiState.downloadFileStatus,
                     errorText = uiState.downloadError,
                     onConfirmDownload = { viewModel.startModelDownload() },
+                    onContinueInBackground = {
+                        navController.popBackStack()
+                    },
                     onCancel = {
                         viewModel.cancelDownload()
                         navController.popBackStack()
@@ -171,7 +193,7 @@ fun Tasmee3Screen(
                 ) {
                     LoadingContainer()
                 }
-            } else if (uiState.isLoading) {
+            } else if (isContentLoading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -252,7 +274,7 @@ fun Tasmee3Screen(
 
         // Floating Control Bar smoothly animates in only when the Mushaf is ready and loaded
         AnimatedVisibility(
-            visible = !uiState.isLoading && !isDownloadRequired && uiState.verses.isNotEmpty(),
+            visible = !isContentLoading && !isDownloadRequired && uiState.verses.isNotEmpty(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .windowInsetsPadding(WindowInsets.navigationBars)

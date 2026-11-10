@@ -20,34 +20,37 @@ class QuranRepository(private val context: Context) {
     companion object {
         private val BRACES_REGEX = Regex("\\{[^}]*\\}")
         private val WHITESPACE_REGEX = Regex("\\s+")
+
+        @Volatile
+        private var cachedVersesObj: JSONObject? = null
+        private val surahCache = java.util.concurrent.ConcurrentHashMap<Int, List<QuranVerse>>()
+        private val lock = Any()
     }
 
-    private var versesObj: JSONObject? = null
-    private val surahCache = mutableMapOf<Int, List<QuranVerse>>()
-
-    @Synchronized
     fun loadData() {
-        if (versesObj != null) return
-        try {
-            val internalFile = java.io.File(context.filesDir, "ordered_quran_phonemes.json")
-            val jsonString = if (internalFile.exists() && internalFile.length() > 0) {
-                internalFile.readText(Charsets.UTF_8)
-            } else {
-                context.assets.open("ordered_quran_phonemes.json").bufferedReader(Charsets.UTF_8).use {
-                    it.readText()
+        if (cachedVersesObj != null) return
+        synchronized(lock) {
+            if (cachedVersesObj != null) return
+            try {
+                val internalFile = java.io.File(context.filesDir, "ordered_quran_phonemes.json")
+                val jsonString = if (internalFile.exists() && internalFile.length() > 0) {
+                    internalFile.readText(Charsets.UTF_8)
+                } else {
+                    context.assets.open("ordered_quran_phonemes.json").bufferedReader(Charsets.UTF_8).use {
+                        it.readText()
+                    }
                 }
+                val root = JSONObject(jsonString)
+                cachedVersesObj = root.optJSONObject("verses") ?: root
+            } catch (_: Exception) {
             }
-            val root = JSONObject(jsonString)
-            versesObj = root.optJSONObject("verses") ?: root
-        } catch (_: Exception) {
         }
     }
 
-    @Synchronized
     fun getVersesForSurah(surah: Int): List<QuranVerse> {
         surahCache[surah]?.let { return it }
         loadData()
-        val verses = versesObj ?: return emptyList()
+        val verses = cachedVersesObj ?: return emptyList()
 
         val list = mutableListOf<QuranVerse>()
         var runningGlobalWordIndex = 0

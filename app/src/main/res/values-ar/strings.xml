@@ -545,6 +545,14 @@
     <string name="recitation_download_processing_msg">تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...</string>
     <string name="recitation_download_progress_msg">جاري تنزيل نموذج التعرف الصوتي... (%1$s%%)</string>
     <string name="recitation_download_cancel_long">إلغاء التحميل والرجوع</string>
+    <string name="recitation_download_continue_background">المتابعة في الخلفية</string>
+    <string name="recitation_download_cancel_action">إلغاء التنزيل</string>
+    <string name="recitation_download_notification_channel">تنزيل نموذج التسميع</string>
+    <string name="recitation_download_notification_channel_desc">إشعارات تقدم تنزيل نموذج التعرف الصوتي للتسميع</string>
+    <string name="recitation_download_notification_title">تنزيل نموذج التسميع الصوتي</string>
+    <string name="recitation_download_notification_processing">جاري فك ضغط وتجهيز نماذج التسميع...</string>
+    <string name="recitation_download_notification_ready">تم تثبيت نماذج التسميع بنجاح</string>
+    <string name="recitation_download_notification_error">تعذر اكتمال تنزيل النموذج</string>
     <string name="recitation_download_intro_msg">تتطلب ميزة التسميع تنزيل نموذج الذكاء الاصطناعي (حجمه حوالي 70 ميجابايت) لمرة واحدة فقط لتتمكن من استخدام الميزة.</string>
     <string name="recitation_download_confirm">تنزيل الموديل الآن</string>
 

@@ -533,6 +533,14 @@
     <string name="recitation_download_processing_msg">Downloaded successfully! Extracting and setting up AI files...</string>
     <string name="recitation_download_progress_msg">Downloading speech recognition model... (%1$s%%)</string>
     <string name="recitation_download_cancel_long">Cancel download &amp; Go Back</string>
+    <string name="recitation_download_continue_background">Continue in Background</string>
+    <string name="recitation_download_cancel_action">Cancel Download</string>
+    <string name="recitation_download_notification_channel">Recitation Model Download</string>
+    <string name="recitation_download_notification_channel_desc">Notifications for recitation model download progress</string>
+    <string name="recitation_download_notification_title">AI Recitation Model</string>
+    <string name="recitation_download_notification_processing">Extracting and preparing recitation models...</string>
+    <string name="recitation_download_notification_ready">Recitation model ready!</string>
+    <string name="recitation_download_notification_error">Failed to complete model download</string>
     <string name="recitation_download_intro_msg">The recitation feature requires downloading the on-device AI model (approx. 70 MB) once to enable speech recognition.</string>
     <string name="recitation_download_confirm">Download Model Now</string>
 

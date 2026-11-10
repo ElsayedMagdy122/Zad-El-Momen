@@ -152,7 +152,14 @@ class HighlightingViewModel(
             _uiState.update { it.copy(isLoading = true) }
             try {
                 if (!modelDownloader.isModelReady()) {
-                    _uiState.update { it.copy(showDownloadDialog = true, isLoading = false) }
+                    val isCurrentlyDownloading = modelDownloader.isDownloading()
+                    _uiState.update {
+                        it.copy(
+                            showDownloadDialog = true,
+                            isDownloadingModel = isCurrentlyDownloading,
+                            isLoading = false
+                        )
+                    }
                     quranRepository.loadData()
                     initDeferred.complete(Unit)
                     return@launch
@@ -160,7 +167,6 @@ class HighlightingViewModel(
                 sherpaEngine.initialize()
                 quranRepository.loadData()
             } finally {
-                _uiState.update { it.copy(isLoading = false) }
                 initDeferred.complete(Unit)
             }
         }
@@ -224,7 +230,7 @@ class HighlightingViewModel(
         _uiState.update { it.copy(isDownloadingModel = true, downloadError = null) }
         try {
             dev.sayed.mehrabalmomen.data.recitation.engine.RecitationDownloadService.start(getApplication())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             viewModelScope.launch(Dispatchers.IO) {
                 val success = modelDownloader.downloadAndPrepareModels()
                 if (success) {
@@ -241,7 +247,7 @@ class HighlightingViewModel(
     }
 
     fun dismissDownloadDialog() {
-        cancelDownload()
+        _uiState.update { it.copy(showDownloadDialog = false) }
     }
 
     fun cancelDownload() {
@@ -289,6 +295,7 @@ class HighlightingViewModel(
     }
 
     fun setTargetSurah(surahId: Int, name: String, startAyah: Int = 1, endAyah: Int = -1) {
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             initDeferred.await()
 
@@ -327,6 +334,7 @@ class HighlightingViewModel(
 
             _uiState.update {
                 it.copy(
+                    isLoading = false,
                     targetSurah = surahId,
                     surahName = name,
                     verses = verses,
