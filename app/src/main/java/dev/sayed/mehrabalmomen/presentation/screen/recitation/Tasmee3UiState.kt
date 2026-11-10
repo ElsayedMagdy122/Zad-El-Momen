@@ -7,6 +7,16 @@ enum class WordStatus {
     UNSPOKEN, GREEN, RED, YELLOW, NEUTRAL
 }
 
+data class RecitationCompletionResult(
+    val totalWords: Int,
+    val correctWords: Int,
+    val warningWords: Int,
+    val errorWords: Int,
+    val accuracyPercentage: Int,
+    val ratingTitle: String,
+    val ratingMessage: String
+)
+
 data class RecitationUiState(
     val isRecording: Boolean = false,
     val isLoading: Boolean = false,
@@ -24,6 +34,9 @@ data class RecitationUiState(
     val selectedWordFeedback: Pair<String, List<ReciterMistake>>? = null,
     val activeWordCursor: Int = 0,
     val recognizedText: String = "",
-    val isTajweedEnabled: Boolean = true,
-    val lastEvaluatedWordInfo: String = ""
+    val isTajweedEnabled: Boolean = false,
+    val lastEvaluatedWordInfo: String = "",
+    val isCompleted: Boolean = false,
+    val showCompletionDialog: Boolean = false,
+    val completionResult: RecitationCompletionResult? = null
 )

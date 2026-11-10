@@ -52,12 +52,69 @@ class HighlightingViewModel(
             else              -> ""
         }
         val infoText = "كلمة #${wordId + 1}: $statusSymbol ${if (cleanAsr.isNotEmpty()) "(\"$cleanAsr\")" else ""}"
+        
+        val totalWords = _uiState.value.verses.sumOf { it.phonemeWords.size }
+        val isFinished = totalWords > 0 && (wordId + 1 >= totalWords)
+
         _uiState.update {
             it.copy(
                 wordStatuses = wordStatuses.toMap(),
                 wordMistakes = wordMistakes.toMap(),
                 activeWordCursor = wordId + 1,
                 lastEvaluatedWordInfo = infoText
+            )
+        }
+
+        if (isFinished) {
+            handleRecitationFinished()
+        }
+    }
+
+    private fun handleRecitationFinished() {
+        if (_uiState.value.isCompleted) return
+        stopRecitationSession()
+        val totalWords = _uiState.value.verses.sumOf { it.phonemeWords.size }
+        val correct = wordStatuses.values.count { it == WordStatus.GREEN }
+        val warning = wordStatuses.values.count { it == WordStatus.YELLOW }
+        val error = wordStatuses.values.count { it == WordStatus.RED }
+
+        val errorPercentage = if (totalWords > 0) (error * 100) / totalWords else 0
+        val accuracyPercentage = (100 - errorPercentage).coerceIn(0, 100)
+
+        val (ratingTitle, ratingMessage) = when {
+            accuracyPercentage >= 95 -> Pair(
+                "ما شاء الله! تلاوة متقنة وممتازة 🌟",
+                "أتممت التسميع بأعلى درجات الإتقان والضبط، بارك الله فيك ونفع بك القرآن الكريم."
+            )
+            accuracyPercentage >= 85 -> Pair(
+                "أحسنت! تلاوة جيدة جداً 👏",
+                "حفظ متقن ومبارك مع بعض الملاحظات البسيطة، استمر في المراجعة والارتقاء."
+            )
+            accuracyPercentage >= 70 -> Pair(
+                "تلاوة جيدة وعمل مبارك 👍",
+                "أتممت التسميع بنجاح، يُنصح بمراجعة المواضع التي سقطت أو أخطأت فيها لتثبيت الحفظ."
+            )
+            else -> Pair(
+                "محاولة مباركة ومأجورة 💪",
+                "استمر في التكرار والمراجعة لتثبيت الآيات الكريمة وإتقان حفظها بإذن الله."
+            )
+        }
+
+        val result = dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationCompletionResult(
+            totalWords = totalWords,
+            correctWords = correct,
+            warningWords = warning,
+            errorWords = error,
+            accuracyPercentage = accuracyPercentage,
+            ratingTitle = ratingTitle,
+            ratingMessage = ratingMessage
+        )
+
+        _uiState.update {
+            it.copy(
+                isCompleted = true,
+                showCompletionDialog = true,
+                completionResult = result
             )
         }
     }
@@ -219,11 +276,23 @@ class HighlightingViewModel(
         }
     }
 
-    fun setTargetSurah(surahId: Int, name: String) {
+    fun setTargetSurah(surahId: Int, name: String, startAyah: Int = 1, endAyah: Int = -1) {
         viewModelScope.launch(Dispatchers.IO) {
             initDeferred.await()
 
-            val verses = quranRepository.getVersesForSurah(surahId)
+            val allVerses = quranRepository.getVersesForSurah(surahId)
+            val effectiveStart = if (startAyah > 0) startAyah else 1
+            val effectiveEnd = if (endAyah in effectiveStart..allVerses.size) endAyah else allVerses.size
+
+            val filteredVerses = allVerses.filter { it.ayah in effectiveStart..effectiveEnd }
+
+            var runningWordIndex = 0
+            val verses = filteredVerses.map { verse ->
+                val updated = verse.copy(globalStartIndex = runningWordIndex)
+                runningWordIndex += verse.phonemeWords.size
+                updated
+            }
+
             val allPhonemes = verses.flatMap { it.phonemeWords }
 
             val joinedPhonemes = allPhonemes.joinToString("")
@@ -238,7 +307,7 @@ class HighlightingViewModel(
                 phonemes = joinedPhonemes,
                 boundaries = boundaries,
                 surahNum = surahId,
-                tajweed = _uiState.value.isTajweedEnabled
+                tajweed = false
             )
 
             wordStatuses.clear()
@@ -254,19 +323,81 @@ class HighlightingViewModel(
                     selectedWordFeedback = null,
                     activeWordCursor = 0,
                     recognizedText = "",
-                    lastEvaluatedWordInfo = ""
+                    lastEvaluatedWordInfo = "",
+                    isCompleted = false,
+                    showCompletionDialog = false,
+                    completionResult = null,
+                    isTajweedEnabled = false
                 )
             }
         }
     }
 
     fun toggleTajweedMode(enabled: Boolean) {
-        _uiState.update { it.copy(isTajweedEnabled = enabled) }
-        sequencer.isTajweed = enabled
+        // Disabled per user request
+        _uiState.update { it.copy(isTajweedEnabled = false) }
+        sequencer.isTajweed = false
+    }
+
+    fun resetRecitationProgress() {
+        wordStatuses.clear()
+        wordMistakes.clear()
+
+        val verses = _uiState.value.verses
+        val allPhonemes = verses.flatMap { it.phonemeWords }
+        val joinedPhonemes = allPhonemes.joinToString("")
+        val boundaries = mutableListOf(0)
+        var cur = 0
+        for (p in allPhonemes) {
+            cur += p.length
+            boundaries.add(cur)
+        }
+
+        sequencer.setSurahReference(
+            phonemes = joinedPhonemes,
+            boundaries = boundaries,
+            surahNum = _uiState.value.targetSurah,
+            tajweed = false,
+            startWord = 0,
+            forceClear = true
+        )
+
+        _uiState.update {
+            it.copy(
+                wordStatuses = emptyMap(),
+                wordMistakes = emptyMap(),
+                selectedWordFeedback = null,
+                activeWordCursor = 0,
+                recognizedText = "",
+                lastEvaluatedWordInfo = "",
+                isCompleted = false,
+                showCompletionDialog = false,
+                completionResult = null
+            )
+        }
+    }
+
+    fun restartRecitationSession() {
+        stopRecitationSession()
+        resetRecitationProgress()
+        startRecitationSession()
+    }
+
+    fun dismissCompletionDialog() {
+        _uiState.update { it.copy(showCompletionDialog = false) }
     }
 
     fun startRecitationSession() {
         if (_uiState.value.isRecording) return
+
+        // If previous recitation completed, reset progress so words are hidden again
+        val totalWords = _uiState.value.verses.sumOf { it.phonemeWords.size }
+        val shouldReset = _uiState.value.isCompleted || (totalWords > 0 && _uiState.value.activeWordCursor >= totalWords)
+
+        if (shouldReset) {
+            resetRecitationProgress()
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             initDeferred.await()
             if (!modelDownloader.isModelReady()) {
@@ -279,7 +410,7 @@ class HighlightingViewModel(
             sherpaEngine.resetBuffer()
             lastProcessedText = ""
             isExpectingNewSegment = true
-            _uiState.update { it.copy(isRecording = true) }
+            _uiState.update { it.copy(isRecording = true, showCompletionDialog = false) }
         }
     }
 

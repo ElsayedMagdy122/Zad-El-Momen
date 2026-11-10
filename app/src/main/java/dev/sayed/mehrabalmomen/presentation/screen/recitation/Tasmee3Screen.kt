@@ -4,6 +4,13 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +26,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -35,10 +41,17 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.compose.ui.res.painterResource
+import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
+import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.recitation.HighlightingViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationCompletionBottomSheet
+import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationDisclaimerDialog
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationDownloadDialog
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.TajweedErrorBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.Tasmee3FloatingControlBar
@@ -53,12 +66,16 @@ import org.koin.androidx.compose.koinViewModel
 fun Tasmee3Screen(
     surahId: Int,
     surahName: String,
+    startAyah: Int = 1,
+    endAyah: Int = -1,
     navController: NavController,
     viewModel: HighlightingViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
+    val appLocale = LocalAppLocale.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
+    var showDisclaimerDialog by remember { mutableStateOf(false) }
 
     var hasPermission by remember {
         mutableStateOf(
@@ -78,8 +95,8 @@ fun Tasmee3Screen(
         }
     }
 
-    LaunchedEffect(surahId) {
-        viewModel.setTargetSurah(surahId, surahName)
+    LaunchedEffect(surahId, startAyah, endAyah) {
+        viewModel.setTargetSurah(surahId, surahName, startAyah, endAyah)
     }
 
     DisposableEffect(Unit) {
@@ -90,6 +107,14 @@ fun Tasmee3Screen(
 
     val isDownloadRequired = uiState.showDownloadDialog || uiState.isDownloadingModel || uiState.isProcessingModel || uiState.downloadError != null
 
+    val isCustomRange = startAyah > 1 || endAyah != -1
+    val endDisplay = if (endAyah > 0) endAyah else uiState.verses.lastOrNull()?.ayah ?: ""
+    val titleText = if (isCustomRange) {
+        "تسميع $surahName (${startAyah.toString().toLocalizedDigits(appLocale)} - ${endDisplay.toString().toLocalizedDigits(appLocale)})"
+    } else {
+        "تسميع سورة $surahName"
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -97,16 +122,21 @@ fun Tasmee3Screen(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Dedicated Tasmee3 Top App Bar with back navigation only
+            // Dedicated Tasmee3 Top App Bar with back navigation and warning action
             QuranAppBar(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
                     .fillMaxWidth()
                     .background(Theme.color.surfaces.surface),
-                title = "تسميع سورة $surahName",
+                title = titleText,
                 onBackClick = { navController.popBackStack() },
                 titleColor = Theme.color.primary.shadePrimary,
-                actions = emptyList()
+                actions = listOf(
+                    AppBarAction(
+                        icon = painterResource(R.drawable.ic_warning),
+                        onClick = { showDisclaimerDialog = true }
+                    )
+                )
             )
 
             // Show Mandatory Download Dialog using Design System PrimaryDialog
@@ -132,18 +162,7 @@ fun Tasmee3Screen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(
-                            color = Theme.color.primary.primary,
-                            strokeWidth = 3.dp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "يتطلب تنزيل نموذج التعرف الصوتي...",
-                            style = Theme.textStyle.body.medium,
-                            color = Theme.color.semantic.shadeTertiary
-                        )
-                    }
+                    LoadingContainer()
                 }
             } else if (uiState.isLoading) {
                 Box(
@@ -152,18 +171,7 @@ fun Tasmee3Screen(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator(
-                            color = Theme.color.primary.primary,
-                            strokeWidth = 3.dp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "جاري فتح المصحف الشريف...",
-                            style = Theme.textStyle.body.medium,
-                            color = Theme.color.semantic.shadeTertiary
-                        )
-                    }
+                    LoadingContainer()
                 }
             } else {
                 // Mushaf Continuous Flow Text Area
@@ -177,8 +185,8 @@ fun Tasmee3Screen(
                         bottom = 190.dp // Padding for the floating control box
                     )
                 ) {
-                    // Bismillah Header (except for Surah Al-Fatihah & Surah At-Tawbah)
-                    if (surahId != 1 && surahId != 9) {
+                    // Bismillah Header (except for Surah Al-Fatihah & Surah At-Tawbah, and only when starting from Ayah 1)
+                    if (startAyah == 1 && surahId != 1 && surahId != 9) {
                         item {
                             BismillahSection(color = Theme.color.primary.primary)
                             Spacer(modifier = Modifier.height(16.dp))
@@ -199,7 +207,7 @@ fun Tasmee3Screen(
             }
         }
 
-        // Only show bottom feedback and floating control bar when download is NOT required
+        // Only show word feedback when download is NOT required
         if (!isDownloadRequired) {
             uiState.selectedWordFeedback?.let { (wordText, mistakes) ->
                 TajweedErrorBottomSheet(
@@ -208,18 +216,30 @@ fun Tasmee3Screen(
                     onDismiss = viewModel::dismissWordFeedback
                 )
             }
+        }
 
+        // Floating Control Bar smoothly animates in only when the Mushaf is ready and loaded
+        AnimatedVisibility(
+            visible = !uiState.isLoading && !isDownloadRequired && uiState.verses.isNotEmpty(),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(bottom = 16.dp)
+                .padding(horizontal = 16.dp),
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 400, easing = FastOutSlowInEasing)
+            ) + fadeIn(animationSpec = tween(400)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(durationMillis = 250)
+            ) + fadeOut(animationSpec = tween(250))
+        ) {
             Tasmee3FloatingControlBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(bottom = 12.dp, start = 16.dp, end = 16.dp),
                 isLoading = uiState.isLoading,
                 isRecording = uiState.isRecording,
                 recognizedText = uiState.recognizedText,
                 lastEvaluatedInfo = uiState.lastEvaluatedWordInfo,
-                isTajweed = uiState.isTajweedEnabled,
-                onToggleTajweed = viewModel::toggleTajweedMode,
                 onToggleRecord = {
                     if (uiState.isLoading) return@Tasmee3FloatingControlBar
                     if (uiState.isRecording) {
@@ -232,6 +252,27 @@ fun Tasmee3Screen(
                         }
                     }
                 }
+            )
+        }
+
+        if (uiState.showCompletionDialog && uiState.completionResult != null) {
+            RecitationCompletionBottomSheet(
+                result = uiState.completionResult!!,
+                surahName = surahName,
+                onRestart = {
+                    if (hasPermission) {
+                        viewModel.restartRecitationSession()
+                    } else {
+                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    }
+                },
+                onDismiss = { viewModel.dismissCompletionDialog() }
+            )
+        }
+
+        if (showDisclaimerDialog) {
+            RecitationDisclaimerDialog(
+                onDismiss = { showDisclaimerDialog = false }
             )
         }
     }

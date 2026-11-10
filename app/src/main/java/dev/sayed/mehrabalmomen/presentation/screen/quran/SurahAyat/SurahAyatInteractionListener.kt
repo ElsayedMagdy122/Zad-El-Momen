@@ -9,4 +9,6 @@ interface SurahAyatInteractionListener {
     fun onClickBack()
     fun onClickSearch()
     fun onClickTasmee3()
+    fun onDismissTasmee3Range()
+    fun onConfirmTasmee3Range(startAyah: Int, endAyah: Int)
 }

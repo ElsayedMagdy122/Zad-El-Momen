@@ -53,6 +53,7 @@ import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.Tasmee3RangeBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.QuranTextSection
@@ -110,7 +111,9 @@ fun SurahAyatScreen(
                 navController.navigate(
                     Route.Tasmee3Screen(
                         surahId = effect.surahId,
-                        surahName = effect.surahName
+                        surahName = effect.surahName,
+                        startAyah = effect.startAyah,
+                        endAyah = effect.endAyah
                     )
                 )
             }
@@ -168,6 +171,15 @@ fun SurahAyatScreen(
                 tafseerUi = state.tafseerUi,
                 surahName = state.arabicName,
                 onDismiss = viewModel::onDismissTafseerSheet
+            )
+        }
+
+        if (state.showTasmee3RangeSheet) {
+            Tasmee3RangeBottomSheet(
+                surahName = state.arabicName,
+                totalAyat = state.ayat.size,
+                onDismiss = viewModel::onDismissTasmee3Range,
+                onConfirm = viewModel::onConfirmTasmee3Range
             )
         }
     }

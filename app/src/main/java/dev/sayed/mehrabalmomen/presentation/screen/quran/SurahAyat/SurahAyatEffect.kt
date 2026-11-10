@@ -14,7 +14,9 @@ sealed interface SurahAyatEffect {
 
     data class NavigateToTasmee3(
         val surahId: Int,
-        val surahName: String
+        val surahName: String,
+        val startAyah: Int = 1,
+        val endAyah: Int = -1
     ) : SurahAyatEffect
 
     data class ShowToast(val toast: ToastDetails) : SurahAyatEffect

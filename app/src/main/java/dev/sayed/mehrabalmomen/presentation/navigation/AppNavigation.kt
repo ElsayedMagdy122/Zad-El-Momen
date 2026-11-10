@@ -90,6 +90,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
             Tasmee3Screen(
                 surahId = args.surahId,
                 surahName = args.surahName,
+                startAyah = args.startAyah,
+                endAyah = args.endAyah,
                 navController = navController
             )
         }

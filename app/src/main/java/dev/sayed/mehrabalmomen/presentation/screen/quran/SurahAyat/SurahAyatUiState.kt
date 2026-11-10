@@ -14,6 +14,7 @@ data class SurahAyatUiState(
     val scrollToAyaId: Int? = null,
     val targetAyahId: Int? = null,
     val showTafseerSheet: Boolean = false,
+    val showTasmee3RangeSheet: Boolean = false,
     val fontSize: QuranFontSize = QuranFontSize.MEDIUM,
     val messageState : Boolean = true,
 
