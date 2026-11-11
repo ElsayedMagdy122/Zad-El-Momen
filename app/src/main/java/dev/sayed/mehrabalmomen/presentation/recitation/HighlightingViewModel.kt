@@ -424,7 +424,11 @@ class HighlightingViewModel(
                 _uiState.update { it.copy(showDownloadDialog = true) }
                 return@launch
             }
-            sherpaEngine.initialize()
+            val initialized = sherpaEngine.initialize()
+            if (!initialized) {
+                _uiState.update { it.copy(showDownloadDialog = true) }
+                return@launch
+            }
             tokenProcessor.reset()
             audioPipeline.startStreaming()
             sherpaEngine.resetBuffer()

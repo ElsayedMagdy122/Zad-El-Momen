@@ -91,8 +91,18 @@ class RecitationModelDownloader(
         if (!isFileValid(mergedModel, MIN_VALID_MODEL_SIZE)) return false
 
         return REQUIRED_ASSETS_WITH_MIN_SIZE.all { (name, minSize) ->
-            val file = File(context.filesDir, name)
-            isFileValid(file, minSize)
+            val internalFile = File(context.filesDir, name)
+            if (isFileValid(internalFile, minSize)) {
+                true
+            } else {
+                try {
+                    context.assets.open(name).use { input ->
+                        input.available() >= minSize
+                    }
+                } catch (_: Exception) {
+                    false
+                }
+            }
         }
     }
 
@@ -180,25 +190,40 @@ class RecitationModelDownloader(
                     if (part2RawFile.exists()) part2RawFile.delete()
                 }
 
-                // Step 2: Download Auxiliary Assets individually (skip any file that is already valid)
+                // Step 2: Ensure Auxiliary Assets exist (extract from APK assets first, only download if missing)
                 val assetEntries = REQUIRED_ASSETS_WITH_MIN_SIZE.entries.toList()
                 val totalAssets = assetEntries.size
 
                 assetEntries.forEachIndexed { index, (assetName, minSize) ->
                     val assetFile = File(context.filesDir, assetName)
                     if (!isFileValid(assetFile, minSize)) {
-                        if (assetFile.exists()) {
-                            assetFile.delete()
+                        // Priority 1: Extract from pre-bundled assets if available in APK
+                        val extracted = try {
+                            context.assets.open(assetName).use { input ->
+                                FileOutputStream(assetFile).use { output ->
+                                    input.copyTo(output)
+                                }
+                            }
+                            isFileValid(assetFile, minSize)
+                        } catch (_: Exception) {
+                            false
                         }
 
-                        val baseProgress = 0.85f + (index.toFloat() / totalAssets.toFloat()) * 0.14f
-                        val weight = 0.14f / totalAssets.toFloat()
-                        streamDownloadToFile(
-                            fileName = assetName,
-                            outputFile = assetFile,
-                            baseProgress = baseProgress,
-                            progressWeight = weight
-                        )
+                        // Priority 2: Download remotely only if missing from APK assets
+                        if (!extracted) {
+                            if (assetFile.exists()) {
+                                assetFile.delete()
+                            }
+
+                            val baseProgress = 0.85f + (index.toFloat() / totalAssets.toFloat()) * 0.14f
+                            val weight = 0.14f / totalAssets.toFloat()
+                            streamDownloadToFile(
+                                fileName = assetName,
+                                outputFile = assetFile,
+                                baseProgress = baseProgress,
+                                progressWeight = weight
+                            )
+                        }
                     }
                 }
 

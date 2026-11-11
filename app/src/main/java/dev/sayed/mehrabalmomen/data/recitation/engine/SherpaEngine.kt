@@ -57,27 +57,7 @@ class SherpaEngine(private val context: Context) {
                 modelConfig.numThreads = 2
                 modelConfig.provider = "cpu"
                 modelConfig.debug = false
-
-                try {
-                    modelConfig.zipformer2Ctc.model = modelPath
-                } catch (_: Throwable) {
-                    try {
-                        val z2Field = modelConfig.javaClass.getField("zipformer2Ctc")
-                        val z2Config = z2Field.get(modelConfig)
-                        val modelField = z2Config?.javaClass?.getField("model")
-                        modelField?.set(z2Config, modelPath)
-                    } catch (_: Exception) {
-                        try {
-                            val z2Field = modelConfig.javaClass.getDeclaredField("zipformer2Ctc")
-                            z2Field.isAccessible = true
-                            val z2Config = z2Field.get(modelConfig)
-                            val modelField = z2Config?.javaClass?.getDeclaredField("model")
-                            modelField?.isAccessible = true
-                            modelField?.set(z2Config, modelPath)
-                        } catch (_: Exception) {
-                        }
-                    }
-                }
+                modelConfig.zipformer2Ctc.model = modelPath
             }
 
             onlineRecognizer = OnlineRecognizer(null, config)
@@ -85,10 +65,6 @@ class SherpaEngine(private val context: Context) {
 
             isInitialized = onlineRecognizer != null && onlineStream != null
         } catch (_: Throwable) {
-            val corruptModel = File(context.filesDir, "zipformer_p_arabic_v3.1.int8.onnx")
-            if (corruptModel.exists()) {
-                corruptModel.delete()
-            }
             isInitialized = false
         }
         return@synchronized isInitialized
