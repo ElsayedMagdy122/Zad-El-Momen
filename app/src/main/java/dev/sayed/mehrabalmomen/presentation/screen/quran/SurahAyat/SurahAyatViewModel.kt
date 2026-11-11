@@ -582,4 +582,25 @@ class SurahAyatViewModel(
             )
         )
     }
+
+    override fun onClickTasmee3() {
+        analyticsTracker.logEvent("on click tasmee3 in surah")
+        updateState { it.copy(showTasmee3RangeSheet = true) }
+    }
+
+    override fun onDismissTasmee3Range() {
+        updateState { it.copy(showTasmee3RangeSheet = false) }
+    }
+
+    override fun onConfirmTasmee3Range(startAyah: Int, endAyah: Int) {
+        updateState { it.copy(showTasmee3RangeSheet = false) }
+        sendEffect(
+            SurahAyatEffect.NavigateToTasmee3(
+                surahId = surahId,
+                surahName = screenState.value.arabicName,
+                startAyah = startAyah,
+                endAyah = endAyah
+            )
+        )
+    }
 }

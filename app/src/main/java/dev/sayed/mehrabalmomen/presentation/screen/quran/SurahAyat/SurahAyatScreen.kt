@@ -2,10 +2,13 @@ package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -53,6 +56,7 @@ import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.navigation.Route.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.Tasmee3RangeBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.AyaActionsSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.QuranTextSection
@@ -104,6 +108,10 @@ fun SurahAyatScreen(
                         currentReaderId = effect.currentReaderId
                     )
                 )
+            }
+
+            is SurahAyatEffect.NavigateToTasmee3 -> {
+                // Handled directly on button confirmation for immediate zero-lag navigation
             }
         }
     }
@@ -161,6 +169,25 @@ fun SurahAyatScreen(
                 onDismiss = viewModel::onDismissTafseerSheet
             )
         }
+
+        if (state.showTasmee3RangeSheet) {
+            Tasmee3RangeBottomSheet(
+                surahName = state.arabicName,
+                totalAyat = state.ayat.size,
+                onDismiss = viewModel::onDismissTasmee3Range,
+                onConfirm = { startAyah, endAyah ->
+                    viewModel.onDismissTasmee3Range()
+                    navController.navigate(
+                        Route.Tasmee3Screen(
+                            surahId = surahId,
+                            surahName = state.arabicName,
+                            startAyah = startAyah,
+                            endAyah = endAyah
+                        )
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -184,7 +211,8 @@ private fun SurahAyatContent(
                 SurahAppBarSection(
                     surahName = surahName,
                     onBack = listener::onClickBack,
-                    onSearch = listener::onClickSearch
+                    onSearch = listener::onClickSearch,
+                    onTasmee3 = listener::onClickTasmee3
                 )
             }
 
@@ -236,8 +264,14 @@ private fun SurahAyatContent(
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(bottom = 16.dp)
                 .padding(horizontal = 16.dp),
-            enter = fadeIn(tween(150)),
-            exit = fadeOut(tween(150))
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(tween(300)),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(durationMillis = 250)
+            ) + fadeOut(tween(200))
         ) {
             TilawahBox(
                 readerName = readerName ?: localizedString(R.string.select_reciter),
