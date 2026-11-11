@@ -6,8 +6,10 @@
 
 <div align="center" dir="rtl">
 
+  <img src="docs/images/banner.png" alt="بانر تطبيق زاد المؤمن" width="100%" style="border-radius: 12px; margin-bottom: 16px;" />
+
   <a href="https://github.com/ElsayedMagdy122/Zad-El-Momen">
-    <img src="https://raw.githubusercontent.com/ElsayedMagdy122/Zad-El-Momen/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="شعار تطبيق زاد المؤمن" width="128" height="128" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+    <img src="docs/images/app_icon.png" alt="شعار تطبيق زاد المؤمن" width="100" height="100" style="border-radius: 22px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);" />
   </a>
 
   <h1 align="center">زاد المؤمن | Zad Al-Mu'min</h1>
@@ -19,6 +21,7 @@
   <p align="center">
     <a href="README.md"><strong>English Version</strong></a> •
     <a href="#-أهم-المميزات">أهم المميزات</a> •
+    <a href="#-معرض-الشاشات-والواجهات">معرض الشاشات</a> •
     <a href="#-المعمارية-وهيكل-المشروع">المعمارية وهيكل المشروع</a> •
     <a href="#-حزمة-التقنيات-المستخدمة">التقنيات المستخدمة</a> •
     <a href="#-دليل-التثبيت-والتشغيل-المحلي">التثبيت والتشغيل</a> •
@@ -79,56 +82,56 @@
 
 ---
 
-## 📸 لقطات شاشة من التطبيق
+## 📸 معرض الشاشات والواجهات
 
 <div align="center">
   <table>
     <tr>
-      <th align="center">🏠 الشاشة الرئيسية ومواقيت الصلاة</th>
-      <th align="center">📖 المصحف ووضع القراءة</th>
-      <th align="center">🕋 مواقيت الصلاة التفصيلية</th>
-      <th align="center">📋 فهرس سور القرآن</th>
-      <th align="center">📿 الأذكار وحصن المسلم</th>
+      <th align="center" width="50%">📖 المصحف الشريف وتجربة القراءة والتفسير</th>
+      <th align="center" width="50%">🤖 التسميع الذكي ومراجعة الحفظ (On-Device AI)</th>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/7cce4da5-dbc6-41e7-be75-6c56de76d85c" width="180" alt="الشاشة الرئيسية" />
+        <img src="docs/images/preview_quran.png" alt="معاينة المصحف الشريف" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/4cb991e3-cbd1-47fb-b212-1b614945e73e" width="180" alt="وضع القراءة" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/5822aa2c-396e-4cdb-9b0e-c4a9ab970892" width="180" alt="مواقيت الصلاة" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/63324b1f-d3d5-461a-a893-bfa19b46d1ee" width="180" alt="فهرس السور" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/58b6ffa6-4ea1-468e-98d4-a0151e1ebef4" width="180" alt="الأذكار اليومية" />
+        <img src="docs/images/preview_memorization.png" alt="معاينة التسميع بالذكاء الاصطناعي" width="100%" />
       </td>
     </tr>
     <tr>
-      <th align="center">📻 إذاعة القرآن الكريم مباشر</th>
-      <th align="center">📚 التفسير ومعاني الآيات</th>
-      <th align="center">🧭 بوصلة القبلة الدقيقة</th>
-      <th align="center">⚙️ إعدادات الحساب والمظهر</th>
-      <th align="center">🤖 مراجعة الحفظ بالذكاء الاصطناعي</th>
+      <th align="center" width="50%">🕌 مواقيت الصلاة والأذان وبوصلة القبلة</th>
+      <th align="center" width="50%">📿 الأذكار اليومية وحصن المسلم</th>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/90e08c9d-ff79-421f-a2ac-13c2d12cc52a" width="180" alt="راديو القرآن" />
+        <img src="docs/images/preview_prayer_qiblah.png" alt="معاينة مواقيت الصلاة والقبلة" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/70573336-85ec-46c0-a56b-fc71088ba7e0" width="180" alt="تفسير الآيات" />
+        <img src="docs/images/preview_azkar.png" alt="معاينة الأذكار اليومية" width="100%" />
+      </td>
+    </tr>
+    <tr>
+      <th align="center" width="50%">🤝 رفيق المؤمن (المرافق والرسائل اليومية)</th>
+      <th align="center" width="50%">🎧 التلاوات القرآنية والمشغل الصوتي</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/images/preview_companion.png" alt="معاينة رفيق المؤمن" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/11c1d188-e1ba-4a21-a6c5-0acb34cbda7c" width="180" alt="بوصلة القبلة" />
+        <img src="docs/images/preview_recitations.png" alt="معاينة التلاوات القرآنية" width="100%" />
+      </td>
+    </tr>
+    <tr>
+      <th align="center" width="50%">📻 البث المباشر لإذاعة القرآن الكريم</th>
+      <th align="center" width="50%">⚙️ التخصيص والإعدادات العامة</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/images/preview_radio.png" alt="معاينة إذاعة القرآن" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/0f339955-21bd-45a8-b36d-f0e77c314694" width="180" alt="الإعدادات" />
-      </td>
-      <td align="center">
-        <img src="assets/screenshots/screen_tasmee3_placeholder.png" onerror="this.src='https://via.placeholder.com/180x380/121A16/2ECC71?text=%D8%A7%D9%84%D8%AA%D8%B3%D9%85%D9%8A%D8%B9+%D8%A7%D9%84%D8%B0%D9%83%D9%8A'" width="180" alt="التسميع الذكي" />
+        <img src="docs/images/preview_customization.png" alt="معاينة التخصيص والإعدادات" width="100%" />
       </td>
     </tr>
   </table>
@@ -162,6 +165,9 @@
 ### 📿 الأذكار وحصن المسلم
 - **موسوعة الأذكار اليومية:** أذكار الصباح والمساء، أذكار بعد الصلاة، أذكار النوم والاستيقاظ، والأدعية النبوية المأثورة.
 - **سبحة إلكترونية تفاعلية:** عداد ذكي للأذكار مزود باهتزاز لمسي (Haptic Feedback) ومؤشرات مرئية لعدد التكرارات المتبقية.
+
+### 🤝 رفيق المؤمن (المرافق والرسائل اليومية)
+- **خواطر وتذكيرات إيمانية:** اقتراحات سياقية وتذكيرات لطيفة بأعمال البر والسنن المهجورة على مدار اليوم.
 
 ### 📻 إذاعة القرآن الكريم المباشرة
 - **تشغيل في الخلفية عبر Media3 ExoPlayer:** بث إذاعي صوتي عالي النقاء مستقر ومنخفض استهلاك البيانات، يدعم التحكم الكامل من شاشة القفل والإشعارات (`MediaSessionService`).
@@ -213,6 +219,7 @@ E:/Zad-El-Momen1/
 │   │       │   ├── qiblah/              # قراءة ومعالجة بيانات الحساسات المغناطيسية للقبلة
 │   │       │   ├── radio/               # محطات الراديو والبث المباشر
 │   │       │   ├── tasmee3/             # محولات الذكاء الاصطناعي وملفات النماذج المحلية
+│   │       │   ├── companion/           # رفيق المؤمن (المرافق والرسائل الإيمانية)
 │   │       │   ├── platform/            # خدمات النظام: جدولة المنبهات والإشعارات
 │   │       │   └── util/                # قاعدة بيانات Room ومدير عمليات الدفع
 │   │       ├── domain/                  # طبقة المنطق (أكواد كوتلن نقية تماماً - لا تعتمد على أندرويد)
@@ -226,7 +233,7 @@ E:/Zad-El-Momen1/
 │   │       │   ├── di/                  # وحدة Koin لطبقة العرض (ViewModels)
 │   │       │   ├── base/                # الـ BaseViewModel والنشاط الرئيسي MainActivity
 │   │       │   ├── navigation/          # مسارات وشجرة التنقل داخل Compose
-│   │       │   ├── screen/              # شاشات التطبيق (القرآن، الصلاة، الأذكار، القبلة، التسميع...)
+│   │       │   ├── screen/              # شاشات التطبيق (القرآن، الصلاة، الأذكار، القبلة، التسميع، الرفيق...)
 │   │       │   ├── widget/              # كود ويدجت الشاشة الرئيسية (PrayerTimesWidgetProvider)
 │   │       │   ├── service/             # خدمات الخلفية: خدمة الأذان، إشعارات Firebase
 │   │       │   ├── reciver/             # مستقبلات النظام: إعادة التشغيل Boot وتنبيهات الأذان
@@ -237,6 +244,8 @@ E:/Zad-El-Momen1/
 │   │           ├── text_style/          # إعدادات الخطوط العربية (الخط العثماني وخطوط الواجهة)
 │   │           └── component/           # الأزرار، حقول الإدخال، القوائم المنبثقة المخصصة
 │   └── build.gradle.kts                 # مكتبات التطبيق وإعدادات البناء
+├── docs/                                # وثائق وتصميمات المشروع وصور المعاينة
+│   └── images/                          # صور الشاشات عالية الجودة، الشعار والبانر
 ├── gradle/                              # ملفات Gradle Wrapper وكتالوج الإصدارات (libs.versions.toml)
 ├── .github/                             # مسارات فحص الجودة والبناء الآلي في GitHub Actions
 └── README.md                            # التوثيق الإنجليزي للمشروع
@@ -343,7 +352,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 - [x] الإصدار الأول من ميزة التسميع بالذكاء الاصطناعي عبر Sherpa-ONNX
 - [x] ويدجت شاشة الهاتف لمواقيت الصلاة
 - [ ] **تطبيق مخصص لساعات أندرويد (Wear OS):** واجهات مخصصة وودجت للساعات الذكية باستخدام Wear Compose M3.
-- [ ] **مخطط الختمات القرآTimelineية:** ميزة متطورة لتنظيم وتتبع أوراد ختم القرآن الكريم بمعدلات يومية مرنة.
+- [ ] **مخطط الختمات القرآنية:** ميزة متطورة لتنظيم وتتبع أوراد ختم القرآن الكريم بمعدلات يومية مرنة.
 - [ ] **التلوين التفاعلي لأحكام التجويد:** تمييز أحكام التجويد لونياً أثناء القراءة لتيسير التلاوة المتقنة.
 - [ ] **دعم لغات إضافية:** إضافة حزم اللغات الفرنسية، الأردية، الإندونيسية، والتركية.
 

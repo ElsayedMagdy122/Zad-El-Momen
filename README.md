@@ -6,8 +6,10 @@
 
 <div align="center">
 
+  <img src="docs/images/banner.png" alt="Zad Al-Mu'min Banner" width="100%" style="border-radius: 12px; margin-bottom: 16px;" />
+
   <a href="https://github.com/ElsayedMagdy122/Zad-El-Momen">
-    <img src="https://raw.githubusercontent.com/ElsayedMagdy122/Zad-El-Momen/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="Zad Al-Mu'min Logo" width="128" height="128" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" />
+    <img src="docs/images/app_icon.png" alt="Zad Al-Mu'min Logo" width="100" height="100" style="border-radius: 22px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);" />
   </a>
 
   <h1 align="center">Zad Al-Mu'min | زاد المؤمن</h1>
@@ -19,6 +21,7 @@
   <p align="center">
     <a href="README.ar.md"><strong>العربية</strong></a> •
     <a href="#-key-features">Key Features</a> •
+    <a href="#-app-showcase--previews">App Previews</a> •
     <a href="#-architecture--directory-structure">Architecture</a> •
     <a href="#-tech-stack">Tech Stack</a> •
     <a href="#-getting-started--local-setup">Getting Started</a> •
@@ -72,63 +75,63 @@
 **Zad Al-Mu'min (زاد المؤمن)** is a modern, open-source Android application crafted to serve as an indispensable spiritual companion for every Muslim. Built from the ground up with **modern Android development standards (MAD)**, the project pairs high aesthetic standards with robust software engineering principles.
 
 ### Why Zad Al-Mu'min?
-Many prayer and Quran apps are burdened by intrusive full-screen advertisements, bloated analytics trackers, or require continuous internet connectivity. **Zad Al-Mu'min was created with three foundational pillars**:
-1. **100% Privacy & Offline-First:** Sensitive capabilities—including microphone audio for Quran recitation checking and GPS sensor queries for Qiblah calculation—are executed strictly on-device without telemetry or cloud audio transfer.
+Many prayer and Quran apps are burdened by intrusive advertisements, background trackers, or require continuous internet connectivity. **Zad Al-Mu'min was created with three foundational pillars**:
+1. **100% Privacy & Offline-First:** Sensitive capabilities—including microphone audio for Quran recitation verification and GPS sensor queries for Qiblah calculation—are executed strictly on-device without telemetry or cloud audio transfer.
 2. **On-Device Artificial Intelligence:** Integrating lightweight on-device ASR models powered by **Sherpa-ONNX**, enabling users to test their Quran memorization (*Tasmee3* / تسميع) completely offline.
 3. **Architectural Purity:** Clear decoupling across Presentation, Domain, and Data layers following **Clean Architecture**, powered by **Jetpack Compose**, **Kotlin Coroutines & Flow**, **Koin DI**, and **Room Database**.
 
 ---
 
-## 📸 Screenshots & Visual Experience
+## 📸 App Showcase & Previews
 
 <div align="center">
   <table>
     <tr>
-      <th align="center">🏠 Home & Upcoming Prayer</th>
-      <th align="center">📖 Quran & Reading Mode</th>
-      <th align="center">🕋 Precise Prayer Times</th>
-      <th align="center">📋 Surah Catalog & Index</th>
-      <th align="center">📿 Daily Azkar & Dhikr</th>
+      <th align="center" width="50%">📖 Holy Quran & Reading Experience</th>
+      <th align="center" width="50%">🤖 On-Device AI Memorization (Tasmee3)</th>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/7cce4da5-dbc6-41e7-be75-6c56de76d85c" width="180" alt="Home Screen" />
+        <img src="docs/images/preview_quran.png" alt="Holy Quran Preview" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/4cb991e3-cbd1-47fb-b212-1b614945e73e" width="180" alt="Quran Reading Mode" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/5822aa2c-396e-4cdb-9b0e-c4a9ab970892" width="180" alt="Prayer Times Screen" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/63324b1f-d3d5-461a-a893-bfa19b46d1ee" width="180" alt="Surah Index" />
-      </td>
-      <td align="center">
-        <img src="https://github.com/user-attachments/assets/58b6ffa6-4ea1-468e-98d4-a0151e1ebef4" width="180" alt="Azkar Screen" />
+        <img src="docs/images/preview_memorization.png" alt="AI Memorization Preview" width="100%" />
       </td>
     </tr>
     <tr>
-      <th align="center">📻 Holy Quran Radio</th>
-      <th align="center">📚 Ayah Tafsir & Meanings</th>
-      <th align="center">🧭 Qiblah Compass Finder</th>
-      <th align="center">⚙️ Custom Settings</th>
-      <th align="center">🤖 AI Recitation Check</th>
+      <th align="center" width="50%">🕌 Prayer Times & Qiblah Compass</th>
+      <th align="center" width="50%">📿 Daily Adhkar & Hisn Al-Muslim</th>
     </tr>
     <tr>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/90e08c9d-ff79-421f-a2ac-13c2d12cc52a" width="180" alt="Quran Radio" />
+        <img src="docs/images/preview_prayer_qiblah.png" alt="Prayer Times & Qiblah Preview" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/70573336-85ec-46c0-a56b-fc71088ba7e0" width="180" alt="Tafsir Viewer" />
+        <img src="docs/images/preview_azkar.png" alt="Daily Adhkar Preview" width="100%" />
+      </td>
+    </tr>
+    <tr>
+      <th align="center" width="50%">🤝 Faithful Companion (Al-Rafeeq)</th>
+      <th align="center" width="50%">🎧 Quran Recitations & Audio Engine</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/images/preview_companion.png" alt="Faithful Companion Preview" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/11c1d188-e1ba-4a21-a6c5-0acb34cbda7c" width="180" alt="Qiblah Compass" />
+        <img src="docs/images/preview_recitations.png" alt="Recitations Preview" width="100%" />
+      </td>
+    </tr>
+    <tr>
+      <th align="center" width="50%">📻 24/7 Quran Live Radio Streams</th>
+      <th align="center" width="50%">⚙️ Personalization & Settings</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/images/preview_radio.png" alt="Quran Live Radio Preview" width="100%" />
       </td>
       <td align="center">
-        <img src="https://github.com/user-attachments/assets/0f339955-21bd-45a8-b36d-f0e77c314694" width="180" alt="Settings Screen" />
-      </td>
-      <td align="center">
-        <img src="assets/screenshots/screen_tasmee3_placeholder.png" onerror="this.src='https://via.placeholder.com/180x380/121A16/2ECC71?text=AI+Tasmee3+Model'" width="180" alt="AI Recitation Checker" />
+        <img src="docs/images/preview_customization.png" alt="Customization Preview" width="100%" />
       </td>
     </tr>
   </table>
@@ -139,7 +142,7 @@ Many prayer and Quran apps are burdened by intrusive full-screen advertisements,
 ## ✨ Core Features Breakdown
 
 ### 🎙️ On-Device AI Recitation Verification (*Tasmee3* / تسميع)
-- **Local Neural Inference:** Employs **Sherpa-ONNX** embedded speech recognition models to transcribe recitation in real time with low latency.
+- **Local Neural Inference:** Employs **Sherpa-ONNX** embedded speech recognition models to transcribe recitation in real time with ultra-low latency.
 - **Dynamic Ayah Matching & Highlighting:** Real-time text token alignment detects hesitations, missed words, or pronunciation discrepancies without sending raw audio to any cloud server.
 - **Zero Privacy Compromise:** Works entirely offline in airplane mode.
 
@@ -162,6 +165,9 @@ Many prayer and Quran apps are burdened by intrusive full-screen advertisements,
 ### 📿 Adhkar & Daily Supplications
 - **Curated Fortress of the Muslim (Hisn al-Muslim):** Morning, evening, after-prayer, sleep, and travel Adhkar.
 - **Digital Interactive Counter:** Haptic-assisted counter with target repetition indicators and completion states.
+
+### 🤝 Faithful Companion (رفيق المؤمن)
+- **Spiritual Daily Reminders:** Personalized contextual suggestions, motivational verses, and sunnah habits timed throughout your day.
 
 ### 📻 24/7 Holy Quran Live Radio
 - **Background Audio via Media3 ExoPlayer:** Stable low-bandwidth streaming with lock-screen notification media controls (`MediaSessionService`).
@@ -213,6 +219,7 @@ E:/Zad-El-Momen1/
 │   │       │   ├── qiblah/              # Device geomagnetic sensor processing implementation
 │   │       │   ├── radio/               # Streaming station data sources
 │   │       │   ├── tasmee3/             # On-device AI model loaders and audio streaming adapters
+│   │       │   ├── companion/           # Faithful companion local & remote repositories
 │   │       │   ├── platform/            # System managers: AlarmScheduler, NotificationScheduler
 │   │       │   └── util/                # Room AppDatabase, BillingManager, network helpers
 │   │       ├── domain/                  # DOMAIN LAYER (Pure Kotlin Business Logic - Zero Android Deps)
@@ -226,7 +233,7 @@ E:/Zad-El-Momen1/
 │   │       │   ├── di/                  # Koin PresentationModule
 │   │       │   ├── base/                # BaseViewModel, MainActivity, Application class
 │   │       │   ├── navigation/          # Compose Navigation routes & graph definition
-│   │       │   ├── screen/              # Feature screens (quran, prayers, azkar, qiblah, tasmee3...)
+│   │       │   ├── screen/              # Feature screens (quran, prayers, azkar, qiblah, tasmee3, companion...)
 │   │       │   ├── widget/              # Android AppWidget providers (PrayerTimesWidgetProvider)
 │   │       │   ├── service/             # Background services: PrayerAlarmService, FCM
 │   │       │   ├── reciver/             # BroadcastReceivers: BootReceiver, AzanAlarmReceiver
@@ -237,6 +244,8 @@ E:/Zad-El-Momen1/
 │   │           ├── text_style/          # Custom typography scales (Uthmani Quran & UI fonts)
 │   │           └── component/           # PrimaryButton, AppTextField, BottomSheet, CustomSwitch
 │   └── build.gradle.kts                 # Application-level dependencies & build flags
+├── docs/                                # Project documentation assets & preview images
+│   └── images/                          # High-resolution screenshots, app icon, and banner
 ├── gradle/                              # Gradle wrapper and version catalog (libs.versions.toml)
 ├── .github/                             # GitHub Actions CI workflows & PR templates
 └── README.md                            # Project documentation
