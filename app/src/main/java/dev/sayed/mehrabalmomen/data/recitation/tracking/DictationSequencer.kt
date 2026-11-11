@@ -2,7 +2,7 @@ package dev.sayed.mehrabalmomen.data.recitation.tracking
 
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ErrorExplainer
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.WordStatus
 import kotlin.math.max
 import kotlin.math.min
 

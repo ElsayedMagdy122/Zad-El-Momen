@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

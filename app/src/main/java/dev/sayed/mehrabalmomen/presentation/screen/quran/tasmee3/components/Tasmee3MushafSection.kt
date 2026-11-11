@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.data.recitation.data.QuranVerse
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.cleanWordText
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.getAyahEndGlyph
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.WordStatus
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.cleanWordText
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.getAyahEndGlyph
 
 /**
  * Renders verses in an authentic, justified Mus'haf flow using Hafs calligraphy and 3-color status protocol.

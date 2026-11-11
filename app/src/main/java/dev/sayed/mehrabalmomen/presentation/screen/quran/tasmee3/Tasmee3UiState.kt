@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3
 
 import dev.sayed.mehrabalmomen.data.recitation.data.QuranVerse
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake

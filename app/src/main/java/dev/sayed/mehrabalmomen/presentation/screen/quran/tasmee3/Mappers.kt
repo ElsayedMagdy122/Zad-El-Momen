@@ -1,4 +1,6 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3
+
+import kotlin.text.iterator
 
 /**
  * Converts Western digits (1, 2, 3...) to authentic Arabic numerals (١، ٢، ٣...).

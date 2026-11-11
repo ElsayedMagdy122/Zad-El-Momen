@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -53,12 +53,12 @@ import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.recitation.HighlightingViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.components.BismillahSection
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationCompletionBottomSheet
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationDisclaimerDialog
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.RecitationDownloadDialog
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.TajweedErrorBottomSheet
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.Tasmee3FloatingControlBar
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.components.Tasmee3MushafSection
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.RecitationCompletionBottomSheet
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.RecitationDisclaimerDialog
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.RecitationDownloadDialog
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.TajweedErrorBottomSheet
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.Tasmee3FloatingControlBar
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components.Tasmee3MushafSection
 import org.koin.androidx.compose.koinViewModel
 
 /**

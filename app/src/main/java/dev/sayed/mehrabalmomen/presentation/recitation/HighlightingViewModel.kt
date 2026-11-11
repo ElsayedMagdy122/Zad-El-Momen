@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.data.recitation.audio.AudioPipeline
 import dev.sayed.mehrabalmomen.data.recitation.data.QuranRepository
-import dev.sayed.mehrabalmomen.data.recitation.data.QuranVerse
 import dev.sayed.mehrabalmomen.data.recitation.engine.AsrTokenProcessor
 import dev.sayed.mehrabalmomen.data.recitation.engine.ModelDownloadState
 import dev.sayed.mehrabalmomen.data.recitation.engine.RecitationModelDownloader
@@ -17,9 +16,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationUiState
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.WordStatus
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.cleanWordText
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.RecitationCompletionResult
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.RecitationUiState
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.WordStatus
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.cleanWordText
 
 /**
  * State Management ViewModel for AI Quran Recitation and Tajweed Verification.
@@ -112,7 +112,7 @@ class HighlightingViewModel(
             )
         }
 
-        val result = dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationCompletionResult(
+        val result = RecitationCompletionResult(
             totalWords = totalWords,
             correctWords = correct,
             warningWords = warning,

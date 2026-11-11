@@ -24,7 +24,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScre
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchScreen
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.Tasmee3Screen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.Tasmee3Screen
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen

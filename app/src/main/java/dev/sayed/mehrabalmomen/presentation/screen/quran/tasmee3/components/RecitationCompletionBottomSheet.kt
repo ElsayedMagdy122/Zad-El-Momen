@@ -1,4 +1,4 @@
-package dev.sayed.mehrabalmomen.presentation.screen.recitation.components
+package dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -43,7 +43,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
-import dev.sayed.mehrabalmomen.presentation.screen.recitation.RecitationCompletionResult
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.RecitationCompletionResult
 
 /**
  * Authentic Completion Bottom Sheet built strictly following the Zad El Momen Design System,
