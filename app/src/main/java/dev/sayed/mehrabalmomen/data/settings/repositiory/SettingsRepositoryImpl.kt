@@ -254,4 +254,24 @@ class SettingsRepositoryImpl(
                 )
             )
         }
+
+    override fun observeHasSeenBatteryDialog(): Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[SettingsKeys.HAS_SEEN_BATTERY_DIALOG] ?: false
+    }
+
+    override suspend fun setHasSeenBatteryDialog(seen: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.HAS_SEEN_BATTERY_DIALOG] = seen
+        }
+    }
+
+    override fun observeHasSeenRecitationDisclaimer(): Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[SettingsKeys.HAS_SEEN_RECITATION_DISCLAIMER] ?: false
+    }
+
+    override suspend fun setHasSeenRecitationDisclaimer(seen: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[SettingsKeys.HAS_SEEN_RECITATION_DISCLAIMER] = seen
+        }
+    }
 }
