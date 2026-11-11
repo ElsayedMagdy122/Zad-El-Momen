@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.data.recitation.engine
 
 import android.content.Context
+import dev.sayed.mehrabalmomen.R
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import io.ktor.client.HttpClient
@@ -158,7 +159,7 @@ class RecitationModelDownloader(
                         }
                     }
 
-                    _downloadState.value = ModelDownloadState.Processing("جاري فك ضغط وتجهيز نماذج التسميع...")
+                    _downloadState.value = ModelDownloadState.Processing(context.getString(R.string.recitation_download_processing_msg))
 
                     // Unzip part 1
                     val part1Unzipped = extractFileFromZip(part1ZipFile, part1RawFile)
@@ -228,10 +229,10 @@ class RecitationModelDownloader(
                 }
 
                 if (!isModelReady()) {
-                    throw IllegalStateException("بعض ملفات التسميع المساعدة غير مكتملة. يرجى إعادة المحاولة.")
+                    throw IllegalStateException("بعض ملفات مراجعة الحفظ المساعدة غير مكتملة. يرجى إعادة المحاولة.")
                 }
 
-                _downloadState.value = ModelDownloadState.Processing("جاري تهيئة محرك الذكاء الاصطناعي...")
+                _downloadState.value = ModelDownloadState.Processing(context.getString(R.string.tasmee3_status_initializing))
                 _downloadState.value = ModelDownloadState.Ready
                 true
             } catch (e: Exception) {
@@ -239,7 +240,7 @@ class RecitationModelDownloader(
                     _downloadState.value = ModelDownloadState.Idle
                     throw e
                 }
-                _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "فشل تنزيل ملفات النموذج")
+                _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: context.getString(R.string.recitation_download_error_title))
                 false
             }
         }

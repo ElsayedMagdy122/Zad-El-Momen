@@ -512,8 +512,9 @@
     <string name="tasmee3_mode_full_surah_desc">From verse 1 to verse %1$s</string>
     <string name="tasmee3_mode_custom_range">Select a verse range</string>
     <string name="tasmee3_mode_custom_range_desc">Recite a specific section of the Surah</string>
-    <string name="tasmee3_from_ayah">From verse</string>
-    <string name="tasmee3_to_ayah">To verse</string>
+    <string name="tasmee3_from_ayah">From start of verse</string>
+    <string name="tasmee3_to_ayah">To end of verse</string>
+    <string name="tasmee3_single_ayah_hint">To recite a single verse, enter the same verse number in both fields (e.g. from 59 to 59)</string>
     <string name="tasmee3_start_button">Start Recitation</string>
     <string name="tasmee3_error_start_range">Start verse must be between 1 and %1$s</string>
     <string name="tasmee3_error_end_range">End verse must be between 1 and %1$s</string>
@@ -523,16 +524,16 @@
     <string name="recitation_disclaimer_message">The recitation model relies on speech recognition of Quranic words and verse sequencing to help you review and retain your memorization only. It does not thoroughly verify Tajweed rules or precise phonetic articulation.\n\nThis feature is an assistive tool and does not replace oral recitation and learning directly from a qualified, certified Quran teacher.</string>
     <string name="recitation_disclaimer_confirm">I understand</string>
 
-    <string name="recitation_download_error_title">Failed to download model files</string>
-    <string name="recitation_download_processing_title">Preparing &amp; installing model</string>
-    <string name="recitation_download_in_progress_title">Downloading recitation model</string>
-    <string name="recitation_download_prompt_title">Download Speech Recognition Model</string>
+    <string name="recitation_download_error_title">Failed to Download Model</string>
+    <string name="recitation_download_processing_title">Setting Up Model</string>
+    <string name="recitation_download_in_progress_title">Downloading Recitation Model</string>
+    <string name="recitation_download_prompt_title">Download Recitation Model</string>
     <string name="recitation_download_error_prefix">An error occurred during download:\n%1$s</string>
     <string name="recitation_download_retry">Retry</string>
     <string name="recitation_download_cancel">Cancel &amp; Go Back</string>
     <string name="recitation_download_processing_msg">Downloaded successfully! Extracting and setting up AI files...</string>
-    <string name="recitation_download_progress_msg">Downloading speech recognition model... (%1$s%%)</string>
-    <string name="recitation_download_cancel_long">Cancel download &amp; Go Back</string>
+    <string name="recitation_download_progress_msg">Downloading AI files, please wait... (%1$s%%)</string>
+    <string name="recitation_download_cancel_long">Cancel Download &amp; Go Back</string>
     <string name="recitation_download_continue_background">Continue in Background</string>
     <string name="recitation_download_cancel_action">Cancel Download</string>
     <string name="recitation_download_notification_channel">Recitation Model Download</string>
@@ -541,8 +542,8 @@
     <string name="recitation_download_notification_processing">Extracting and preparing recitation models...</string>
     <string name="recitation_download_notification_ready">Recitation model ready!</string>
     <string name="recitation_download_notification_error">Failed to complete model download</string>
-    <string name="recitation_download_intro_msg">The recitation feature requires downloading the on-device AI model (approx. 70 MB) once to enable speech recognition.</string>
-    <string name="recitation_download_confirm">Download Model Now</string>
+    <string name="recitation_download_intro_msg">The recitation feature requires downloading the AI model (~70 MB) once to enable offline speech recognition.</string>
+    <string name="recitation_download_confirm">Start Download Now</string>
 
     <string name="recitation_result_title">Recitation Result</string>
     <string name="recitation_result_surah_prefix">Surah %1$s</string>
@@ -556,12 +557,12 @@
     <string name="recitation_result_restart">Restart Recitation from Beginning</string>
     <string name="recitation_result_review">Review Verses</string>
 
-    <string name="recitation_rating_excellent_title">Masha\'Allah! Excellent &amp; Precise Recitation 🌟</string>
-    <string name="recitation_rating_excellent_msg">You completed recitation with the highest degree of precision. May Allah bless you.</string>
-    <string name="recitation_rating_very_good_title">Well Done! Very Good Recitation 👏</string>
+    <string name="recitation_rating_excellent_title">Masha\'Allah! Excellent &amp; Precise Recitation</string>
+    <string name="recitation_rating_excellent_msg">You completed recitation with the highest degree of precision. May Allah bless you and benefit others through you.</string>
+    <string name="recitation_rating_very_good_title">Well Done! Very Good Recitation</string>
     <string name="recitation_rating_very_good_msg">Blessed memorization with minor observations. Keep reviewing and progressing.</string>
-    <string name="recitation_rating_good_title">Good Recitation &amp; Blessed Effort 👍</string>
+    <string name="recitation_rating_good_title">Good Recitation &amp; Blessed Effort</string>
     <string name="recitation_rating_good_msg">Recitation completed. Reviewing omitted or mistaken words is recommended.</string>
-    <string name="recitation_rating_retry_title">Blessed Effort &amp; Rewarded Attempt 💪</string>
+    <string name="recitation_rating_retry_title">Blessed Effort &amp; Rewarded Attempt</string>
     <string name="recitation_rating_retry_msg">Continue repeating and reviewing to solidify the verses and master memorization.</string>
 </resources>

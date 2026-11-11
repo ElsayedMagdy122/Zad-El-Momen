@@ -183,6 +183,13 @@ fun Tasmee3RangeBottomSheet(
                             color = Theme.color.semantic.error,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
+                    } else {
+                        Text(
+                            text = localizedString(R.string.tasmee3_single_ayah_hint),
+                            style = Theme.textStyle.body.small,
+                            color = Theme.color.secondary.shadeSecondary,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
                     }
                 }
             }
