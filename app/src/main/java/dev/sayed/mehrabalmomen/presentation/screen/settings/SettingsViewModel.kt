@@ -251,7 +251,7 @@ class SettingsViewModel(
                         description = UiText.DynamicString(state.location.country.plus(", ").plus(state.location.city))
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_notifications,
+                        icon = R.drawable.ic_alarm_clock,
                         title = UiText.StringResource(R.string.notifications),
                         action = SettingsUiState.SettingsAction.NOTIFICATIONS,
                     ),

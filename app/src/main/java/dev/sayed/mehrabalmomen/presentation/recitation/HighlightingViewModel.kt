@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 import dev.sayed.mehrabalmomen.data.recitation.tajweed.ReciterMistake
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.RecitationCompletionResult
 import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.RecitationUiState
 import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.WordStatus
@@ -27,8 +28,17 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.cleanWordText
  */
 class HighlightingViewModel(
     application: Application,
-    private val modelDownloader: RecitationModelDownloader
+    private val modelDownloader: RecitationModelDownloader,
+    private val settingsRepository: SettingsRepository
 ) : AndroidViewModel(application) {
+
+    val hasSeenDisclaimerFlow: Flow<Boolean> = settingsRepository.observeHasSeenRecitationDisclaimer()
+
+    fun markDisclaimerAsSeen() {
+        viewModelScope.launch {
+            settingsRepository.setHasSeenRecitationDisclaimer(true)
+        }
+    }
 
     private val audioPipeline = AudioPipeline()
     private val sherpaEngine = SherpaEngine(application)

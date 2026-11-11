@@ -55,6 +55,18 @@ class PrayerTimesViewModel(
         getNextPrayer()
         observePrayerNotifications()
         refreshBatteryStatus()
+        checkFirstTimeBatteryDialog()
+    }
+
+    private fun checkFirstTimeBatteryDialog() {
+        viewModelScope.launch {
+            val hasSeen = settingsRepository.observeHasSeenBatteryDialog().first()
+            if (!hasSeen) {
+                refreshBatteryStatus()
+                updateState { it.copy(showBatteryDialog = true) }
+                settingsRepository.setHasSeenBatteryDialog(true)
+            }
+        }
     }
 
     /**
