@@ -25,6 +25,7 @@ outputs/
 *.class
 *.jar
 *.aar
+!app/libs/*.aar
 app/release/
 output-metadata.json
 baselineProfiles/
