@@ -34,6 +34,10 @@ object SettingsKeys {
     val LAST_TASK_RESET_DATE = stringPreferencesKey("companion_last_reset_date")
     val COMPANION_ENABLED = booleanPreferencesKey("companion_enabled")
 
+    // First Time Dialog Flags
+    val HAS_SEEN_BATTERY_DIALOG = booleanPreferencesKey("has_seen_battery_dialog")
+    val HAS_SEEN_RECITATION_DISCLAIMER = booleanPreferencesKey("has_seen_recitation_disclaimer")
+
     fun prayerKey(prayer: Prayer.PrayerName) =
         booleanPreferencesKey("prayer_enabled_${prayer.name}")
 }

@@ -34,4 +34,9 @@ interface SettingsRepository {
     suspend fun shouldShowDonationPrompt(currentTimeMs: Long): Boolean
     suspend fun onDonationPromptAction(action: DonationPromptAction, currentTimeMs: Long)
     suspend fun setHasDonated(hasDonated: Boolean)
+
+    fun observeHasSeenBatteryDialog(): Flow<Boolean>
+    suspend fun setHasSeenBatteryDialog(seen: Boolean)
+    fun observeHasSeenRecitationDisclaimer(): Flow<Boolean>
+    suspend fun setHasSeenRecitationDisclaimer(seen: Boolean)
 }

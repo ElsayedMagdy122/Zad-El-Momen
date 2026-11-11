@@ -35,7 +35,7 @@ fun getReminderIcon(config: ReminderConfig): UiIcon = when (config.type) {
     ReminderType.FRIDAY_SUNNAN -> UiIcon(R.drawable.mosque_02)
     ReminderType.DAILY_WORD -> UiIcon(R.drawable.ic_quran_02)
     ReminderType.BEFORE_PRAYER -> UiIcon(R.drawable.ic_accurate_prayer)
-    null -> UiIcon(R.drawable.ic_notifications)
+    null -> UiIcon(R.drawable.ic_alarm_clock)
 }
 
 fun getRecurrenceText(recurrence: RecurrencePattern): String = when (recurrence) {

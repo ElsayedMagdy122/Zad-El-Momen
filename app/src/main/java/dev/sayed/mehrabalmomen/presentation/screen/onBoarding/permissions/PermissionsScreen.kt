@@ -231,7 +231,7 @@ private fun PermissionsContent(
             if (state.isNotificationPermissionRequired) {
                 item {
                     PermissionItem(
-                        icon = R.drawable.ic_notifications,
+                        icon = R.drawable.ic_alarm_clock,
                         title = R.string.notification_permission,
                         description = R.string.notification_permission_desc,
                         isGranted = state.isNotificationPermissionGranted,

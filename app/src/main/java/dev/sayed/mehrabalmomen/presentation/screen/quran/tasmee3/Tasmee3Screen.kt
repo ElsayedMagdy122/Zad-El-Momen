@@ -78,7 +78,14 @@ fun Tasmee3Screen(
     val appLocale = LocalAppLocale.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
+    val hasSeenDisclaimer by viewModel.hasSeenDisclaimerFlow.collectAsStateWithLifecycle(initialValue = true)
     var showDisclaimerDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(hasSeenDisclaimer) {
+        if (!hasSeenDisclaimer) {
+            showDisclaimerDialog = true
+        }
+    }
 
     var hasPermission by remember {
         mutableStateOf(
@@ -326,7 +333,10 @@ fun Tasmee3Screen(
 
         if (showDisclaimerDialog) {
             RecitationDisclaimerDialog(
-                onDismiss = { showDisclaimerDialog = false }
+                onDismiss = {
+                    showDisclaimerDialog = false
+                    viewModel.markDisclaimerAsSeen()
+                }
             )
         }
     }
