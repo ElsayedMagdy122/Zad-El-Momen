@@ -473,4 +473,108 @@
     <string name="widget_pin_manual_guide">لإضافة الويدجت، اضغط مطولاً على الشاشة الرئيسية، ثم اختر التطبيقات المصغرة (Widgets) واختَر زاد المؤمن.</string>
     <string name="next_prayer">الصلاة القادمة</string>
     <string name="set_location_to_view_prayers">اضغط لتحديد الموقع وعرض مواقيت الصلاة</string>
+
+    <!-- Recitation & Tajweed Error Localization -->
+    <string name="tajweed_rule_normal_madd">المد الطبيعي</string>
+    <string name="tajweed_rule_mottasel_madd">المد المتصل</string>
+    <string name="tajweed_rule_monfasel_madd">المد المنفصل</string>
+    <string name="tajweed_rule_aared_madd">المد العارض للسكون</string>
+    <string name="tajweed_rule_lazem_madd">المد اللازم</string>
+    <string name="tajweed_rule_leen_madd">مد اللين</string>
+    <string name="tajweed_rule_mushaddad_ghunnah">النون أو الميم المشددة</string>
+    <string name="tajweed_rule_shaddah">الشدة</string>
+
+    <string name="tajweed_error_underheld">نقص في %1$s: قمت بمد الصوت %2$.2fث، والمطلوب %3$.2fث</string>
+    <string name="tajweed_error_overheld">زيادة في %1$s: قمت بمد الصوت %2$.2fث، والحد الأقصى المسموح %3$.2fث</string>
+    <string name="tajweed_error_tashkeel">خطأ في التشكيل: المتوقع (%1$s) ونُطِق (%2$s)</string>
+    <string name="tajweed_error_omission">إسقاط حرف: لم يتم نطق (%1$s)</string>
+    <string name="tajweed_error_substitution">خطأ في نطق الحرف: المتوقع (%1$s) ونُطِق (%2$s)</string>
+
+    <string name="tajweed_advice_normal_madd">أعطِ المد الطبيعي حقه بمقدار حركتين دون زيادة أو نقص</string>
+    <string name="tajweed_advice_mottasel_madd">أطل زمن المد بمقدار 4 أو 5 حركات وجوباً</string>
+    <string name="tajweed_advice_monfasel_madd">أطل زمن المد بمقدار 4 حركات جوازاً</string>
+    <string name="tajweed_advice_aared_madd">أعطِ المد العارض للسكون حقه (حركتان، 4، أو 6 حركات)</string>
+    <string name="tajweed_advice_lazem_madd">أطل زمن المد اللازم بمقدار 6 حركات كاملة لزوماً</string>
+    <string name="tajweed_advice_leen_madd">أعطِ حرف اللين زمنه المناسب عند الوقف</string>
+    <string name="tajweed_advice_mushaddad_ghunnah">أعطِ الغنة زمن حركتين كاملتين من الخيشوم</string>
+    <string name="tajweed_advice_shaddah">اضغط على مخرج الحرف المشدد بوضوح</string>
+    <string name="tajweed_advice_overheld">لا تبالغ في مد الصوت وتجاوز الحد المسموح به في الرواية</string>
+    <string name="tajweed_advice_tashkeel">احرص على ضبط الحركة الصحيحة (فتحة، ضمة، كسرة)</string>
+    <string name="tajweed_advice_omission">انطق جميع أحرف الكلمة بوضوح دون بلع أو إسقاط</string>
+    <string name="tajweed_advice_substitution">انطق الحرف من مخرجه الصحيح مع مراعاة صفاته (همس، جهر، ترقيق، تفخيم)</string>
+
+    <string name="recitation_feedback_title">ملاحظات التجويد والنطق</string>
+    <string name="recitation_feedback_on_word">تنبيه على كلمة: %1$s</string>
+    <string name="recitation_feedback_close">فهمت (إغلاق)</string>
+
+    <!-- Tasmee3 & Recitation Feature -->
+    <string name="tasmee3_title_full">مراجعة حفظ سورة %1$s</string>
+    <string name="tasmee3_title_range">مراجعة حفظ %1$s (%2$s - %3$s)</string>
+    <string name="tasmee3_session_title">جلسة مراجعة الحفظ</string>
+    <string name="tasmee3_session_active">جلسة مراجعة الحفظ (نشطة)</string>
+    <string name="tasmee3_status_ongoing">مستمر</string>
+    <string name="tasmee3_status_ready">جاهز</string>
+    <string name="tasmee3_status_initializing">جاري تهيئة نموذج الذكاء الاصطناعي...</string>
+    <string name="tasmee3_status_listening">جاري الاستماع... اقرأ بوضوح</string>
+    <string name="tasmee3_status_prompt">اضغط على المايك للبدء في مراجعة الحفظ</string>
+
+    <string name="tasmee3_range_title">تحديد نطاق مراجعة الحفظ</string>
+    <string name="tasmee3_range_surah_info">سورة %1$s • عدد الآيات: %2$s آية</string>
+    <string name="tasmee3_mode_full_surah">السورة كاملة</string>
+    <string name="tasmee3_mode_full_surah_desc">من الآية ١ إلى الآية %1$s</string>
+    <string name="tasmee3_mode_custom_range">تحديد مقطع من الآيات</string>
+    <string name="tasmee3_mode_custom_range_desc">مراجعة جزء محدد من السورة</string>
+    <string name="tasmee3_from_ayah">من بداية الآية</string>
+    <string name="tasmee3_to_ayah">إلى نهاية الآية</string>
+    <string name="tasmee3_single_ayah_hint">لمراجعة آية واحدة، اختر نفس الرقم في البداية والنهاية (مثال: من بداية الآية 59 إلى نهاية الآية 59)</string>
+    <string name="tasmee3_start_button">بدء مراجعة الحفظ</string>
+    <string name="tasmee3_error_start_range">بداية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_end_range">نهاية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_start_greater">آية البداية يجب أن تكون أصغر من أو تساوي آية النهاية</string>
+
+    <string name="recitation_disclaimer_title">تنبيه مهم بشأن مراجعة الحفظ</string>
+    <string name="recitation_disclaimer_message">يعتمد نموذج مراجعة الحفظ على التعرف على الكلمات القرآنية وترتيب الآيات لمساعدتك في تثبيت الحفظ فقط، ولا يقوم بالتدقيق على أحكام التجويد أو مخارج الحروف.\n\nهذه الميزة وسيلة مساعدة تقريبية ولا تُغني بأي حال عن التلقي والمشافهة والعرض على شيخ أو معلم متقن .</string>
+    <string name="recitation_disclaimer_confirm">فهمت ذلك</string>
+
+    <string name="recitation_download_error_title">تعذر تنزيل النموذج</string>
+    <string name="recitation_download_processing_title">تثبيت وتجهيز النموذج</string>
+    <string name="recitation_download_in_progress_title">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_prompt_title">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_error_prefix">حدث خطأ أثناء التنزيل:\n%1$s</string>
+    <string name="recitation_download_retry">إعادة المحاولة</string>
+    <string name="recitation_download_cancel">إلغاء والرجوع</string>
+    <string name="recitation_download_processing_msg">تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...</string>
+    <string name="recitation_download_progress_msg">يتم الآن تحميل ملفات الذكاء الاصطناعي، يرجى الانتظار... (%1$s%%)</string>
+    <string name="recitation_download_cancel_long">إلغاء التنزيل والرجوع</string>
+    <string name="recitation_download_continue_background">المتابعة في الخلفية</string>
+    <string name="recitation_download_cancel_action">إلغاء التنزيل</string>
+    <string name="recitation_download_notification_channel">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_notification_channel_desc">إشعارات تقدم تنزيل نموذج التعرف الصوتي لمراجعة الحفظ</string>
+    <string name="recitation_download_notification_title">تنزيل نموذج مراجعة الحفظ الصوتي</string>
+    <string name="recitation_download_notification_processing">جاري فك ضغط وتجهيز نماذج مراجعة الحفظ...</string>
+    <string name="recitation_download_notification_ready">تم تثبيت نماذج مراجعة الحفظ بنجاح</string>
+    <string name="recitation_download_notification_error">تعذر اكتمال تنزيل النموذج</string>
+    <string name="recitation_download_intro_msg">تتطلب ميزة مراجعة الحفظ تنزيل نموذج الذكاء الاصطناعي (حجمه ~70 ميجابايت) لمرة واحدة فقط للعمل دون الحاجة للإنترنت.</string>
+    <string name="recitation_download_confirm">بدء التنزيل الآن</string>
+
+    <string name="recitation_result_title">نتيجة مراجعة الحفظ</string>
+    <string name="recitation_result_surah_prefix">سورة %1$s</string>
+    <string name="recitation_result_correct">صحيحة</string>
+    <string name="recitation_result_errors">أخطاء</string>
+    <string name="recitation_result_words">الكلمات</string>
+    <string name="recitation_result_accuracy">نسبة الإتقان</string>
+    <string name="recitation_result_guide_title">دليل ألوان المراجعة في المصحف:</string>
+    <string name="recitation_result_green_meaning">اللون الأخضر: كلمات قُرِئت بشكل صحيح وبنطق سليم.</string>
+    <string name="recitation_result_red_meaning">اللون الأحمر: كلمات حدث فيها خطأ في النطق أو سقطت أثناء المراجعة.</string>
+    <string name="recitation_result_restart">إعادة المراجعة من البداية</string>
+    <string name="recitation_result_review">مراجعة الآيات</string>
+
+    <string name="recitation_rating_excellent_title">ما شاء الله! تلاوة متقنة وممتازة</string>
+    <string name="recitation_rating_excellent_msg">أتممت المراجعة بأعلى درجات الإتقان والضبط، بارك الله فيك ونفع بك.</string>
+    <string name="recitation_rating_very_good_title">أحسنت! تلاوة جيدة جداً</string>
+    <string name="recitation_rating_very_good_msg">حفظ متقن ومبارك مع بعض الملاحظات البسيطة، استمر في المراجعة والارتقاء.</string>
+    <string name="recitation_rating_good_title">تلاوة جيدة وعمل مبارك</string>
+    <string name="recitation_rating_good_msg">أتممت المراجعة بنجاح، يُنصح بمراجعة المواضع التي سقطت أو أخطأت فيها لتثبيت الحفظ.</string>
+    <string name="recitation_rating_retry_title">محاولة مباركة ومأجورة</string>
+    <string name="recitation_rating_retry_msg">استمر في التكرار والمراجعة لتثبيت الآيات الكريمة وإتقان حفظها بإذن الله.</string>
 </resources>

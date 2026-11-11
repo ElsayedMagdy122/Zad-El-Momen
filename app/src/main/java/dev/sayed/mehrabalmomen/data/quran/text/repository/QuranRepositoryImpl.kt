@@ -9,6 +9,8 @@ import dev.sayed.mehrabalmomen.domain.entity.quran.text.Surah
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 
 class QuranRepositoryImpl(
@@ -16,29 +18,56 @@ class QuranRepositoryImpl(
     private val json: Json,
     private val settingsRepository: SettingsRepository
 ) : QuranRepository {
-    private fun getAllSurahsFromAsset(): List<SurahDto> {
-        return try {
-            val jsonString = context.assets.open("quran_structured.json")
-                .bufferedReader()
-                .use { it.readText() }
 
-            json.decodeFromString<List<SurahDto>>(jsonString)
-        } catch (e: Exception) {
-            emptyList()
+    // Thread-safe in-memory cache for surahs
+    private var cachedSurahs: List<SurahDto>? = null
+    private var surahsMap: Map<Int, SurahDto>? = null
+    private val surahsMutex = Mutex()
+
+    // Thread-safe in-memory cache for tafseer
+    private var cachedTafseerFileName: String? = null
+    private var cachedTafseer: List<TafseerDto>? = null
+    private val tafseerMutex = Mutex()
+
+    private suspend fun getAllSurahsFromAsset(): List<SurahDto> {
+        cachedSurahs?.let { return it }
+        return surahsMutex.withLock {
+            cachedSurahs ?: try {
+                val jsonString = context.assets.open("quran_structured.json")
+                    .bufferedReader()
+                    .use { it.readText() }
+
+                json.decodeFromString<List<SurahDto>>(jsonString).also {
+                    cachedSurahs = it
+                    surahsMap = it.associateBy { surah -> surah.id }
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
         }
     }
 
     private suspend fun getAllTafseerFromAsset(): List<TafseerDto> {
-        return try {
-            val fileName = settingsRepository.observeTafseer().first()
+        val fileName = settingsRepository.observeTafseer().first()
+        if (cachedTafseerFileName == fileName && cachedTafseer != null) {
+            return cachedTafseer!!
+        }
+        return tafseerMutex.withLock {
+            if (cachedTafseerFileName == fileName && cachedTafseer != null) {
+                return@withLock cachedTafseer!!
+            }
+            try {
+                val jsonString = context.assets.open(fileName)
+                    .bufferedReader()
+                    .use { it.readText() }
 
-            val jsonString = context.assets.open(fileName)
-                .bufferedReader()
-                .use { it.readText() }
-
-            json.decodeFromString<List<TafseerDto>>(jsonString)
-        } catch (e: Exception) {
-            emptyList()
+                json.decodeFromString<List<TafseerDto>>(jsonString).also {
+                    cachedTafseerFileName = fileName
+                    cachedTafseer = it
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
         }
     }
 
@@ -55,7 +84,8 @@ class QuranRepositoryImpl(
     }
 
     override suspend fun getAyahs(surahNumber: Int): List<Ayah> {
-        val surah = getAllSurahsFromAsset().find { it.id == surahNumber }
+        val allSurahs = getAllSurahsFromAsset()
+        val surah = surahsMap?.get(surahNumber) ?: allSurahs.find { it.id == surahNumber }
         return surah?.verses?.map { ayahDto ->
             ayahDto.toDomain(surahNumber)
         } ?: emptyList()
@@ -76,7 +106,8 @@ class QuranRepositoryImpl(
     }
 
     override suspend fun searchInSurah(surahNumber: Int, query: String): List<Ayah> {
-        val surah = getAllSurahsFromAsset().find { it.id == surahNumber }
+        val allSurahs = getAllSurahsFromAsset()
+        val surah = surahsMap?.get(surahNumber) ?: allSurahs.find { it.id == surahNumber }
         return surah?.verses?.filter { ayahDto ->
             ayahDto.textEmlaey.contains(query, ignoreCase = true)
         }?.map { it.toDomain(surahNumber) } ?: emptyList()

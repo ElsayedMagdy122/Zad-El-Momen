@@ -47,7 +47,7 @@ android {
         applicationId = "dev.sayed.mehrabalmomen"
         minSdk = 26
         targetSdk = 36
-        versionCode = 21
+        versionCode = 25
         versionName = "1.1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -187,6 +187,7 @@ dependencies {
 
     // Others (domain specific)
     implementation(libs.bundles.others)
+    implementation(files("libs/sherpa-onnx-2.0.1.aar"))
     implementation(libs.firebase.messaging)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.work.runtime.ktx)

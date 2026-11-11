@@ -26,7 +26,7 @@ import dev.sayed.mehrabalmomen.data.reminders.local.entity.ReminderEntity
         AzkarHistoryEntity::class,
         ReminderEntity::class,
     ],
-    version = 6,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -33,3 +33,17 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+# ===================================================================
+# Sherpa-ONNX & ONNX Runtime JNI Rules
+# Critical for Release/AAB: Prevents R8 from obfuscating classes and
+# native method signatures accessed by C++ JNI code.
+# ===================================================================
+-keep class com.k2fsa.sherpa.onnx.** { *; }
+-keep class ai.onnxruntime.** { *; }
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keep class kotlin.jvm.functions.Function1 { *; }
+-dontwarn com.k2fsa.sherpa.onnx.**
+-dontwarn ai.onnxruntime.**
