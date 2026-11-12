@@ -1,9 +1,5 @@
 <div align="center">
 
-  <img src="docs/images/banner.png" alt="Zad Al-Mu'min Banner" width="100%" />
-
-  <br/><br/>
-
   <a href="https://github.com/ElsayedMagdy122/Zad-El-Momen">
     <img src="docs/images/app_icon.png" alt="Zad Al-Mu'min Logo" width="96" height="96" />
   </a>
@@ -24,9 +20,15 @@
   [![CI](https://img.shields.io/github/actions/workflow/status/ElsayedMagdy122/Zad-El-Momen/build-ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/ElsayedMagdy122/Zad-El-Momen/actions)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square)](LICENSE)
 
+  <br/>
+
   <a href="https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen">
     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="52" />
   </a>
+
+  <br/><br/>
+
+  <img src="docs/images/banner.png" alt="Zad Al-Mu'min Banner" width="100%" />
 
 </div>
 
