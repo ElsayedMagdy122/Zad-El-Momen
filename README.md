@@ -38,18 +38,21 @@
 
 ## 🇸🇦 النسخة العربية
 
-تطبيق إسلامي حديث لنظام أندرويد مفتوح المصدر ومبني بتقنية Jetpack Compose، يعمل دون إنترنت ويحتوي على ميزة تسميع القرآن بالذكاء الاصطناعي محلياً، ومواقيت صلاة دقيقة، ومشغل صوتيات وإذاعة قرآنية.
+تطبيق إسلامي مفتوح المصدر لنظام أندرويد مبني بالكامل بتقنيات أندرويد الحديثة (Kotlin و Jetpack Compose). يجمع التطبيق بين التصميم الهادئ والمميزات الدقيقة مع الحفاظ على الخصوصية التامة والعمل دون إنترنت.
 
-### المميزات
+### المميزات الفعلية في التطبيق
 
-* **مراجعة الحفظ بالذكاء الاصطناعي دون إنترنت:** تسميع الآيات والتحقق من صحتها عبر نموذج تعرف صوتي مدمج داخل الهاتف من خلال Sherpa-ONNX، وتتم معالجة الصوت في ذاكرة الجهاز دون إرسال أي تسجيل لخوادم خارجية.
-* **القرآن الكريم والتفسير:** المصحف الشريف كاملاً بالرسم العثماني مع التفسير، وإمكانية البحث في الآيات وحفظ العلامات المرجعية.
-* **مواقيت الصلاة والأذان:** حسابات فلكية دقيقة مع دعم طرق الحساب والمذاهب وتنبيهات أذان منضبطة عبر منبهات النظام.
-* **بوصلة القبلة:** تحديد اتجاه الكعبة المشرفة في الوقت الفعلي باستخدام حساسات الهاتف مع دليل لمعايرة الحساس.
-* **الأذكار والأدعية:** أذكار الصباح والمساء وحصن المسلم مع سبحة إلكترونية.
-* **رفيق المؤمن:** خواطر وتذكيرات إيمانية وسنن يومية مناسبة لأوقات اليوم.
-* **إذاعة القرآن الكريم:** بث مباشر لإذاعات القرآن الكريم على مدار 24 ساعة مع تشغيل مستقر في الخلفية عبر Media3 ExoPlayer.
-* **ويدجت الشاشة الرئيسية:** ويدجت خفيف لعرض مواعيد الصلاة والوقت المتبقي للصلاة القادمة.
+* **تسميع القرآن الكريم ومراجعة الحفظ بالذكاء الاصطناعي (Tasmee3):** مراجعة الحفظ لحظياً عبر نموذج الذكاء الاصطناعي المدمج محلياً (Sherpa-ONNX). يتم تحليل الصوت ومطابقة الآيات واكتشاف الأخطاء وتنبيه القارئ عند النسيان أو السهو دون الحاجة للاتصال بالإنترنت، ودون حفظ أو إرسال الصوت لأي خادم.
+* **المصحف الشريف والتلاوات الصوتية:** قراءة القرآن الكريم كاملاً بالرسم العثماني، والاستماع لتلاوات أشهر القراء لجميع الآيات مع إمكانية التكرار والتشغيل المتواصل، بالإضافة إلى ميزة حفظ الآيات في المفضلة وتفسير الآيات.
+* **البحث في آيات القرآن الكريم:** إمكانية البحث النصي في المصحف كاملاً أو البحث داخل سورة بعينها للوصول السريع لأي موضع.
+* **مواقيت الصلاة وحساب الأذان:** حساب مواقيت الصلاة بدقة فلكية باستخدام مكتبة Adhan مع دعم مختلف طرق الحساب المعتمدة والمذاهب (الشافعي والحنبلي والمالكي / الحنفي)، مع خريطة تفاعلية لتحديد واختيار الموقع عبر MapLibre.
+* **شاشة أذان كاملة وتنبيهات منضبطة:** منبهات نظام دقيقة (AlarmManager) ترفع الأذان وتظهر واجهة الأذان حتى لو كانت الشاشة مغلقة أو كان الجهاز في وضع توفير الطاقة (Doze Mode).
+* **بوصلة القبلة:** تحديد اتجاه الكعبة المشرفة في الوقت الفعلي عبر دمج حساسات الهاتف (التسارع والمجال المغناطيسي)، مع شاشة معايرة تفاعلية لحساس البوصلة.
+* **الأذكار والأدعية اليومية وإحصائيات الالتزام:** أذكار الصباح والمساء وبقية الأبواب مع عداد لكل ذكر، وخريطة التزام يومية (Contribution Heatmap) لتتبع القراءة، مع إمكانية إضافة أقسام أذكار مخصصة للمستخدم.
+* **رفيق المؤمن (المرافق التفاعلي):** شخصية تفاعلية مرسومة بـ Canvas (Bird Animation) تتفاعل مع المستخدم حسب أوقات اليوم والحالة (أذكار الصباح والمساء، أوقات الصلاة، التسبيح).
+* **إذاعة القرآن الكريم (Live Radio):** استماع مباشر لإذاعات القرآن الكريم المتنوعة مع مشغل يعمل في الخلفية عبر Media3 ExoPlayer وإشعارات التحكم بالوسائط.
+* **ويدجت مواقيت الصلاة (AppWidget):** ويدجت للشاشة الرئيسية يعرض صلوات اليوم والوقت المتبقي حتى موعد الصلاة القادمة.
+* **إعدادات ومظهر مخصص:** دعم كامل للغة العربية والإنجليزية، والوضع الليلي (Dark Mode) والوضع الفاتح، والتحكم في إعدادات تنبيهات الصلاة.
 
 ### معرض الشاشات
 
@@ -74,16 +77,20 @@
   </table>
 </div>
 
-### التقنيات المستخدمة
+### حزمة التقنيات والمكتبات المستخدمة
 
-* **الواجهة:** Jetpack Compose, Material 3, Custom Design System, Coil.
-* **المعمارية البرمجية:** Clean Architecture مع نمط MVI/MVVM مقسمة إلى ثلاث طبقات (`presentation`, `domain`, `data`).
-* **حقن الاعتماديات:** Koin.
-* **التخزين المحلي:** Room Database, Jetpack DataStore.
-* **مشغل الوسائط:** AndroidX Media3 ExoPlayer.
-* **محرك الصوت والذكاء الاصطناعي:** Sherpa-ONNX (تشغيل موديل التعرف الصوتي محلياً).
-* **الخدمات الخلفية والمتابعة:** Supabase, Firebase (Cloud Messaging, Crashlytics, Performance).
-* **التقويم:** Umm al-Qura Calendar.
+* **اللغة والأساسيات:** Kotlin 2.0.21، Coroutines، Flow، Kotlinx Serialization، Kotlinx Datetime.
+* **واجهة المستخدم والتصميم:** Jetpack Compose (BOM)، Material 3، نظام تصميم مخصص (Custom Design System)، Coil لتحميل الصور، رسوم متحركة مخصصة بـ Canvas.
+* **المعمارية البرمجية:** Clean Architecture بنمط MVI/MVVM وفصل كامل بين الطبقات (`presentation`, `domain`, `data`).
+* **حقن الاعتماديات:** Koin (koin-core, koin-android, koin-androidx-compose).
+* **قاعدة البيانات والتخزين المحلي:** Room Database 2.8.4 مع مولد الأكواد KSP، و Jetpack DataStore Preferences لتخزين الإعدادات.
+* **محرك حساب مواقيت الصلاة:** مكتبة Adhan 2 (Batoul Apps) لحساب أوقات الصلاة فلكياً.
+* **الخرائط والموقع:** MapLibre Compose و Google Play Services Location لتحديد الموقع الجغرافي.
+* **محرك الصوت والذكاء الاصطناعي:** مكتبة Sherpa-ONNX المدمجة داخل التطبيق للتعرف الصوتي ومطابقة التلاوة محلياً على الجهاز.
+* **تشغيل الصوتيات والوسائط:** AndroidX Media3 ExoPlayer لتشغيل تلاوات الآيات والإذاعات المباشرة في الخلفية عبر Foreground Service.
+* **الخدمات السحابية والتحليلات:** Supabase Kotlin SDK للبيانات السحابية والمزامنة وبلاغات الأخطاء، و Firebase (Crashlytics, Performance, Cloud Messaging, Analytics).
+* **التقويم الهجري والميلادي:** مكتبة Umm al-Qura Calendar.
+* **عمليات الشراء والدعم:** Google Play Billing Client (billing-ktx).
 
 ### تشغيل المشروع محلياً
 
@@ -145,29 +152,36 @@
 
 ## 🇬🇧 English Version
 
-An offline-first Android Islamic app built with Jetpack Compose, featuring on-device AI for Quran memorization check, accurate prayer times, and media playback.
+An offline-first Android Islamic app built with Kotlin and Jetpack Compose. Combines a clean user interface with accurate prayer calculations, Quran recitation assistance via on-device AI, and media playback.
 
-### Features
+### Actual App Features
 
-* **Offline AI Recitation Check:** Test Quran memorization with on-device speech recognition via Sherpa-ONNX. Audio is processed strictly in memory on the device.
-* **Holy Quran & Tafsir:** Complete Uthmani text with exegesis, word search, and bookmarks.
-* **Prayer Times & Athan:** Astronomical calculation engine with multiple methods, schools of thought, and exact alarm notifications.
-* **Qiblah Compass:** Real-time Kaaba direction using device geomagnetic sensors with sensor calibration support.
-* **Adhkar & Supplications:** Fortress of the Muslim (Hisn al-Muslim) with a built-in counter.
-* **Faithful Companion:** Daily religious reminders and sunnah practices.
-* **Live Quran Radio:** 24/7 online Islamic radio stations with background playback via Media3 ExoPlayer.
-* **Home Widget:** Compact home screen widget showing upcoming prayer times and countdown.
+* **On-Device AI Quran Memorization Check (Tasmee3):** Real-time recitation verification powered by an embedded Sherpa-ONNX speech recognition model. Detects mistakes and hesitations offline with complete privacy—no audio is ever recorded in the background or uploaded to remote servers.
+* **Holy Quran & Audio Recitations:** Complete Uthmani script text, verse-by-verse audio playback from well-known reciters with continuous and repeat modes, verse bookmarks, and exegesis (Tafsir).
+* **Quran Verse Search:** Instant text search across the entire Quran or within a specific Surah to find any verse quickly.
+* **Prayer Times Calculation:** Accurate astronomical prayer times powered by the Adhan 2 library, with customizable calculation methods, Juristic schools (Hanafi / Shafi'i), and interactive map selection via MapLibre.
+* **Full-Screen Athan & Precise Alarms:** Uses `AlarmManager` with exact alarms to trigger the Athan call and full-screen notification popup even in Doze mode or when the screen is locked.
+* **Qiblah Compass:** Real-time direction to the Kaaba using fused accelerometer and geomagnetic sensor data, with an interactive sensor calibration guide.
+* **Adhkar & Supplications:** Fortress of the Muslim (Hisn al-Muslim) categories with a counter, a daily reading contribution heatmap, and the ability to add custom user Adhkar categories.
+* **Faithful Companion (Interactive Overlay):** Canvas-animated character (BirdCanvas) providing contextual reminders for daily Adhkar, prayer times, and sunnah habits.
+* **Live Quran Radio:** 24/7 live streaming Islamic radio channels running as an Android Foreground Service powered by Media3 ExoPlayer.
+* **Home Screen Widget:** Glanceable AppWidget displaying today's prayer times and a countdown timer to the upcoming prayer.
+* **Customization:** Full Arabic and English localization, dark/light theme options, and customizable notification settings.
 
-### Tech Stack
+### Tech Stack & Libraries
 
-* **UI:** Jetpack Compose, Material 3, Custom Design System, Coil.
+* **Language & Core:** Kotlin 2.0.21, Coroutines, Flow, Kotlinx Serialization, Kotlinx Datetime.
+* **UI & Design:** Jetpack Compose (BOM), Material 3, Custom Design System, Coil for image loading, Canvas custom drawing.
 * **Architecture:** Clean Architecture with MVI/MVVM (`presentation`, `domain`, `data`).
-* **Dependency Injection:** Koin.
-* **Local Storage:** Room Database, Jetpack DataStore.
-* **Media & Audio:** AndroidX Media3 ExoPlayer.
-* **Speech & AI Engine:** Sherpa-ONNX (Embedded on-device ASR).
-* **Backend & Monitoring:** Supabase, Firebase (Cloud Messaging, Crashlytics, Performance).
-* **Date & Calendar:** Umm al-Qura Calendar library.
+* **Dependency Injection:** Koin (koin-core, koin-android, koin-androidx-compose).
+* **Storage & Persistence:** Room Database 2.8.4 (KSP) and Jetpack DataStore Preferences.
+* **Prayer Calculations:** Adhan 2 (Batoul Apps).
+* **Maps & Location:** MapLibre Compose, Google Play Services Location.
+* **Speech Recognition & AI:** Embedded Sherpa-ONNX runtime for offline Quran ASR.
+* **Media & Audio:** AndroidX Media3 ExoPlayer for verse recitation and live radio streams.
+* **Backend & Monitoring:** Supabase Kotlin SDK, Firebase (Crashlytics, Performance, Messaging, Analytics).
+* **Calendar:** Umm al-Qura Calendar library.
+* **In-App Billing:** Google Play Billing Client (billing-ktx).
 
 ### Getting Started
 
