@@ -6,35 +6,51 @@
 
   # زاد المؤمن | Zad Al-Mu'min
 
-  **تطبيق إسلامي حديث مفتوح المصدر يعمل دون إنترنت (Offline-First)، مزود بذكاء اصطناعي محلي لمراجعة وتسميع القرآن، مع مواقيت صلاة دقيقة وواجهة عصرية بتقنية Jetpack Compose.**
+  تطبيق إسلامي حديث لنظام أندرويد مفتوح المصدر ومبني بتقنية Jetpack Compose، يعمل دون إنترنت ويحتوي على ميزة تسميع القرآن بالذكاء الاصطناعي محلياً، ومواقيت صلاة دقيقة، ومشغل صوتيات وإذاعة قرآنية.
 
-  [**English**](README.md) • [**المميزات**](#-أهم-المميزات) • [**معرض الشاشات**](#-معرض-الشاشات) • [**التقنيات**](#-حزمة-التقنيات) • [**المعمارية**](#-المعمارية-وهيكل-المشروع) • [**التشغيل السريع**](#-التشغيل-السريع)
+  <p>
+    <a href="README.md">English</a> •
+    <a href="#المميزات">المميزات</a> •
+    <a href="#معرض-الشاشات">معرض الشاشات</a> •
+    <a href="#التقنيات-المستخدمة">التقنيات</a> •
+    <a href="#تشغيل-المشروع-محليا">التشغيل</a> •
+    <a href="#المساهمة-في-المشروع">المساهمة</a> •
+    <a href="#مصادر-البيانات-والحقوق">المصادر والحقوق</a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+" />
+    <img src="https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.0.21" />
+    <img src="https://img.shields.io/badge/Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+    <img src="https://img.shields.io/badge/Architecture-Clean%20%2F%20MVI-D32F2F" alt="Clean Architecture" />
+    <img src="https://img.shields.io/badge/DI-Koin-F57C00" alt="Koin" />
+    <img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="Apache 2.0" />
+  </p>
+
+  <p>
+    <a href="https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen">
+      <img src="https://play.google.com/intl/ar_ar/badges/static/images/badges/ar_badge_web_generic.png" alt="متوفر على Google Play" height="50" />
+    </a>
+  </p>
 
   <br/>
-
-  [![المنصة](https://img.shields.io/badge/المنصة-أندرويد%208.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
-  [![كوتلن](https://img.shields.io/badge/كوتلن-2.0.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
-  [![الواجهة](https://img.shields.io/badge/الواجهة-Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-  [![المعمارية](https://img.shields.io/badge/المعمارية-Clean%20%2B%20MVI-F44336?style=flat-square)](#-المعمارية-وهيكل-المشروع)
-  [![Koin](https://img.shields.io/badge/حقن%20التبعيات-Koin%204.x-B89B00?style=flat-square)](https://insert-koin.io/)
-  [![حالة البناء](https://img.shields.io/github/actions/workflow/status/ElsayedMagdy122/Zad-El-Momen/build-ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/ElsayedMagdy122/Zad-El-Momen/actions)
-  [![الترخيص](https://img.shields.io/badge/الترخيص-Apache%202.0-blue?style=flat-square)](LICENSE)
-
-  <br/>
-
-  <a href="https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen">
-    <img src="https://play.google.com/intl/ar_ar/badges/static/images/badges/ar_badge_web_generic.png" alt="متوفر على Google Play" height="52" />
-  </a>
-
-  <br/><br/>
 
   <img src="docs/images/banner.png" alt="بانر تطبيق زاد المؤمن" width="100%" />
 
 </div>
 
----
+## المميزات
 
-## 📸 معرض الشاشات
+* **مراجعة الحفظ بالذكاء الاصطناعي دون إنترنت:** تسميع الآيات والتحقق من صحتها عبر نموذج تعرف صوتي مدمج داخل الهاتف من خلال Sherpa-ONNX، وتتم معالجة الصوت في ذاكرة الجهاز دون إرسال أي تسجيل لخوادم خارجية.
+* **القرآن الكريم والتفسير:** المصحف الشريف كاملاً بالرسم العثماني مع التفسير، وإمكانية البحث في الآيات وحفظ العلامات المرجعية.
+* **مواقيت الصلاة والأذان:** حسابات فلكية دقيقة مع دعم طرق الحساب والمذاهب وتنبيهات أذان منضبطة عبر منبهات النظام.
+* **بوصلة القبلة:** تحديد اتجاه الكعبة المشرفة في الوقت الفعلي باستخدام حساسات الهاتف مع دليل لمعايرة الحساس.
+* **الأذكار والأدعية:** أذكار الصباح والمساء وحصن المسلم مع سبحة إلكترونية.
+* **رفيق المؤمن:** خواطر وتذكيرات إيمانية وسنن يومية مناسبة لأوقات اليوم.
+* **إذاعة القرآن الكريم:** بث مباشر لإذاعات القرآن الكريم على مدار 24 ساعة مع تشغيل مستقر في الخلفية عبر Media3 ExoPlayer.
+* **ويدجت الشاشة الرئيسية:** ويدجت خفيف لعرض مواعيد الصلاة والوقت المتبقي للصلاة القادمة.
+
+## معرض الشاشات
 
 <div align="center">
   <table>
@@ -57,89 +73,71 @@
   </table>
 </div>
 
----
+## التقنيات المستخدمة
 
-## ✨ أهم المميزات
+* **الواجهة:** Jetpack Compose, Material 3, Custom Design System, Coil.
+* **المعمارية البرمجية:** Clean Architecture مع نمط MVI/MVVM مقسمة إلى ثلاث طبقات (`presentation`, `domain`, `data`).
+* **حقن الاعتماديات:** Koin.
+* **التخزين المحلي:** Room Database, Jetpack DataStore.
+* **مشغل الوسائط:** AndroidX Media3 ExoPlayer.
+* **محرك الصوت والذكاء الاصطناعي:** Sherpa-ONNX (تشغيل موديل التعرف الصوتي محلياً).
+* **الخدمات الخلفية والمتابعة:** Supabase, Firebase (Cloud Messaging, Crashlytics, Performance).
+* **التقويم:** Umm al-Qura Calendar.
 
-- 🎙️ **التسميع الذكي (On-Device AI):** مراجعة حفظ القرآن بالذكاء الاصطناعي عبر **Sherpa-ONNX** دون إنترنت وبخصوصية مطلقة (لا يُرسل أي صوت لخوادم خارجية).
-- 📖 **المصحف والتفسير:** النص القرآني كاملاً بالرسم العثماني مع التفسير والبحث السريع والعلامات المرجعية.
-- 🕌 **مواقيت الصلاة والأذان:** حسابات فلكية دقيقة مع دعم المذاهب وطرق الحساب وتنبيهات منبهات النظام الدقيقة (`AlarmManager`).
-- 🧭 **بوصلة القبلة:** دمج حساسات الهاتف مع إرشادات المعايرة لتحديد اتجاه الكعبة بدقة عالية.
-- 📿 **الأذكار اليومية:** موسوعة حصن المسلم مع سبحة إلكترونية تفاعلية باهتزاز لمسي.
-- 🤝 **رفيق المؤمن:** خواطر وتذكيرات إيمانية وسنن يومية مناسبة لأوقات اليوم.
-- 📻 **إذاعة القرآن الكريم 24/7:** بث إذاعي صوتي مستقر ومنخفض الاستهلاك يعمل في الخلفية عبر **Media3 ExoPlayer**.
-- 📱 **ويدجت الشاشة الرئيسية:** عرض الصلاة القادمة والوقت المتبقي مباشرة على شاشة الهاتف.
+## تشغيل المشروع محلياً
 
----
+1. استنسخ المستودع:
+   ```bash
+   git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
+   cd Zad-El-Momen
+   ```
 
-## 🛠️ حزمة التقنيات
+2. أنشئ ملف `local.properties` في المجلد الرئيسي وضع فيه مسار الـ SDK وبيانات الربط:
+   ```properties
+   sdk.dir=/path/to/your/android-sdk
+   SUPABASE_URL="your_supabase_url"
+   SUPABASE_KEY="your_supabase_key"
+   SUPPORT_1="support_1"
+   SUPPORT_5="support_5"
+   SUPPORT_10="support_10"
+   SUPPORT_25="support_25"
+   SUPPORT_100="support_100"
+   ```
 
-| المجال | التقنيات المستخدمة |
-| :--- | :--- |
-| **اللغة والأساسيات** | Kotlin 2.0.21, Coroutines, Flow |
-| **واجهة المستخدم** | Jetpack Compose (BOM), Custom Design System, Coil |
-| **المعمارية البرمجية** | Clean Architecture (Domain / Data / Presentation), MVI / MVVM |
-| **حقن الاعتماديات** | Koin 4.x |
-| **قواعد البيانات والحفظ** | Room Database 2.8.4 (KSP), Jetpack DataStore |
-| **الذكاء الاصطناعي** | Sherpa-ONNX 2.0.1 (محرك التعرف على الصوت محلياً) |
-| **الصوتيات والوسائط** | AndroidX Media3 ExoPlayer |
-| **الخدمات السحابية** | Supabase Kotlin SDK, Firebase (FCM, Crashlytics, Perf) |
+3. ضع ملف `google-services.json` داخل مجلد `app/`.
 
----
+4. قم ببناء نسخة التجربة (Debug APK):
+   ```bash
+   ./gradlew assembleDebug
+   ```
 
-## 🏛️ المعمارية وهيكل المشروع
+## المساهمة في المشروع
 
-يعتمد المشروع مبادئ **Clean Architecture** لفصل كامل بين طبقات النظام:
+نرحب بمساهمات الجميع لتطوير التطبيق، للمشاركة يرجى اتباع الخطوات التالية:
 
-```text
-dev.sayed.mehrabalmomen/
-├── presentation/   # واجهات Jetpack Compose ونماذج العرض والويدجت
-├── domain/         # منطق كوتلن نقي: الكيانات، واجهات المستودعات، حالات الاستخدام
-├── data/           # تنفيذ المستودعات، قاعدة بيانات Room، وربط Sherpa-ONNX وخدمات النظام
-└── design_system/  # الألوان، الخطوط، ومكونات الواجهة المخصصة
-```
+1. قم بعمل Fork للمستودع على حسابك، ثم استنسخه محلياً على جهازك.
+2. انتقل لفرع التطوير الأساسي `develop`:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+3. أنشئ فرعاً جديداً بالتنسيق المطلوب المعتمد في فحص الـ CI:
+   `type/branch-name` حيث أن الـ `type` يكون أحد الأنواع التالية: `feature`, `feat`, `fix`, `test`, `refactor`, `chore`, `style`, `screen`, `docs`, `component`, `ci`.
+   ```bash
+   git checkout -b feature/quran-audio-player
+   ```
+4. اكتب تعديلاتك، واحرص على كتابة رسائل Commit واضحة ومباشرة.
+5. ادفع الفرع لحسابك وافتح Pull Request موجهاً إلى فرع `develop`.
 
-📖 *للاطلاع على المخطط التفصيلي للطبقات وتدفق البيانات، راجع [**docs/ARCHITECTURE.md**](docs/ARCHITECTURE.md).*
+للمزيد من التفاصيل، راجع دليل المساهمة [CONTRIBUTING.md](CONTRIBUTING.md) وميثاق السلوك [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
----
+## مصادر البيانات والحقوق
 
-## ⚡ التشغيل السريع
+* **نص القرآن الكريم:** مجمع الملك فهد لطباعة المصحف الشريف ([موقع المجمع الرسمي](https://qurancomplex.gov.sa/)).
+* **تفسير القرآن الكريم:** مجتمع إتقان للبرمجيات الإسلامية ([itqan.org](https://itqan.org/)).
+* **صوتيات وتلاوات القرآن الكريم:** موقع [quranmp3.com](https://quranmp3.com/).
+* **موديل الذكاء الاصطناعي للتسميع:** [Quralab.ai](https://quralab.ai/) مدمج من خلال [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
 
-```bash
-# 1. استنساخ المستودع
-git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
-cd Zad-El-Momen
+## الترخيص
 
-# 2. إنشاء ملف local.properties (مفاتيح Supabase ومسار الـ SDK)
-# 3. وضع ملف google-services.json داخل مجلد app/
-
-# 4. بناء نسخة التطوير (Debug APK)
-./gradlew assembleDebug --build-cache
-```
-
-📖 *لدليل الإعداد الكامل وحل المشاكل التقنية، راجع [**docs/SETUP.md**](docs/SETUP.md).*
-
----
-
-## 🔒 الخصوصية والصلاحيات
-
-تطبيق زاد المؤمن **خالٍ تماماً من الإعلانات ومبني على احترام الخصوصية**:
-- `RECORD_AUDIO`: تُستخدم حصرياً لشاشة التسميع الذكي لمعالجة الصوت محلياً داخل المعالج. **لا يتم حفظ الصوت ولا إرساله لأي جهة خارجية.**
-- `ACCESS_FINE_LOCATION`: تُستخدم فقط لحساب مواقيت الصلاة الفلكية واتجاه القبلة محلياً دون تتبع الموقع.
-
-📖 *للتفاصيل الكاملة لجميع الصلاحيات، راجع [**docs/PERMISSIONS.md**](docs/PERMISSIONS.md).*
-
----
-
-## 🤝 المساهمة
-
-نرحب بجميع المساهمات والمقترحات!
-- يُرجى قراءة [**CONTRIBUTING.md**](CONTRIBUTING.md) قبل تقديم أي طلب سحب (PR).
-- تأكد من تسمية الفرع وفق الصيغ المعتمدة: `feature/xyz` أو `fix/xyz`.
-- راجع ميثاق السلوك في [**CODE_OF_CONDUCT.md**](CODE_OF_CONDUCT.md).
-
----
-
-## 📄 الترخيص
-
-المشروع مرخص بموجب [Apache License 2.0](LICENSE).
+هذا المشروع متاح للجميع تحت رخصة [Apache 2.0](LICENSE).
