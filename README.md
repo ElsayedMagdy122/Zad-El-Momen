@@ -17,12 +17,12 @@
     <img src="https://img.shields.io/badge/Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
     <img src="https://img.shields.io/badge/Architecture-Clean%20%2F%20MVI-D32F2F" alt="Clean Architecture" />
     <img src="https://img.shields.io/badge/DI-Koin-F57C00" alt="Koin" />
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="Apache 2.0" />
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0%20(Educational)-blue" alt="License: CC BY-NC-SA 4.0" />
   </p>
 
   <p>
     <a href="https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen">
-      <img src="https://play.google.com/intl/ar_ar/badges/static/images/badges/ar_badge_web_generic.png" alt="Google Play" height="50" />
+      <img src="https://play.google.com/intl/ar_ar/badges/static/images/badges/ar_badge_web_generic.png" alt="Google Play" height="70" />
     </a>
   </p>
 
@@ -144,6 +144,10 @@
 * **صوتيات وتلاوات القرآن الكريم:** شبكة [mp3quran.net](https://www.mp3quran.net/ar).
 * **موديل الذكاء الاصطناعي للتسميع:** [QuranLab.ai](https://quranlab.ai/) مدمج من خلال [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
 
+### الترخيص وحقوق الاستخدام
+
+هذا المشروع متاح للأغراض التعليمية والشخصية فقط تحت رخصة **[CC BY-NC-SA 4.0](LICENSE)**. يُمنع منعاً باتاً استغلال المشروع تجارياً أو إعادة رفعه وبيعه ونشره على المتاجر (مثل Google Play أو غيرها).
+
 </div>
 
 ---
@@ -228,6 +232,6 @@ An offline-first Android Islamic app built with Kotlin and Jetpack Compose. Comb
 
 ### License
 
-This project is open-source under the [Apache 2.0 License](LICENSE).
+This project is licensed strictly for non-commercial educational and learning purposes under the **[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](LICENSE)** license. Re-publishing or re-distributing this application on app stores (e.g., Google Play) or using it for commercial purposes is strictly prohibited.
 
 </div>
