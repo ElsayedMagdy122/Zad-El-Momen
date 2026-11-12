@@ -133,9 +133,9 @@ For more details, see [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md
 ## Data Sources & Credits
 
 * **Quran Text:** King Fahd Glorious Quran Printing Complex ([مجمع الملك فهد لطباعة المصحف الشريف](https://qurancomplex.gov.sa/)).
-* **Quran Tafsir:** Itqan Community ([مجتمع إتقان](https://itqan.org/)).
-* **Quran Audio & Recitations:** [QuranMP3.com](https://quranmp3.com/).
-* **On-Device AI Model:** [Quralab.ai](https://quralab.ai/) integrated via [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
+* **Quran Tafsir:** Itqan Community ([مجتمع إتقان](https://community.itqan.dev/)).
+* **Quran Audio & Recitations:** [MP3Quran.net](https://www.mp3quran.net/).
+* **On-Device AI Model:** [QuranLab.ai](https://quranlab.ai/) integrated via [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
 
 ## License
 

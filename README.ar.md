@@ -134,9 +134,9 @@
 ## مصادر البيانات والحقوق
 
 * **نص القرآن الكريم:** مجمع الملك فهد لطباعة المصحف الشريف ([موقع المجمع الرسمي](https://qurancomplex.gov.sa/)).
-* **تفسير القرآن الكريم:** مجتمع إتقان للبرمجيات الإسلامية ([itqan.org](https://itqan.org/)).
-* **صوتيات وتلاوات القرآن الكريم:** موقع [quranmp3.com](https://quranmp3.com/).
-* **موديل الذكاء الاصطناعي للتسميع:** [Quralab.ai](https://quralab.ai/) مدمج من خلال [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
+* **تفسير القرآن الكريم:** مجتمع إتقان للبرمجيات الإسلامية ([community.itqan.dev](https://community.itqan.dev/)).
+* **صوتيات وتلاوات القرآن الكريم:** شبكة [mp3quran.net](https://www.mp3quran.net/ar).
+* **موديل الذكاء الاصطناعي للتسميع:** [QuranLab.ai](https://quranlab.ai/) مدمج من خلال [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
 
 ## الترخيص
 
