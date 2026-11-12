@@ -1,131 +1,237 @@
-# Zad El Momen - Your Favourite Islamic App
-
 <div align="center">
-  <img src="https://img.shields.io/badge/Platform-Android-green.svg" alt="Platform">
-  <img src="https://img.shields.io/badge/Language-Kotlin-blue.svg" alt="Language">
-  <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-orange.svg" alt="UI">
-  <img src="https://img.shields.io/badge/Architecture-MVVM-red.svg" alt="Architecture">
-  <img src="https://img.shields.io/badge/DI-Koin-yellow.svg" alt="DI">
-  <a href='https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen&pcampaignid=web_share'><img alt='Get it on Google Play' src='https://img.shields.io/badge/Google%20Play-Get%20it%20on-black?logo=google-play&logoColor=white' vertical-align='middle' /></a>
+
+  <a href="https://github.com/ElsayedMagdy122/Zad-El-Momen">
+    <img src="docs/images/app_icon.png" alt="Zad Al-Mu'min Logo" width="96" height="96" />
+  </a>
+
+  # Zad Al-Mu'min | زاد المؤمن
+
+  <p>
+    <a href="#arabic-version"><strong>🇸🇦 العربية (اضغط هنا للنسخة العربية)</strong></a> •
+    <a href="#english-version"><strong>🇬🇧 English Version</strong></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+" />
+    <img src="https://img.shields.io/badge/Kotlin-2.0.21-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.0.21" />
+    <img src="https://img.shields.io/badge/Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+    <img src="https://img.shields.io/badge/Architecture-Clean%20%2F%20MVI-D32F2F" alt="Clean Architecture" />
+    <img src="https://img.shields.io/badge/DI-Koin-F57C00" alt="Koin" />
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0%20(Educational)-blue" alt="License: CC BY-NC-SA 4.0" />
+  </p>
+
+  <p>
+    <a href="https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen">
+      <img src="https://play.google.com/intl/ar_ar/badges/static/images/badges/ar_badge_web_generic.png" alt="Google Play" height="70" />
+    </a>
+  </p>
+
+  <br/>
+
+  <img src="docs/images/banner.png" alt="Zad Al-Mu'min Banner" width="100%" />
 
 </div>
 
-**Zad El Momen** is an Islamic application providing everything a Muslim needs to perform worship easily and accurately. It offers the complete Holy Quran with Tafsir, highly accurate daily prayer times based on your geographical location, and a Qibla finder to facilitate prayer anywhere.
+---
 
-The app also features Muslim Azkar, Azan alerts, Al Quran Al-Kareem Radio and customizable settings for calculation methods and school of thought (Mathhab), providing a personalized and comfortable user experience through a simple and smooth interface.
+<div id="arabic-version" dir="rtl">
 
-##  Features
+## 🇸🇦 النسخة العربية
 
-### 📖 **Holy Quran & Tafsir**
-- **Complete Quran**: Full access to the Holy Quran.
-- **Tafsir Integration**: Detailed interpretation and meanings for better understanding.
-- **Bookmarks**: Mark and save your favorite verses for quick access anytime.
-- **Smart Search**: Quickly find verses by keywords, words, or phrases across the Holy Quran.
+تطبيق إسلامي مفتوح المصدر لنظام أندرويد مبني بالكامل بتقنيات أندرويد الحديثة (Kotlin و Jetpack Compose). يجمع التطبيق بين التصميم الهادئ والمميزات الدقيقة مع الحفاظ على الخصوصية التامة والعمل دون إنترنت.
 
-### 🕋 **Worship & Devotion**
-- **Accurate Prayer Times**: High-precision timings based on your specific location.
-- **Azan Alerts**: Stay notified for every prayer with timely alerts.
-- **Qibla Finder**: Easily locate the direction of the Kaaba from anywhere in the world.
-- **Azkar**: A comprehensive collection of morning, evening, and daily supplications.
+### المميزات الفعلية في التطبيق
 
-###  **Personalized Experience**
-- **Localization Support**: Full support for both **Arabic** and **English** languages.
-- **Quran Font Size Control**: Easily adjust the Holy Quran text size for comfortable reading.
-- **Customizable Settings**: Adjust calculation methods and schools of thought (Mathhab) to suit your preferences.
-- **Modern UI**: A simple, smooth, and responsive interface built with Jetpack Compose.
-- **Dark/Light Theme**: Support for system-wide theme preferences.
+* **تسميع القرآن الكريم ومراجعة الحفظ بالذكاء الاصطناعي (Tasmee3):** مراجعة الحفظ لحظياً عبر نموذج الذكاء الاصطناعي المدمج محلياً (Sherpa-ONNX). يتم تحليل الصوت ومطابقة الآيات واكتشاف الأخطاء وتنبيه القارئ عند النسيان أو السهو دون الحاجة للاتصال بالإنترنت، ودون حفظ أو إرسال الصوت لأي خادم.
+* **المصحف الشريف والتلاوات الصوتية:** قراءة القرآن الكريم كاملاً بالرسم العثماني، والاستماع لتلاوات أشهر القراء لجميع الآيات مع إمكانية التكرار والتشغيل المتواصل، بالإضافة إلى ميزة حفظ الآيات في المفضلة وتفسير الآيات.
+* **البحث في آيات القرآن الكريم:** إمكانية البحث النصي في المصحف كاملاً أو البحث داخل سورة بعينها للوصول السريع لأي موضع.
+* **مواقيت الصلاة وحساب الأذان:** حساب مواقيت الصلاة بدقة فلكية باستخدام مكتبة Adhan مع دعم مختلف طرق الحساب المعتمدة والمذاهب (الشافعي والحنبلي والمالكي / الحنفي)، مع خريطة تفاعلية لتحديد واختيار الموقع عبر MapLibre.
+* **شاشة أذان كاملة وتنبيهات منضبطة:** منبهات نظام دقيقة (AlarmManager) ترفع الأذان وتظهر واجهة الأذان حتى لو كانت الشاشة مغلقة أو كان الجهاز في وضع توفير الطاقة (Doze Mode).
+* **بوصلة القبلة:** تحديد اتجاه الكعبة المشرفة في الوقت الفعلي عبر دمج حساسات الهاتف (التسارع والمجال المغناطيسي)، مع شاشة معايرة تفاعلية لحساس البوصلة.
+* **الأذكار والأدعية اليومية وإحصائيات الالتزام:** أذكار الصباح والمساء وبقية الأبواب مع عداد لكل ذكر، وخريطة التزام يومية (Contribution Heatmap) لتتبع القراءة، مع إمكانية إضافة أقسام أذكار مخصصة للمستخدم.
+* **رفيق المؤمن (المرافق التفاعلي):** شخصية تفاعلية مرسومة بـ Canvas (Bird Animation) تتفاعل مع المستخدم حسب أوقات اليوم والحالة (أذكار الصباح والمساء، أوقات الصلاة، التسبيح).
+* **إذاعة القرآن الكريم (Live Radio):** استماع مباشر لإذاعات القرآن الكريم المتنوعة مع مشغل يعمل في الخلفية عبر Media3 ExoPlayer وإشعارات التحكم بالوسائط.
+* **ويدجت مواقيت الصلاة (AppWidget):** ويدجت للشاشة الرئيسية يعرض صلوات اليوم والوقت المتبقي حتى موعد الصلاة القادمة.
+* **إعدادات ومظهر مخصص:** دعم كامل للغة العربية والإنجليزية، والوضع الليلي (Dark Mode) والوضع الفاتح، والتحكم في إعدادات تنبيهات الصلاة.
 
-###  **Technical Excellence**
-- **Offline Support**: Access essential features and previously loaded content without an internet connection.
-- **Supabase Backend**: Robust data management and services.
-- **Firebase Integration**: Real-time analytics, crash reporting, and cloud messaging.
+### معرض الشاشات
 
-##  Tech Stack
+<div align="center">
+  <table>
+    <tr>
+      <td width="50%"><img src="docs/images/preview_quran.png" alt="المصحف الشريف" width="100%" /></td>
+      <td width="50%"><img src="docs/images/preview_memorization.png" alt="التسميع بالذكاء الاصطناعي" width="100%" /></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="docs/images/preview_prayer_qiblah.png" alt="الصلاة والقبلة" width="100%" /></td>
+      <td width="50%"><img src="docs/images/preview_azkar.png" alt="الأذكار" width="100%" /></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="docs/images/preview_companion.png" alt="رفيق المؤمن" width="100%" /></td>
+      <td width="50%"><img src="docs/images/preview_recitations.png" alt="التلاوات الصوتية" width="100%" /></td>
+    </tr>
+    <tr>
+      <td width="50%"><img src="docs/images/preview_radio.png" alt="إذاعة القرآن" width="100%" /></td>
+      <td width="50%"><img src="docs/images/preview_customization.png" alt="الإعدادات والتخصيص" width="100%" /></td>
+    </tr>
+  </table>
+</div>
 
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose
-- **Architecture**: MVVM + Clean Architecture
-- **Dependency Injection**: Koin
-- **Backend**: Supabase (PostgREST, Realtime, Storage, Functions)
-- **Local Database**: Room + DataStore Preferences
-- **Networking**: Ktor (via Supabase SDK)
-- **Asynchronous**: Kotlin Coroutines & Flow
-- **Media**: Media3 ExoPlayer (audio playback)
-- **Notifications**: Firebase Cloud Messaging (FCM)
-- **Analytics & Monitoring**: Firebase Crashlytics + Performance
-- **Maps & Location**: MapLibre Compose + Google Location Services
-- **Calendar**: Umm al-Qura Calendar
-- **Billing**: Google Play Billing
+### حزمة التقنيات والمكتبات المستخدمة
 
-##  App Architecture
-The app follows **Clean Architecture** principles with **MVVM** pattern, organized into layers:
+* **اللغة والأساسيات:** Kotlin 2.0.21، Coroutines، Flow، Kotlinx Serialization، Kotlinx Datetime.
+* **واجهة المستخدم والتصميم:** Jetpack Compose (BOM)، Material 3، نظام تصميم مخصص (Custom Design System)، Coil لتحميل الصور، رسوم متحركة مخصصة بـ Canvas.
+* **المعمارية البرمجية:** Clean Architecture بنمط MVI/MVVM وفصل كامل بين الطبقات (`presentation`, `domain`, `data`).
+* **حقن الاعتماديات:** Koin (koin-core, koin-android, koin-androidx-compose).
+* **قاعدة البيانات والتخزين المحلي:** Room Database 2.8.4 مع مولد الأكواد KSP، و Jetpack DataStore Preferences لتخزين الإعدادات.
+* **محرك حساب مواقيت الصلاة:** مكتبة Adhan 2 (Batoul Apps) لحساب أوقات الصلاة فلكياً.
+* **الخرائط والموقع:** MapLibre Compose و Google Play Services Location لتحديد الموقع الجغرافي.
+* **محرك الصوت والذكاء الاصطناعي:** مكتبة Sherpa-ONNX المدمجة داخل التطبيق للتعرف الصوتي ومطابقة التلاوة محلياً على الجهاز.
+* **تشغيل الصوتيات والوسائط:** AndroidX Media3 ExoPlayer لتشغيل تلاوات الآيات والإذاعات المباشرة في الخلفية عبر Foreground Service.
+* **الخدمات السحابية والتحليلات:** Supabase Kotlin SDK للبيانات السحابية والمزامنة وبلاغات الأخطاء، و Firebase (Crashlytics, Performance, Cloud Messaging, Analytics).
+* **التقويم الهجري والميلادي:** مكتبة Umm al-Qura Calendar.
+* **عمليات الشراء والدعم:** Google Play Billing Client (billing-ktx).
 
-- **Presentation**: Jetpack Compose UI, ViewModels, and State management.
-- **Domain**: Pure business logic, Use Cases, and Repository interfaces.
-- **Data**: Repository implementations, Remote (Supabase) and Local (Room) data sources, and mappers.
-- **Design System**: Reusable UI components and design tokens.
+### تشغيل المشروع محلياً
 
-##  Setup Instructions
+1. استنسخ المستودع:
+   ```bash
+   git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
+   cd Zad-El-Momen
+   ```
 
-### 1. Clone the Repository
+2. أنشئ ملف `local.properties` في المجلد الرئيسي وضع فيه مسار الـ SDK وبيانات الربط:
+   ```properties
+   sdk.dir=/path/to/your/android-sdk
+   SUPABASE_URL="your_supabase_url"
+   SUPABASE_KEY="your_supabase_key"
+   SUPPORT_1="support_1"
+   SUPPORT_5="support_5"
+   SUPPORT_10="support_10"
+   SUPPORT_25="support_25"
+   SUPPORT_100="support_100"
+   ```
 
-```bash
-git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
-cd Zad-El-Momen
-```
+3. ضع ملف `google-services.json` داخل مجلد `app/`.
 
-### 2. Create Configuration Files
-Create a `local.properties` file in the root directory (if not present) and add your Supabase credentials:
-```properties
-SUPABASE_URL="your_supabase_url"
-SUPABASE_KEY="your_supabase_key"
-# Support levels (IDs for in-app or tracking)
-SUPPORT_1="id_1"
-SUPPORT_5="id_5"
-SUPPORT_10="id_10"
-SUPPORT_25="id_25"
-SUPPORT_100="id_100"
-```
+4. قم ببناء نسخة التجربة (Debug APK):
+   ```bash
+   ./gradlew assembleDebug
+   ```
 
-### 3. Add Firebase Configuration
-Add your `google-services.json` file to the `app/` directory.
+### المساهمة في المشروع
 
-### 4. Build and Run
-1. Open the project in Android Studio  
-2. Sync the project with Gradle files  
-3. Build the project (**Build > Make Project**)  
-4. Run on device or emulator (**Run > Run 'app'**)
+نرحب بمساهمات الجميع لتطوير التطبيق، للمشاركة يرجى اتباع الخطوات التالية:
 
-## 📸 Screenshots
-   
+1. قم بعمل Fork للمستودع على حسابك، ثم استنسخه محلياً على جهازك.
+2. انتقل لفرع التطوير الأساسي `develop`:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+3. أنشئ فرعاً جديداً بالتنسيق المطلوب المعتمد في فحص الـ CI:
+   `type/branch-name` حيث أن الـ `type` يكون أحد الأنواع التالية: `feature`, `feat`, `fix`, `test`, `refactor`, `chore`, `style`, `screen`, `docs`, `component`, `ci`.
+   ```bash
+   git checkout -b feature/quran-audio-player
+   ```
+4. اكتب تعديلاتك، واحرص على كتابة رسائل Commit واضحة ومباشرة.
+5. ادفع الفرع لحسابك وافتح Pull Request موجهاً إلى فرع `develop`.
 
-<table>
-  <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/7cce4da5-dbc6-41e7-be75-6c56de76d85c" alt="الصفحة الرئيسية" width="180"><br><b>Home screen</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/4cb991e3-cbd1-47fb-b212-1b614945e73e" alt="وضع القراءة" width="180"><br><b>Reading mode</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/5822aa2c-396e-4cdb-9b0e-c4a9ab970892" alt="مواقيت الصلاة" width="180"><br><b>Prayers times</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/63324b1f-d3d5-461a-a893-bfa19b46d1ee" alt="سور القرآن الكريم" width="180"><br><b>Surah list</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/58b6ffa6-4ea1-468e-98d4-a0151e1ebef4" alt="الأذكار" width="180"><br><b>Azkar</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/90e08c9d-ff79-421f-a2ac-13c2d12cc52a" alt="راديو" width="180"><br><b>Radio</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/70573336-85ec-46c0-a56b-fc71088ba7e0" alt="تفسير الآيات" width="180"><br><b>Tafsir</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/11c1d188-e1ba-4a21-a6c5-0acb34cbda7c" alt="القبلة" width="180"><br><b>Qibla</b></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/0f339955-21bd-45a8-b36d-f0e77c314694" alt="الاعدادت" width="180"><br><b>Settings</b></td>
-  </tr>
-</table>
+### مصادر البيانات والحقوق
 
-## 🤝 Contributing
+* **نص القرآن الكريم:** مجمع الملك فهد لطباعة المصحف الشريف ([موقع المجمع الرسمي](https://qurancomplex.gov.sa/)).
+* **تفسير القرآن الكريم:** مجتمع إتقان للبرمجيات الإسلامية ([community.itqan.dev](https://community.itqan.dev/)).
+* **صوتيات وتلاوات القرآن الكريم:** شبكة [mp3quran.net](https://www.mp3quran.net/ar).
+* **موديل الذكاء الاصطناعي للتسميع:** [QuranLab.ai](https://quranlab.ai/) مدمج من خلال [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+### الترخيص وحقوق الاستخدام
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+هذا المشروع متاح للأغراض التعليمية والشخصية فقط تحت رخصة **[CC BY-NC-SA 4.0](LICENSE)**. يُمنع منعاً باتاً استغلال المشروع تجارياً أو إعادة رفعه وبيعه ونشره على المتاجر (مثل Google Play أو غيرها).
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/Wird`)
-3. Commit your Changes (`git commit -m 'Add wird section'`)
-4. Push to the Branch (`git push origin feature/Wird`)
-5. Open a Pull Request
+</div>
 
+---
 
+<div id="english-version">
+
+## 🇬🇧 English Version
+
+An offline-first Android Islamic app built with Kotlin and Jetpack Compose. Combines a clean user interface with accurate prayer calculations, Quran recitation assistance via on-device AI, and media playback.
+
+### Actual App Features
+
+* **On-Device AI Quran Memorization Check (Tasmee3):** Real-time recitation verification powered by an embedded Sherpa-ONNX speech recognition model. Detects mistakes and hesitations offline with complete privacy—no audio is ever recorded in the background or uploaded to remote servers.
+* **Holy Quran & Audio Recitations:** Complete Uthmani script text, verse-by-verse audio playback from well-known reciters with continuous and repeat modes, verse bookmarks, and exegesis (Tafsir).
+* **Quran Verse Search:** Instant text search across the entire Quran or within a specific Surah to find any verse quickly.
+* **Prayer Times Calculation:** Accurate astronomical prayer times powered by the Adhan 2 library, with customizable calculation methods, Juristic schools (Hanafi / Shafi'i), and interactive map selection via MapLibre.
+* **Full-Screen Athan & Precise Alarms:** Uses `AlarmManager` with exact alarms to trigger the Athan call and full-screen notification popup even in Doze mode or when the screen is locked.
+* **Qiblah Compass:** Real-time direction to the Kaaba using fused accelerometer and geomagnetic sensor data, with an interactive sensor calibration guide.
+* **Adhkar & Supplications:** Fortress of the Muslim (Hisn al-Muslim) categories with a counter, a daily reading contribution heatmap, and the ability to add custom user Adhkar categories.
+* **Faithful Companion (Interactive Overlay):** Canvas-animated character (BirdCanvas) providing contextual reminders for daily Adhkar, prayer times, and sunnah habits.
+* **Live Quran Radio:** 24/7 live streaming Islamic radio channels running as an Android Foreground Service powered by Media3 ExoPlayer.
+* **Home Screen Widget:** Glanceable AppWidget displaying today's prayer times and a countdown timer to the upcoming prayer.
+* **Customization:** Full Arabic and English localization, dark/light theme options, and customizable notification settings.
+
+### Tech Stack & Libraries
+
+* **Language & Core:** Kotlin 2.0.21, Coroutines, Flow, Kotlinx Serialization, Kotlinx Datetime.
+* **UI & Design:** Jetpack Compose (BOM), Material 3, Custom Design System, Coil for image loading, Canvas custom drawing.
+* **Architecture:** Clean Architecture with MVI/MVVM (`presentation`, `domain`, `data`).
+* **Dependency Injection:** Koin (koin-core, koin-android, koin-androidx-compose).
+* **Storage & Persistence:** Room Database 2.8.4 (KSP) and Jetpack DataStore Preferences.
+* **Prayer Calculations:** Adhan 2 (Batoul Apps).
+* **Maps & Location:** MapLibre Compose, Google Play Services Location.
+* **Speech Recognition & AI:** Embedded Sherpa-ONNX runtime for offline Quran ASR.
+* **Media & Audio:** AndroidX Media3 ExoPlayer for verse recitation and live radio streams.
+* **Backend & Monitoring:** Supabase Kotlin SDK, Firebase (Crashlytics, Performance, Messaging, Analytics).
+* **Calendar:** Umm al-Qura Calendar library.
+* **In-App Billing:** Google Play Billing Client (billing-ktx).
+
+### Getting Started
+
+1. Clone the project:
+   ```bash
+   git clone https://github.com/ElsayedMagdy122/Zad-El-Momen.git
+   cd Zad-El-Momen
+   ```
+
+2. Add a `local.properties` file in the root directory:
+   ```properties
+   sdk.dir=/path/to/your/android-sdk
+   SUPABASE_URL="your_supabase_url"
+   SUPABASE_KEY="your_supabase_key"
+   SUPPORT_1="support_1"
+   SUPPORT_5="support_5"
+   SUPPORT_10="support_10"
+   SUPPORT_25="support_25"
+   SUPPORT_100="support_100"
+   ```
+
+3. Place your `google-services.json` inside the `app/` folder.
+
+4. Build the debug APK:
+   ```bash
+   ./gradlew assembleDebug
+   ```
+
+### Contributing
+
+1. Fork the repository and checkout `develop`:
+   ```bash
+   git checkout -b feature/your-feature
+   ```
+   Branch naming types allowed by CI: `feature`, `feat`, `fix`, `test`, `refactor`, `chore`, `style`, `screen`, `docs`, `component`, `ci`.
+2. Commit and open a Pull Request against `develop`.
+
+### Data Sources & Credits
+
+* **Quran Text:** King Fahd Glorious Quran Printing Complex ([qurancomplex.gov.sa](https://qurancomplex.gov.sa/)).
+* **Quran Tafsir:** Itqan Community ([community.itqan.dev](https://community.itqan.dev/)).
+* **Quran Audio & Recitations:** [MP3Quran.net](https://www.mp3quran.net/).
+* **On-Device AI Model:** [QuranLab.ai](https://quranlab.ai/) integrated via [Sherpa-ONNX](https://github.com/k2-fsa/sherpa-onnx).
+
+### License
+
+This project is licensed strictly for non-commercial educational and learning purposes under the **[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](LICENSE)** license. Re-publishing or re-distributing this application on app stores (e.g., Google Play) or using it for commercial purposes is strictly prohibited.
+
+</div>
