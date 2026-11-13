@@ -33,9 +33,7 @@ baselineProfiles/
 
 # Gradle & cache
 .gradle/
-gradle/
-gradlew
-gradlew.bat
+
 
 # Sensitive / secret files (NEVER commit these)
 google-services.json
