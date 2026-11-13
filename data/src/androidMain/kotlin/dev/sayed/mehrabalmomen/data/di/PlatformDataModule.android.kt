@@ -29,6 +29,8 @@ import dev.sayed.mehrabalmomen.domain.repository.platform.DeviceInfoProvider
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import dev.sayed.mehrabalmomen.domain.utils.Logger
+import dev.sayed.mehrabalmomen.data.platform.system.AndroidAlarmScheduler
+import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -41,6 +43,7 @@ actual val platformDataModule: Module = module {
     single<CompassSensorManager> { AndroidCompassSensorManager(get()) }
     factory<AudioPlayer> { AndroidAudioPlayer(get()) }
     single<Logger> { AndroidLogger() }
+    single<AlarmScheduler> { AndroidAlarmScheduler(get()) }
     single<AnalyticsTracker> { AndroidAnalyticsTracker(FirebaseAnalytics.getInstance(get<Context>())) }
     single<PermissionProvider> { AndroidPermissionProvider(get()) }
     single<DeviceInfoProvider> { AndroidDeviceInfoProvider(get()) }

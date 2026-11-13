@@ -5,6 +5,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import com.google.firebase.perf.performance
 import dev.sayed.mehrabalmomen.BuildConfig
+import dev.sayed.mehrabalmomen.di.appModule
 import dev.sayed.mehrabalmomen.di.initKoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class MehrabApplication : Application() {
         super.onCreate()
         initKoin {
             androidContext(this@MehrabApplication)
+            modules(appModule)
         }
 
         applicationScope.launch {

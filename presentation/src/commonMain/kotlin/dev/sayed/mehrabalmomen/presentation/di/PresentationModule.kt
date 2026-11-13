@@ -53,6 +53,7 @@ val presentationModule = module {
     viewModelOf(::HighlightingViewModel)
     viewModelOf(::AzanViewModel)
 
+    single<dev.sayed.mehrabalmomen.presentation.utils.WidgetHandler> { dev.sayed.mehrabalmomen.presentation.utils.NoOpWidgetHandler() }
     factory(named("quran")) { get<AudioPlayer>() }
     single(named("radio")) { get<AudioPlayer>() }
 }
