@@ -1,0 +1,25 @@
+package dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions
+
+import dev.sayed.mehrabalmomen.designsystem.resources.Res
+import dev.sayed.mehrabalmomen.designsystem.resources.loading
+import dev.sayed.mehrabalmomen.designsystem.resources.next
+import org.jetbrains.compose.resources.StringResource
+
+data class PermissionsUiState(
+    val isLoading: Boolean = false,
+    val isLocationLoading: Boolean = false,
+    val isButtonEnabled: Boolean = false,
+    val isLocationPermissionGranted: Boolean = false,
+    val isNotificationPermissionGranted: Boolean = false,
+    val isAlarmPermissionGranted: Boolean = false,
+    val isBackgroundPermissionGranted: Boolean = false,
+    val isNotificationPermissionRequired: Boolean = false,
+    val isAlarmPermissionRequired: Boolean = false,
+    val isSuccessToast: Boolean = false,
+    val buttonState: PermissionButtonState = PermissionButtonState.NEXT
+) {
+    enum class PermissionButtonState(val value: StringResource) {
+        LOADING(Res.string.loading),
+        NEXT(Res.string.next)
+    }
+}

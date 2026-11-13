@@ -1,0 +1,19 @@
+package dev.sayed.mehrabalmomen.presentation.screen.prayers
+
+import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.presentation.utils.format
+import dev.sayed.mehrabalmomen.presentation.utils.toUiIcon
+import dev.sayed.mehrabalmomen.presentation.utils.toUiName
+import kotlinx.datetime.TimeZone
+import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalTime::class)
+fun Prayer.toPrayerUiState(zone: TimeZone): PrayerTimesUiState.PrayerUiState {
+    return PrayerTimesUiState.PrayerUiState(
+        prayerName = this.name,
+        name = this.toUiName(this.name),
+        time = format(instant = this.time, zone = zone),
+        icon = this.toUiIcon(this.name),
+        instantTime = this.time
+    )
+}
