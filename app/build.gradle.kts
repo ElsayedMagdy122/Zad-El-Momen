@@ -1,4 +1,3 @@
-import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -54,55 +53,6 @@ android {
         versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            localPropertiesFile.inputStream().use {
-                localProperties.load(it)
-            }
-        }
-
-        fun getProp(key: String): String {
-            return localProperties.getProperty(key)
-                ?: System.getenv(key)
-                ?: error("Missing property: $key")
-        }
-        buildConfigField(
-            "String",
-            "SUPABASE_URL",
-            "\"${getProp("SUPABASE_URL")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPABASE_KEY",
-            "\"${getProp("SUPABASE_KEY")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPPORT_1",
-            "\"${getProp("SUPPORT_1")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPPORT_5",
-            "\"${getProp("SUPPORT_5")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPPORT_10",
-            "\"${getProp("SUPPORT_10")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPPORT_25",
-            "\"${getProp("SUPPORT_25")}\""
-        )
-        buildConfigField(
-            "String",
-            "SUPPORT_100",
-            "\"${getProp("SUPPORT_100")}\""
-        )
 
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a")
