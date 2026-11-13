@@ -1,13 +1,19 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.google.gms.google.services) apply false
-    alias(libs.plugins.google.firebase.crashlytics) apply false
-    alias(libs.plugins.google.firebase.firebase.perf) apply false
-    alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
-    id("androidx.room") version "2.8.4" apply false
-    id("com.google.devtools.ksp") version "2.3.4" apply false
+    // this is necessary to avoid the plugins to be loaded multiple times
+    // in each subproject's classloader
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.androidMultiplatformLibrary) apply false
+    alias(libs.plugins.composeMultiplatform) apply false
+    alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.androidLint) apply false
+    alias(libs.plugins.buildkonfig) apply false
+    alias(libs.plugins.androidx.room) apply false
+    alias(libs.plugins.ksp) apply false
+
+    // Firebase & Services (Android)
+    alias(libs.plugins.googleGmsGoogleServices) apply false
+    alias(libs.plugins.googleFirebaseCrashlytics) apply false
+    alias(libs.plugins.googleFirebaseFirebasePerf) apply false
 }
