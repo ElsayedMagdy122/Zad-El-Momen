@@ -12,6 +12,7 @@ on:
       - 'domain/**'
       - 'presentation/**'
 
+
 jobs:
   build-and-deploy:
     name: Build & Upload to Appetize
