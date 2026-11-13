@@ -1,0 +1,76 @@
+name: iOS Appetize Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main,refactor/migrate-from-android-to-cmp ]
+    paths:
+      - 'iosApp/**'
+      - 'shared/**'
+      - 'designSystem/**'
+      - 'data/**'
+      - 'domain/**'
+      - 'presentation/**'
+
+jobs:
+  build-and-deploy:
+    name: Build & Upload to Appetize
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Create local.properties
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> local.properties
+
+      - name: Build iOS Simulator App
+        run: |
+          ./gradlew clean
+          xcodebuild clean build \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build-ios \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            ENABLE_PREVIEWS=NO
+
+      - name: Zip .app bundle
+        run: |
+          APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: .app bundle not found!"
+            exit 1
+          fi
+          cd "$(dirname "$APP_PATH")"
+          zip -r "$GITHUB_WORKSPACE/iosApp.zip" "$(basename "$APP_PATH")"
+
+      - name: Upload to Appetize
+        uses: appetizeio/github-action-appetize@v1.0.5
+        with:
+          apiToken: ${{ secrets.APPETIZE_API_TOKEN }}
+          appFile: iosApp.zip
+          platform: ios
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-simulator
+          path: iosApp.zip
+          retention-days: 5
