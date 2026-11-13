@@ -1,16 +1,19 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
-    alias(libs.plugins.google.gms.google.services)
-    alias(libs.plugins.google.firebase.crashlytics)
-    alias(libs.plugins.google.firebase.firebase.perf)
-    id("androidx.room")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.googleGmsGoogleServices)
+    alias(libs.plugins.googleFirebaseCrashlytics)
+    alias(libs.plugins.googleFirebaseFirebasePerf)
+}
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_11
+    }
 }
 
 android {
@@ -133,25 +136,22 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
 }
 
 dependencies {
+    implementation(project(":domain"))
+    implementation(project(":designSystem"))
+    implementation(project(":data"))
+    implementation(project(":presentation"))
+    implementation(project(":shared"))
+
     //Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose.ui)
-
-    // Navigation
-    implementation(libs.bundles.navigation.compose)
 
     // Koin
     implementation(platform(libs.koin.bom))
@@ -167,10 +167,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.firebase.analytics)
 
-    val room_version = "2.8.4"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:${room_version}")
-    ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.media:media:1.6.0")
     // AndroidX
     implementation(libs.bundles.androidx.core)
