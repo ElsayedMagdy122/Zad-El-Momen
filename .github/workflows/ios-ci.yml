@@ -1,9 +1,9 @@
-name: iOS App Build CI
+name: Build iOS for Appetize
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main, refactor/kmp-migration ]
+    branches: [ main, develop, refactor/kmp-migration ]
     paths:
       - 'iosApp/**'
       - 'shared/**'
@@ -12,11 +12,11 @@ on:
       - 'domain/**'
       - 'presentation/**'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, develop, master ]
 
 jobs:
   build-ios:
-    name: Build iOS App Simulator
+    name: Build iOS App Simulator & Upload
     runs-on: macos-14
     steps:
       - name: Checkout code
@@ -64,3 +64,21 @@ jobs:
           name: ios-app-simulator
           path: iosApp.zip
           retention-days: 5
+
+      - name: Upload App to Appetize.io
+        if: ${{ secrets.APPETIZE_API_TOKEN != '' }}
+        env:
+          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+          APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
+        run: |
+          if [ -n "$APPETIZE_PUBLIC_KEY" ]; then
+            curl --location --request POST "https://api.appetize.io/v1/apps/${APPETIZE_PUBLIC_KEY}" \
+              --header "Authorization: Bearer ${APPETIZE_API_TOKEN}" \
+              --form "file=@iosApp.zip" \
+              --form "platform=ios"
+          else
+            curl --location --request POST "https://api.appetize.io/v1/apps" \
+              --header "Authorization: Bearer ${APPETIZE_API_TOKEN}" \
+              --form "file=@iosApp.zip" \
+              --form "platform=ios"
+          fi
