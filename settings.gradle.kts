@@ -21,3 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Zad El Momen"
 include(":app")
+include(":shared")
+include(":domain")
+include(":data")
+include(":presentation")
+include(":designsystem")

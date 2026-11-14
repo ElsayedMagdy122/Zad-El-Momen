@@ -146,6 +146,13 @@ android {
 }
 
 dependencies {
+    // CMP Modules
+    implementation(project(":shared"))
+    implementation(project(":presentation"))
+    implementation(project(":designsystem"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
+
     //Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose.ui)
