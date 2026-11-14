@@ -1,0 +1,61 @@
+package dev.sayed.mehrabalmomen.designsystem.component
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.designsystem.theme.Theme
+
+@Composable
+fun AppBar(
+    title: String,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isBackEnabled: Boolean = true,
+    actionIconTint: Color = Theme.color.primary.primary,
+    onActionClick: (() -> Unit)? = null
+) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        AnimatedVisibility(isBackEnabled) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Theme.color.surfaces.surfaceLow)
+                    .clickable {
+                        onBackClick()
+                    }
+                    .align(Alignment.CenterStart),
+                contentAlignment = Alignment.Center
+            ) {
+            }
+        }
+
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = title,
+            color = Theme.color.primary.primary,
+            style = Theme.textStyle.title.medium
+        )
+    }
+}
