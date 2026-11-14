@@ -1,0 +1,158 @@
+package dev.sayed.mehrabalmomen.presentation.navigation
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class SearchType {
+    QURAN,
+    SURAH
+}
+
+@Serializable
+sealed interface Route {
+    val route: String
+
+    @Serializable
+    data object AppRoute : Route {
+        override val route = "app_route"
+    }
+
+    @Serializable
+    data object HomeScreen : Route {
+        override val route = "home_screen"
+    }
+
+    @Serializable
+    data object PrayerTimes : Route {
+        override val route = "prayer_times"
+    }
+
+    @Serializable
+    data class RecitersSearchScreen(val surahId: Int, val currentReaderId: Int? = null) : Route {
+        override val route: String = "reciters_search_screen"
+    }
+
+    @Serializable
+    data object CalibrateDevice : Route {
+        override val route = "calibrate_device"
+    }
+
+    @Serializable
+    data object QiblahScreen : Route {
+        override val route = "qiblah_screen"
+    }
+
+    @Serializable
+    data object PermissionsScreen : Route {
+        override val route = "permissions_screen"
+    }
+
+    @Serializable
+    data object MadhabScreen : Route {
+        override val route = "madhab_screen"
+    }
+
+    @Serializable
+    data object CalculationMethodScreen : Route {
+        override val route = "calculation_method"
+    }
+
+    @Serializable
+    data object SettingsScreen : Route {
+        override val route = "settings_screen"
+    }
+
+    @Serializable
+    data object MapsScreen : Route {
+        override val route = "maps_screen"
+    }
+
+    @Serializable
+    data object AzkarScreen : Route {
+        override val route = "azkar_screen"
+    }
+
+    @Serializable
+    data class AzkarDetailScreen(val title: String) : Route {
+        override val route: String get() = "azkar_detail_screen/$title"
+    }
+
+    @Serializable
+    data object SurahListScreen : Route {
+        override val route = "surah_list_screen"
+    }
+
+    @Serializable
+    data class SurahAyatScreen(
+        val surahId: Int,
+        val arabicName: String,
+        val englishName: String,
+        val targetAyahId: Int? = null
+    ) : Route {
+        override val route: String get() = "surah_ayat_screen/$surahId"
+    }
+
+    @Serializable
+    data class RecitersScreen(val surahId: Int, val currentReaderId: Int? = null) : Route {
+        override val route = "reciters_screen"
+    }
+
+    @Serializable
+    data class SearchAyahScreen(
+        val type: SearchType,
+        val surahId: Int? = null,
+        val surahName: String? = null
+    ) : Route {
+        override val route: String get() = "search_ayah_screen/${type.name}"
+    }
+
+    @Serializable
+    data class Tasmee3Screen(
+        val surahId: Int,
+        val surahName: String,
+        val startAyah: Int = 1,
+        val endAyah: Int = -1
+    ) : Route {
+        override val route: String get() = "tasmee3_screen/$surahId"
+    }
+
+    @Serializable
+    data object ReportBugScreen : Route {
+        override val route = "report_bug"
+    }
+
+    @Serializable
+    data object BookmarksListScreen : Route {
+        override val route = "bookmarks_list"
+    }
+
+    @Serializable
+    data object RadioScreen : Route {
+        override val route = "radio_screen"
+    }
+
+    @Serializable
+    data object BatteryOptimizationScreen : Route {
+        override val route = "battery_optimization"
+    }
+
+    @Serializable
+    data object FAQScreen : Route {
+        override val route = "faq_screen"
+    }
+
+    @Serializable
+    data object ContactUsScreen : Route {
+        override val route = "contact_us_screen"
+    }
+
+    @Serializable
+    data object PrivacyScreen : Route {
+        override val route: String get() = "privacy_screen"
+    }
+
+    @Serializable
+    data object ReminderSettingsScreen : Route {
+        override val route: String get() = "reminder_settings_screen"
+    }
+}
