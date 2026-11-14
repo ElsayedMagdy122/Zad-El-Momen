@@ -3,7 +3,7 @@ name: iOS App Build CI
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, refactor/kmp-migration ]
     paths:
       - 'iosApp/**'
       - 'shared/**'
