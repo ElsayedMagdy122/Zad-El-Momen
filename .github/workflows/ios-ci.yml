@@ -1,9 +1,9 @@
-name: iOS App Build CI
+name: Build iOS for Appetize
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, develop, refactor/kmp-migration ]
     paths:
       - 'iosApp/**'
       - 'shared/**'
@@ -12,12 +12,12 @@ on:
       - 'domain/**'
       - 'presentation/**'
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, develop, master ]
 
 jobs:
-  build-ios:
-    name: Build iOS App Simulator
-    runs-on: macos-14
+  build-and-deploy:
+    name: Build & Upload to Appetize
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,6 +34,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Create local.properties
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> local.properties
+
       - name: Build iOS Simulator App
         run: |
           ./gradlew clean
@@ -43,7 +48,7 @@ jobs:
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             ENABLE_PREVIEWS=NO
@@ -58,7 +63,14 @@ jobs:
           cd "$(dirname "$APP_PATH")"
           zip -r "$GITHUB_WORKSPACE/iosApp.zip" "$(basename "$APP_PATH")"
 
-      - name: Upload Build Artifact
+      - name: Upload to Appetize
+        uses: appetizeio/github-action-appetize@v1.0.5
+        with:
+          apiToken: ${{ secrets.APPETIZE_API_TOKEN }}
+          appFile: iosApp.zip
+          platform: ios
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-app-simulator
