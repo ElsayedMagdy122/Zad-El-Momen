@@ -9,15 +9,16 @@ import dev.sayed.mehrabalmomen.presentation.di.presentationModule
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.startKoin
 import platform.UIKit.UIViewController
 
 fun createMainViewController(): UIViewController = ComposeUIViewController {
     try {
-        org.koin.core.context.GlobalContext.get()
-    } catch (_: Exception) {
-        org.koin.core.context.GlobalContext.startKoin {
+        startKoin {
             modules(presentationModule, domainModule, *dataModule.toTypedArray())
         }
+    } catch (_: Exception) {
+        // Koin already started
     }
     MehrabTheme {
         val settingsRepository: SettingsRepository = object : KoinComponent {
