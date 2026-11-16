@@ -107,7 +107,7 @@ val commonDataModule = module {
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<CompanionRepository> { CompanionRepositoryImpl(get()) }
-    single<QuranRepository> { QuranRepositoryImpl(get(), get(), get()) }
+    single<QuranRepository> { QuranRepositoryImpl(get(), get(), get(named("asset_reader"))) }
     single<ReadingProgressRepository> { ReadingProgressRepositoryImpl(get()) }
     single<RadioRepository> { RadioRepositoryImpl(get()) }
     single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }

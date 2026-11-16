@@ -142,4 +142,12 @@ actual val platformDataModule: Module = module {
             httpClient = get()
         )
     }
+
+    single<suspend (String) -> String>(named("asset_reader")) {
+        val ctx = androidContext()
+        val reader: suspend (String) -> String = { fileName: String ->
+            ctx.assets.open(fileName).bufferedReader().use { it.readText() }
+        }
+        reader
+    }
 }

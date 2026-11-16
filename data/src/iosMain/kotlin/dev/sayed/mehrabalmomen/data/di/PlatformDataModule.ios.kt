@@ -9,6 +9,7 @@ import dev.sayed.mehrabalmomen.domain.billing.BillingService
 import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual val platformDataModule: Module = module {
@@ -16,4 +17,8 @@ actual val platformDataModule: Module = module {
     single<NetworkConnectionRepository> { IosNetworkConnectionRepositoryImpl() }
     single<BugReportRemoteDataSource> { IosBugReportRemoteDataSourceImpl() }
     single<BatteryOptimizationRepository> { IosBatteryOptimizationRepositoryImpl() }
+    single<suspend (String) -> String>(named("asset_reader")) {
+        val reader: suspend (String) -> String = { _: String -> "" }
+        reader
+    }
 }
