@@ -1,0 +1,39 @@
+package dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.components
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import dev.sayed.mehrabalmomen.R
+import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.localizedString
+
+@Composable
+fun HeaderBox(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.padding(end = 8.dp),
+            painter = painterResource(R.drawable.ic_settings_not_selected),
+            contentDescription = null,
+            tint = Theme.color.primary.primary
+        )
+        Text(
+            text = localizedString(R.string.settings_steps),
+            color = Theme.color.primary.shadePrimary,
+            style = Theme.textStyle.title.small,
+            textAlign = TextAlign.Start
+        )
+    }
+}
