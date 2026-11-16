@@ -74,3 +74,7 @@ kotlin {
         }
     }
 }
+
+tasks.register("syncFramework") {
+    dependsOn("embedAndSignAppleFrameworkForXcode")
+}
