@@ -42,7 +42,7 @@ fun CalculationMethodScreen(
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             CalculationMethodEffect.NavigateToPermissionsScreen -> {
-                navController.navigate(Route.PermissionsScreen.route)
+                navController.navigate(Route.PermissionsScreen)
             }
         }
     }

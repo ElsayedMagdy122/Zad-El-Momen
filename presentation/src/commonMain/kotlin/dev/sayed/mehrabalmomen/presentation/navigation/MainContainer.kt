@@ -102,7 +102,20 @@ fun MainContainer(
                 .fillMaxSize()
                 .padding(bottom = 74.dp)
         ) {
-            composable(Route.HomeScreen.route) { HomeScreen(rootNavController) }
+            composable(Route.HomeScreen.route) { 
+                HomeScreen(
+                    navController = rootNavController,
+                    onNavigateToTab = { route ->
+                        bottomNavController.navigate(route) {
+                            popUpTo(bottomNavController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
             composable(Route.PrayerTimes.route) { }
             composable(Route.AzkarScreen.route) { }
             composable(Route.RadioScreen.route) { }

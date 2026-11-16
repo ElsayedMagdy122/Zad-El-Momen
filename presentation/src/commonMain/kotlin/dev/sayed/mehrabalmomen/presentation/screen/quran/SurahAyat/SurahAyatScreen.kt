@@ -98,7 +98,7 @@ fun SurahAyatScreen(
                         type = SearchType.SURAH,
                         surahId = effect.surahId,
                         surahName = effect.arabicName
-                    ).route
+                    )
                 )
             }
 
@@ -107,7 +107,7 @@ fun SurahAyatScreen(
                     Route.RecitersScreen(
                         surahId = effect.surahId,
                         currentReaderId = effect.currentReaderId
-                    ).route
+                    )
                 )
             }
 

@@ -51,19 +51,19 @@ fun SurahListScreen(
                         effect.surahId,
                         effect.arabicName,
                         effect.englishName
-                    ).route
+                    )
                 )
 
             SurahListEffect.NavigateToQuranSearch -> {
                 navController.navigate(
                     Route.SearchAyahScreen(
                         type = SearchType.QURAN
-                    ).route
+                    )
                 )
             }
 
             SurahListEffect.NavigateToBookmarksList -> {
-                navController.navigate(Route.BookmarksListScreen.route)
+                navController.navigate(Route.BookmarksListScreen)
             }
         }
     }

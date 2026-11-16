@@ -30,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
+    onNavigateToTab: ((String) -> Unit)? = null,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
@@ -40,19 +41,19 @@ fun HomeScreen(
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             HomeEffect.NavigateToPrayerTimes -> {
-                navController.navigate(Route.PrayerTimes.route)
+                onNavigateToTab?.invoke(Route.PrayerTimes.route)
             }
 
             HomeEffect.NavigateToCalibrateDevice -> {
-                navController.navigate(Route.CalibrateDevice.route)
+                navController.navigate(Route.CalibrateDevice)
             }
 
             HomeEffect.NavigateToSettings -> {
-                navController.navigate(Route.SettingsScreen.route)
+                onNavigateToTab?.invoke(Route.SettingsScreen.route)
             }
 
             HomeEffect.NavigateToQuran -> {
-                navController.navigate(Route.SurahListScreen.route)
+                navController.navigate(Route.SurahListScreen)
             }
 
             HomeEffect.NavigateToTilawah -> {
@@ -62,7 +63,7 @@ fun HomeScreen(
                         arabicName = state.lastTilawahUi.nameArabic,
                         englishName = state.lastTilawahUi.nameEnglish,
                         targetAyahId = state.lastTilawahUi.ayahId
-                    ).route
+                    )
                 )
             }
         }
@@ -78,7 +79,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 state = state,
                 onNotificationClick = {
-                    navController.navigate(Route.ReminderSettingsScreen.route)
+                    navController.navigate(Route.ReminderSettingsScreen)
                 }
             )
         }

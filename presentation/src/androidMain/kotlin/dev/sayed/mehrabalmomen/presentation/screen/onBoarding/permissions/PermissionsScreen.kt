@@ -157,8 +157,8 @@ actual fun PermissionsScreen(
             }
 
             PermissionsEffect.NavigateToHome -> {
-                navController.navigate(Route.AppRoute.route) {
-                    popUpTo(Route.CalculationMethodScreen.route) { inclusive = true }
+                navController.navigate(Route.AppRoute) {
+                    popUpTo(Route.CalculationMethodScreen) { inclusive = true }
                 }
             }
 
