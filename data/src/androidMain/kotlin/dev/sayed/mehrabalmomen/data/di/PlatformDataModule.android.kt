@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.firebase.analytics.FirebaseAnalytics
-import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.location.LocationRepositoryImpl
@@ -118,15 +117,6 @@ actual val platformDataModule: Module = module {
             context = androidContext()
         )
     }
-    single<AzkarLocalDataSource> {
-        val context = androidContext()
-        AzkarLocalDataSource(
-            azkarDao = get(),
-            jsonProvider = {
-                context.assets.open("azkar.json").bufferedReader().use { it.readText() }
-            }
-        )
-    }
     single<QuranAudioReadersRepository> {
         QuranAudioReadersRepositoryImpl(
             readersRemoteDataSource = get(),
@@ -141,13 +131,5 @@ actual val platformDataModule: Module = module {
             supabase = get(),
             httpClient = get()
         )
-    }
-
-    single<suspend (String) -> String>(named("asset_reader")) {
-        val ctx = androidContext()
-        val reader: suspend (String) -> String = { fileName: String ->
-            ctx.assets.open(fileName).bufferedReader().use { it.readText() }
-        }
-        reader
     }
 }
