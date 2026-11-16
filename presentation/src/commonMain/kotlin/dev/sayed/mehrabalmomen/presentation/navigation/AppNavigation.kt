@@ -13,6 +13,7 @@ import androidx.navigation.toRoute
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
@@ -56,7 +57,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.ContactUsScreen> { ContactUsScreen(navController) }
         composable<Route.FAQScreen> { FAQScreen(navController) }
         composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
-        composable<Route.PrayerTimes> { Box(modifier = Modifier.fillMaxSize()) }
+        composable<Route.PrayerTimes> { PrayerTimesScreen(navController = navController) }
         composable<Route.CalibrateDevice> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.ReminderSettingsScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.AzkarScreen> { Box(modifier = Modifier.fillMaxSize()) }

@@ -22,6 +22,7 @@ import dev.sayed.mehrabalmomen.design_system.component.NavItem
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeScreen
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
@@ -116,7 +117,7 @@ fun MainContainer(
                     }
                 )
             }
-            composable(Route.PrayerTimes.route) { }
+            composable(Route.PrayerTimes.route) { PrayerTimesScreen(rootNavController) }
             composable(Route.AzkarScreen.route) { }
             composable(Route.RadioScreen.route) { }
             composable(Route.SettingsScreen.route) { SettingsScreen(rootNavController) }
