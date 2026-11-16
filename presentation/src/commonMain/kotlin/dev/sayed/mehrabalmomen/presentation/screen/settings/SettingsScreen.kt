@@ -84,11 +84,11 @@ fun SettingsScreen(
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToHelpFeedback -> {
-                navController.navigate(Route.ReportBugScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.NavigateToLocation -> {
-                navController.navigate(Route.MapsScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.NavigateToRateApp -> {
@@ -104,19 +104,19 @@ fun SettingsScreen(
             }
 
             SettingsEffect.NavigateToContactUs -> {
-                navController.navigate(Route.ContactUsScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.NavigateToPrivacy -> {
-                navController.navigate(Route.PrivacyScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.NavigateToNotifications -> {
-                navController.navigate(Route.ReminderSettingsScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.NavigateToFAQ -> {
-                navController.navigate(Route.FAQScreen)
+                // navController.navigate(Route.HomeScreen)
             }
 
             SettingsEffect.RequestPinWidget -> {

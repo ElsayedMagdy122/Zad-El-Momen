@@ -3,6 +3,8 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.base.UiIcon
 import dev.sayed.mehrabalmomen.presentation.base.UiText
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_azan_selected
 
 data class HomeUiState(
     val location: LocationUiState = LocationUiState(),
@@ -22,7 +24,7 @@ data class HomeUiState(
         val name: UiText = UiText.DynamicString(""),
         val time: String = "00 : 00 : 00",
         val isUpComing: Boolean = false,
-        val icon: UiIcon = UiIcon(0),
+        val icon: UiIcon = UiIcon(Res.drawable.ic_azan_selected),
         val isAm : Boolean = false
     )
 
@@ -33,9 +35,8 @@ data class HomeUiState(
     )
 
     data class ContinueTilawahUi(
-        val surahId: Int = 0,
-        val nameArabic: String = "",
-        val nameEnglish: String = "",
-        val ayahId: Int = 0
+        val surahName: String = "",
+        val ayahNumber: Int = 1,
+        val surahId: Int = 1
     )
 }
