@@ -35,6 +35,9 @@ data class HomeUiState(
     )
 
     data class ContinueTilawahUi(
+        val nameArabic: String = "",
+        val nameEnglish: String = "",
+        val ayahId: Int = 1,
         val surahName: String = "",
         val ayahNumber: Int = 1,
         val surahId: Int = 1
