@@ -8,6 +8,8 @@ import dev.sayed.mehrabalmomen.data.util.network.IosNetworkConnectionRepositoryI
 import dev.sayed.mehrabalmomen.domain.billing.BillingService
 import dev.sayed.mehrabalmomen.data.platform.system.IosPermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
+import dev.sayed.mehrabalmomen.data.platform.audio.IosAudioPlayer
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import org.koin.core.module.Module
@@ -19,4 +21,5 @@ actual val platformDataModule: Module = module {
     single<BugReportRemoteDataSource> { IosBugReportRemoteDataSourceImpl() }
     single<BatteryOptimizationRepository> { IosBatteryOptimizationRepositoryImpl() }
     single<PermissionProvider> { IosPermissionProvider() }
+    factory<AudioPlayer> { IosAudioPlayer() }
 }

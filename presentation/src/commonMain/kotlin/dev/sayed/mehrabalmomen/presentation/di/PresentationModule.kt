@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
@@ -15,6 +16,7 @@ val presentationModule = module {
     viewModelOf(::CalculationMethodViewModel)
     viewModelOf(::PermissionsViewModel)
     viewModelOf(::SurahListViewModel)
+    viewModelOf(::SurahAyatViewModel)
 
     single<suspend (String) -> String>(named("asset_reader")) {
         { fileName ->
