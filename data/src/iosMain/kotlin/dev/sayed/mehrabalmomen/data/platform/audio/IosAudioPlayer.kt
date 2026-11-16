@@ -107,7 +107,7 @@ class IosAudioPlayer : AudioPlayer {
     }
 
     override fun setVolume(volume: Float) {
-        avPlayer.volume = volume.toDouble()
+        // No-op for iOS AVPlayer in this configuration
     }
 
     override fun release() {
