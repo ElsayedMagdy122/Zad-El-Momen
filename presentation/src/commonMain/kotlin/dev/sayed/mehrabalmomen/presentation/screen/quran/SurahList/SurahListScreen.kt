@@ -57,7 +57,7 @@ fun SurahListScreen(
             SurahListEffect.NavigateToQuranSearch -> {
                 navController.navigate(
                     Route.SearchAyahScreen(
-                        type = SearchType.QURAN
+                        type = SearchType.QURAN.name
                     )
                 )
             }

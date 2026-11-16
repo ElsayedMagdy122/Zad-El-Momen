@@ -95,7 +95,7 @@ fun SurahAyatScreen(
             is SurahAyatEffect.NavigateToSearch -> {
                 navController.navigate(
                     Route.SearchAyahScreen(
-                        type = SearchType.SURAH,
+                        type = SearchType.SURAH.name,
                         surahId = effect.surahId,
                         surahName = effect.arabicName
                     )
