@@ -15,6 +15,8 @@ import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahAyat.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.FAQScreen
@@ -61,7 +63,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.RadioScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.BookmarksListScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.SearchAyahScreen> { Box(modifier = Modifier.fillMaxSize()) }
-        composable<Route.RecitersScreen> { Box(modifier = Modifier.fillMaxSize()) }
+        composable<Route.RecitersScreen> { RecitersScreen(navController = navController) }
+        composable<Route.RecitersSearchScreen> { RecitersSearchScreen(navController = navController) }
         composable<Route.AppRoute> {
             MainContainer(rootNavController = navController)
         }
