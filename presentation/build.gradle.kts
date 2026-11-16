@@ -16,8 +16,6 @@ kotlin {
         }
     }
 
-
-
     val xcfName = "presentationKit"
 
     listOf(
@@ -26,6 +24,7 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = xcfName
+            isStatic = true
         }
     }
 
@@ -72,6 +71,24 @@ kotlin {
         iosMain {
             dependencies {
             }
+        }
+    }
+}
+
+tasks.register("embedAndSignAppleFrameworkForXcode") {
+    val configuration = System.getenv("CONFIGURATION") ?: "Debug"
+    val sdk = System.getenv("SDK_NAME") ?: "iphonesimulator"
+    val target = if (sdk.startsWith("iphoneos")) "iosArm64" else "iosSimulatorArm64"
+    val buildType = configuration.lowercase().replaceFirstChar { it.uppercase() }
+
+    dependsOn("linkPresentationKit${buildType}Framework${target}")
+
+    doLast {
+        val outputDir = layout.buildDirectory.dir("xcode-frameworks/$configuration/$sdk").get().asFile
+        outputDir.mkdirs()
+        val frameworkDir = layout.buildDirectory.dir("bin/$target/${configuration.lowercase()}Framework/presentationKit.framework").get().asFile
+        if (frameworkDir.exists()) {
+            frameworkDir.copyRecursively(outputDir.resolve("presentationKit.framework"), overwrite = true)
         }
     }
 }
