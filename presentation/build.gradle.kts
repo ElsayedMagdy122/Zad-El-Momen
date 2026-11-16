@@ -64,6 +64,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation("com.github.msarhan:ummalqura-calendar:1.1.9")
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.activity.compose)
                 implementation("com.google.android.gms:play-services-location:21.3.0")

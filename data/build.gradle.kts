@@ -101,6 +101,7 @@ kotlin {
         }
 
         androidMain.dependencies {
+            implementation("com.github.msarhan:ummalqura-calendar:1.1.9")
             implementation(libs.ktor.client.okhttp)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.session)

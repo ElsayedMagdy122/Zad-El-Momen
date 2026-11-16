@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodScreen
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListScreen
 
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
@@ -30,6 +31,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
     ) {
         composable(Route.CalculationMethodScreen.route) { CalculationMethodScreen(navController) }
         composable(Route.PermissionsScreen.route) { PermissionsScreen(navController) }
+        composable(Route.SurahListScreen.route) { SurahListScreen(navController) }
         composable(Route.AppRoute.route) {
             MainContainer(rootNavController = navController)
         }

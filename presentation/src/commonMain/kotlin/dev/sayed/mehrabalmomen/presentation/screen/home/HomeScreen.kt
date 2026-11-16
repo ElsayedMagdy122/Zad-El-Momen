@@ -35,11 +35,36 @@ fun HomeScreen(
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val language = LocalAppLocale.current
     LaunchedEffect(Unit) {
-        // viewModel.getHijriDate(language)
+        viewModel.getHijriDate(language)
     }
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
-            else -> {}
+            HomeEffect.NavigateToPrayerTimes -> {
+                navController.navigate(Route.PrayerTimes.route)
+            }
+
+            HomeEffect.NavigateToCalibrateDevice -> {
+                navController.navigate(Route.CalibrateDevice.route)
+            }
+
+            HomeEffect.NavigateToSettings -> {
+                navController.navigate(Route.SettingsScreen.route)
+            }
+
+            HomeEffect.NavigateToQuran -> {
+                navController.navigate(Route.SurahListScreen.route)
+            }
+
+            HomeEffect.NavigateToTilawah -> {
+                navController.navigate(
+                    Route.SurahAyatScreen(
+                        surahId = state.lastTilawahUi.surahId,
+                        arabicName = state.lastTilawahUi.nameArabic,
+                        englishName = state.lastTilawahUi.nameEnglish,
+                        targetAyahId = state.lastTilawahUi.ayahId
+                    ).route
+                )
+            }
         }
     }
     LazyColumn(
@@ -52,7 +77,9 @@ fun HomeScreen(
             HomeAppBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 state = state,
-                onNotificationClick = {}
+                onNotificationClick = {
+                    navController.navigate(Route.ReminderSettingsScreen.route)
+                }
             )
         }
         item {
@@ -76,7 +103,16 @@ fun HomeScreen(
         }
         item {
             ContinueToTilawah(
-                onClick = {},
+                onClick = {
+                    navController.navigate(
+                        Route.SurahAyatScreen(
+                            surahId = state.lastTilawahUi.surahId,
+                            arabicName = state.lastTilawahUi.nameArabic,
+                            englishName = state.lastTilawahUi.nameEnglish,
+                            targetAyahId = state.lastTilawahUi.ayahId
+                        ).route
+                    )
+                },
                 surahUiState = state.lastTilawahUi,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)

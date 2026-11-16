@@ -100,7 +100,7 @@ class HomeViewModel(
     }
 
     fun getHijriDate(language: AppSettings.Language) {
-        val date = if (language == AppSettings.Language.ARABIC) "1448 هـ" else "1448 AH"
+        val date = getHijriDateString(language)
         updateState {
             it.copy(hijriDate = date)
         }
@@ -220,3 +220,5 @@ class HomeViewModel(
         sendEffect(HomeEffect.NavigateToTilawah)
     }
 }
+
+expect fun getHijriDateString(language: AppSettings.Language): String
