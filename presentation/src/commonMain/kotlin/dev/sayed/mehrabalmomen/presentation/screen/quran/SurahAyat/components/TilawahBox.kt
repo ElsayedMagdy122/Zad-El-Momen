@@ -74,7 +74,8 @@ fun TilawahBox(
     ) {
         TilawahHeader(
             readerName = readerName,
-            onCloseClick = onCloseClick
+            onCloseClick = onCloseClick,
+            onRecitersClick = onRecitersClick
         )
 
         TilawahContent(
@@ -97,13 +98,19 @@ fun TilawahBox(
 @Composable
 private fun TilawahHeader(
     readerName: String,
-    onCloseClick: () -> Unit
+    onCloseClick: () -> Unit,
+    onRecitersClick: () -> Unit
 ) {
     val displayName = readerName.ifBlank { localizedString(Res.string.select_reciter) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Theme.color.surfaces.surfaceLow)
+            .clickable(
+                onClick = onRecitersClick,
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            )
             .padding(vertical = 6.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
