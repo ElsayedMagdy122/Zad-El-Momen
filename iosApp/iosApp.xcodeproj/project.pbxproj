@@ -72,6 +72,7 @@
 			buildConfigurationList = 16F2590F8C076F499CBD565B /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
 				32F1A2B3C4D5E6F700000000 /* Fix AppIcon Size */,
+				B46A5965DC437D4AFD79F9AE /* Compile Kotlin Framework */,
 				7578B0C95E3FCD3DC28F79A2 /* Sources */,
 				0D9DE642F9FC8E3DB5E3AFF2 /* Frameworks */,
 				955B0CB3872BD0F0268E9C9D /* Resources */,
@@ -152,6 +153,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Skipping icon resize if not present\"\n";
+		};
+		B46A5965DC437D4AFD79F9AE /* Compile Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :presentation:assemblePresentationKitDebugFramework\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -300,6 +320,11 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../presentation/build/bin/iosSimulatorArm64/debugFramework",
+					"$(SRCROOT)/../presentation/build/bin/iosArm64/debugFramework",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -328,14 +353,18 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../presentation/build/bin/iosSimulatorArm64/releaseFramework",
+					"$(SRCROOT)/../presentation/build/bin/iosArm64/releaseFramework",
+				);
+				GENERATE_INFOPLIST_FILE = `YES`;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_STATUS = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -358,8 +387,8 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		16F2590F8C076F499CBD565B /* Build configuration list for PBXNativeTarget "iosApp" */,
 		16F2590F8C076F499CBD565B /* Build configuration list for PBXNativeTarget "iosApp" */ = {
-			isa = XCBuildCommandConfigurationList;
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3906B5CCC0790C3F9B4EB30D /* Debug */,
