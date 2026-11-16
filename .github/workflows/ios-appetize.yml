@@ -4,11 +4,22 @@ on:
   workflow_dispatch:
   push:
     branches: [ main, develop, feature/cmp-multiplatform-migration ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
+
+
+concurrency:
+  group: ios-appetize-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     name: Build & Upload to Appetize
     runs-on: macos-latest
+    timeout-minutes: 30
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,51 +32,81 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Cache Kotlin/Native
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.konan/dependencies
+            ~/.konan/kotlin-native-prebuilt-*
+          key: konan-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            konan-${{ runner.os }}-
+
+      - name: Cache Xcode derived data
+        uses: actions/cache@v4
+        with:
+          path: build-ios
+          key: ios-derived-${{ runner.os }}-${{ hashFiles('iosApp/**', '**/*.gradle.kts', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            ios-derived-${{ runner.os }}-
+
+      - name: Configure Gradle for CI
+        run: |
+          mkdir -p ~/.gradle
+          {
+            echo "org.gradle.caching=true"
+            echo "org.gradle.parallel=true"
+            echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8"
+            echo "kotlin.daemon.jvmargs=-Xmx3g"
+          } >> ~/.gradle/gradle.properties
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Create local.properties
         run: |
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
-          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> local.properties
-          echo "SUPPORT_1=${{ secrets.SUPPORT_1 }}" >> local.properties
-          echo "SUPPORT_5=${{ secrets.SUPPORT_5 }}" >> local.properties
-          echo "SUPPORT_10=${{ secrets.SUPPORT_10 }}" >> local.properties
-          echo "SUPPORT_25=${{ secrets.SUPPORT_25 }}" >> local.properties
-          echo "SUPPORT_100=${{ secrets.SUPPORT_100 }}" >> local.properties
+          {
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}"
+            echo "SUPPORT_1=${{ secrets.SUPPORT_1 }}"
+            echo "SUPPORT_5=${{ secrets.SUPPORT_5 }}"
+            echo "SUPPORT_10=${{ secrets.SUPPORT_10 }}"
+            echo "SUPPORT_25=${{ secrets.SUPPORT_25 }}"
+            echo "SUPPORT_100=${{ secrets.SUPPORT_100 }}"
+          } >> local.properties
+
+      - name: Check iOS project exists
+        id: ios_check
+        run: |
+          if [ -d "iosApp/iosApp.xcodeproj" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ iosApp/iosApp.xcodeproj does not exist yet. Skipping iOS steps."
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Build iOS Simulator App
+        if: steps.ios_check.outputs.exists == 'true'
         run: |
-          if [ ! -d "iosApp/iosApp.xcodeproj" ]; then
-            echo "⚠️ Warning: iosApp/iosApp.xcodeproj does not exist in this project yet. Skipping iOS build step gracefully."
-            exit 0
-          fi
-          ./gradlew clean
-          
-          # Detect available iPhone simulator dynamically
-          DEVICE_NAME=$(xcrun simctl list devices available | grep -E 'iPhone [0-9]' | head -n 1 | sed 's/ (.*//' | xargs)
-          if [ -z "$DEVICE_NAME" ]; then
-            DEVICE_NAME="iPhone 16"
-          fi
-          echo "📱 Using simulator device: $DEVICE_NAME"
-
-          xcodebuild clean build \
+          xcodebuild build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
-            -destination "platform=iOS Simulator,name=$DEVICE_NAME" \
+            -destination "generic/platform=iOS Simulator" \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             ENABLE_PREVIEWS=NO
 
       - name: Zip .app bundle
+        if: steps.ios_check.outputs.exists == 'true'
         run: |
-          if [ ! -d "iosApp/iosCard.xcodeproj" ] && [ ! -d "iosApp/iosApp.xcodeproj" ]; then
-            exit 0
-          fi
           APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
           if [ -z "$APP_PATH" ]; then
             echo "Error: .app bundle not found!"
@@ -75,6 +116,7 @@ jobs:
           zip -r "$GITHUB_WORKSPACE/iosApp.zip" "$(basename "$APP_PATH")"
 
       - name: Upload to Appetize
+        if: steps.ios_check.outputs.exists == 'true'
         uses: appetizeio/github-action-appetize@v1.0.5
         with:
           apiToken: ${{ secrets.APPETIZE_API_TOKEN }}
@@ -82,6 +124,7 @@ jobs:
           platform: ios
 
       - name: Upload Artifact
+        if: steps.ios_check.outputs.exists == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: ios-app-simulator
