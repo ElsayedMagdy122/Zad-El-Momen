@@ -210,7 +210,7 @@ class SettingsRepositoryImpl(
     override fun observeSelectedMoazen(): Flow<String> {
         return dataStore.data
             .map { prefs ->
-                prefs[SELECTED_MOAZEN] ?: SettingsUiState.Moazen.AZAN_MAKKAH.fileName
+                prefs[SELECTED_MOAZEN] ?: "azan_makkah.mp3"
             }
     }
 

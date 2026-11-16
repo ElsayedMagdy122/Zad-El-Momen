@@ -1,0 +1,20 @@
+package dev.sayed.mehrabalmomen.data.radio.mapper
+
+import dev.sayed.mehrabalmomen.data.radio.dto.CategoryDto
+import dev.sayed.mehrabalmomen.data.radio.dto.RadioChannelDto
+import dev.sayed.mehrabalmomen.domain.entity.radio.Category
+import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
+import kotlin.time.Instant
+
+fun RadioChannelDto.toDomain(): RadioChannel {
+    return RadioChannel(
+        id = this.id,
+        nameAr = this.nameAr,
+        nameEn = this.nameEn,
+        streamUrl = this.streamUrl,
+        createdAt = Instant.parse(this.createdAt),
+        categoryId = this.categoryId
+    )
+}
+fun CategoryDto.toDomain() = Category(id, nameAr, nameEn)
+fun List<RadioChannelDto>.toDomainList(): List<RadioChannel> = map { it.toDomain() }

@@ -83,7 +83,7 @@ class ReminderSchedulerRepositoryImpl(
         }.getOrNull() ?: return
 
         val durationMinutes = reminder.minute.coerceAtLeast(1)
-        val now = System.currentTimeMillis()
+        val now = Clock.System.now().toEpochMilliseconds()
 
         todayPrayers.forEach { prayer ->
             val requestCode = 3000 + prayer.name.ordinal

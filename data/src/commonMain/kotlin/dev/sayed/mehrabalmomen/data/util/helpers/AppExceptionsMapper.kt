@@ -8,22 +8,14 @@ import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
-import java.net.UnknownHostException
 
 suspend fun Throwable.toAppException(): AppException {
 
     if (this is CancellationException || this.cause is CancellationException) throw this
 
     return when (this) {
-
-        is UnknownHostException ->
-            NetworkException.NoInternetException()
-
         is SocketTimeoutException ->
             NetworkException.TimeoutException()
-
-        is IOException ->
-            NetworkException.ServerUnreachableException()
 
         is ClientRequestException ->
             NetworkException.HttpException(
@@ -36,6 +28,9 @@ suspend fun Throwable.toAppException(): AppException {
                 code = response.status.value,
                 body = response.bodyAsText()
             )
+
+        is IOException ->
+            NetworkException.NoInternetException()
 
         else ->
             AppException.UnknownException(this)

@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import dev.sayed.mehrabalmomen.data.settings.SettingsKeys
-import dev.sayed.mehrabalmomen.domain.model.companion.CompanionMood
 import dev.sayed.mehrabalmomen.domain.model.companion.CompanionState
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +25,7 @@ class CompanionRepositoryImpl(
         val isSameDay = lastResetDate == today
 
         CompanionState(
-            lastInteractionMillis = prefs[SettingsKeys.LAST_INTERACTION_MILLIS] ?: System.currentTimeMillis(),
+            lastInteractionMillis = prefs[SettingsKeys.LAST_INTERACTION_MILLIS] ?: Clock.System.now().toEpochMilliseconds(),
             quranReadToday = if (isSameDay) (prefs[SettingsKeys.QURAN_READ_TODAY] ?: false) else false,
             azkarReadToday = if (isSameDay) (prefs[SettingsKeys.AZKAR_READ_TODAY] ?: false) else false
         )

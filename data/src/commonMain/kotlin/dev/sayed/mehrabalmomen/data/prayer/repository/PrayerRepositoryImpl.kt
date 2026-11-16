@@ -6,9 +6,7 @@ import com.batoulapps.adhan2.PrayerTimes
 import com.batoulapps.adhan2.data.DateComponents
 import dev.sayed.mehrabalmomen.data.prayer.mapper.toAdhanMadhab
 import dev.sayed.mehrabalmomen.data.prayer.mapper.toAdhanParams
-import dev.sayed.mehrabalmomen.data.prayer.mapper.toDomainName
 import dev.sayed.mehrabalmomen.data.prayer.mapper.toPrayerList
-import dev.sayed.mehrabalmomen.data.prayer.mapper.toPrayerTime
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab

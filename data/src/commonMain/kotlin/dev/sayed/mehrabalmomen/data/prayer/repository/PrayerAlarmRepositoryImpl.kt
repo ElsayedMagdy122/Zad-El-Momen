@@ -5,7 +5,13 @@ import dev.sayed.mehrabalmomen.domain.model.AlarmTask
 import dev.sayed.mehrabalmomen.domain.model.RescheduleResult
 import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerAlarmRepository
-import java.util.Calendar
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
 
 class PrayerAlarmRepositoryImpl(
     private val alarmScheduler: AlarmScheduler
@@ -40,14 +46,12 @@ class PrayerAlarmRepositoryImpl(
         )
     }
 
-    private fun calculateNextMidnightMillis(): Long =
-        Calendar.getInstance().apply {
-            add(Calendar.DAY_OF_YEAR, 1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 1)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
+    private fun calculateNextMidnightMillis(): Long {
+        val now = Clock.System.now()
+        val zone = TimeZone.currentSystemDefault()
+        val tomorrow = now.toLocalDateTime(zone).date.plus(1, DateTimeUnit.DAY)
+        return tomorrow.atTime(0, 1, 0).toInstant(zone).toEpochMilliseconds()
+    }
 
     private companion object {
         const val MIDNIGHT_ROLLOVER_REQUEST_CODE = 99
