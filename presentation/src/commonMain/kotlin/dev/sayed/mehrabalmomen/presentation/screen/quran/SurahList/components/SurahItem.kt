@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,20 +18,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahUiState
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ayat
+import zadelmomen.presentation.generated.resources.ic_quran
+import zadelmomen.presentation.generated.resources.ic_sura_number
 
 @Composable
 fun SurahItem(
     surahUiState: SurahUiState,
-    onClick: (Int, String,String) -> Unit,
+    onClick: (Int, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
@@ -42,7 +45,7 @@ fun SurahItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable { onClick(surahUiState.id, surahUiState.nameArabic,surahUiState.nameEnglish) }
+            .clickable { onClick(surahUiState.id, surahUiState.nameArabic, surahUiState.nameEnglish) }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -58,7 +61,6 @@ private fun RowScope.SurahInfo(
     surahName: String,
     modifier: Modifier = Modifier
 ) {
-
     Column(
         modifier = modifier
             .padding(start = 12.dp)
@@ -75,13 +77,13 @@ private fun RowScope.SurahInfo(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_quran),
+                painter = painterResource(Res.drawable.ic_quran),
                 tint = Theme.color.secondary.shadeSecondary,
                 contentDescription = null
             )
             Text(
                 modifier = Modifier.padding(start = 4.dp, end = 8.dp),
-                text = localizedString(R.string.ayat, surahUiState.ayahNumbers),
+                text = localizedString(Res.string.ayat, surahUiState.ayahNumbers),
                 style = Theme.textStyle.label.small,
                 color = Theme.color.secondary.shadeSecondary
             )
@@ -102,7 +104,7 @@ private fun RowScope.SurahInfo(
 }
 
 @Composable
-private fun SurahArabicName(image: Int) {
+private fun SurahArabicName(image: DrawableResource) {
     Icon(
         painter = painterResource(image),
         modifier = Modifier.size(48.dp),
@@ -111,7 +113,6 @@ private fun SurahArabicName(image: Int) {
     )
 }
 
-@SuppressLint("SuspiciousIndentation")
 @Composable
 private fun AyahNumber(number: Int, modifier: Modifier = Modifier) {
     val surahNumber = if (number <= 9) "0${number}" else number.toString()
@@ -121,12 +122,12 @@ private fun AyahNumber(number: Int, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_sura_number),
+            painter = painterResource(Res.drawable.ic_sura_number),
             contentDescription = null,
             tint = Theme.color.secondary.secondary,
         )
         Text(
-            text =surahNumber.toLocalizedDigits(language),
+            text = surahNumber.toLocalizedDigits(language),
             style = Theme.textStyle.label.small,
             color = Theme.color.secondary.secondary
         )

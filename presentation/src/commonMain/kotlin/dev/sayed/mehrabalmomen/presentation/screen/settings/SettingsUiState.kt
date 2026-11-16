@@ -1,7 +1,33 @@
-import dev.sayed.mehrabalmomen.R
+package dev.sayed.mehrabalmomen.presentation.screen.settings
+
 import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
-
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.arabic
+import zadelmomen.presentation.generated.resources.dark
+import zadelmomen.presentation.generated.resources.dubai
+import zadelmomen.presentation.generated.resources.egyptian
+import zadelmomen.presentation.generated.resources.english
+import zadelmomen.presentation.generated.resources.extra_large
+import zadelmomen.presentation.generated.resources.hanafi
+import zadelmomen.presentation.generated.resources.karachi
+import zadelmomen.presentation.generated.resources.kuwait
+import zadelmomen.presentation.generated.resources.large
+import zadelmomen.presentation.generated.resources.light
+import zadelmomen.presentation.generated.resources.medium
+import zadelmomen.presentation.generated.resources.moonsighting_committee
+import zadelmomen.presentation.generated.resources.muslim_world_league
+import zadelmomen.presentation.generated.resources.north_america
+import zadelmomen.presentation.generated.resources.qatar
+import zadelmomen.presentation.generated.resources.shafi
+import zadelmomen.presentation.generated.resources.singapore
+import zadelmomen.presentation.generated.resources.small
+import zadelmomen.presentation.generated.resources.system_default
+import zadelmomen.presentation.generated.resources.tafseer_mokhtasar
+import zadelmomen.presentation.generated.resources.tafseer_moyasser
+import zadelmomen.presentation.generated.resources.umm_al_qura
 
 data class SettingsUiState(
     val sections: List<SettingsSectionUiState> = emptyList(),
@@ -28,27 +54,27 @@ data class SettingsUiState(
     )
 
     data class SettingsItemUiState(
-        val icon: Int,
+        val icon: DrawableResource,
         val title: UiText,
         val description: UiText? = null,
         val action: SettingsAction,
         val value: Boolean? = null
     )
 
-    enum class ThemeState(val resId: Int) {
-        LIGHT(R.string.light),
-        DARK(R.string.dark),
-        SYSTEM(R.string.system_default)
+    enum class ThemeState(val resId: StringResource) {
+        LIGHT(Res.string.light),
+        DARK(Res.string.dark),
+        SYSTEM(Res.string.system_default)
     }
 
-    enum class MadhabState(val resId: Int) {
-        SHAFI(R.string.shafi),
-        HANAFI(R.string.hanafi)
+    enum class MadhabState(val resId: StringResource) {
+        SHAFI(Res.string.shafi),
+        HANAFI(Res.string.hanafi)
     }
 
-    enum class Language(val resId: Int) {
-        ENGLISH(R.string.english),
-        ARABIC(R.string.arabic)
+    enum class Language(val resId: StringResource) {
+        ENGLISH(Res.string.english),
+        ARABIC(Res.string.arabic)
     }
 
     enum class SelectionDialogType {
@@ -70,17 +96,17 @@ data class SettingsUiState(
         val type: SelectionDialogType
     )
 
-    enum class CalculationMethod(val resId: Int) {
-        MUSLIM_WORLD_LEAGUE(R.string.muslim_world_league),
-        EGYPTIAN(R.string.egyptian),
-        KARACHI(R.string.karachi),
-        UMM_AL_QURA(R.string.umm_al_qura),
-        DUBAI(R.string.dubai),
-        QATAR(R.string.qatar),
-        KUWAIT(R.string.kuwait),
-        MOONSIGHTING_COMMITTEE(R.string.moonsighting_committee),
-        SINGAPORE(R.string.singapore),
-        NORTH_AMERICA(R.string.north_america)
+    enum class CalculationMethod(val resId: StringResource) {
+        MUSLIM_WORLD_LEAGUE(Res.string.muslim_world_league),
+        EGYPTIAN(Res.string.egyptian),
+        KARACHI(Res.string.karachi),
+        UMM_AL_QURA(Res.string.umm_al_qura),
+        DUBAI(Res.string.dubai),
+        QATAR(Res.string.qatar),
+        KUWAIT(Res.string.kuwait),
+        MOONSIGHTING_COMMITTEE(Res.string.moonsighting_committee),
+        SINGAPORE(Res.string.singapore),
+        NORTH_AMERICA(Res.string.north_america)
     }
 
     enum class SettingsAction {
@@ -103,23 +129,25 @@ data class SettingsUiState(
         WIDGET
     }
 
-    enum class QuranFontSize(val resId: Int, val sizeSp: Int) {
-        SMALL(R.string.small, 20),
-        MEDIUM(R.string.medium, 24),
-        LARGE(R.string.large, 28),
-        EXTRA_LARGE(R.string.extra_large, 32)
+    enum class QuranFontSize(val resId: StringResource, val sizeSp: Int) {
+        SMALL(Res.string.small, 20),
+        MEDIUM(Res.string.medium, 24),
+        LARGE(Res.string.large, 28),
+        EXTRA_LARGE(Res.string.extra_large, 32)
     }
-    enum class Moazen(val fileName: String,val id: Int) {
-        AZAN_ABED_ALBASET("azan_abed_albaset.mp3",0),
-        AZAN_MAKKAH("azan_makkah.mp3",1),
-        AZAN_MANSOOR_AL_ZAHRANI("azan_mansoor_al_zahrani.mp3",2),
-        AZAN_MISHARY_ALAFASI("azan_mishary_alafasi.mp3",3),
-        AZAN_MOHAMMED_ALMENSHWY("azan_mohammed_almenshawy.mp3",4),
-        AZAN_NASSER_ALQATAMI("azan_nasser_alqatami.mp3",5),
-        AZAN_SUHAIB_KHATBA("azan_suhaib_khatba.mp3",6)
+
+    enum class Moazen(val fileName: String, val id: Int) {
+        AZAN_ABED_ALBASET("azan_abed_albaset.mp3", 0),
+        AZAN_MAKKAH("azan_makkah.mp3", 1),
+        AZAN_MANSOOR_AL_ZAHRANI("azan_mansoor_al_zahrani.mp3", 2),
+        AZAN_MISHARY_ALAFASI("azan_mishary_alafasi.mp3", 3),
+        AZAN_MOHAMMED_ALMENSHWY("azan_mohammed_almenshawy.mp3", 4),
+        AZAN_NASSER_ALQATAMI("azan_nasser_alqatami.mp3", 5),
+        AZAN_SUHAIB_KHATBA("azan_suhaib_khatba.mp3", 6)
     }
-    enum class TafseerType(val resId: Int, val fileName: String) {
-        MOKHTASAR(R.string.tafseer_mokhtasar, "tf_ab_mokhtasar_ar.json"),
-        MOYASSAR(R.string.tafseer_moyasser, "tf_moyasser.json")
+
+    enum class TafseerType(val resId: StringResource, val fileName: String) {
+        MOKHTASAR(Res.string.tafseer_mokhtasar, "tf_ab_mokhtasar_ar.json"),
+        MOYASSAR(Res.string.tafseer_moyasser, "tf_moyasser.json")
     }
 }

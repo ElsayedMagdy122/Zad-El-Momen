@@ -1,7 +1,16 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us
 
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.email_address
+import zadelmomen.presentation.generated.resources.email_value
+import zadelmomen.presentation.generated.resources.facebook_account
+import zadelmomen.presentation.generated.resources.facebook_value
+import zadelmomen.presentation.generated.resources.ic_email_send
+import zadelmomen.presentation.generated.resources.ic_facebook
+import zadelmomen.presentation.generated.resources.ic_youtube
+import zadelmomen.presentation.generated.resources.youtube
+import zadelmomen.presentation.generated.resources.youtube_value
 
 class ContactViewModel :
     BaseViewModel<ContactUsUiState, ContactEffect>(
@@ -9,21 +18,21 @@ class ContactViewModel :
             items = listOf(
                 ContactUsUiState.ContactItemUiState(
                     type = ContactType.EMAIL,
-                    title = R.string.email_address,
-                    description = R.string.email_value,
-                    icon = R.drawable.ic_email_send
+                    title = Res.string.email_address,
+                    description = Res.string.email_value,
+                    icon = Res.drawable.ic_email_send
                 ),
                 ContactUsUiState.ContactItemUiState(
                     type = ContactType.FACEBOOK,
-                    title = R.string.facebook_account,
-                    description = R.string.facebook_value,
-                    icon = R.drawable.ic_facebook
+                    title = Res.string.facebook_account,
+                    description = Res.string.facebook_value,
+                    icon = Res.drawable.ic_facebook
                 ),
                 ContactUsUiState.ContactItemUiState(
                     type = ContactType.YOUTUBE,
-                    title = R.string.youtube,
-                    description = R.string.youtube_value,
-                    icon = R.drawable.ic_youtube
+                    title = Res.string.youtube,
+                    description = Res.string.youtube_value,
+                    icon = Res.drawable.ic_youtube
                 )
             )
         )

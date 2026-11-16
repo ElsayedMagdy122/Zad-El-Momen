@@ -20,13 +20,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_close
+import zadelmomen.presentation.generated.resources.reminder_time
+import zadelmomen.presentation.generated.resources.save
 
 @Composable
 fun TimePickerDialog(
@@ -35,7 +38,7 @@ fun TimePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (hour: Int, minute: Int) -> Unit,
     modifier: Modifier = Modifier,
-    title: String = localizedString(R.string.reminder_time)
+    title: String = localizedString(Res.string.reminder_time)
 ) {
     var selectedHour by remember { mutableIntStateOf(initialHour) }
     var selectedMinute by remember { mutableIntStateOf(initialMinute) }
@@ -55,7 +58,7 @@ fun TimePickerDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_close),
+                    painter = painterResource(Res.drawable.ic_close),
                     contentDescription = null,
                     tint = Theme.color.primary.primary
                 )
@@ -94,7 +97,7 @@ fun TimePickerDialog(
                         ) {
                             onConfirm(selectedHour, selectedMinute)
                         },
-                    text = localizedString(R.string.save),
+                    text = localizedString(Res.string.save),
                     textAlign = TextAlign.End,
                     style = Theme.textStyle.label.medium,
                     color = Theme.color.primary.primary

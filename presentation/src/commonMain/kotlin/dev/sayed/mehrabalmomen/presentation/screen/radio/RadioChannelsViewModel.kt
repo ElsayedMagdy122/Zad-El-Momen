@@ -1,7 +1,6 @@
 package dev.sayed.mehrabalmomen.presentation.screen.radio
 
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.radio.RadioChannel
@@ -18,6 +17,11 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.error
+import zadelmomen.presentation.generated.resources.ic_close_circle
+import zadelmomen.presentation.generated.resources.no_internet_connection
+import dev.sayed.mehrabalmomen.design_system.base.UiText as DesignUiText
 
 class RadioChannelsViewModel(
     private val radioRepository: RadioRepository,
@@ -39,9 +43,9 @@ class RadioChannelsViewModel(
                     sendEffect(
                         RadioChannelsEffect.ShowToast(
                             ToastDetails(
-                                title = UiText.StringResource(R.string.error),
-                                message = UiText.StringResource(R.string.no_internet_connection),
-                                icon = R.drawable.ic_close_circle
+                                title = DesignUiText.ResString(Res.string.error),
+                                message = DesignUiText.ResString(Res.string.no_internet_connection),
+                                icon = Res.drawable.ic_close_circle
                             )
                         )
                     )

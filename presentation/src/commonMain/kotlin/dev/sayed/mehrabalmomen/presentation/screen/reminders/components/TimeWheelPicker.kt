@@ -30,23 +30,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.am
+import zadelmomen.presentation.generated.resources.hour
+import zadelmomen.presentation.generated.resources.minute
+import zadelmomen.presentation.generated.resources.period
+import zadelmomen.presentation.generated.resources.pm
 import kotlin.math.abs
 
 private const val WHEEL_REPEAT_MULTIPLIER = 1000
 private val WHEEL_COLUMN_WIDTH = 82.dp
 private val WHEEL_ITEM_HEIGHT = 34.dp
-private val WHEEL_TOTAL_HEIGHT = 238.dp // 7 visible items (3 above, 1 selected, 3 below)
-private val WHEEL_VERTICAL_PADDING = 102.dp // 34.dp * 3 items
+private val WHEEL_TOTAL_HEIGHT = 238.dp
+private val WHEEL_VERTICAL_PADDING = 102.dp
 
 @Composable
 fun TimeWheelPicker(
@@ -59,10 +63,10 @@ fun TimeWheelPicker(
 
     val hours = (1..12).toList()
     val minutes = (0..59).toList()
-    val am = localizedString(R.string.am)
-    val pm = localizedString(R.string.pm)
-    val amPmItems = remember(locale, am, pm) {
-        listOf(am, pm)
+    val amStr = localizedString(Res.string.am)
+    val pmStr = localizedString(Res.string.pm)
+    val amPmItems = remember(locale, amStr, pmStr) {
+        listOf(amStr, pmStr)
     }
 
     val initialAmPm = if (initialHour >= 12) 1 else 0
@@ -129,14 +133,13 @@ fun TimeWheelPicker(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Headers matching the Figma/design layout: الساعة, الدقيقة, الفترة
         Row(
             modifier = Modifier.padding(bottom = 12.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = localizedString(R.string.hour),
+                text = localizedString(Res.string.hour),
                 modifier = Modifier.width(WHEEL_COLUMN_WIDTH),
                 textAlign = TextAlign.Center,
                 style = Theme.textStyle.label.medium,
@@ -144,7 +147,7 @@ fun TimeWheelPicker(
             )
 
             Text(
-                text = localizedString(R.string.minute),
+                text = localizedString(Res.string.minute),
                 modifier = Modifier.width(WHEEL_COLUMN_WIDTH),
                 textAlign = TextAlign.Center,
                 style = Theme.textStyle.label.medium,
@@ -152,7 +155,7 @@ fun TimeWheelPicker(
             )
 
             Text(
-                text = localizedString(R.string.period),
+                text = localizedString(Res.string.period),
                 modifier = Modifier.width(WHEEL_COLUMN_WIDTH),
                 textAlign = TextAlign.Center,
                 style = Theme.textStyle.label.medium,
@@ -166,7 +169,6 @@ fun TimeWheelPicker(
                 .widthIn(min = 246.dp, max = 448.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Selected item highlight container
             Box(
                 modifier = Modifier
                     .width(WHEEL_COLUMN_WIDTH * 3)
@@ -183,7 +185,7 @@ fun TimeWheelPicker(
             ) {
                 WheelColumn(
                     items = hours.map {
-                        "%02d".format(it).toLocalizedDigits(locale)
+                        it.toString().padStart(2, '0').toLocalizedDigits(locale)
                     },
                     state = hourState,
                     width = WHEEL_COLUMN_WIDTH,
@@ -192,7 +194,7 @@ fun TimeWheelPicker(
 
                 WheelColumn(
                     items = minutes.map {
-                        "%02d".format(it).toLocalizedDigits(locale)
+                        it.toString().padStart(2, '0').toLocalizedDigits(locale)
                     },
                     state = minuteState,
                     width = WHEEL_COLUMN_WIDTH,
@@ -301,14 +303,4 @@ private fun WheelItem(
             modifier = Modifier.alpha(alpha)
         )
     }
-}
-
-@Preview(showBackground = true, heightDp = 300)
-@Composable
-fun TimeWheelPickerPreview() {
-    TimeWheelPicker(
-        initialHour = 10,
-        initialMinute = 45,
-        onTimeChanged = { _, _ -> }
-    )
 }

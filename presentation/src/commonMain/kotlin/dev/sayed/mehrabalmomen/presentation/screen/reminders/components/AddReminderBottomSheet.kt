@@ -19,10 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppTextField
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.Chip
@@ -33,7 +31,10 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizeAmPm
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
-import java.util.Locale
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_reminder
+import zadelmomen.presentation.generated.resources.save
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,13 +63,9 @@ fun AddReminderBottomSheet(
         else -> hour
     }
     val amPm = if (hour >= 12) "PM" else "AM"
-    val formattedTime = String.format(
-        Locale.ENGLISH,
-        "%02d:%02d %s",
-        hour12,
-        minute,
-        amPm
-    ).toLocalizedDigits(language).localizeAmPm(language)
+    val formattedTime = "${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} $amPm"
+        .toLocalizedDigits(language)
+        .localizeAmPm(language)
 
     BottomSheetDs(
         onDismiss = onDismiss,
@@ -90,7 +87,6 @@ fun AddReminderBottomSheet(
             )
 
             if (!isPrePrayerMode) {
-                // Title input matching design: "اسم التذكير"
                 AppTextField(
                     value = title,
                     hint = "أذكار الصباح",
@@ -102,7 +98,6 @@ fun AddReminderBottomSheet(
                 )
             }
 
-            // Description input matching design: "نص التنبيه"
             AppTextField(
                 value = description,
                 hint = if (isPrePrayerMode) "اقترب موعد الأذان، استعد للوضوء والصلاة" else "لا تنسَ أذكار الصباح والتحصين",
@@ -114,7 +109,6 @@ fun AddReminderBottomSheet(
             )
 
             if (isPrePrayerMode) {
-                // Duration selection for pre-prayer: 5, 10, 15, 20 minutes
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = "التنبيه قبل الأذان بـ",
@@ -144,7 +138,6 @@ fun AddReminderBottomSheet(
                     }
                 }
             } else {
-                // Time Selector Card
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,7 +160,7 @@ fun AddReminderBottomSheet(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_reminder),
+                                painter = painterResource(Res.drawable.ic_reminder),
                                 contentDescription = null,
                                 tint = Theme.color.primary.primary,
                                 modifier = Modifier.size(18.dp)
@@ -188,7 +181,6 @@ fun AddReminderBottomSheet(
                     )
                 }
 
-                // Recurrence Chips
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
                         text = "التكرار",
@@ -221,7 +213,7 @@ fun AddReminderBottomSheet(
             Spacer(modifier = Modifier.height(8.dp))
 
             PrimaryButton(
-                text = localizedString(R.string.save),
+                text = localizedString(Res.string.save),
                 onClick = onSaveClick,
                 isEnabled = if (isPrePrayerMode) description.isNotBlank() else title.isNotBlank(),
                 modifier = Modifier.fillMaxWidth()

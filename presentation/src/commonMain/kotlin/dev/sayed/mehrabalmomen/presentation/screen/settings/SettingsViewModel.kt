@@ -1,16 +1,10 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
-import android.app.Activity
-import android.content.Context
-import android.media.MediaPlayer
 import androidx.lifecycle.viewModelScope
-import dev.sayed.mehrabalmomen.BuildConfig
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.util.BillingManager
-import dev.sayed.mehrabalmomen.domain.billing.BillingEvent
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
+import dev.sayed.mehrabalmomen.domain.billing.BillingEvent
+import dev.sayed.mehrabalmomen.domain.billing.BillingService
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
@@ -22,31 +16,105 @@ import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import org.jetbrains.compose.resources.StringResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.al_tafseer
+import zadelmomen.presentation.generated.resources.calculation_method
+import zadelmomen.presentation.generated.resources.calculation_method_description
+import zadelmomen.presentation.generated.resources.choose_calculation_method
+import zadelmomen.presentation.generated.resources.choose_font_size
+import zadelmomen.presentation.generated.resources.choose_language
+import zadelmomen.presentation.generated.resources.choose_madhab
+import zadelmomen.presentation.generated.resources.choose_moazen
+import zadelmomen.presentation.generated.resources.choose_tafseer
+import zadelmomen.presentation.generated.resources.choose_theme
+import zadelmomen.presentation.generated.resources.companion_mode
+import zadelmomen.presentation.generated.resources.contact_us
+import zadelmomen.presentation.generated.resources.faq
+import zadelmomen.presentation.generated.resources.font_size_description
+import zadelmomen.presentation.generated.resources.general
+import zadelmomen.presentation.generated.resources.growth
+import zadelmomen.presentation.generated.resources.help_feedback
+import zadelmomen.presentation.generated.resources.ic_alarm_clock
+import zadelmomen.presentation.generated.resources.ic_bug
+import zadelmomen.presentation.generated.resources.ic_buy_coffee
+import zadelmomen.presentation.generated.resources.ic_calculation_method
+import zadelmomen.presentation.generated.resources.ic_check_circle
+import zadelmomen.presentation.generated.resources.ic_contact_us
+import zadelmomen.presentation.generated.resources.ic_help
+import zadelmomen.presentation.generated.resources.ic_language
+import zadelmomen.presentation.generated.resources.ic_location
+import zadelmomen.presentation.generated.resources.ic_moazen
+import zadelmomen.presentation.generated.resources.ic_mosque_02
+import zadelmomen.presentation.generated.resources.ic_prayer_times_selected
+import zadelmomen.presentation.generated.resources.ic_privacy
+import zadelmomen.presentation.generated.resources.ic_rafeek
+import zadelmomen.presentation.generated.resources.ic_star_rate
+import zadelmomen.presentation.generated.resources.ic_tafseer
+import zadelmomen.presentation.generated.resources.ic_text_font
+import zadelmomen.presentation.generated.resources.ic_theme
+import zadelmomen.presentation.generated.resources.language
+import zadelmomen.presentation.generated.resources.language_description
+import zadelmomen.presentation.generated.resources.legal
+import zadelmomen.presentation.generated.resources.location
+import zadelmomen.presentation.generated.resources.madhab
+import zadelmomen.presentation.generated.resources.madhab_description
+import zadelmomen.presentation.generated.resources.moazen
+import zadelmomen.presentation.generated.resources.moazen_description
+import zadelmomen.presentation.generated.resources.mozan_abed_albaset
+import zadelmomen.presentation.generated.resources.mozan_makkah
+import zadelmomen.presentation.generated.resources.mozan_mansoor_alzahrani
+import zadelmomen.presentation.generated.resources.mozan_mishary_alafasi
+import zadelmomen.presentation.generated.resources.mozan_mohammed_almenshawy
+import zadelmomen.presentation.generated.resources.mozan_nasser_alqatami
+import zadelmomen.presentation.generated.resources.mozan_suhaib_khatba
+import zadelmomen.presentation.generated.resources.notifications
+import zadelmomen.presentation.generated.resources.prayer
+import zadelmomen.presentation.generated.resources.prayer_times_widget
+import zadelmomen.presentation.generated.resources.prayer_widget_desc
+import zadelmomen.presentation.generated.resources.privacy_and_policy
+import zadelmomen.presentation.generated.resources.quran
+import zadelmomen.presentation.generated.resources.rate_app
+import zadelmomen.presentation.generated.resources.success
+import zadelmomen.presentation.generated.resources.support
+import zadelmomen.presentation.generated.resources.support_1
+import zadelmomen.presentation.generated.resources.support_2
+import zadelmomen.presentation.generated.resources.support_3
+import zadelmomen.presentation.generated.resources.support_4
+import zadelmomen.presentation.generated.resources.support_5
+import zadelmomen.presentation.generated.resources.support_description
+import zadelmomen.presentation.generated.resources.support_developer
+import zadelmomen.presentation.generated.resources.tafseer_description
+import zadelmomen.presentation.generated.resources.tafseer_mokhtasar
+import zadelmomen.presentation.generated.resources.tafseer_moyasser
+import zadelmomen.presentation.generated.resources.text_font
+import zadelmomen.presentation.generated.resources.thank_you_for_support
+import zadelmomen.presentation.generated.resources.theme
+import zadelmomen.presentation.generated.resources.theme_description
+import dev.sayed.mehrabalmomen.design_system.base.UiText as DesignUiText
+
+private const val SUPPORT_1 = "support_1"
+private const val SUPPORT_5 = "support_5"
+private const val SUPPORT_10 = "support_10"
+private const val SUPPORT_25 = "support_25"
+private const val SUPPORT_100 = "support_100"
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
-    private val billingManager: BillingManager,
+    private val billingService: BillingService,
     private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
     private val supportProductIds = listOf(
-        BuildConfig.SUPPORT_1,
-        BuildConfig.SUPPORT_5,
-        BuildConfig.SUPPORT_10,
-        BuildConfig.SUPPORT_25,
-        BuildConfig.SUPPORT_100
-    )
-    private val moazenResMap = mapOf(
-        SettingsUiState.Moazen.AZAN_ABED_ALBASET to R.raw.azan_abed_albaset,
-        SettingsUiState.Moazen.AZAN_MAKKAH to R.raw.azan_makkah,
-        SettingsUiState.Moazen.AZAN_MANSOOR_AL_ZAHRANI to R.raw.azan_mansoor_al_zahrani,
-        SettingsUiState.Moazen.AZAN_MISHARY_ALAFASI to R.raw.azan_mishary_alafasi,
-        SettingsUiState.Moazen.AZAN_MOHAMMED_ALMENSHWY to R.raw.azan_mohammed_almenshawy,
-        SettingsUiState.Moazen.AZAN_NASSER_ALQATAMI to R.raw.azan_nasser_alqatami,
-        SettingsUiState.Moazen.AZAN_SUHAIB_KHATBA to R.raw.azan_suhaib_khatba
+        SUPPORT_1,
+        SUPPORT_5,
+        SUPPORT_10,
+        SUPPORT_25,
+        SUPPORT_100
     )
 
     init {
@@ -58,43 +126,9 @@ class SettingsViewModel(
         observeCompanionEnabled()
     }
 
-    private var previewPlayer: MediaPlayer? = null
-
-
-    fun playPreview(index: Int, context: Context) {
-        stopPreview()
-
-        val moazen = SettingsUiState.Moazen.entries.getOrNull(index)
-        if (moazen == null) {
-            return
-        }
-
-        val resId = moazenResMap[moazen]
-        if (resId == null) {
-            return
-        }
-
-        try {
-            previewPlayer = MediaPlayer.create(context.applicationContext, resId)
-            previewPlayer?.setOnCompletionListener { stopPreview() }
-            previewPlayer?.start()
-        } catch (e: Exception) {
-        }
-    }
-
-    fun stopPreview() {
-        try {
-            previewPlayer?.stop()
-            previewPlayer?.release()
-        } catch (_: Exception) {
-        }
-        previewPlayer = null
-    }
-
-
     private fun observeBillingData() {
         viewModelScope.launch {
-            billingManager.products.collect { products ->
+            billingService.products.collect { products ->
                 val available = products.isNotEmpty()
                 updateState {
                     it.copy(isSupportAvailable = available)
@@ -103,18 +137,18 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch {
-            billingManager.events.collect { event ->
+            billingService.events.collect { event ->
                 when (event) {
                     BillingEvent.Success -> {
                         viewModelScope.launch {
-                            settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, System.currentTimeMillis())
+                            settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, 0L)
                         }
                         sendEffect(
                             SettingsEffect.ShowToast(
                                 ToastDetails(
-                                    title = UiText.StringResource(R.string.success),
-                                    message = UiText.StringResource(R.string.thank_you_for_support),
-                                    icon = R.drawable.ic_check_circle
+                                    title = DesignUiText.ResString(Res.string.success),
+                                    message = DesignUiText.ResString(Res.string.thank_you_for_support),
+                                    icon = Res.drawable.ic_check_circle
                                 )
                             )
                         )
@@ -126,8 +160,8 @@ class SettingsViewModel(
         }
     }
 
-    fun launchDonationFlow(activity: Activity, productId: String) {
-        billingManager.donate(activity, productId)
+    fun launchDonationFlow(activity: Any, productId: String) {
+        billingService.donate(activity, productId)
     }
 
     private fun observeSettings() {
@@ -147,9 +181,6 @@ class SettingsViewModel(
                 }
                 rebuildSections()
                 prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
-                org.koin.core.context.GlobalContext.getOrNull()?.get<Context>()?.let { appContext ->
-                    dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider.updateAllWidgets(appContext)
-                }
             }
         }
     }
@@ -206,58 +237,57 @@ class SettingsViewModel(
 
         val supportItems = listOf(
             SettingsUiState.SettingsItemUiState(
-                icon = R.drawable.ic_bug,
-                title = UiText.StringResource(R.string.help_feedback),
+                icon = Res.drawable.ic_bug,
+                title = UiText.StringRes(Res.string.help_feedback),
                 action = SettingsUiState.SettingsAction.HELP_FEEDBACK
             ),
             SettingsUiState.SettingsItemUiState(
-                icon = R.drawable.ic_contact_us,
-                title = UiText.StringResource(R.string.contact_us),
+                icon = Res.drawable.ic_contact_us,
+                title = UiText.StringRes(Res.string.contact_us),
                 action = SettingsUiState.SettingsAction.CONTACT_US
             ),
             SettingsUiState.SettingsItemUiState(
-                icon = R.drawable.ic_help,
-                title = UiText.StringResource(R.string.faq),
+                icon = Res.drawable.ic_help,
+                title = UiText.StringRes(Res.string.faq),
                 action = SettingsUiState.SettingsAction.FAQ
             ),
             SettingsUiState.SettingsItemUiState(
-                icon = R.drawable.ic_buy_coffee,
-                title = UiText.StringResource(R.string.support_developer),
+                icon = Res.drawable.ic_buy_coffee,
+                title = UiText.StringRes(Res.string.support_developer),
                 action = SettingsUiState.SettingsAction.ABOUT
             )
         )
 
         val sections = listOf(
-
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.general),
+                title = UiText.StringRes(Res.string.general),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_language,
-                        title = UiText.StringResource(R.string.language),
-                        description = UiText.StringResource(state.selectedLanguage.resId),
+                        icon = Res.drawable.ic_language,
+                        title = UiText.StringRes(Res.string.language),
+                        description = UiText.StringRes(state.selectedLanguage.resId),
                         action = SettingsUiState.SettingsAction.LANGUAGE
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_theme,
-                        title = UiText.StringResource(R.string.theme),
-                        description = UiText.StringResource(state.selectedTheme.resId),
+                        icon = Res.drawable.ic_theme,
+                        title = UiText.StringRes(Res.string.theme),
+                        description = UiText.StringRes(state.selectedTheme.resId),
                         action = SettingsUiState.SettingsAction.THEME
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_location,
-                        title = UiText.StringResource(R.string.location),
+                        icon = Res.drawable.ic_location,
+                        title = UiText.StringRes(Res.string.location),
                         action = SettingsUiState.SettingsAction.LOCATION,
                         description = UiText.DynamicString(state.location.country.plus(", ").plus(state.location.city))
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_alarm_clock,
-                        title = UiText.StringResource(R.string.notifications),
+                        icon = Res.drawable.ic_alarm_clock,
+                        title = UiText.StringRes(Res.string.notifications),
                         action = SettingsUiState.SettingsAction.NOTIFICATIONS,
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_rafeek,
-                        title = UiText.StringResource(R.string.companion_mode),
+                        icon = Res.drawable.ic_rafeek,
+                        title = UiText.StringRes(Res.string.companion_mode),
                         action = SettingsUiState.SettingsAction.COMPANION,
                         value = state.isCompanionEnabled
                     )
@@ -265,47 +295,47 @@ class SettingsViewModel(
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.prayer),
+                title = UiText.StringRes(Res.string.prayer),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_calculation_method,
-                        title = UiText.StringResource(R.string.calculation_method),
-                        description = UiText.StringResource(state.selectedCalculationMethod.resId),
+                        icon = Res.drawable.ic_calculation_method,
+                        title = UiText.StringRes(Res.string.calculation_method),
+                        description = UiText.StringRes(state.selectedCalculationMethod.resId),
                         action = SettingsUiState.SettingsAction.CALCULATION_METHOD
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_mosque_02,
-                        title = UiText.StringResource(R.string.madhab),
-                        description = UiText.StringResource(state.selectedMadhab.resId),
+                        icon = Res.drawable.ic_mosque_02,
+                        title = UiText.StringRes(Res.string.madhab),
+                        description = UiText.StringRes(state.selectedMadhab.resId),
                         action = SettingsUiState.SettingsAction.MADHAB
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_moazen,
-                        title = UiText.StringResource(R.string.moazen),
+                        icon = Res.drawable.ic_moazen,
+                        title = UiText.StringRes(Res.string.moazen),
                         description = getMoazenName(state.selectedMoazen),
                         action = SettingsUiState.SettingsAction.MOAZEN
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_prayer_times_selected,
-                        title = UiText.StringResource(R.string.prayer_times_widget),
-                        description = UiText.StringResource(R.string.prayer_widget_desc),
+                        icon = Res.drawable.ic_prayer_times_selected,
+                        title = UiText.StringRes(Res.string.prayer_times_widget),
+                        description = UiText.StringRes(Res.string.prayer_widget_desc),
                         action = SettingsUiState.SettingsAction.WIDGET
                     )
                 )
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.quran),
+                title = UiText.StringRes(Res.string.quran),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_text_font,
-                        title = UiText.StringResource(R.string.text_font),
-                        description = UiText.StringResource(state.selectedFontSize.resId),
+                        icon = Res.drawable.ic_text_font,
+                        title = UiText.StringRes(Res.string.text_font),
+                        description = UiText.StringRes(state.selectedFontSize.resId),
                         action = SettingsUiState.SettingsAction.TEXT_FONT
                     ),
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_tafseer,
-                        title = UiText.StringResource(R.string.al_tafseer),
+                        icon = Res.drawable.ic_tafseer,
+                        title = UiText.StringRes(Res.string.al_tafseer),
                         description = getTafseerName(state.selectedTafseer),
                         action = SettingsUiState.SettingsAction.TAFSEER
                     )
@@ -313,27 +343,27 @@ class SettingsViewModel(
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.support),
+                title = UiText.StringRes(Res.string.support),
                 items = supportItems
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.legal),
+                title = UiText.StringRes(Res.string.legal),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_privacy,
-                        title = UiText.StringResource(R.string.privacy_and_policy),
+                        icon = Res.drawable.ic_privacy,
+                        title = UiText.StringRes(Res.string.privacy_and_policy),
                         action = SettingsUiState.SettingsAction.PRIVACY_POLICY
                     )
                 )
             ),
 
             SettingsUiState.SettingsSectionUiState(
-                title = UiText.StringResource(R.string.growth),
+                title = UiText.StringRes(Res.string.growth),
                 items = listOf(
                     SettingsUiState.SettingsItemUiState(
-                        icon = R.drawable.ic_star_rate,
-                        title = UiText.StringResource(R.string.rate_app),
+                        icon = Res.drawable.ic_star_rate,
+                        title = UiText.StringRes(Res.string.rate_app),
                         action = SettingsUiState.SettingsAction.RATE_APP
                     )
                 )
@@ -351,12 +381,25 @@ class SettingsViewModel(
         SettingsUiState.SettingsAction.TEXT_FONT to { openFontSizeDialog() }
     )
 
+    private fun getMoazenName(moazen: SettingsUiState.Moazen): UiText {
+        val resId = when (moazen) {
+            SettingsUiState.Moazen.AZAN_ABED_ALBASET -> Res.string.mozan_abed_albaset
+            SettingsUiState.Moazen.AZAN_MAKKAH -> Res.string.mozan_makkah
+            SettingsUiState.Moazen.AZAN_MANSOOR_AL_ZAHRANI -> Res.string.mozan_mansoor_alzahrani
+            SettingsUiState.Moazen.AZAN_MISHARY_ALAFASI -> Res.string.mozan_mishary_alafasi
+            SettingsUiState.Moazen.AZAN_MOHAMMED_ALMENSHWY -> Res.string.mozan_mohammed_almenshawy
+            SettingsUiState.Moazen.AZAN_NASSER_ALQATAMI -> Res.string.mozan_nasser_alqatami
+            SettingsUiState.Moazen.AZAN_SUHAIB_KHATBA -> Res.string.mozan_suhaib_khatba
+        }
+        return UiText.StringRes(resId)
+    }
+
     private fun getTafseerName(type: SettingsUiState.TafseerType): UiText {
         val resId = when (type) {
-            SettingsUiState.TafseerType.MOKHTASAR -> R.string.tafseer_mokhtasar
-            SettingsUiState.TafseerType.MOYASSAR -> R.string.tafseer_moyasser
+            SettingsUiState.TafseerType.MOKHTASAR -> Res.string.tafseer_mokhtasar
+            SettingsUiState.TafseerType.MOYASSAR -> Res.string.tafseer_moyasser
         }
-        return UiText.StringResource(resId)
+        return UiText.StringRes(resId)
     }
 
     private fun openTafseerDialog() {
@@ -364,10 +407,10 @@ class SettingsViewModel(
 
         openDialog(
             type = SettingsUiState.SelectionDialogType.TAFSEER,
-            title = UiText.StringResource(R.string.choose_tafseer),
-            description = UiText.StringResource(R.string.tafseer_description),
+            title = UiText.StringRes(Res.string.choose_tafseer),
+            description = UiText.StringRes(Res.string.tafseer_description),
             options = SettingsUiState.TafseerType.entries.map {
-                SelectionItem(UiText.StringResource(it.resId))
+                SelectionItem(UiText.StringRes(it.resId))
             },
             selectedIndex = SettingsUiState.TafseerType.entries.indexOf(state.selectedTafseer)
         )
@@ -378,10 +421,10 @@ class SettingsViewModel(
 
         openDialog(
             type = SettingsUiState.SelectionDialogType.FONT_SIZE,
-            title = UiText.StringResource(R.string.choose_font_size),
-            description = UiText.StringResource(R.string.font_size_description),
+            title = UiText.StringRes(Res.string.choose_font_size),
+            description = UiText.StringRes(Res.string.font_size_description),
             options = SettingsUiState.QuranFontSize.entries.map {
-                SelectionItem(UiText.StringResource(it.resId))
+                SelectionItem(UiText.StringRes(it.resId))
             },
             selectedIndex = SettingsUiState.QuranFontSize.entries.indexOf(state.selectedFontSize)
         )
@@ -391,9 +434,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.LANGUAGE,
-            title = UiText.StringResource(R.string.choose_language),
-            description = UiText.StringResource(R.string.language_description),
-            options = SettingsUiState.Language.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
+            title = UiText.StringRes(Res.string.choose_language),
+            description = UiText.StringRes(Res.string.language_description),
+            options = SettingsUiState.Language.entries.map { SelectionItem(UiText.StringRes(it.resId)) },
             selectedIndex = SettingsUiState.Language.entries.indexOf(state.selectedLanguage)
         )
     }
@@ -402,9 +445,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.THEME,
-            title = UiText.StringResource(R.string.choose_theme),
-            description = UiText.StringResource(R.string.theme_description),
-            options = SettingsUiState.ThemeState.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
+            title = UiText.StringRes(Res.string.choose_theme),
+            description = UiText.StringRes(Res.string.theme_description),
+            options = SettingsUiState.ThemeState.entries.map { SelectionItem(UiText.StringRes(it.resId)) },
             selectedIndex = SettingsUiState.ThemeState.entries.indexOf(state.selectedTheme)
         )
     }
@@ -413,9 +456,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.MADHAB,
-            title = UiText.StringResource(R.string.choose_madhab),
-            description = UiText.StringResource(R.string.madhab_description),
-            options = SettingsUiState.MadhabState.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
+            title = UiText.StringRes(Res.string.choose_madhab),
+            description = UiText.StringRes(Res.string.madhab_description),
+            options = SettingsUiState.MadhabState.entries.map { SelectionItem(UiText.StringRes(it.resId)) },
             selectedIndex = SettingsUiState.MadhabState.entries.indexOf(state.selectedMadhab)
         )
     }
@@ -424,9 +467,9 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.CALCULATION_METHOD,
-            title = UiText.StringResource(R.string.choose_calculation_method),
-            description = UiText.StringResource(R.string.calculation_method_description),
-            options = SettingsUiState.CalculationMethod.entries.map { SelectionItem(UiText.StringResource(it.resId)) },
+            title = UiText.StringRes(Res.string.choose_calculation_method),
+            description = UiText.StringRes(Res.string.calculation_method_description),
+            options = SettingsUiState.CalculationMethod.entries.map { SelectionItem(UiText.StringRes(it.resId)) },
             selectedIndex = SettingsUiState.CalculationMethod.entries.indexOf(state.selectedCalculationMethod)
         )
     }
@@ -474,18 +517,18 @@ class SettingsViewModel(
         },
         SettingsUiState.SelectionDialogType.SUPPORT to { index ->
             val productId = when (index) {
-                0 -> BuildConfig.SUPPORT_1
-                1 -> BuildConfig.SUPPORT_5
-                2 -> BuildConfig.SUPPORT_10
-                3 -> BuildConfig.SUPPORT_25
-                4 -> BuildConfig.SUPPORT_100
+                0 -> SUPPORT_1
+                1 -> SUPPORT_5
+                2 -> SUPPORT_10
+                3 -> SUPPORT_25
+                4 -> SUPPORT_100
                 else -> ""
             }
             sendEffect(SettingsEffect.LaunchDonation(productId))
         },
         SettingsUiState.SelectionDialogType.FONT_SIZE to { index ->
             val selected = SettingsUiState.QuranFontSize.entries[index]
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.Default) {
                 settingsRepository.saveQuranFontSize(selected.sizeSp)
                 updateState { it.copy(selectedFontSize = selected) }
                 rebuildSections()
@@ -500,15 +543,11 @@ class SettingsViewModel(
             rebuildSections()
         },
         SettingsUiState.SelectionDialogType.TAFSEER to { index ->
-
             val selected = SettingsUiState.TafseerType.entries[index]
-
             updateState { it.copy(selectedTafseer = selected) }
-
             viewModelScope.launch {
                 settingsRepository.saveTafseer(selected.fileName)
             }
-
         }
     )
 
@@ -564,12 +603,11 @@ class SettingsViewModel(
         val state = screenState.value
         openDialog(
             type = SettingsUiState.SelectionDialogType.MOAZEN,
-            title = UiText.StringResource(R.string.choose_moazen),
-            description = UiText.StringResource(R.string.moazen_description),
+            title = UiText.StringRes(Res.string.choose_moazen),
+            description = UiText.StringRes(Res.string.moazen_description),
             options = SettingsUiState.Moazen.entries.map { moazen ->
                 SelectionItem(
-                    text = getMoazenName(moazen),
-                    resId = moazenResMap[moazen]
+                    text = getMoazenName(moazen)
                 )
             },
             selectedIndex = SettingsUiState.Moazen.entries.indexOf(state.selectedMoazen)
@@ -577,33 +615,32 @@ class SettingsViewModel(
     }
 
     private fun showSupportBottomSheet() {
-        val products = billingManager.products.value
+        val products = billingService.products.value
         val options = supportProductIds.map { id ->
             val donationProduct = products.find { it.id == id }
             val price = donationProduct?.price ?: "N/A"
             SelectionItem(
                 description = price,
-                text = UiText.StringResource(getSupportName(id))
+                text = UiText.StringRes(getSupportName(id))
             )
         }
         openDialog(
             type = SettingsUiState.SelectionDialogType.SUPPORT,
-            title = UiText.StringResource(R.string.support_developer),
-            description = UiText.StringResource(R.string.support_description),
+            title = UiText.StringRes(Res.string.support_developer),
+            description = UiText.StringRes(Res.string.support_description),
             options = options,
             selectedIndex = -1
         )
-
     }
 
-    private fun getSupportName(id: String): Int {
+    private fun getSupportName(id: String): StringResource {
         return when (id) {
-            BuildConfig.SUPPORT_1 -> R.string.support_1
-            BuildConfig.SUPPORT_5 -> R.string.support_2
-            BuildConfig.SUPPORT_10 -> R.string.support_3
-            BuildConfig.SUPPORT_25 -> R.string.support_4
-            BuildConfig.SUPPORT_100 -> R.string.support_5
-            else -> 0
+            SUPPORT_1 -> Res.string.support_1
+            SUPPORT_5 -> Res.string.support_2
+            SUPPORT_10 -> Res.string.support_3
+            SUPPORT_25 -> Res.string.support_4
+            SUPPORT_100 -> Res.string.support_5
+            else -> Res.string.support_developer
         }
     }
 
@@ -618,12 +655,11 @@ class SettingsViewModel(
         val dialog = screenState.value.dialog
         if (dialog?.type == SettingsUiState.SelectionDialogType.SUPPORT) {
             viewModelScope.launch {
-                settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, System.currentTimeMillis())
+                settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, 0L)
             }
         }
         updateState { it.copy(dialog = null) }
     }
-
 
     override fun onLocationClick() {
         sendEffect(SettingsEffect.NavigateToLocation)

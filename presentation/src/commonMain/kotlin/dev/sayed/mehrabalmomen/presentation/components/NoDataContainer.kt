@@ -14,34 +14,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.no_data_yet
+import zadelmomen.presentation.generated.resources.no_downloaded_reciters_for_this_surah
+import zadelmomen.presentation.generated.resources.start_download_now
 
 @Composable
-fun NoDataContainer(onDownloadNow: () -> Unit,modifier: Modifier = Modifier) {
-
+fun NoDataContainer(onDownloadNow: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState(), overscrollEffect = null)
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Image(
             modifier = Modifier.size(height = 100.dp, width = 120.dp),
-            painter = painterResource(R.drawable.no_data_yet),
+            painter = painterResource(Res.drawable.no_data_yet),
             contentDescription = null,
         )
         Text(
             modifier = Modifier.padding(top = 12.dp, bottom = 2.dp),
-            text = localizedString(R.string.no_downloaded_reciters_for_this_surah),
+            text = stringResource(Res.string.no_downloaded_reciters_for_this_surah),
             color = Theme.color.primary.shadePrimary,
             style = Theme.textStyle.title.small
         )
@@ -49,23 +49,8 @@ fun NoDataContainer(onDownloadNow: () -> Unit,modifier: Modifier = Modifier) {
             modifier = Modifier
                 .padding(top = 12.dp)
                 .widthIn(min = 320.dp, max = 400.dp),
-            text = localizedString(R.string.start_download_now),
+            text = stringResource(Res.string.start_download_now),
             onClick = onDownloadNow
         )
-    }
-
-}
-
-@Preview
-@Composable
-private fun NoDataContainerPreview() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Theme.color.surfaces.surface),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        NoDataContainer({})
     }
 }

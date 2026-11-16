@@ -18,11 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
@@ -34,7 +32,12 @@ import dev.sayed.mehrabalmomen.presentation.navigation.Route.SurahAyatScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.components.SurahGrid
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
-import org.koin.androidx.compose.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_all_bookmark
+import zadelmomen.presentation.generated.resources.ic_search
+import zadelmomen.presentation.generated.resources.quran
 
 @Composable
 fun SurahListScreen(
@@ -91,15 +94,15 @@ private fun SurahListContent(
         QuranAppBar(
             onBackClick = onBack,
             titleColor = Theme.color.primary.shadePrimary,
-            title = localizedString(R.string.quran), actions = listOf(
+            title = localizedString(Res.string.quran), actions = listOf(
                 AppBarAction(
-                    icon = painterResource(R.drawable.ic_search),
+                    icon = painterResource(Res.drawable.ic_search),
                     onClick = {
                         listener.onSearchClick()
                     },
                 ),
                 AppBarAction(
-                    icon = painterResource(R.drawable.ic_all_bookmark),
+                    icon = painterResource(Res.drawable.ic_all_bookmark),
                     onClick = { listener.onBookmarksClick() },
                 )
             )
@@ -107,7 +110,6 @@ private fun SurahListContent(
         AnimatedContent(
             targetState = state.isLoading,
             transitionSpec = {
-
                 fadeIn(animationSpec = tween(400)) + scaleIn(initialScale = 0.92f) togetherWith
                         fadeOut(animationSpec = tween(300))
             },

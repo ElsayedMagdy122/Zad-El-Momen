@@ -1,21 +1,27 @@
 package dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList
 
-import dev.sayed.mehrabalmomen.R
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.madani
+import zadelmomen.presentation.generated.resources.mekki
 
 data class SurahListUiState(
     val surahList: List<SurahUiState> = emptyList(),
     val isLoading: Boolean = true
 )
+
 data class SurahUiState(
-    val id:Int,
+    val id: Int,
     val name: String,
     val nameArabic: String,
     val nameEnglish: String,
     val ayahNumbers: Int,
     val surahType: SurahType,
-    val surahImage: Int
+    val surahImage: DrawableResource
 )
-enum class SurahType(val text:Int) {
-    MAKKI(R.string.mekki),
-    MADANI(R.string.madani)
+
+enum class SurahType(val text: StringResource) {
+    MAKKI(Res.string.mekki),
+    MADANI(Res.string.madani)
 }

@@ -1,15 +1,16 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us
 
-import dev.sayed.mehrabalmomen.R
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 data class ContactUsUiState(
     val items: List<ContactItemUiState> = emptyList()
 ) {
     data class ContactItemUiState(
         val type: ContactType,
-        val title: Int,
-        val description: Int,
-        val icon: Int
+        val title: StringResource,
+        val description: StringResource,
+        val icon: DrawableResource
     )
 }
 

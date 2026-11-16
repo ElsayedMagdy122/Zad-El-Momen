@@ -25,15 +25,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.RecurrencePattern
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_close
+import zadelmomen.presentation.generated.resources.save
 
 @Composable
 fun RecurrencePickerDialog(
@@ -63,7 +65,7 @@ fun RecurrencePickerDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_close),
+                    painter = painterResource(Res.drawable.ic_close),
                     contentDescription = null,
                     tint = Theme.color.primary.primary,
                     modifier = Modifier.size(16.dp)
@@ -122,7 +124,7 @@ fun RecurrencePickerDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 PrimaryButton(
-                    text = localizedString(R.string.save),
+                    text = localizedString(Res.string.save),
                     onClick = { onConfirm(selected) },
                     modifier = Modifier.fillMaxWidth()
                 )

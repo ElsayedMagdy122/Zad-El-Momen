@@ -22,13 +22,15 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_arrow_left_01
+import zadelmomen.presentation.generated.resources.ic_cancel_circle
+import zadelmomen.presentation.generated.resources.ic_search
 
 @Composable
 fun QuranAppBar(
@@ -54,7 +56,7 @@ fun QuranAppBar(
 
         IconContainer(
             isRtl = isRtl,
-            icon = painterResource(R.drawable.ic_arrow_left_01),
+            icon = painterResource(Res.drawable.ic_arrow_left_01),
             onClick = onBackClick
         )
 
@@ -126,7 +128,7 @@ private fun SearchTextField(
                         .graphicsLayer {
                             scaleX = if (isRtl) -1f else 1f
                         },
-                    painter = painterResource(R.drawable.ic_search),
+                    painter = painterResource(Res.drawable.ic_search),
                     contentDescription = null,
                     tint = Theme.color.secondary.shadeSecondary
                 )
@@ -146,7 +148,7 @@ private fun SearchTextField(
                         modifier = Modifier
                             .size(20.dp)
                             .clickable { onClearClick() },
-                        painter = painterResource(R.drawable.ic_cancel_circle),
+                        painter = painterResource(Res.drawable.ic_cancel_circle),
                         contentDescription = "Clear",
                         tint = Theme.color.primary.primary
                     )
@@ -188,26 +190,3 @@ data class AppBarAction(
     val icon: Painter,
     val onClick: () -> Unit
 )
-
-@Preview
-@Composable
-private fun PrimaryAppBarPreview() {
-    QuranAppBar(
-        title = "Al-Baqarah",
-        onBackClick = {},
-        actions = listOf(
-            AppBarAction(
-                icon = painterResource(R.drawable.ic_search),
-                onClick = {},
-
-                ),
-            AppBarAction(
-                icon = painterResource(R.drawable.ic_all_bookmark),
-                onClick = {},
-            )
-        ),
-        isSearchMode = false,
-        searchText = "vddg",
-        placeholder = ""
-    )
-}

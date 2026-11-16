@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
@@ -33,6 +32,8 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioUiState
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.quran_radio
 
 @Composable
 fun RadioContent(
@@ -49,7 +50,7 @@ fun RadioContent(
         Column(modifier = Modifier.fillMaxSize()) {
             val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
             AppBar(
-                title = localizedString(R.string.quran_radio),
+                title = localizedString(Res.string.quran_radio),
                 isBackEnabled = false,
                 onBackClick = {}
             )
@@ -59,71 +60,46 @@ fun RadioContent(
                     .padding(bottom = 16.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 state.categories.forEach { category ->
-
                     val isSelected = category.id == state.selectedCategoryId
-                    val categoryName = if (isRtl) category.nameAr else category.nameEn
-                    CategoryChip(
-                        text = categoryName,
-                        selected = isSelected,
-                        onClick = { viewModel.onCategorySelected(category.id) }
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(
+                                if (isSelected) Theme.color.primary.primary
+                                else Theme.color.surfaces.surfaceLow
+                            )
+                            .clickable {
+                                viewModel.onCategorySelected(category.id)
+                            }
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = if (isRtl) category.nameAr else category.nameEn,
+                            style = Theme.textStyle.label.medium,
+                            color = if (isSelected) Theme.color.primary.onPrimary
+                            else Theme.color.primary.shadePrimary
+                        )
+                    }
                 }
             }
-            RadioChannelsGrid(state, viewModel)
+
+            RadioChannelsGrid(
+                state = state,
+                viewModel = viewModel
+            )
         }
 
-        toast?.let {
-            ToastContainer(it)
+        if (toast != null) {
+            PrimaryToast(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
+                data = toast,
+                isSuccess = false
+            )
         }
     }
-}
-
-@Composable
-private fun CategoryChip(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    val backgroundColor =
-        if (selected) Theme.color.primary.primary
-        else Theme.color.surfaces.surfaceLow
-
-    val borderColor =
-        if (selected) Color.Transparent
-        else Theme.color.semantic.disabled
-
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(24.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(24.dp))
-            .background(backgroundColor)
-            .clickable { onClick() }
-    ) {
-        Text(
-            text = text,
-            color = if (selected)
-                Theme.color.surfaces.surfaceLow
-            else
-                Theme.color.primary.primary,
-            style = Theme.textStyle.label.medium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-        )
-    }
-}
-
-@Composable
-private fun BoxScope.ToastContainer(
-    toast: ToastDetails
-) {
-
-    PrimaryToast(
-        modifier = Modifier
-            .align(Alignment.TopCenter)
-            .padding(top = 24.dp),
-        data = toast,
-        isSuccess = false
-    )
 }

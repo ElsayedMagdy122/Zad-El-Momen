@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings.privacy
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,17 +19,37 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.color.darkThemeColors
 import dev.sayed.mehrabalmomen.design_system.color.lightThemeColors
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.app_icon
+import zadelmomen.presentation.generated.resources.last_updated
+import zadelmomen.presentation.generated.resources.privacy_and_policy
+import zadelmomen.presentation.generated.resources.privacy_short_b1_loc
+import zadelmomen.presentation.generated.resources.privacy_short_b1_rights
+import zadelmomen.presentation.generated.resources.privacy_short_b1_sharing
+import zadelmomen.presentation.generated.resources.privacy_short_b2_rights
+import zadelmomen.presentation.generated.resources.privacy_short_b2_settings
+import zadelmomen.presentation.generated.resources.privacy_short_b2_sharing
+import zadelmomen.presentation.generated.resources.privacy_short_b3_bugs
+import zadelmomen.presentation.generated.resources.privacy_short_b4_purchases
+import zadelmomen.presentation.generated.resources.privacy_short_contact_desc
+import zadelmomen.presentation.generated.resources.privacy_short_contact_email
+import zadelmomen.presentation.generated.resources.privacy_short_h1_collect
+import zadelmomen.presentation.generated.resources.privacy_short_h1_contact
+import zadelmomen.presentation.generated.resources.privacy_short_h1_not_collect
+import zadelmomen.presentation.generated.resources.privacy_short_h1_rights
+import zadelmomen.presentation.generated.resources.privacy_short_h1_sharing
+import zadelmomen.presentation.generated.resources.privacy_short_not_collect_desc
 
 @Composable
 fun PrivacyAnPolicyScreen(
@@ -51,7 +70,7 @@ fun PrivacyAnPolicyScreen(
             .padding(horizontal = 16.dp)
     ) {
         AppBar(
-            title = localizedString(R.string.privacy_and_policy),
+            title = localizedString(Res.string.privacy_and_policy),
             onBackClick = { navController.popBackStack() }
         )
 
@@ -70,13 +89,13 @@ fun PrivacyAnPolicyScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Image(
-                            painter = painterResource(R.drawable.app_icon),
+                            painter = painterResource(Res.drawable.app_icon),
                             contentDescription = null,
                             modifier = Modifier.size(64.dp)
                         )
 
                         Text(
-                            text = localizedString(id = R.string.last_updated, "26 May 2026"),
+                            text = localizedString(Res.string.last_updated, "26 May 2026"),
                             style = Theme.textStyle.label.small,
                             color = bodyTextColor,
                             textAlign = TextAlign.Center,
@@ -90,7 +109,7 @@ fun PrivacyAnPolicyScreen(
                 when (item) {
                     is PrivacyModel.MainHeader -> {
                         Text(
-                            text = localizedString(id = item.resId),
+                            text = localizedString(item.resId),
                             style = Theme.textStyle.title.small,
                             color = titleTextColor,
                             fontWeight = FontWeight.Bold,
@@ -99,7 +118,7 @@ fun PrivacyAnPolicyScreen(
                     }
                     is PrivacyModel.Paragraph -> {
                         Text(
-                            text = localizedString(id = item.resId),
+                            text = localizedString(item.resId),
                             style = Theme.textStyle.body.medium,
                             color = bodyTextColor,
                         )
@@ -115,44 +134,45 @@ fun PrivacyAnPolicyScreen(
                                 color = bodyTextColor
                             )
                             Text(
-                                text = localizedString(id = item.resId),
+                                text = localizedString(item.resId),
                                 style = Theme.textStyle.body.medium,
                                 color = bodyTextColor
                             )
                         }
                     }
-                    else -> {}
                 }
             }
         }
     }
 }
+
 sealed interface PrivacyModel {
-    data class MainHeader(@param:StringRes val resId: Int) : PrivacyModel
-    data class Paragraph(@param:StringRes val resId: Int) : PrivacyModel
-    data class BulletPoint(@param:StringRes val resId: Int) : PrivacyModel
+    data class MainHeader(val resId: StringResource) : PrivacyModel
+    data class Paragraph(val resId: StringResource) : PrivacyModel
+    data class BulletPoint(val resId: StringResource) : PrivacyModel
 }
+
 private fun getShortPrivacyContent(): List<PrivacyModel> {
     return listOf(
-        PrivacyModel.MainHeader(R.string.privacy_short_h1_collect),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b1_loc),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b2_settings),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b3_bugs),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b4_purchases),
+        PrivacyModel.MainHeader(Res.string.privacy_short_h1_collect),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b1_loc),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b2_settings),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b3_bugs),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b4_purchases),
 
-        PrivacyModel.MainHeader(R.string.privacy_short_h1_not_collect),
-        PrivacyModel.Paragraph(R.string.privacy_short_not_collect_desc),
+        PrivacyModel.MainHeader(Res.string.privacy_short_h1_not_collect),
+        PrivacyModel.Paragraph(Res.string.privacy_short_not_collect_desc),
 
-        PrivacyModel.MainHeader(R.string.privacy_short_h1_sharing),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b1_sharing),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b2_sharing),
+        PrivacyModel.MainHeader(Res.string.privacy_short_h1_sharing),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b1_sharing),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b2_sharing),
 
-        PrivacyModel.MainHeader(R.string.privacy_short_h1_rights),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b1_rights),
-        PrivacyModel.BulletPoint(R.string.privacy_short_b2_rights),
+        PrivacyModel.MainHeader(Res.string.privacy_short_h1_rights),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b1_rights),
+        PrivacyModel.BulletPoint(Res.string.privacy_short_b2_rights),
 
-        PrivacyModel.MainHeader(R.string.privacy_short_h1_contact),
-        PrivacyModel.Paragraph(R.string.privacy_short_contact_desc),
-        PrivacyModel.Paragraph(R.string.privacy_short_contact_email)
+        PrivacyModel.MainHeader(Res.string.privacy_short_h1_contact),
+        PrivacyModel.Paragraph(Res.string.privacy_short_contact_desc),
+        PrivacyModel.Paragraph(Res.string.privacy_short_contact_email)
     )
 }

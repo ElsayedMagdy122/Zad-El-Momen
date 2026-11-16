@@ -1,10 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.base
 
-import androidx.annotation.DrawableRes
+import org.jetbrains.compose.resources.DrawableResource
 
-/**
- * A wrapper for icons to abstract away from raw Int resource IDs.
- */
 data class UiIcon(
-    @DrawableRes val resId: Int
+    val resource: DrawableResource
 )

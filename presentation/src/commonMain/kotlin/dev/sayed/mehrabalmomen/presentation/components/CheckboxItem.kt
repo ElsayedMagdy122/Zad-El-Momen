@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
-import CheckboxTick
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,20 +13,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
+import dev.sayed.mehrabalmomen.design_system.component.CheckboxTick
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 
 @Composable
@@ -38,7 +30,7 @@ fun CheckboxItem(
     modifier: Modifier = Modifier,
     description: String? = null,
     icon: Painter? = null,
-    tintColor: Color= Theme.color.primary.primary,
+    tintColor: Color = Theme.color.primary.primary,
     titleColor: Color = Theme.color.primary.primary,
     backgroundColor: Color = Theme.color.surfaces.surfaceLow
 ) {
@@ -61,7 +53,6 @@ fun CheckboxItem(
                     painter = it,
                     tint = tintColor,
                     contentDescription = null
-
                 )
             }
         }
@@ -98,35 +89,6 @@ private fun CheckboxText(
                 text = it,
                 color = Theme.color.secondary.shadeSecondary,
                 style = Theme.textStyle.body.small
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CheckboxItemPreview() {
-    var checked by remember { mutableStateOf(false) }
-
-    MehrabTheme(isDarkTheme = false) {
-        Column(
-            modifier = Modifier
-                .background(Theme.color.surfaces.surface)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            CheckboxItem(
-                icon = painterResource(R.drawable.ic_theme),
-                text = "Tick item",
-                isChecked = checked,
-                onCheckedChange = { checked = it },
-            )
-
-            CheckboxItem(
-                text = "Switch item",
-                description = "Checkbox with switch",
-                isChecked = !checked,
-                onCheckedChange = { checked = it },
             )
         }
     }

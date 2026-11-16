@@ -1,7 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,48 +26,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
-import org.koin.androidx.compose.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.contact_us
 
 @Composable
 fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = koinViewModel()) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
+    val uriHandler = LocalUriHandler.current
+
     CollectEffect(viewModel.effect) {
         when (it) {
             is ContactEffect.OpenEmail -> {
-                val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:${it.email}")
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                navController.context.startActivity(intent)
+                uriHandler.openUri("mailto:${it.email}")
             }
-
             is ContactEffect.OpenFacebook -> {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(it.link)
-                ).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                navController.context.startActivity(intent)
+                uriHandler.openUri(it.link)
             }
-
             is ContactEffect.OpenYoutube -> {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(it.link)
-                ).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                navController.context.startActivity(intent)
+                uriHandler.openUri(it.link)
             }
         }
     }
@@ -81,7 +65,7 @@ fun ContactUsScreen(navController: NavController, viewModel: ContactViewModel = 
             .padding(horizontal = 16.dp)
     ) {
         AppBar(
-            title = localizedString(R.string.contact_us),
+            title = localizedString(Res.string.contact_us),
             onBackClick = {
                 navController.popBackStack()
             }

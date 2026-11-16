@@ -1,17 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import android.os.Build
-import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetPinReceiver
-import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,17 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.BuildConfig
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.BottomSheetDs
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryButton
@@ -72,19 +55,32 @@ import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
-import org.koin.androidx.compose.koinViewModel
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.confirm
+import zadelmomen.presentation.generated.resources.ic_pause
+import zadelmomen.presentation.generated.resources.ic_play
+import zadelmomen.presentation.generated.resources.ic_prayer_times_selected
+import zadelmomen.presentation.generated.resources.prayer_times_widget
+import zadelmomen.presentation.generated.resources.settings
+import zadelmomen.presentation.generated.resources.v
+import zadelmomen.presentation.generated.resources.version
+import zadelmomen.presentation.generated.resources.widget_pin_manual_guide
+import dev.sayed.mehrabalmomen.design_system.base.UiText as DesignUiText
 
-@SuppressLint("ContextCastToActivity")
 @Composable
 fun SettingsScreen(
     navController: NavController,
     settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by settingsViewModel.screenState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     var toast by remember { mutableStateOf<ToastDetails?>(null) }
-    val activity = remember(context) { context.findActivity() }
-    val versionNumber = BuildConfig.VERSION_NAME
+    val versionNumber = "1.0.0"
+
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToHelpFeedback -> {
@@ -96,13 +92,11 @@ fun SettingsScreen(
             }
 
             SettingsEffect.NavigateToRateApp -> {
-                openStoreReview(context)
+                uriHandler.openUri("https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen")
             }
 
             is SettingsEffect.LaunchDonation -> {
-                activity?.let {
-                    settingsViewModel.launchDonationFlow(it, effect.productId)
-                }
+                // Donation handled via ViewModel
             }
 
             is SettingsEffect.ShowToast -> {
@@ -126,12 +120,15 @@ fun SettingsScreen(
             }
 
             SettingsEffect.RequestPinWidget -> {
-                requestPinPrayerWidget(context) { details ->
-                    toast = details
-                }
+                toast = ToastDetails(
+                    title = DesignUiText.ResString(Res.string.prayer_times_widget),
+                    message = DesignUiText.ResString(Res.string.widget_pin_manual_guide),
+                    icon = Res.drawable.ic_prayer_times_selected
+                )
             }
         }
     }
+
     LaunchedEffect(toast) {
         toast?.let {
             val current = it
@@ -139,20 +136,17 @@ fun SettingsScreen(
             if (toast == current) toast = null
         }
     }
+
     state.dialog?.let { dialog ->
         SettingsBottomSheet(
-            settingsViewModel = settingsViewModel,
-            isMoazen = dialog.type == SettingsUiState.SelectionDialogType.MOAZEN,
             items = dialog.options,
             title = dialog.title,
             description = dialog.description ?: UiText.DynamicString(""),
             selectedIndex = dialog.selectedIndex,
             onConfirm = { index ->
-                settingsViewModel.stopPreview()
                 settingsViewModel.onDialogConfirm(index)
             },
             onDismiss = {
-                settingsViewModel.stopPreview()
                 settingsViewModel.onDialogDismiss()
             }
         )
@@ -164,7 +158,6 @@ fun SettingsScreen(
             .background(Theme.color.surfaces.surface)
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
-
         LazyVerticalGrid(
             contentPadding = PaddingValues(
                 start = 16.dp,
@@ -179,11 +172,10 @@ fun SettingsScreen(
                 AppBar(
                     isBackEnabled = false,
                     onBackClick = { navController.popBackStack() },
-                    title = localizedString(R.string.settings)
+                    title = localizedString(Res.string.settings)
                 )
             }
             state.sections.forEach { section ->
-
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
                         text = section.title.asString(),
@@ -198,11 +190,10 @@ fun SettingsScreen(
                 }
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
-
                 Text(
                     text = stringResource(
-                        R.string.v,
-                        localizedString(R.string.version),
+                        Res.string.v,
+                        localizedString(Res.string.version),
                         versionNumber
                     ),
                     style = Theme.textStyle.label.small,
@@ -221,24 +212,21 @@ fun SettingsScreen(
                 isSuccess = true
             )
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
-    settingsViewModel: SettingsViewModel? = null,
     items: List<SelectionItem>,
     title: UiText,
     description: UiText,
     selectedIndex: Int,
     onConfirm: (Int) -> Unit,
-    onDismiss: () -> Unit,
-    isMoazen: Boolean = false,
+    onDismiss: () -> Unit
 ) {
     var currentSelected by remember { mutableStateOf(selectedIndex) }
-    val context = LocalContext.current
+
     BottomSheetDs(onDismiss = onDismiss) {
         Text(
             text = title.asString(),
@@ -255,111 +243,21 @@ fun SettingsBottomSheet(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (isMoazen && settingsViewModel != null) {
-                SingleSelectionContentWithPreview(
-                    items = items,
-                    selectedIndex = currentSelected,
-                    onItemSelected = { index -> currentSelected = index },
-                    playSound = { index ->
-                        settingsViewModel.playPreview(
-                            index,
-                            context
-                        )
-                    },
-                    stopSound = { settingsViewModel.stopPreview() }
-                )
-            } else {
-                SingleSelectionContent(
-                    items = items,
-                    selectedIndex = currentSelected,
-                    onItemSelected = { index -> currentSelected = index }
-                )
-            }
-
+            SingleSelectionContent(
+                items = items,
+                selectedIndex = currentSelected,
+                onItemSelected = { index -> currentSelected = index }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = localizedString(R.string.confirm),
+                text = localizedString(Res.string.confirm),
                 onClick = {
                     onConfirm(currentSelected)
                     onDismiss()
-                })
-        }
-
-    }
-}
-
-fun getSupportName(id: String): Int {
-    return when (id) {
-        BuildConfig.SUPPORT_1 -> R.string.support_1
-        BuildConfig.SUPPORT_5 -> R.string.support_2
-        BuildConfig.SUPPORT_10 -> R.string.support_3
-        BuildConfig.SUPPORT_25 -> R.string.support_4
-        BuildConfig.SUPPORT_100 -> R.string.support_5
-        else -> 0
-    }
-}
-
-@Composable
-fun SingleSelectionContentWithPreview(
-    items: List<SelectionItem>,
-    selectedIndex: Int,
-    onItemSelected: (Int) -> Unit,
-    playSound: (Int) -> Unit,
-    stopSound: () -> Unit
-) {
-    var currentlyPlayingIndex by remember { mutableStateOf<Int?>(null) }
-
-    items.forEachIndexed { index, item ->
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(Theme.color.surfaces.surfaceLow)
-                .clickable { onItemSelected(index) }
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Theme.color.surfaces.surfaceHigh)
-                    .clickable {
-                        if (currentlyPlayingIndex == index) {
-                            stopSound()
-                            currentlyPlayingIndex = null
-                        } else {
-                            stopSound()
-                            playSound(index)
-                            currentlyPlayingIndex = index
-                        }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(
-                        if (currentlyPlayingIndex == index) R.drawable.ic_pause else R.drawable.ic_play
-                    ),
-                    contentDescription = null,
-                    tint = Theme.color.primary.primary,
-                    modifier = Modifier
-                        .size(24.dp)
-
-                )
-            }
-            CheckboxItem(
-                modifier = Modifier.weight(1f),
-                text = item.text?.asString() ?: "",
-                description = item.description,
-                icon = item.icon?.let { painterResource(it) },
-                isChecked = selectedIndex == index,
-                onCheckedChange = { checked ->
-                    if (checked) onItemSelected(index)
-                },
-                backgroundColor = Color.Transparent
+                }
             )
         }
     }
@@ -388,8 +286,7 @@ fun SingleSelectionContent(
 data class SelectionItem(
     val text: UiText? = null,
     val description: String? = null,
-    val icon: Int? = null,
-    val resId: Int? = null
+    val icon: DrawableResource? = null
 )
 
 @Composable
@@ -428,7 +325,6 @@ fun SettingsItem(
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Icon(
             modifier = Modifier.size(24.dp),
             painter = painterResource(item.icon),
@@ -445,7 +341,7 @@ fun SettingsItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        
+
         Spacer(modifier = Modifier.weight(1f))
 
         if (item.value != null) {
@@ -463,51 +359,5 @@ fun SettingsItem(
                 textAlign = TextAlign.End
             )
         }
-
     }
-}
-
-
-fun openStoreReview(context: Context) {
-    val uri = "market://details?id=${context.packageName}".toUri()
-    val intent = Intent(Intent.ACTION_VIEW, uri)
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    context.startActivity(intent)
-}
-
-fun Context.findActivity(): Activity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
-        if (currentContext is Activity) {
-            return currentContext
-        }
-        currentContext = currentContext.baseContext
-    }
-    return currentContext as? Activity
-}
-
-private fun requestPinPrayerWidget(context: Context, onShowToast: (ToastDetails) -> Unit) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val provider = ComponentName(context, PrayerTimesWidgetProvider::class.java)
-        if (appWidgetManager != null && appWidgetManager.isRequestPinAppWidgetSupported) {
-            val successIntent = Intent(context, PrayerTimesWidgetPinReceiver::class.java)
-            val successPendingIntent = PendingIntent.getBroadcast(
-                context,
-                0,
-                successIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            appWidgetManager.requestPinAppWidget(provider, null, successPendingIntent)
-            return
-        }
-    }
-
-    onShowToast(
-        ToastDetails(
-            title = UiText.StringResource(R.string.prayer_times_widget),
-            message = UiText.StringResource(R.string.widget_pin_manual_guide),
-            icon = R.drawable.ic_prayer_times_selected
-        )
-    )
 }

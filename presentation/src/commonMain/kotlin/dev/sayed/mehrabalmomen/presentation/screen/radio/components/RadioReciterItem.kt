@@ -31,13 +31,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsInteractionListener
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioUiState
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_pause
+import zadelmomen.presentation.generated.resources.ic_play
 
 @Composable
 fun RadioReciterItem(
@@ -45,7 +47,7 @@ fun RadioReciterItem(
     listener: RadioChannelsInteractionListener,
     modifier: Modifier = Modifier
 ) {
-    val mediaPlayerIcon = if (state.isPlaying) R.drawable.ic_pause else R.drawable.ic_play
+    val mediaPlayerIcon = if (state.isPlaying) Res.drawable.ic_pause else Res.drawable.ic_play
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val reciterName = if (isRtl) state.nameAr else state.nameEn
     Row(
@@ -111,7 +113,6 @@ fun RadioReciterItem(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-
             EqualizerBars(
                 isPlaying = state.isPlaying
             )

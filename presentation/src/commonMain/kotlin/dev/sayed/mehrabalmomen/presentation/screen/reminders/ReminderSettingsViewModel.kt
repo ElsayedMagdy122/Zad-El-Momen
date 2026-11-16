@@ -9,7 +9,6 @@ import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepos
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class ReminderSettingsViewModel(
     private val settingsRepository: ReminderSettingsRepository,
@@ -44,7 +43,6 @@ class ReminderSettingsViewModel(
     }
 
     fun onOpenAddBottomSheet() {
-        val now = Calendar.getInstance()
         updateState {
             it.copy(
                 isBottomSheetOpen = true,
@@ -52,8 +50,8 @@ class ReminderSettingsViewModel(
                 isEditingPrePrayer = false,
                 reminderTitle = "",
                 reminderDescription = "",
-                reminderHour = now.get(Calendar.HOUR_OF_DAY),
-                reminderMinute = now.get(Calendar.MINUTE),
+                reminderHour = 8,
+                reminderMinute = 0,
                 reminderRecurrence = RecurrencePattern.DAILY,
                 isTimePickerOpen = false
             )
@@ -112,50 +110,30 @@ class ReminderSettingsViewModel(
         }
     }
 
-    fun onPrePrayerDurationSelected(minutes: Int) {
-        updateState {
-            it.copy(reminderMinute = minutes)
-        }
-    }
-
     fun onRecurrenceSelected(recurrence: RecurrencePattern) {
         updateState { it.copy(reminderRecurrence = recurrence) }
     }
 
+    fun onPrePrayerDurationSelected(minutes: Int) {
+        updateState { it.copy(reminderMinute = minutes) }
+    }
+
     fun onSaveReminder() {
-        val current = screenState.value
-        val title = if (current.isEditingPrePrayer) {
-            if (current.reminderTitle.isBlank()) "التنبيه قبل الصلاة" else current.reminderTitle
-        } else {
-            current.reminderTitle.trim()
-        }
-        if (title.isBlank()) return
-
+        val state = screenState.value
         viewModelScope.launch {
-            val existingReminder = current.editingReminderId?.let { id ->
-                current.reminders.find { it.id == id }
-            }
-
-            val config = ReminderConfig(
-                id = current.editingReminderId ?: 0L,
-                title = title,
-                description = current.reminderDescription.trim(),
-                hour = if (current.isEditingPrePrayer) 0 else current.reminderHour,
-                minute = current.reminderMinute,
-                recurrence = if (current.isEditingPrePrayer) RecurrencePattern.DAILY else current.reminderRecurrence,
-                isEnabled = existingReminder?.isEnabled ?: true,
-                type = existingReminder?.type ?: if (current.isEditingPrePrayer) ReminderType.BEFORE_PRAYER else null
+            val reminder = ReminderConfig(
+                id = state.editingReminderId ?: 0L,
+                title = state.reminderTitle,
+                description = state.reminderDescription,
+                hour = state.reminderHour,
+                minute = state.reminderMinute,
+                recurrence = state.reminderRecurrence,
+                isEnabled = true,
+                type = if (state.isEditingPrePrayer) ReminderType.BEFORE_PRAYER else null
             )
-
-            settingsRepository.saveReminder(config)
+            settingsRepository.saveReminder(reminder)
             schedulerRepository.rescheduleAll()
-            updateState {
-                it.copy(
-                    isBottomSheetOpen = false,
-                    editingReminderId = null,
-                    isEditingPrePrayer = false
-                )
-            }
+            onCloseBottomSheet()
         }
     }
 }

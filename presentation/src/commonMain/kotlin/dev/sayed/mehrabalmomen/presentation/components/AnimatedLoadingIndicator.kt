@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.components
 
-
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -15,17 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_loading
 
 @Composable
 fun AnimatedLoadingIndicator(
     size: Dp = 20.dp,
-    icon: Painter = painterResource(R.drawable.ic_loading),
+    icon: Painter = painterResource(Res.drawable.ic_loading),
     iconTint: Color = Theme.color.primary.primary,
     modifier: Modifier = Modifier
 ) {
@@ -46,10 +45,4 @@ fun AnimatedLoadingIndicator(
             .size(size)
             .rotate(rotation)
     )
-}
-
-@Preview
-@Composable
-private fun PreviewLoadingIndicator() {
-    AnimatedLoadingIndicator()
 }

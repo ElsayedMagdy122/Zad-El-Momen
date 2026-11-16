@@ -1,9 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.navigation
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,20 +17,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.sayed.mehrabalmomen.BuildConfig
-import dev.sayed.mehrabalmomen.R
-import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.design_system.component.BottomNavigationBar
 import dev.sayed.mehrabalmomen.design_system.component.NavItem
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.domain.billing.BillingService
 import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.UiText
@@ -47,12 +39,41 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
-import dev.sayed.mehrabalmomen.presentation.screen.settings.getSupportName
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.azan
+import zadelmomen.presentation.generated.resources.azkar
+import zadelmomen.presentation.generated.resources.home
+import zadelmomen.presentation.generated.resources.ic_azan_not_selected
+import zadelmomen.presentation.generated.resources.ic_azan_selected
+import zadelmomen.presentation.generated.resources.ic_azkar_not_selected
+import zadelmomen.presentation.generated.resources.ic_azkar_selected
+import zadelmomen.presentation.generated.resources.ic_home_not_selected
+import zadelmomen.presentation.generated.resources.ic_home_selected
+import zadelmomen.presentation.generated.resources.ic_radio_not_selected
+import zadelmomen.presentation.generated.resources.ic_radio_selected
+import zadelmomen.presentation.generated.resources.ic_settings_not_selected
+import zadelmomen.presentation.generated.resources.ic_settings_selected
+import zadelmomen.presentation.generated.resources.radio
+import zadelmomen.presentation.generated.resources.settings
+import zadelmomen.presentation.generated.resources.support_1
+import zadelmomen.presentation.generated.resources.support_2
+import zadelmomen.presentation.generated.resources.support_3
+import zadelmomen.presentation.generated.resources.support_4
+import zadelmomen.presentation.generated.resources.support_5
+import zadelmomen.presentation.generated.resources.support_description
+import zadelmomen.presentation.generated.resources.support_developer
 
-@SuppressLint("NewApi")
+private const val SUPPORT_1 = "support_1"
+private const val SUPPORT_5 = "support_5"
+private const val SUPPORT_10 = "support_10"
+private const val SUPPORT_25 = "support_25"
+private const val SUPPORT_100 = "support_100"
+
 @OptIn(kotlin.time.ExperimentalTime::class)
 @Composable
 fun MainContainer(
@@ -60,18 +81,16 @@ fun MainContainer(
     modifier: Modifier = Modifier
 ) {
     val settingsRepository: SettingsRepository = koinInject()
-    val billingManager: BillingManager = koinInject()
-    val context = LocalContext.current
-    val activity = remember(context) { context.findActivity() }
+    val billingService: BillingService = koinInject()
     val scope = rememberCoroutineScope()
 
     var showAutoSupportDialog by remember { mutableStateOf(false) }
-    val products by billingManager.products.collectAsState(initial = emptyList())
+    val products by billingService.products.collectAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
         val randomDelaySeconds = (10..15).random()
         delay(randomDelaySeconds * 1000L)
-        val currentTime = System.currentTimeMillis()
+        val currentTime = Clock.System.now().toEpochMilliseconds()
         if (settingsRepository.shouldShowDonationPrompt(currentTime)) {
             showAutoSupportDialog = true
         }
@@ -89,29 +108,29 @@ fun MainContainer(
 
     val bottomItems = listOf(
         NavItem(
-            title = localizedString(R.string.home),
-            selectedIcon = painterResource(R.drawable.ic_home_selected),
-            unselectedIcon = painterResource(R.drawable.ic_home_not_selected)
+            title = localizedString(Res.string.home),
+            selectedIcon = painterResource(Res.drawable.ic_home_selected),
+            unselectedIcon = painterResource(Res.drawable.ic_home_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.azan),
-            selectedIcon = painterResource(R.drawable.ic_azan_selected),
-            unselectedIcon = painterResource(R.drawable.ic_azan_not_selected)
+            title = localizedString(Res.string.azan),
+            selectedIcon = painterResource(Res.drawable.ic_azan_selected),
+            unselectedIcon = painterResource(Res.drawable.ic_azan_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.azkar),
-            selectedIcon = painterResource(R.drawable.ic_azkar_selected),
-            unselectedIcon = painterResource(R.drawable.ic_azkar_not_selected)
+            title = localizedString(Res.string.azkar),
+            selectedIcon = painterResource(Res.drawable.ic_azkar_selected),
+            unselectedIcon = painterResource(Res.drawable.ic_azkar_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.radio),
-            selectedIcon = painterResource(R.drawable.ic_radio_selected),
-            unselectedIcon = painterResource(R.drawable.ic_radio_not_selected)
+            title = localizedString(Res.string.radio),
+            selectedIcon = painterResource(Res.drawable.ic_radio_selected),
+            unselectedIcon = painterResource(Res.drawable.ic_radio_not_selected)
         ),
         NavItem(
-            title = localizedString(R.string.settings),
-            selectedIcon = painterResource(R.drawable.ic_settings_selected),
-            unselectedIcon = painterResource(R.drawable.ic_settings_not_selected)
+            title = localizedString(Res.string.settings),
+            selectedIcon = painterResource(Res.drawable.ic_settings_selected),
+            unselectedIcon = painterResource(Res.drawable.ic_settings_not_selected)
         )
     )
 
@@ -161,45 +180,34 @@ fun MainContainer(
 
         if (showAutoSupportDialog) {
             val supportProductIds = listOf(
-                BuildConfig.SUPPORT_1,
-                BuildConfig.SUPPORT_5,
-                BuildConfig.SUPPORT_10,
-                BuildConfig.SUPPORT_25,
-                BuildConfig.SUPPORT_100
+                SUPPORT_1,
+                SUPPORT_5,
+                SUPPORT_10,
+                SUPPORT_25,
+                SUPPORT_100
             )
             val options = supportProductIds.map { id ->
                 val donationProduct = products.find { it.id == id }
                 val price = donationProduct?.price ?: "N/A"
                 SelectionItem(
                     description = price,
-                    text = UiText.StringResource(getSupportName(id))
+                    text = UiText.StringRes(getSupportName(id))
                 )
             }
             SettingsBottomSheet(
-                settingsViewModel = null,
-                isMoazen = false,
                 items = options,
-                title = UiText.StringResource(R.string.support_developer),
-                description = UiText.StringResource(R.string.support_description),
+                title = UiText.StringRes(Res.string.support_developer),
+                description = UiText.StringRes(Res.string.support_description),
                 selectedIndex = -1,
                 onConfirm = { index ->
-                    val productId = when (index) {
-                        0 -> BuildConfig.SUPPORT_1
-                        1 -> BuildConfig.SUPPORT_5
-                        2 -> BuildConfig.SUPPORT_10
-                        3 -> BuildConfig.SUPPORT_25
-                        4 -> BuildConfig.SUPPORT_100
-                        else -> ""
-                    }
-                    activity?.let { billingManager.donate(it, productId) }
                     scope.launch {
-                        settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, System.currentTimeMillis())
+                        settingsRepository.onDonationPromptAction(DonationPromptAction.DONATED, 0L)
                     }
                     showAutoSupportDialog = false
                 },
                 onDismiss = {
                     scope.launch {
-                        settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, System.currentTimeMillis())
+                        settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, 0L)
                     }
                     showAutoSupportDialog = false
                 }
@@ -208,13 +216,11 @@ fun MainContainer(
     }
 }
 
-fun Context.findActivity(): Activity? {
-    var currentContext = this
-    while (currentContext is ContextWrapper) {
-        if (currentContext is Activity) {
-            return currentContext
-        }
-        currentContext = currentContext.baseContext
-    }
-    return currentContext as? Activity
+private fun getSupportName(id: String) = when (id) {
+    SUPPORT_1 -> Res.string.support_1
+    SUPPORT_5 -> Res.string.support_2
+    SUPPORT_10 -> Res.string.support_3
+    SUPPORT_25 -> Res.string.support_4
+    SUPPORT_100 -> Res.string.support_5
+    else -> Res.string.support_developer
 }

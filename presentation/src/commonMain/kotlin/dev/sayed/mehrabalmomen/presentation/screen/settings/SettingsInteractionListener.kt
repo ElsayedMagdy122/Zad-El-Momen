@@ -1,8 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
-
-
 interface SettingsInteractionListener {
 
     fun onItemClick(action: SettingsUiState.SettingsAction)

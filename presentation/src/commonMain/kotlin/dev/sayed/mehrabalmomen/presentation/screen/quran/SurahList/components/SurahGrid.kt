@@ -12,15 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahUiState
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.sur
 
 @Composable
 fun SurahGrid(
     sur: List<SurahUiState>,
-    onSurahClick: (Int, String,String) -> Unit
+    onSurahClick: (Int, String, String) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(320.dp),
@@ -34,7 +35,7 @@ fun SurahGrid(
         item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
                 modifier = Modifier.padding(bottom = 4.dp),
-                text = localizedString(R.string.sur),
+                text = localizedString(Res.string.sur),
                 style = Theme.textStyle.title.small,
                 color = Theme.color.primary.shadePrimary
             )

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -22,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,12 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
@@ -47,11 +41,15 @@ import dev.sayed.mehrabalmomen.domain.model.ReminderType
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.StateMessage
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.AddReminderBottomSheet
-import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.RecurrencePickerDialog
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.ReminderItem
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.RemoveReminderDialog
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.components.TimePickerDialog
-import org.koin.androidx.compose.koinViewModel
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_trash
+import zadelmomen.presentation.generated.resources.no_data_yet
+import zadelmomen.presentation.generated.resources.notifications
 
 @Composable
 fun ReminderSettingsScreen(
@@ -94,7 +92,7 @@ fun ReminderSettingsScreen(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    title = localizedString(R.string.notifications)
+                    title = localizedString(Res.string.notifications)
                 )
 
                 if (state.reminders.isNotEmpty()) {
@@ -135,7 +133,7 @@ fun ReminderSettingsScreen(
                                             contentAlignment = Alignment.CenterEnd
                                         ) {
                                             Icon(
-                                                painter = painterResource(R.drawable.ic_trash),
+                                                painter = painterResource(Res.drawable.ic_trash),
                                                 contentDescription = "حذف التنبيه",
                                                 tint = Theme.color.semantic.error,
                                                 modifier = Modifier
@@ -167,7 +165,7 @@ fun ReminderSettingsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     StateMessage(
-                        imageRes = R.drawable.no_data_yet,
+                        image = painterResource(Res.drawable.no_data_yet),
                         imageModifier = Modifier.size(110.dp),
                         title = "ابدأ بتذكير يقرّبك",
                         subtitle = "لم تضف أي تذكير بعد. اختر وقتًا لأذكارك أو وردك القرآني، ودعنا نذكّرك كل يوم."
@@ -177,7 +175,6 @@ fun ReminderSettingsScreen(
         }
     }
 
-    // Delete confirmation dialog matching BookmarkScreen style
     pendingDeleteItem?.let { selectedItem ->
         RemoveReminderDialog(
             reminderTitle = selectedItem.title,
@@ -191,7 +188,6 @@ fun ReminderSettingsScreen(
         )
     }
 
-    // Add / Edit reminder Bottom Sheet
     if (state.isBottomSheetOpen) {
         AddReminderBottomSheet(
             title = state.reminderTitle,
@@ -211,7 +207,6 @@ fun ReminderSettingsScreen(
         )
     }
 
-    // Time picker for Bottom Sheet
     if (state.isTimePickerOpen) {
         TimePickerDialog(
             initialHour = state.reminderHour,

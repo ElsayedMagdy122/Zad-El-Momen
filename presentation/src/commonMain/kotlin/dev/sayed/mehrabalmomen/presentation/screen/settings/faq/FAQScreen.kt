@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -18,23 +16,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.components.FAQItem
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.faq
+import zadelmomen.presentation.generated.resources.faq_a1
+import zadelmomen.presentation.generated.resources.faq_a2
+import zadelmomen.presentation.generated.resources.faq_a3
+import zadelmomen.presentation.generated.resources.faq_a4
+import zadelmomen.presentation.generated.resources.faq_a5
+import zadelmomen.presentation.generated.resources.faq_a6
+import zadelmomen.presentation.generated.resources.faq_q1
+import zadelmomen.presentation.generated.resources.faq_q2
+import zadelmomen.presentation.generated.resources.faq_q3
+import zadelmomen.presentation.generated.resources.faq_q4
+import zadelmomen.presentation.generated.resources.faq_q5
+import zadelmomen.presentation.generated.resources.faq_q6
 
 @Composable
 fun FAQScreen(
     navController: NavController
 ) {
     val faqs = listOf(
-        Pair(R.string.faq_q1, R.string.faq_a1),
-        Pair(R.string.faq_q5, R.string.faq_a5),
-        Pair(R.string.faq_q6, R.string.faq_a6),
-        Pair(R.string.faq_q2, R.string.faq_a2),
-        Pair(R.string.faq_q3, R.string.faq_a3),
-        Pair(R.string.faq_q4, R.string.faq_a4)
+        Pair(Res.string.faq_q1, Res.string.faq_a1),
+        Pair(Res.string.faq_q5, Res.string.faq_a5),
+        Pair(Res.string.faq_q6, Res.string.faq_a6),
+        Pair(Res.string.faq_q2, Res.string.faq_a2),
+        Pair(Res.string.faq_q3, Res.string.faq_a3),
+        Pair(Res.string.faq_q4, Res.string.faq_a4)
     )
 
     Box(
@@ -46,7 +57,7 @@ fun FAQScreen(
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             AppBar(
                 onBackClick = { navController.popBackStack() },
-                title = localizedString(R.string.faq)
+                title = localizedString(Res.string.faq)
             )
 
             LazyColumn(
@@ -54,10 +65,10 @@ fun FAQScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(end = 16.dp)
             ) {
-                items(faqs) { faq ->
+                items(faqs) { faqItem ->
                     FAQItem(
-                        questionRes = faq.first,
-                        answerRes = faq.second
+                        questionRes = faqItem.first,
+                        answerRes = faqItem.second
                     )
                 }
             }

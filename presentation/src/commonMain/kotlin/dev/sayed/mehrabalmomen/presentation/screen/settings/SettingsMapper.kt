@@ -1,6 +1,5 @@
 package dev.sayed.mehrabalmomen.presentation.screen.settings
 
-import SettingsUiState
 import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings

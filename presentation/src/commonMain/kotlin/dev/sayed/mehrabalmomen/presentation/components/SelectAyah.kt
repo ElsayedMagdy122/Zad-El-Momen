@@ -14,19 +14,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.al_tafseer
+import zadelmomen.presentation.generated.resources.bookmark
+import zadelmomen.presentation.generated.resources.copy
+import zadelmomen.presentation.generated.resources.ic_copy_01
+import zadelmomen.presentation.generated.resources.ic_play
+import zadelmomen.presentation.generated.resources.ic_quran_02
+import zadelmomen.presentation.generated.resources.ic_tafseer
+import zadelmomen.presentation.generated.resources.listen
 
 enum class AyahAction {
-    //SEND,
     BOOKMARK, COPY, TAFSEER, LISTEN
 }
 
@@ -36,55 +44,79 @@ fun AyahActions(
     modifier: Modifier = Modifier,
 ) {
     val actions = listOf(
-//        ActionItem(
-//            icon = painterResource(R.drawable.ic_link_forward),
-//            text = localizedString(R.string.send),
-//            action = AyahAction.SEND
-//        ),
-
-                ActionItem(
-            icon = painterResource(R.drawable.ic_play),
-            text = localizedString(R.string.listen),
+        ActionItem(
+            icon = painterResource(Res.drawable.ic_play),
+            text = stringResource(Res.string.listen),
             action = AyahAction.LISTEN
         ),
         ActionItem(
-            icon = painterResource(R.drawable.ic_all_bookmark),
-            text = localizedString(R.string.bookmark),
+            icon = painterResource(Res.drawable.ic_quran_02),
+            text = stringResource(Res.string.bookmark),
             action = AyahAction.BOOKMARK
         ),
         ActionItem(
-            icon = painterResource(R.drawable.ic_quran02),
-            text = localizedString(R.string.al_tafseer),
-            action = AyahAction.TAFSEER
+            icon = painterResource(Res.drawable.ic_copy_01),
+            text = stringResource(Res.string.copy),
+            action = AyahAction.COPY
         ),
         ActionItem(
-            icon = painterResource(R.drawable.ic_copy_01),
-            text = localizedString(R.string.copy),
-            action = AyahAction.COPY
+            icon = painterResource(Res.drawable.ic_tafseer),
+            text = stringResource(Res.string.al_tafseer),
+            action = AyahAction.TAFSEER
         )
     )
 
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(Theme.color.surfaces.surfaceLow)
-            .padding(vertical = 12.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+            .clip(RoundedCornerShape(24.dp))
+            .background(Theme.color.surfaces.surfaceHigh)
+            .padding(vertical = 12.dp, horizontal = 16.dp)
+            .widthIn(max = 340.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        actions.forEachIndexed { index, actionItem ->
-            ActionButton(
-                actionItem = actionItem,
-                onClick = { onActionClick(actionItem.action) }
+        actions.forEach { item ->
+            ActionIconButton(
+                icon = item.icon,
+                text = item.text,
+                onClick = { onActionClick(item.action) }
             )
-            if (index < actions.lastIndex) {
-                Box(
-                    modifier = Modifier
-                        .size(width = 1.dp, height = 20.dp)
-                        .background(Color(0xFFEAECF0))
-                )
-            }
         }
+    }
+}
+
+@Composable
+private fun ActionIconButton(
+    icon: Painter,
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(
+                onClick = onClick,
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            )
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = icon,
+            contentDescription = text,
+            tint = Theme.color.primary.primary
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 4.dp),
+            text = text,
+            style = Theme.textStyle.label.small,
+            color = Theme.color.primary.primary
+        )
     }
 }
 
@@ -93,36 +125,3 @@ private data class ActionItem(
     val text: String,
     val action: AyahAction
 )
-
-@Composable
-private fun ActionButton(
-    actionItem: ActionItem,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .widthIn(min = 78.dp)
-            .clickable(
-                onClick = onClick,
-                interactionSource = MutableInteractionSource(),
-                indication = null,
-            )
-            .padding(horizontal = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            painter = actionItem.icon,
-            modifier = Modifier.size(24.dp),
-            tint = Theme.color.primary.primary,
-            contentDescription = actionItem.text
-        )
-        Text(
-            modifier = Modifier.padding(top = 2.dp),
-            text = actionItem.text,
-            color = Theme.color.primary.primary,
-            style = Theme.textStyle.label.small
-        )
-    }
-
-}

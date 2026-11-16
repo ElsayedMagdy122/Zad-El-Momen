@@ -1,5 +1,12 @@
 package dev.sayed.mehrabalmomen.presentation.screen.reminders.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -7,31 +14,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.sayed.mehrabalmomen.R
 import dev.sayed.mehrabalmomen.design_system.component.Switch
-import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
-import dev.sayed.mehrabalmomen.domain.model.AppSettings
-import dev.sayed.mehrabalmomen.domain.model.RecurrencePattern
 import dev.sayed.mehrabalmomen.domain.model.ReminderConfig
 import dev.sayed.mehrabalmomen.domain.model.ReminderType
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
@@ -42,20 +49,13 @@ import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.getRecurrenceText
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.getReminderIcon
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.getReminderTitle
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import java.util.Locale
+import org.jetbrains.compose.resources.painterResource
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_calendar_small
+import zadelmomen.presentation.generated.resources.ic_clock_small
+import zadelmomen.presentation.generated.resources.ic_close
+import zadelmomen.presentation.generated.resources.ic_pencil_edit
+import zadelmomen.presentation.generated.resources.remove
 
 @Composable
 fun ReminderItem(
@@ -76,13 +76,9 @@ fun ReminderItem(
 
     val amPm = if (config.hour >= 12) "PM" else "AM"
 
-    val formattedTime = String.format(
-        Locale.ENGLISH,
-        "%02d:%02d %s",
-        hour12,
-        config.minute,
-        amPm
-    ).toLocalizedDigits(language).localizeAmPm(language)
+    val formattedTime = "${hour12.toString().padStart(2, '0')}:${config.minute.toString().padStart(2, '0')} $amPm"
+        .toLocalizedDigits(language)
+        .localizeAmPm(language)
 
     val icon = getReminderIcon(config)
     val title = getReminderTitle(config)
@@ -117,7 +113,6 @@ fun ReminderItem(
             .background(Theme.color.surfaces.surfaceLow)
             .padding(16.dp)
     ) {
-        // Top Row: Icon + Title on Start, Switch on End
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -137,7 +132,7 @@ fun ReminderItem(
                 ) {
                     Icon(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(icon.resId),
+                        painter = painterResource(icon.resource),
                         contentDescription = null,
                         tint = Theme.color.primary.primary
                     )
@@ -159,7 +154,6 @@ fun ReminderItem(
             )
         }
 
-        // Description
         if (descriptionText.isNotBlank()) {
             Text(
                 text = descriptionText,
@@ -171,13 +165,11 @@ fun ReminderItem(
             )
         }
 
-        // Meta info row: Time & Recurrence
         Row(
             modifier = Modifier.padding(top = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Time Badge
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -189,7 +181,7 @@ fun ReminderItem(
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_clock_small),
+                    painter = painterResource(Res.drawable.ic_clock_small),
                     contentDescription = null,
                     tint = Theme.color.secondary.shadeSecondary,
                     modifier = Modifier.size(16.dp)
@@ -201,7 +193,6 @@ fun ReminderItem(
                 )
             }
 
-            // Recurrence Badge
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -213,7 +204,7 @@ fun ReminderItem(
                 }
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_calendar_small),
+                    painter = painterResource(Res.drawable.ic_calendar_small),
                     contentDescription = null,
                     tint = Theme.color.secondary.shadeSecondary,
                     modifier = Modifier.size(16.dp)
@@ -226,7 +217,6 @@ fun ReminderItem(
             }
         }
 
-        // Horizontal Divider
         Box(
             modifier = Modifier
                 .padding(top = 14.dp, bottom = 12.dp)
@@ -235,7 +225,6 @@ fun ReminderItem(
                 .background(Theme.color.surfaces.surfaceHigh)
         )
 
-        // Bottom Action Row: Status on Start, Edit Button on End
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -263,7 +252,7 @@ fun ReminderItem(
                     style = Theme.textStyle.label.small
                 )
                 Icon(
-                    painter = painterResource(R.drawable.ic_pencil_edit),
+                    painter = painterResource(Res.drawable.ic_pencil_edit),
                     contentDescription = "تعديل التذكير",
                     tint = Theme.color.primary.shadePrimary,
                     modifier = Modifier.size(14.dp)
@@ -312,7 +301,7 @@ fun RemoveReminderDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_close),
+                        painter = painterResource(Res.drawable.ic_close),
                         contentDescription = "إغلاق",
                         tint = Theme.color.primary.primary,
                         modifier = Modifier.size(14.dp)
@@ -362,7 +351,7 @@ fun RemoveReminderDialog(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = localizedString(R.string.remove),
+                            text = localizedString(Res.string.remove),
                             style = Theme.textStyle.label.medium,
                             color = Theme.color.semantic.error,
                             fontWeight = FontWeight.Bold,
@@ -377,111 +366,3 @@ fun RemoveReminderDialog(
         }
     }
 }
-
-@Preview(showBackground = true, backgroundColor = 0xFFF8F9FA)
-@Composable
-private fun ReminderItemPreview() {
-    MehrabTheme(
-        language = AppSettings.Language.ARABIC,
-        isDarkTheme = false
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            ReminderItem(
-                config = ReminderConfig(
-                    id = 0L,
-                    title = "التنبيه قبل الصلاة",
-                    description = "اقترب موعد الأذان، استعد للوضوء والصلاة",
-                    hour = 0,
-                    minute = 15,
-                    recurrence = RecurrencePattern.DAILY,
-                    isEnabled = true,
-                    type = ReminderType.BEFORE_PRAYER
-                ),
-                onToggle = {},
-                onEditClick = {}
-            )
-
-            ReminderItem(
-                config = ReminderConfig(
-                    id = 1L,
-                    title = "أذكار الصباح",
-                    description = "لا تنس أذكار الصباح والتحصين",
-                    hour = 7,
-                    minute = 0,
-                    recurrence = RecurrencePattern.DAILY,
-                    isEnabled = true,
-                    type = ReminderType.MORNING_AZKAR
-                ),
-                onToggle = {},
-                onEditClick = {}
-            )
-
-            ReminderItem(
-                config = ReminderConfig(
-                    id = 2L,
-                    title = "الورد القرآني اليومي",
-                    description = "حان وقت وردك القرآني اليومي",
-                    hour = 20,
-                    minute = 0,
-                    recurrence = RecurrencePattern.DAILY,
-                    isEnabled = true,
-                    type = ReminderType.DAILY_WORD
-                ),
-                onToggle = {},
-                onEditClick = {}
-            )
-
-            ReminderItem(
-                config = ReminderConfig(
-                    id = 3L,
-                    title = "سنن الجمعة",
-                    description = "أكثر من الصلاة على النبي واقرأ سورة الكهف",
-                    hour = 9,
-                    minute = 0,
-                    recurrence = RecurrencePattern.WEEKLY_THURSDAY,
-                    isEnabled = false,
-                    type = ReminderType.FRIDAY_SUNNAN
-                ),
-                onToggle = {},
-                onEditClick = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF121212)
-@Composable
-private fun ReminderItemDarkPreview() {
-    MehrabTheme(
-        language = AppSettings.Language.ARABIC,
-        isDarkTheme = true
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Theme.color.surfaces.surface)
-                .padding(16.dp)
-        ) {
-            ReminderItem(
-                config = ReminderConfig(
-                    id = 1L,
-                    title = "أذكار الصباح",
-                    description = "لا تنس أذكار الصباح والتحصين",
-                    hour = 7,
-                    minute = 0,
-                    recurrence = RecurrencePattern.DAILY,
-                    isEnabled = true,
-                    type = ReminderType.MORNING_AZKAR
-                ),
-                onToggle = {},
-                onEditClick = {}
-            )
-        }
-    }
-}
-
