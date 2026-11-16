@@ -3,7 +3,7 @@ name: iOS Appetize Deployment
 on:
   workflow_dispatch:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop,feature/cmp-multiplatform-migration ]
     paths:
       - 'iosApp/**'
       - 'shared/**'
