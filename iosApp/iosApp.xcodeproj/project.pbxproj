@@ -144,6 +144,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png",
 			);
 			name = "Fix AppIcon Size";
 			outputFileListPaths = (
@@ -152,7 +153,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Skipping icon resize if not present\"\n";
+			shellScript = "echo \"Resizing AppIcon to 1024x1024...\"\nsips -z 1024 1024 \"$SRCROOT/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png\"\n";
 		};
 		B46A5965DC437D4AFD79F9AE /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -171,7 +172,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :presentation:assemblePresentationKitDebugFramework\n";
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\nif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n  ./gradlew :presentation:linkPresentationKitDebugFrameworkIosSimulatorArm64\nelse\n  ./gradlew :presentation:linkPresentationKitDebugFrameworkIosArm64\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
