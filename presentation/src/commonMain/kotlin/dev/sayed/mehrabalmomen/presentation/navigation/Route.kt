@@ -15,4 +15,14 @@ sealed interface Route {
     data object HomeScreen : Route {
         override val route = "home_screen"
     }
+
+    @Serializable
+    data object CalculationMethodScreen : Route {
+        override val route = "calculation_method_screen"
+    }
+
+    @Serializable
+    data object PermissionsScreen : Route {
+        override val route = "permissions_screen"
+    }
 }
