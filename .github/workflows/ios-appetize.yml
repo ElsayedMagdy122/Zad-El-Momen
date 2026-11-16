@@ -42,20 +42,28 @@ jobs:
             exit 0
           fi
           ./gradlew clean
+          
+          # Detect available iPhone simulator dynamically
+          DEVICE_NAME=$(xcrun simctl list devices available | grep -E 'iPhone [0-9]' | head -n 1 | sed 's/ (.*//' | xargs)
+          if [ -z "$DEVICE_NAME" ]; then
+            DEVICE_NAME="iPhone 16"
+          fi
+          echo "📱 Using simulator device: $DEVICE_NAME"
+
           xcodebuild clean build \
             -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
-            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -destination "platform=iOS Simulator,name=$DEVICE_NAME" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             ENABLE_PREVIEWS=NO
 
       - name: Zip .app bundle
         run: |
-          if [ ! -d "iosApp/iosApp.xcodeproj" ]; then
+          if [ ! -d "iosApp/iosCard.xcodeproj" ] && [ ! -d "iosApp/iosApp.xcodeproj" ]; then
             exit 0
           fi
           APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
