@@ -144,6 +144,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png",
 			);
 			name = "Fix AppIcon Size";
 			outputFileListPaths = (
@@ -152,7 +153,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Skipping icon resize if not present\"\n";
+			shellScript = "echo \"Resizing AppIcon to 1024x1024...\"\nsips -z 1024 1024 \"$SRCROOT/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png\"\n";
 		};
 		B46A5965DC437D4AFD79F9AE /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -358,10 +359,11 @@
 					"$(SRCROOT)/../presentation/build/bin/iosSimulatorArm64/releaseFramework",
 					"$(SRCROOT)/../presentation/build/bin/iosArm64/releaseFramework",
 				);
-				GENERATE_INFOPLIST_FILE = `YES`;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchSuccess_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -369,7 +371,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				SWIFT_EMIT_LOC_STRING_CATALOG = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -387,8 +389,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		16F2590F8C076F499CBD565B /* Build configuration list for PBXNativeTarget "iosApp" */,
-		16F2590F8C076F499CBD565B /* Build configuration list for PBXNativeTarget "iosApp" */ = {
+		16F2590F8C076F499CBD565B /* Build configuration list for nativeTarget "iosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3906B5CCC0790C3F9B4EB30D /* Debug */,
