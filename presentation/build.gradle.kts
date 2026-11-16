@@ -33,6 +33,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":designSystem"))
+                implementation(project(":data"))
                 implementation(libs.kotlin.stdlib)
 
                 implementation(libs.compose.runtime)

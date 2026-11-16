@@ -7,8 +7,6 @@ plugins {
     alias(libs.plugins.googleGmsGoogleServices)
     alias(libs.plugins.googleFirebaseCrashlytics)
     alias(libs.plugins.googleFirebaseFirebasePerf)
-    alias(libs.plugins.androidx.room)
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -135,9 +133,6 @@ android {
         compose = true
         buildConfig = true
     }
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
 }
 
 kotlin {
@@ -147,6 +142,11 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":presentation"))
+    implementation(project(":domain"))
+    implementation(project(":designSystem"))
+    implementation(project(":data"))
+
     //Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.compose.ui)
@@ -168,10 +168,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.firebase.analytics)
 
-    val room_version = "2.8.4"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:${room_version}")
-    ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.media:media:1.6.0")
     // AndroidX
     implementation(libs.bundles.androidx.core)
