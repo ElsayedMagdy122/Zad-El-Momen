@@ -1,27 +1,161 @@
 package dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions
 
+import androidx.lifecycle.viewModelScope
+import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.error
+import zadelmomen.presentation.generated.resources.location_services_disabled
+import zadelmomen.presentation.generated.resources.no_internet_connection
+import zadelmomen.presentation.generated.resources.ic_close_circle
+import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.design_system.base.UiText as DesignUiText
+import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
+import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
+import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class PermissionsViewModel(
-    private val settingsRepository: SettingsRepository
-) : BaseViewModel<PermissionsUiState, PermissionsEffect>(PermissionsUiState()),
-    PermissionsInteractionListener {
+    private val locationRepository: LocationRepository,
+    private val settingsRepository: SettingsRepository,
+    private val networkConnectionRepository: NetworkConnectionRepository,
+    private val permissionProvider: PermissionProvider
+) : BaseViewModel<PermissionsUiState, PermissionsEffect>(PermissionsUiState()), PermissionsInteractionListener {
 
-    override fun onClickAllowLocationAccess() {}
-    override fun onClickAllowNotificationAccess() {}
-    override fun onClickAllowAlarmAccess() {}
-    override fun onClickAllowBackgroundAccess() {}
+    override fun onClickAllowLocationAccess() {
+        if (permissionProvider.hasLocationPermission()) {
+            sendEffect(PermissionsEffect.RequestEnableGps)
+        } else {
+            sendEffect(PermissionsEffect.RequestLocationPermission)
+        }
+    }
+
+    override fun onClickAllowNotificationAccess() {
+        sendEffect(PermissionsEffect.RequestNotificationPermission)
+    }
+
+    override fun onClickAllowAlarmAccess() {
+        sendEffect(PermissionsEffect.RequestAlarmPermission)
+    }
+
+    override fun onClickAllowBackgroundAccess() {
+        sendEffect(PermissionsEffect.RequestBackgroundPermission)
+    }
 
     override fun onClickNext() {
-        tryToCall(
-            block = {
-                settingsRepository.setOnboardingComplete()
-            },
-            onSuccess = {
-                sendEffect(PermissionsEffect.NavigateToHome)
-            },
-            onError = {}
+        viewModelScope.launch {
+            settingsRepository.setOnboardingComplete()
+            sendEffect(PermissionsEffect.NavigateToHome)
+        }
+    }
+
+    fun onNotificationPermissionGranted() {
+        updateState { it.copy(isNotificationPermissionGranted = true) }
+        checkIfAllPermissionsGranted()
+    }
+
+    fun updateInitialPermissions() {
+        viewModelScope.launch {
+            val savedLocation = settingsRepository.observeLocation().first()
+            val hasSavedLocation = savedLocation.latitude != 0.0 && savedLocation.longitude != 0.0
+            val isLocationGranted = permissionProvider.hasLocationPermission() && hasSavedLocation
+
+            updateState {
+                it.copy(
+                    isLocationPermissionGranted = isLocationGranted,
+                    isNotificationPermissionGranted = permissionProvider.hasNotificationPermission(),
+                    isAlarmPermissionGranted = permissionProvider.canScheduleExactAlarms(),
+                    isBackgroundPermissionGranted = permissionProvider.isIgnoringBatteryOptimizations(),
+                    isNotificationPermissionRequired = permissionProvider.isNotificationPermissionRequired(),
+                    isAlarmPermissionRequired = permissionProvider.isExactAlarmPermissionRequired()
+                )
+            }
+            checkIfAllPermissionsGranted()
+        }
+    }
+
+    private fun checkIfAllPermissionsGranted() {
+        val state = screenState.value
+        val requiredGranted = state.isLocationPermissionGranted &&
+                (!state.isAlarmPermissionRequired || state.isAlarmPermissionGranted) &&
+                !state.isLocationLoading
+
+        updateState { it.copy(isButtonEnabled = requiredGranted) }
+    }
+
+    fun onLocationGranted() {
+        sendEffect(PermissionsEffect.RequestEnableGps)
+    }
+
+    fun onGpsEnabled() {
+        viewModelScope.launch {
+            handleLocationPermissionGranted()
+        }
+    }
+
+    fun onGpsDenied() {
+        updateState {
+            it.copy(
+                isLocationPermissionGranted = false,
+                isLocationLoading = false
+            )
+        }
+        sendEffect(
+            PermissionsEffect.ShowToast(
+                ToastDetails(
+                    title = DesignUiText.ResString(Res.string.error),
+                    message = DesignUiText.ResString(Res.string.location_services_disabled),
+                    icon = Res.drawable.ic_close_circle
+                )
+            )
         )
+        checkIfAllPermissionsGranted()
+    }
+
+    private suspend fun handleLocationPermissionGranted() {
+        updateState { it.copy(isLocationLoading = true) }
+        checkIfAllPermissionsGranted()
+        try {
+            val isNetworkAvailable = networkConnectionRepository.isCurrentlyConnected()
+            if (!isNetworkAvailable) {
+                sendEffect(PermissionsEffect.ShowToast(ToastDetails(
+                    title = DesignUiText.ResString(Res.string.error),
+                    message = DesignUiText.ResString(Res.string.no_internet_connection),
+                    icon = Res.drawable.ic_close_circle
+                )))
+                updateState { it.copy(isLocationLoading = false, isLocationPermissionGranted = false) }
+                checkIfAllPermissionsGranted()
+                return
+            }
+
+            val location = locationRepository.getLocation()
+            settingsRepository.saveLocation(location)
+            updateState {
+                it.copy(
+                    isLocationLoading = false,
+                    isLocationPermissionGranted = true
+                )
+            }
+            checkIfAllPermissionsGranted()
+        } catch (e: Exception) {
+            updateState { it.copy(isLocationLoading = false, isLocationPermissionGranted = false) }
+            sendEffect(PermissionsEffect.ShowToast(ToastDetails(
+                title = DesignUiText.ResString(Res.string.error),
+                message = DesignUiText.ResString(Res.string.error),
+                icon = Res.drawable.ic_close_circle
+            )))
+            checkIfAllPermissionsGranted()
+        }
+    }
+
+    fun onLocationDenied() {
+        updateState {
+            it.copy(
+                isLocationPermissionGranted = false,
+                isLocationLoading = false
+            )
+        }
+        checkIfAllPermissionsGranted()
     }
 }

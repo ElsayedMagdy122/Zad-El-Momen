@@ -68,9 +68,9 @@ import zadelmomen.presentation.generated.resources.background_permission
 import zadelmomen.presentation.generated.resources.background_permission_desc
 
 @Composable
-fun PermissionsScreen(
+actual fun PermissionsScreen(
     navController: NavController,
-    viewModel: PermissionsViewModel = koinViewModel()
+    viewModel: PermissionsViewModel
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val context = LocalContext.current
