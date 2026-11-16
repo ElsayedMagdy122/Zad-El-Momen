@@ -29,7 +29,7 @@ outputs/
 app/release/
 output-metadata.json
 baselineProfiles/
-
+/.kotlin
 # Gradle & cache
 .gradle/
 gradle/

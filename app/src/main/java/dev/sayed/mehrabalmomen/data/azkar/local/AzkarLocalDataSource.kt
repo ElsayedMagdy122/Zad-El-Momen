@@ -7,7 +7,6 @@ import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarCustomCategoryEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarCustomItemEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarHistoryEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarStatsEntity
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class AzkarLocalDataSource(
