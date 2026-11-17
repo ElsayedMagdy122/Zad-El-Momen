@@ -3,7 +3,7 @@ name: iOS Appetize Deployment
 on:
   workflow_dispatch:
   push:
-    branches: [ main,feature/cmp-multiplatform-migration ]
+    branches: [ main, ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
