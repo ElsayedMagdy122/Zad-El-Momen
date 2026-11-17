@@ -28,10 +28,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Cloudflared
+      - name: Install Cloudflared & flutter-remote
         run: |
           brew install cloudflared
-          npm install -g serve-sim
+          npm install -g flutter-remote
 
       - name: Cache Kotlin/Native
         uses: actions/cache@v4
@@ -67,13 +67,30 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: Launch Remote Interactive Session
+      - name: Boot Simulator & Launch Application
         run: |
           APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
           if [ -z "$APP_PATH" ]; then
             echo "Error: .app bundle not found!"
             exit 1
           fi
-          echo "🚀 Found App Bundle at: $APP_PATH"
-          echo "🌐 Launching iOS Remote WebRTC Tunnel..."
-          npx serve-sim --app "$APP_PATH" --tunnel cloudflared
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
+
+          # Boot iOS Simulator
+          DEVICE_UUID=$(xcrun simctl list devices available | grep -E "iPhone (15|14|16)" | head -n 1 | awk -F '[()]' '{print $2}')
+          if [ -z "$DEVICE_UUID" ]; then
+            DEVICE_UUID=$(xcrun simctl list devices available | grep "iPhone" | head -n 1 | awk -F '[()]' '{print $2}')
+          fi
+          echo "Booting simulator $DEVICE_UUID..."
+          xcrun simctl boot "$DEVICE_UUID" || true
+
+          # Install and launch app
+          xcrun simctl install "$DEVICE_UUID" "$APP_PATH"
+          BUNDLE_ID=$(defaults read "$APP_PATH/Info.plist" CFBundleIdentifier)
+          echo "Launching bundle $BUNDLE_ID..."
+          xcrun simctl launch "$DEVICE_UUID" "$BUNDLE_ID" || true
+
+      - name: Launch flutter-remote WebRTC Session
+        run: |
+          echo "🚀 Starting flutter-remote interactive session..."
+          npx flutter-remote up --app-file "$APP_PATH"
