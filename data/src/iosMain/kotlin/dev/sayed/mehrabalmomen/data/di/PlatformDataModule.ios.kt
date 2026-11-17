@@ -15,6 +15,7 @@ import dev.sayed.mehrabalmomen.data.platform.audio.IosAudioPlayer
 import dev.sayed.mehrabalmomen.data.platform.sensor.IosCompassSensorManager
 import dev.sayed.mehrabalmomen.data.platform.system.IosDeviceInfoProvider
 import dev.sayed.mehrabalmomen.data.platform.system.IosPermissionProvider
+import dev.sayed.mehrabalmomen.data.quran.audio.repository.IosQuranAudioReadersRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.repositiory.IosBatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import dev.sayed.mehrabalmomen.data.util.IosBillingManager
@@ -29,6 +30,7 @@ import dev.sayed.mehrabalmomen.domain.repository.platform.DeviceInfoProvider
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.CompassSensorManager as DomainCompassSensorManager
+import dev.sayed.mehrabalmomen.domain.repository.quran.QuranAudioReadersRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -55,6 +57,14 @@ actual val platformDataModule: Module = module {
     single<BugReportRemoteDataSource> { IosBugReportRemoteDataSourceImpl() }
     single<BatteryOptimizationRepository> { IosBatteryOptimizationRepositoryImpl() }
     single<PermissionProvider> { IosPermissionProvider() }
+    single<QuranAudioReadersRepository> {
+        IosQuranAudioReadersRepositoryImpl(
+            readersRemoteDataSource = get(),
+            downloadedReciterDao = get(),
+            recitationPreferences = get(),
+            httpClient = get()
+        )
+    }
     factory<AudioPlayer> { IosAudioPlayer() }
     factory<AudioPlayer>(named("radio")) { IosAudioPlayer() }
 }
