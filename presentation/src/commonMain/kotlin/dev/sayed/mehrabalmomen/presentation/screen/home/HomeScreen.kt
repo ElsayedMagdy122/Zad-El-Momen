@@ -111,7 +111,7 @@ fun HomeScreen(
                             arabicName = state.lastTilawahUi.nameArabic,
                             englishName = state.lastTilawahUi.nameEnglish,
                             targetAyahId = state.lastTilawahUi.ayahId
-                        ).route
+                        )
                     )
                 },
                 surahUiState = state.lastTilawahUi,

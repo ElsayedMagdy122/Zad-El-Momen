@@ -4,5 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSKeyedArchiverRootObjectNeeded</key>
+	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>نحتاج موقعك لحساب مواقيت الصلاة واتجاه القبلة بدقة.</string>
 </dict>
 </plist>
