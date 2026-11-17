@@ -16,7 +16,7 @@ concurrency:
 jobs:
   remote-ios:
     name: Run Remote iOS Simulator
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 60
 
     steps:
