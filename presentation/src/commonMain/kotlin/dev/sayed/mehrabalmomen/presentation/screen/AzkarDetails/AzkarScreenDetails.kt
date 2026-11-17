@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +41,7 @@ import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import zadelmomen.presentation.generated.resources.*
@@ -305,7 +305,7 @@ fun AzkarItemCard(
             lineHeight = 32.sp,
             fontFamily = FontFamily(
                 Font(
-                    resId = dev.sayed.mehrabalmomen.designsystem.generated.resources.Res.font.hafs,
+                    dev.sayed.mehrabalmomen.designsystem.generated.resources.Res.font.hafs,
                     weight = FontWeight.Medium,
                     style = FontStyle.Normal
                 )

@@ -18,7 +18,10 @@ import androidx.compose.ui.unit.sp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarTimeFilter
-import java.time.LocalDate
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
 import zadelmomen.presentation.generated.resources.*
 
 @Composable
@@ -81,9 +84,9 @@ fun AzkarContributionHeatmap(
             AzkarTimeFilter.YEAR -> 364
         }
 
-        val today = LocalDate.now()
+        val today = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val dateList = (0 until totalDays).map { i ->
-            today.minusDays((totalDays - 1 - i).toLong())
+            today.minus(totalDays - 1 - i, DateTimeUnit.DAY)
         }
 
         val weeks = dateList.chunked(7)

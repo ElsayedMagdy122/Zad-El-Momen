@@ -14,7 +14,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerConst
 import dev.sayed.mehrabalmomen.presentation.screen.radio.player.RadioPlayerConstants.STREAM_URL
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
-import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
 actual fun RadioScreen(

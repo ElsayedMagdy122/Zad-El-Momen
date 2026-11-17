@@ -6,7 +6,7 @@ import dev.sayed.mehrabalmomen.domain.entity.azkar.AzkarItem
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
-import dev.sayed.mehrabalmomen.designsystem.base.UiText as DesignUiText
+import dev.sayed.mehrabalmomen.design_system.base.UiText as DesignUiText
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
