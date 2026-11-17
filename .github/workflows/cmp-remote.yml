@@ -103,18 +103,18 @@ jobs:
           } >> ~/.gradle/gradle.properties
           chmod +x gradlew || true
 
-      # Optional: put the full content of your local.properties in ONE secret
-      # named LOCAL_PROPERTIES (SUPABASE_URL=..., one per line). Skipped if unset.
+      # Same keys as the Appetize workflow: one secret per key.
       - name: Create local.properties
-        env:
-          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
         run: |
-          if [ -n "$LOCAL_PROPERTIES" ]; then
-            printf '%s\n' "$LOCAL_PROPERTIES" >> local.properties
-            echo "local.properties created"
-          else
-            echo "No LOCAL_PROPERTIES secret, skipping"
-          fi
+          {
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}"
+            echo "SUPPORT_1=${{ secrets.SUPPORT_1 }}"
+            echo "SUPPORT_5=${{ secrets.SUPPORT_5 }}"
+            echo "SUPPORT_10=${{ secrets.SUPPORT_10 }}"
+            echo "SUPPORT_25=${{ secrets.SUPPORT_25 }}"
+            echo "SUPPORT_100=${{ secrets.SUPPORT_100 }}"
+          } >> local.properties
 
       - name: Boot iOS Simulator
         id: sim
