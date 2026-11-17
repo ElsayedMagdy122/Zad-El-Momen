@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.IosBugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.datastore.createIosDataStore
 import dev.sayed.mehrabalmomen.data.location.IosLocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.platform.IosAlarmScheduler
@@ -14,6 +15,7 @@ import dev.sayed.mehrabalmomen.data.platform.sensor.IosCompassSensorManager
 import dev.sayed.mehrabalmomen.data.platform.system.IosDeviceInfoProvider
 import dev.sayed.mehrabalmomen.data.platform.system.IosPermissionProvider
 import dev.sayed.mehrabalmomen.data.settings.repositiory.IosBatteryOptimizationRepositoryImpl
+import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import dev.sayed.mehrabalmomen.data.util.IosBillingManager
 import dev.sayed.mehrabalmomen.data.util.network.IosNetworkConnectionRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
@@ -35,6 +37,11 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>> { createIosDataStore("mehrab_settings.preferences_pb") }
     single<DataStore<Preferences>>(named("azkar_prefs")) { createIosDataStore("azkar_prefs.preferences_pb") }
     single<DataStore<Preferences>>(named("recitation_prefs")) { createIosDataStore("recitation_prefs.preferences_pb") }
+    single<AppDatabase> {
+        getDatabaseBuilder()
+            .fallbackToDestructiveMigration(true)
+            .build()
+    }
     single<LocationRepository> { IosLocationRepositoryImpl(get()) }
     single<AlarmScheduler> { IosAlarmScheduler() }
     single<NotificationScheduler> { IosNotificationScheduler() }
