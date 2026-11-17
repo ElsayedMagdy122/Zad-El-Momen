@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.data.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.IosBugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
@@ -39,6 +40,7 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>>(named("recitation_prefs")) { createIosDataStore("recitation_prefs.preferences_pb") }
     single<AppDatabase> {
         getDatabaseBuilder()
+            .setDriver(BundledSQLiteDriver())
             .fallbackToDestructiveMigration(true)
             .build()
     }

@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.data.database
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
@@ -20,6 +21,5 @@ actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     val dbFilePath = documentDirectory?.path + "/mehrab_database.db"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFilePath
-    )
+    ).setDriver(BundledSQLiteDriver())
 }
-

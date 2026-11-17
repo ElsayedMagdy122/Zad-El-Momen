@@ -32,24 +32,21 @@ class RadioPlayerService : Service() {
         val actionString = intent?.getStringExtra(ACTION_SENDED)
         val url = intent?.getStringExtra(STREAM_URL)
         val action = actionString?.let { runCatching { RadioPlayerAction.valueOf(it) }.getOrNull() }
+        val titleText = intent?.getStringExtra(NOTIFICATION_TITLE) ?: "راديو القرآن الكريم"
 
         when (action) {
-            RadioPlayerAction.PLAY -> {
-                val title = intent?.getStringExtra(NOTIFICATION_TITLE) ?: "راديو القرآن الكريم"
-                createNotificationChannel()
-                startForeground(MEDIA_FOREGROUND_ID, buildNotification(title))
+            RadioPlayerAction.PLAY -> url?.let {
+                showForegroundNotification(titleText)
+                audioPlayer.play(AudioSource.RemoteUrl(it))
+            }
 
-                if (!url.isNullOrEmpty()) {
-                    serviceScope.launch {
-                        audioPlayer.play(AudioSource.RemoteUrl(url))
-                    }
-                }
+            RadioPlayerAction.PAUSE -> {
+                audioPlayer.pause()
+                stopForeground(STOP_FOREGROUND_REMOVE)
             }
 
             RadioPlayerAction.STOP -> {
-                serviceScope.launch {
-                    audioPlayer.stop()
-                }
+                audioPlayer.stop()
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
             }
@@ -57,23 +54,28 @@ class RadioPlayerService : Service() {
             else -> {}
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
-    private fun createNotificationChannel() {
+    private fun showForegroundNotification(titleText: String) {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager?.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channel)
         }
+
+        val notification = buildNotification(titleText)
+        startForeground(MEDIA_FOREGROUND_ID, notification)
     }
 
     override fun onDestroy() {
         serviceScope.cancel()
+        audioPlayer.stop()
         audioPlayer.release()
         super.onDestroy()
     }
@@ -88,12 +90,17 @@ class RadioPlayerService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        val smallIconRes = resources.getIdentifier("ic_radio_selected", "drawable", packageName).takeIf { it != 0 }
+            ?: android.R.drawable.ic_media_play
+        val stopIconRes = resources.getIdentifier("ic_stop", "drawable", packageName).takeIf { it != 0 }
+            ?: android.R.drawable.ic_menu_close_clear_cancel
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("اذاعة القران الكريم")
             .setContentText(titleText)
-            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setSmallIcon(smallIconRes)
             .setOngoing(true)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "إيقاف", stopPendingIntent)
+            .addAction(stopIconRes, "إيقاف", stopPendingIntent)
             .setOnlyAlertOnce(true)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
