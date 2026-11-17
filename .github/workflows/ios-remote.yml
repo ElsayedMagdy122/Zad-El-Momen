@@ -2,6 +2,12 @@ name: iOS Remote Streaming
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main, develop, feature/cmp-multiplatform-migration ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
 
 concurrency:
   group: ios-remote-${{ github.ref }}
