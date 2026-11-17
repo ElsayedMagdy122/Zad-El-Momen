@@ -4,9 +4,15 @@
 # Start it from: Actions tab -> cmp-remote -> Run workflow, then open the
 # trycloudflare.com URL printed in the "Open tunnel" step (also in the job summary).
 name: cmp-remote
-run-name: cmp-remote · ${{ inputs.minutes }}m
+run-name: cmp-remote · ${{ inputs.minutes || '20' }}m
 
 on:
+  push:
+    branches: [ main, feature/cmp-multiplatform-migration ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.gitignore'
   workflow_dispatch:
     inputs:
       minutes:
@@ -37,7 +43,7 @@ concurrency:
 
 jobs:
   stream:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner || 'macos-26' }}
     timeout-minutes: 360
     env:
       PREVIEW_PORT: "3200"
@@ -51,7 +57,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: ${{ inputs.java_version }}
+          java-version: ${{ inputs.java_version || '21' }}
 
       # Caches ~/.gradle; branches other than main only read the cache
       - uses: gradle/actions/setup-gradle@v4
@@ -115,7 +121,7 @@ jobs:
         timeout-minutes: 10
         run: |
           set -euo pipefail
-          DEVICE='${{ inputs.device }}'
+          DEVICE='${{ inputs.device || 'iPhone 17 Pro' }}'
           UDID=$(xcrun simctl list devices available | grep -F "$DEVICE (" | head -1 \
             | sed -E 's/.*\(([0-9A-Fa-f-]{36})\).*/\1/' || true)
           if [ -z "$UDID" ]; then
@@ -135,8 +141,8 @@ jobs:
           # The Xcode "Compile Kotlin Framework" build phase calls Gradle
           # (embedAndSignAppleFrameworkForXcode), so no separate Gradle step is needed.
           xcodebuild build \
-            -project '${{ inputs.xcodeproj }}' \
-            -scheme '${{ inputs.scheme }}' \
+            -project '${{ inputs.xcodeproj || 'iosApp/iosApp.xcodeproj' }}' \
+            -scheme '${{ inputs.scheme || 'iosApp' }}' \
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath build-ios \
@@ -209,5 +215,5 @@ jobs:
 
       - name: Hold the session open
         run: |
-          echo "Session open for ${{ inputs.minutes }} minutes. Cancel the run to stop earlier."
-          sleep $(( ${{ inputs.minutes }} * 60 ))
+          echo "Session open for ${{ inputs.minutes || '20' }} minutes. Cancel the run to stop earlier."
+          sleep $(( ${{ inputs.minutes || '20' }} * 60 ))
