@@ -99,7 +99,7 @@ actual val platformDataModule: Module = module {
     @OptIn(UnstableApi::class)
     factory<AudioPlayer> { AndroidAudioPlayer(androidContext()) }
     @OptIn(UnstableApi::class)
-    factory<AudioPlayer>(named("radio")) { AndroidAudioPlayer(androidContext()) }
+    single<AudioPlayer>(named("radio")) { AndroidAudioPlayer(androidContext()) }
     single<Logger> { AndroidLogger() }
     @Suppress("MissingPermission")
     single<AnalyticsTracker> { AndroidAnalyticsTracker(FirebaseAnalytics.getInstance(androidContext())) }

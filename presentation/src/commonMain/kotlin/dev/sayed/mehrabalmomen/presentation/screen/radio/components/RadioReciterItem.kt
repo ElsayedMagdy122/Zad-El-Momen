@@ -60,6 +60,13 @@ fun RadioReciterItem(
                 else Modifier
             )
             .background(Theme.color.surfaces.surfaceLow)
+            .clickable {
+                if (state.isPlaying) {
+                    listener.onPauseClick(state.id)
+                } else {
+                    listener.onPlayClick(state.id)
+                }
+            }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

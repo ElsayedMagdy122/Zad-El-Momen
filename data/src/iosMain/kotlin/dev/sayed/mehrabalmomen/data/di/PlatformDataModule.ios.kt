@@ -66,5 +66,5 @@ actual val platformDataModule: Module = module {
         )
     }
     factory<AudioPlayer> { IosAudioPlayer() }
-    factory<AudioPlayer>(named("radio")) { IosAudioPlayer() }
+    single<AudioPlayer>(named("radio")) { IosAudioPlayer() }
 }
