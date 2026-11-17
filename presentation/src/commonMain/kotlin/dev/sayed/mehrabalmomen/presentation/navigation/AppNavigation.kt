@@ -35,6 +35,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchScreen
 import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.Tasmee3Screen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
+import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.FAQScreen
@@ -100,7 +101,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 composable<Route.PrayerTimes> { PrayerTimesScreen(navController = navController) }
                 composable<Route.QiblahScreen> { QiblahScreen(navController) }
                 composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
-                composable<Route.ReminderSettingsScreen> { Box(modifier = Modifier.fillMaxSize()) }
+                composable<Route.ReminderSettingsScreen> { ReminderSettingsScreen(navController = navController) }
                 composable<Route.AzkarScreen> { AzkarScreen(navController) }
                 composable<Route.RadioScreen> { RadioScreen(navController) }
                 composable<Route.AzkarDetailScreen> { entry ->
