@@ -57,6 +57,11 @@ jobs:
           {
             echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"
             echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}"
+            echo "SUPPORT_1=${{ secrets.SUPPORT_1 }}"
+            echo "SUPPORT_5=${{ secrets.SUPPORT_5 }}"
+            echo "SUPPORT_10=${{ secrets.SUPPORT_10 }}"
+            echo "SUPPORT_25=${{ secrets.SUPPORT_25 }}"
+            echo "SUPPORT_100=${{ secrets.SUPPORT_100 }}"
           } >> local.properties
 
       - name: Build KMP iOS App for Simulator

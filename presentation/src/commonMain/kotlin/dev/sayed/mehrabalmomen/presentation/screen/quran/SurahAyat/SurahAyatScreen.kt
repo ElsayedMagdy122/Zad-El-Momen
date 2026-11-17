@@ -184,7 +184,7 @@ fun SurahAyatScreen(
                             surahName = state.arabicName,
                             startAyah = startAyah,
                             endAyah = endAyah
-                        ).route
+                        )
                     )
                 }
             )
