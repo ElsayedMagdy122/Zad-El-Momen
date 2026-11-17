@@ -34,10 +34,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Cloudflared & flutter-remote
-        run: |
-          brew install cloudflared
-          npm install -g flutter-remote
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Cache Kotlin/Native
         uses: actions/cache@v4
@@ -48,6 +48,29 @@ jobs:
           key: konan-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', 'gradle/libs.versions.toml') }}
           restore-keys: |
             konan-${{ runner.os }}-
+
+      - name: Cache Xcode derived data
+        uses: actions/cache@v4
+        with:
+          path: build-ios
+          key: ios-derived-${{ runner.os }}-${{ hashFiles('iosApp/**', '**/*.gradle.kts', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            ios-derived-${{ runner.os }}-
+
+      - name: Configure Gradle for CI
+        run: |
+          mkdir -p ~/.gradle
+          {
+            echo "org.gradle.caching=true"
+            echo "org.gradle.parallel=true"
+            echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8"
+            echo "kotlin.daemon.jvmargs=-Xmx3g"
+          } >> ~/.gradle/gradle.properties
+
+      - name: Install Cloudflared & flutter-remote
+        run: |
+          brew install cloudflared
+          npm install -g flutter-remote
 
       - name: Make gradlew executable
         run: chmod +x gradlew
