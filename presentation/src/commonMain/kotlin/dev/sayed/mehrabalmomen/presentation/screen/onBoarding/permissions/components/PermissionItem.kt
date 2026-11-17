@@ -69,19 +69,22 @@ fun PermissionItem(
 
         Column(modifier = Modifier.weight(1f)) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = localizedString(title),
                     style = Theme.textStyle.title.medium,
-                    color = Theme.color.primary.shadePrimary
+                    color = Theme.color.primary.shadePrimary,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 if (isOptional) {
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = localizedString(Res.string.permission_optional_important),
                         style = Theme.textStyle.label.small,
-                        color = Theme.color.secondary.shadeSecondary
+                        color = Theme.color.secondary.shadeSecondary,
+                        maxLines = 1
                     )
                 }
             }

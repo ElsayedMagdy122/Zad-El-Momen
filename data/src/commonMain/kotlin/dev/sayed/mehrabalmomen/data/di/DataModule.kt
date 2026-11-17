@@ -26,6 +26,7 @@ import dev.sayed.mehrabalmomen.data.reminders.ReminderSettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
+import dev.sayed.mehrabalmomen.data.util.KmpLogger
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
@@ -41,6 +42,7 @@ import dev.sayed.mehrabalmomen.domain.repository.radio.RadioRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSchedulerRepository
 import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
@@ -86,6 +88,8 @@ val commonDataModule = module {
             }
         }
     }
+
+    single<Logger> { KmpLogger() }
 
     single { BugReportStorageService(get()) }
     single { BugReportRpcService(get()) }
