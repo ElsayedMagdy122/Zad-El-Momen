@@ -1,10 +1,13 @@
 package dev.sayed.mehrabalmomen.data.di
 
 import androidx.annotation.OptIn
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.media3.common.util.UnstableApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.datastore.createAndroidDataStore
 import dev.sayed.mehrabalmomen.data.location.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.platform.AndroidAlarmScheduler
 import dev.sayed.mehrabalmomen.data.platform.AndroidNotificationScheduler
@@ -39,6 +42,9 @@ import org.koin.dsl.module
 
 @OptIn(UnstableApi::class)
 actual val platformDataModule: Module = module {
+    single<DataStore<Preferences>> { createAndroidDataStore(androidContext(), "mehrab_settings.preferences_pb") }
+    single<DataStore<Preferences>>(named("azkar_prefs")) { createAndroidDataStore(androidContext(), "azkar_prefs.preferences_pb") }
+    single<DataStore<Preferences>>(named("recitation_prefs")) { createAndroidDataStore(androidContext(), "recitation_prefs.preferences_pb") }
     single<DomainCompassSensorManager> { CompassSensorManager(androidContext()) }
     single<AlarmScheduler> { AndroidAlarmScheduler(androidContext()) }
     single<NotificationScheduler> { AndroidNotificationScheduler(androidContext()) }

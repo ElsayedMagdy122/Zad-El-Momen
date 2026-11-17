@@ -84,15 +84,17 @@ fun SettingsScreen(
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToHelpFeedback -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.ContactUsScreen)
             }
 
             SettingsEffect.NavigateToLocation -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.PermissionsScreen)
             }
 
             SettingsEffect.NavigateToRateApp -> {
-                uriHandler.openUri("https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen")
+                runCatching {
+                    uriHandler.openUri("https://play.google.com/store/apps/details?id=dev.sayed.mehrabalmomen")
+                }
             }
 
             is SettingsEffect.LaunchDonation -> {
@@ -104,19 +106,19 @@ fun SettingsScreen(
             }
 
             SettingsEffect.NavigateToContactUs -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.ContactUsScreen)
             }
 
             SettingsEffect.NavigateToPrivacy -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.PrivacyScreen)
             }
 
             SettingsEffect.NavigateToNotifications -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.ReminderSettingsScreen)
             }
 
             SettingsEffect.NavigateToFAQ -> {
-                // navController.navigate(Route.HomeScreen)
+                navController.navigate(Route.FAQScreen)
             }
 
             SettingsEffect.RequestPinWidget -> {
