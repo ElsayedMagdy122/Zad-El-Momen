@@ -6,6 +6,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.domain.di.domainModule
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.di.presentationModule
+import dev.sayed.mehrabalmomen.presentation.di.presentationPlatformModule
 import dev.sayed.mehrabalmomen.presentation.navigation.AppNavigation
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -15,7 +16,7 @@ import platform.UIKit.UIViewController
 fun createMainViewController(): UIViewController = ComposeUIViewController {
     try {
         startKoin {
-            modules(presentationModule, domainModule, *dataModule.toTypedArray())
+            modules(presentationModule, presentationPlatformModule, domainModule, *dataModule.toTypedArray())
         }
     } catch (_: Exception) {
         // Koin already started

@@ -10,6 +10,7 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
+import dev.sayed.mehrabalmomen.domain.repository.platform.WidgetPinProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
@@ -106,7 +107,8 @@ class SettingsViewModel(
     private val companionRepository: CompanionRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val billingService: BillingService,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val widgetPinProvider: WidgetPinProvider
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -590,7 +592,19 @@ class SettingsViewModel(
             SettingsUiState.SettingsAction.MOAZEN -> openMoazenDialog()
             SettingsUiState.SettingsAction.TAFSEER -> openTafseerDialog()
             SettingsUiState.SettingsAction.COMPANION -> toggleCompanion()
-            SettingsUiState.SettingsAction.WIDGET -> sendEffect(SettingsEffect.RequestPinWidget)
+            SettingsUiState.SettingsAction.WIDGET -> {
+                widgetPinProvider.requestPinWidget { title, message ->
+                    sendEffect(
+                        SettingsEffect.ShowToast(
+                            ToastDetails(
+                                title = DesignUiText.DynamicString(title),
+                                message = DesignUiText.DynamicString(message),
+                                icon = Res.drawable.ic_prayer_times_selected
+                            )
+                        )
+                    )
+                }
+            }
             else -> {}
         }
     }
