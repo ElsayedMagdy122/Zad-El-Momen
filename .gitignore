@@ -53,7 +53,7 @@ crashlytics.properties
 hs_err_pid*.log
 replay_pid*.log
 crashreports/
-
+/ZAD_JKS
 # macOS junk
 .DS_Store
 

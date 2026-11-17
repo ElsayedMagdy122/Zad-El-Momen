@@ -25,6 +25,8 @@ import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPol
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
+import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
 
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
@@ -61,7 +63,8 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.FAQScreen> { FAQScreen(navController) }
         composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
         composable<Route.PrayerTimes> { PrayerTimesScreen(navController = navController) }
-        composable<Route.CalibrateDevice> { Box(modifier = Modifier.fillMaxSize()) }
+        composable<Route.QiblahScreen> { QiblahScreen(navController) }
+        composable<Route.CalibrateDevice> { Figure8CalibrationScreen(navController) }
         composable<Route.ReminderSettingsScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.AzkarScreen> { AzkarScreen(navController) }
         composable<Route.RadioScreen> { RadioScreen(navController) }
