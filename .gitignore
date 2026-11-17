@@ -50,11 +50,11 @@ crashlytics.properties
 
 # Logs, crashes & temporary files
 *.log
+/ZAD_JKS/
+ZAD_JKS/
 hs_err_pid*.log
 replay_pid*.log
 crashreports/
-/ZAD_JKS/
-ZAD_JKS/
 # macOS junk
 .DS_Store
 
