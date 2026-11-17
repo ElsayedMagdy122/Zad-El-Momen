@@ -22,6 +22,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.FAQScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
+import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
+import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
+import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
@@ -60,8 +63,12 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         composable<Route.PrayerTimes> { PrayerTimesScreen(navController = navController) }
         composable<Route.CalibrateDevice> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.ReminderSettingsScreen> { Box(modifier = Modifier.fillMaxSize()) }
-        composable<Route.AzkarScreen> { Box(modifier = Modifier.fillMaxSize()) }
-        composable<Route.RadioScreen> { Box(modifier = Modifier.fillMaxSize()) }
+        composable<Route.AzkarScreen> { AzkarScreen(navController) }
+        composable<Route.RadioScreen> { RadioScreen(navController) }
+        composable<Route.AzkarDetailScreen> { entry ->
+            val route = entry.toRoute<Route.AzkarDetailScreen>()
+            AzkarDetailScreen(title = route.title, navController = navController)
+        }
         composable<Route.BookmarksListScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.SearchAyahScreen> { Box(modifier = Modifier.fillMaxSize()) }
         composable<Route.RecitersScreen> { RecitersScreen(navController = navController) }

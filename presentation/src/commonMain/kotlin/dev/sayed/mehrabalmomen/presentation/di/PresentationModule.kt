@@ -1,6 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.permissions.PermissionsViewModel
@@ -25,6 +28,9 @@ val presentationModule = module {
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
     viewModelOf(::PrayerTimesViewModel)
+    viewModelOf(::AzkarViewModel)
+    viewModelOf(::AzkarDetailViewModel)
+    viewModelOf(::RadioChannelsViewModel)
 
     single<suspend (String) -> String>(named("asset_reader")) {
         { fileName ->
