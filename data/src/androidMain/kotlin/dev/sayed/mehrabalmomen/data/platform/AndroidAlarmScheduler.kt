@@ -20,13 +20,7 @@ class AndroidAlarmScheduler(
 
     @SuppressLint("ScheduleExactAlarm")
     override fun schedule(requestCode: Int, triggerAtMillis: Long, task: AlarmTask) {
-        // Avoid scheduling alarms in the past
         if (triggerAtMillis <= System.currentTimeMillis()) return
-
-        // Safety check for exact alarm permission on Android 12+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!alarmManager.canScheduleExactAlarms()) return
-        }
 
         val intent = mapTaskToIntent(task)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -36,34 +30,47 @@ class AndroidAlarmScheduler(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val showIntent = if (task is AlarmTask.Prayer) {
-            val activityIntent = Intent().setClassName(context, "dev.sayed.mehrabalmomen.presentation.screen.azan.AzanActivity").apply {
-                addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK or
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
-                putExtra("PRAYER_NAME", task.prayerName)
-                putExtra("PRAYER_TIME_MILLIS", task.prayerTimeMillis)
-            }
-            PendingIntent.getActivity(
-                context,
-                requestCode,
-                activityIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-        } else {
-            pendingIntent
-        }
+        val canExact = Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                alarmManager.canScheduleExactAlarms()
 
         try {
-            // Prefer setAlarmClock for maximum precision as it's highly visible to the system
-            alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
-                pendingIntent
-            )
+            when {
+                canExact && task is AlarmTask.Prayer -> {
+                    val showIntent = PendingIntent.getActivity(
+                        context,
+                        requestCode,
+                        Intent().setClassName(context, "dev.sayed.mehrabalmomen.presentation.screen.azan.AzanActivity").apply {
+                            addFlags(
+                                Intent.FLAG_ACTIVITY_NEW_TASK or
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            )
+                            putExtra("PRAYER_NAME", task.prayerName)
+                            putExtra("PRAYER_TIME_MILLIS", task.prayerTimeMillis)
+                        },
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                    alarmManager.setAlarmClock(
+                        AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
+                        pendingIntent
+                    )
+                }
+                canExact -> {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerAtMillis,
+                        pendingIntent
+                    )
+                }
+                else -> {
+                    alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerAtMillis,
+                        pendingIntent
+                    )
+                }
+            }
         } catch (e: SecurityException) {
-            // Fallback for cases where exact alarm permission is revoked at runtime
             alarmManager.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
@@ -74,14 +81,14 @@ class AndroidAlarmScheduler(
 
     override fun cancel(requestCode: Int, task: AlarmTask) {
         val intent = mapTaskToIntent(task)
-        val pendingIntent = PendingIntent.getBroadcast(
+        val pi = PendingIntent.getBroadcast(
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.cancel(pendingIntent)
-        pendingIntent.cancel()
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        ) ?: return
+        alarmManager.cancel(pi)
+        pi.cancel()
     }
 
     override fun hasPermission(): Boolean {
@@ -89,9 +96,6 @@ class AndroidAlarmScheduler(
         return alarmManager.canScheduleExactAlarms()
     }
 
-    /**
-     * Maps domain [AlarmTask] definitions to platform-specific [Intent]s.
-     */
     private fun mapTaskToIntent(task: AlarmTask): Intent {
         return when (task) {
             is AlarmTask.Prayer -> {

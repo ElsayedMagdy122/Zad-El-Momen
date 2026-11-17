@@ -13,7 +13,9 @@ import dev.sayed.mehrabalmomen.domain.repository.reminders.ReminderSettingsRepos
 import dev.sayed.mehrabalmomen.domain.repository.reminders.TriggerStrategyFactory
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -35,7 +37,7 @@ class ReminderSchedulerRepositoryImpl(
             if (reminder.type == ReminderType.BEFORE_PRAYER) {
                 scheduleBeforePrayerReminders(reminder)
             } else {
-                val requestCode = (1000L + reminder.id).toInt()
+                val requestCode = 20000 + reminder.id.toInt()
                 val task = AlarmTask.Reminder(
                     reminderId = reminder.id,
                     title = reminder.title,
@@ -56,12 +58,15 @@ class ReminderSchedulerRepositoryImpl(
 
     @OptIn(ExperimentalTime::class)
     private suspend fun scheduleBeforePrayerReminders(reminder: ReminderConfig) {
-        Prayer.PrayerName.entries.forEach { prayerName ->
-            val requestCode = 3000 + prayerName.ordinal
-            alarmScheduler.cancel(
-                requestCode,
-                AlarmTask.Reminder(reminderId = reminder.id, typeName = ReminderType.BEFORE_PRAYER.name)
-            )
+        val days = 0..1
+        days.forEach { d ->
+            Prayer.PrayerName.entries.forEach { prayerName ->
+                val requestCode = 30000 + (d * 10) + prayerName.ordinal
+                alarmScheduler.cancel(
+                    requestCode,
+                    AlarmTask.Reminder(reminderId = reminder.id, typeName = ReminderType.BEFORE_PRAYER.name)
+                )
+            }
         }
 
         if (!reminder.isEnabled) return
@@ -73,29 +78,33 @@ class ReminderSchedulerRepositoryImpl(
             longitude = appSettings.location.longitude
         )
 
-        val todayPrayers = runCatching {
-            prayerRepository.getDailyPrayers(
-                madhab = appSettings.madhab,
-                calculationMethod = appSettings.calculationMethod,
-                location = location,
-                date = today
-            )
-        }.getOrNull() ?: return
-
-        val durationMinutes = reminder.minute.coerceAtLeast(1)
         val now = Clock.System.now().toEpochMilliseconds()
+        val durationMinutes = reminder.minute.coerceAtLeast(1)
+        val offsetMs = durationMinutes * 60 * 1000L
 
-        todayPrayers.forEach { prayer ->
-            val requestCode = 3000 + prayer.name.ordinal
-            val triggerMillis = prayer.time.toEpochMilliseconds() - (durationMinutes * 60 * 1000L)
-            if (triggerMillis > now) {
-                val task = AlarmTask.Reminder(
-                    reminderId = reminder.id,
-                    title = reminder.title.ifBlank { "التنبيه قبل الصلاة" },
-                    body = reminder.description.ifBlank { "اقترب موعد الأذان، استعد للوضوء والصلاة" },
-                    typeName = ReminderType.BEFORE_PRAYER.name
+        days.forEach { d ->
+            val date = today.plus(d, DateTimeUnit.DAY)
+            val todayPrayers = runCatching {
+                prayerRepository.getDailyPrayers(
+                    madhab = appSettings.madhab,
+                    calculationMethod = appSettings.calculationMethod,
+                    location = location,
+                    date = date
                 )
-                alarmScheduler.schedule(requestCode, triggerMillis, task)
+            }.getOrNull() ?: return@forEach
+
+            todayPrayers.forEach { prayer ->
+                val requestCode = 30000 + (d * 10) + prayer.name.ordinal
+                val triggerMillis = prayer.time.toEpochMilliseconds() - offsetMs
+                if (triggerMillis > now) {
+                    val task = AlarmTask.Reminder(
+                        reminderId = reminder.id,
+                        title = reminder.title.ifBlank { "التنبيه قبل الصلاة" },
+                        body = reminder.description.ifBlank { "اقترب موعد الأذان، استعد للوضوء والصلاة" },
+                        typeName = ReminderType.BEFORE_PRAYER.name
+                    )
+                    alarmScheduler.schedule(requestCode, triggerMillis, task)
+                }
             }
         }
     }
