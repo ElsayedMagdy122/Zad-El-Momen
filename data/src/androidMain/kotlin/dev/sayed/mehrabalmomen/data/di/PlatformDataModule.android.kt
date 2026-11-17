@@ -7,6 +7,7 @@ import androidx.media3.common.util.UnstableApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.datastore.createAndroidDataStore
 import dev.sayed.mehrabalmomen.data.location.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.platform.AndroidAlarmScheduler
@@ -21,6 +22,7 @@ import dev.sayed.mehrabalmomen.data.recitation.audio.AudioPipeline
 import dev.sayed.mehrabalmomen.data.recitation.engine.RecitationModelDownloader
 import dev.sayed.mehrabalmomen.data.recitation.engine.SherpaEngine
 import dev.sayed.mehrabalmomen.data.settings.repositiory.BatteryOptimizationRepositoryImpl
+import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import dev.sayed.mehrabalmomen.data.util.BillingManager
 import dev.sayed.mehrabalmomen.data.util.network.NetworkConnectionRepositoryImpl
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
@@ -45,6 +47,11 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>> { createAndroidDataStore(androidContext(), "mehrab_settings.preferences_pb") }
     single<DataStore<Preferences>>(named("azkar_prefs")) { createAndroidDataStore(androidContext(), "azkar_prefs.preferences_pb") }
     single<DataStore<Preferences>>(named("recitation_prefs")) { createAndroidDataStore(androidContext(), "recitation_prefs.preferences_pb") }
+    single<AppDatabase> {
+        getDatabaseBuilder()
+            .fallbackToDestructiveMigration(true)
+            .build()
+    }
     single<DomainCompassSensorManager> { CompassSensorManager(androidContext()) }
     single<AlarmScheduler> { AndroidAlarmScheduler(androidContext()) }
     single<NotificationScheduler> { AndroidNotificationScheduler(androidContext()) }
