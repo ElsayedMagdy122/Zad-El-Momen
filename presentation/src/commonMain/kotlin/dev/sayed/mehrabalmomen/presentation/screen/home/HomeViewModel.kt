@@ -66,23 +66,24 @@ class HomeViewModel(
 
     private fun observeContinueTilawah() {
         viewModelScope.launch {
+            val surahs = quranRepository.getSurahs()
+            val defaultSurah = surahs.firstOrNull { it.surahNumber == 1 }
             readingProgressRepository.observe().collect { data ->
-                if (data == null) return@collect
+                val targetSurahId = data?.surahId ?: 1
+                val targetAyahId = data?.ayahId ?: 1
+                val surah = surahs.firstOrNull { it.surahNumber == targetSurahId } ?: defaultSurah
 
-                val surah = quranRepository
-                    .getSurahs()
-                    .firstOrNull { it.surahNumber == data.surahId }
-                    ?: return@collect
-
-                updateState {
-                    it.copy(
-                        lastTilawahUi = HomeUiState.ContinueTilawahUi(
-                            surahId = data.surahId,
-                            nameArabic = surah.nameArabic,
-                            nameEnglish = surah.nameEnglish,
-                            ayahId = data.ayahId
+                if (surah != null) {
+                    updateState {
+                        it.copy(
+                            lastTilawahUi = HomeUiState.ContinueTilawahUi(
+                                surahId = surah.surahNumber,
+                                nameArabic = surah.nameArabic,
+                                nameEnglish = surah.nameEnglish,
+                                ayahId = targetAyahId
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

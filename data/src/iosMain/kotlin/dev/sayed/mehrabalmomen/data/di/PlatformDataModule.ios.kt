@@ -6,6 +6,7 @@ import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.IosBugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.datastore.createIosDataStore
 import dev.sayed.mehrabalmomen.data.location.IosLocationRepositoryImpl
+import dev.sayed.mehrabalmomen.data.platform.IosAlarmScheduler
 import dev.sayed.mehrabalmomen.data.platform.audio.IosAudioPlayer
 import dev.sayed.mehrabalmomen.data.platform.system.IosPermissionProvider
 import dev.sayed.mehrabalmomen.data.settings.repositiory.IosBatteryOptimizationRepositoryImpl
@@ -16,6 +17,7 @@ import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.network.NetworkConnectionRepository
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
+import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -26,6 +28,7 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>>(named("azkar_prefs")) { createIosDataStore("azkar_prefs.preferences_pb") }
     single<DataStore<Preferences>>(named("recitation_prefs")) { createIosDataStore("recitation_prefs.preferences_pb") }
     single<LocationRepository> { IosLocationRepositoryImpl(get()) }
+    single<AlarmScheduler> { IosAlarmScheduler() }
     single<BillingService> { IosBillingManager() }
     single<NetworkConnectionRepository> { IosNetworkConnectionRepositoryImpl() }
     single<BugReportRemoteDataSource> { IosBugReportRemoteDataSourceImpl() }
