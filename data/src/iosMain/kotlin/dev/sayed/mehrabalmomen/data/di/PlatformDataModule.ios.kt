@@ -16,6 +16,9 @@ import dev.sayed.mehrabalmomen.data.platform.sensor.IosCompassSensorManager
 import dev.sayed.mehrabalmomen.data.platform.system.IosDeviceInfoProvider
 import dev.sayed.mehrabalmomen.data.platform.system.IosPermissionProvider
 import dev.sayed.mehrabalmomen.data.quran.audio.repository.IosQuranAudioReadersRepositoryImpl
+import dev.sayed.mehrabalmomen.data.recitation.audio.AudioPipeline
+import dev.sayed.mehrabalmomen.data.recitation.engine.RecitationModelDownloader
+import dev.sayed.mehrabalmomen.data.recitation.engine.SherpaEngine
 import dev.sayed.mehrabalmomen.data.settings.repositiory.IosBatteryOptimizationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import dev.sayed.mehrabalmomen.data.util.IosBillingManager
@@ -67,4 +70,7 @@ actual val platformDataModule: Module = module {
     }
     factory<AudioPlayer> { IosAudioPlayer() }
     single<AudioPlayer>(named("radio")) { IosAudioPlayer() }
+    single { AudioPipeline() }
+    single { SherpaEngine() }
+    single { RecitationModelDownloader() }
 }

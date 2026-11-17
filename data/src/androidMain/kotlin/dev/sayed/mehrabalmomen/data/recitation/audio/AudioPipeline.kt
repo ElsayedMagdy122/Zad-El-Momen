@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class AudioPipeline(
+actual class AudioPipeline actual constructor() {
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-) {
+
     companion object {
         const val SAMPLE_RATE = 16000
         const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
@@ -27,12 +27,12 @@ class AudioPipeline(
     private var recordingJob: Job? = null
 
     private val _audioChunks = MutableSharedFlow<Float32List>(replay = 0, extraBufferCapacity = 64)
-    val audioChunks: SharedFlow<Float32List> = _audioChunks.asSharedFlow()
+    actual val audioChunks: SharedFlow<Float32List> = _audioChunks.asSharedFlow()
 
     private var isRecording = false
 
     @SuppressLint("MissingPermission")
-    fun startStreaming(onError: (Exception) -> Unit = {}) {
+    actual fun startStreaming(onError: (Exception) -> Unit) {
         if (isRecording) {
             return
         }
@@ -95,7 +95,7 @@ class AudioPipeline(
         }
     }
 
-    fun stopStreaming() {
+    actual fun stopStreaming() {
         isRecording = false
         recordingJob?.cancel()
         recordingJob = null
@@ -106,24 +106,5 @@ class AudioPipeline(
         } catch (_: Exception) {
         }
         audioRecord = null
-    }
-}
-
-class Float32List(val size: Int, init: (Int) -> Float = { 0f }) {
-    private val data = FloatArray(size, init)
-
-    operator fun get(index: Int): Float = data[index]
-    operator fun set(index: Int, value: Float) {
-        data[index] = value
-    }
-
-    fun toFloatArray(): FloatArray = data
-
-    companion object {
-        fun from(array: FloatArray): Float32List {
-            val list = Float32List(array.size) { 0f }
-            System.arraycopy(array, 0, list.data, 0, array.size)
-            return list
-        }
     }
 }

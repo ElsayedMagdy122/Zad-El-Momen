@@ -9,30 +9,20 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-data class TranscriptionResult(
-    val text: String,
-    val isFinal: Boolean,
-    val startTime: Long,
-    val tokens: List<String>,
-    val timestamps: List<Double>,
-    val streamEpoch: Int
-)
-
-class SherpaEngine(private val context: Context) {
+actual class SherpaEngine(private val context: Context) {
 
     private val _transcriptionStream = MutableSharedFlow<TranscriptionResult>(replay = 0, extraBufferCapacity = 64)
-    val transcriptionStream: SharedFlow<TranscriptionResult> = _transcriptionStream.asSharedFlow()
+    actual val transcriptionStream: SharedFlow<TranscriptionResult> = _transcriptionStream.asSharedFlow()
 
     private var onlineRecognizer: OnlineRecognizer? = null
     private var onlineStream: OnlineStream? = null
 
     private var isInitialized = false
-    var currentStreamEpoch = 0
-        private set
+    actual var currentStreamEpoch: Int = 0
 
     private val lock = Any()
 
-    fun initialize(): Boolean = synchronized(lock) {
+    actual fun initialize(): Boolean = synchronized(lock) {
         if (isInitialized) {
             return@synchronized true
         }
@@ -58,7 +48,7 @@ class SherpaEngine(private val context: Context) {
         return@synchronized isInitialized
     }
 
-    fun transcribe(chunk: Float32List, isFinal: Boolean = false): Boolean = synchronized(lock) {
+    actual fun transcribe(chunk: Float32List, isFinal: Boolean): Boolean = synchronized(lock) {
         val recognizer = onlineRecognizer
         val stream = onlineStream
         if (!isInitialized || recognizer == null || stream == null) {
@@ -108,7 +98,7 @@ class SherpaEngine(private val context: Context) {
         }
     }
 
-    fun resetBuffer() = synchronized(lock) {
+    actual fun resetBuffer() = synchronized(lock) {
         currentStreamEpoch++
         try {
             onlineStream?.release()
@@ -117,7 +107,7 @@ class SherpaEngine(private val context: Context) {
         }
     }
 
-    fun destroy() = synchronized(lock) {
+    actual fun destroy() = synchronized(lock) {
         isInitialized = false
         try { onlineStream?.release()     } catch (_: Exception) {}
         try { onlineRecognizer?.release() } catch (_: Exception) {}

@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.di
 
 import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
+import dev.sayed.mehrabalmomen.presentation.recitation.HighlightingViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
@@ -37,6 +38,16 @@ val presentationModule = module {
     viewModelOf(::QiblahViewModel)
     viewModelOf(::SearchAyahViewModel)
     viewModelOf(::BookMarkListViewModel)
+
+    single {
+        HighlightingViewModel(
+            modelDownloader = get(),
+            settingsRepository = get(),
+            audioPipeline = get(),
+            sherpaEngine = get(),
+            assetReader = get(named("asset_reader"))
+        )
+    }
 
     single<suspend (String) -> String>(named("asset_reader")) {
         { fileName ->

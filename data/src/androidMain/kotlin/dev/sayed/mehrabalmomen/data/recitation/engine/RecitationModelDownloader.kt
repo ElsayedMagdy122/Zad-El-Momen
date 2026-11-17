@@ -10,8 +10,8 @@ import io.ktor.http.contentLength
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readAvailable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -21,15 +21,7 @@ import java.io.FileOutputStream
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 
-sealed class ModelDownloadState {
-    object Idle : ModelDownloadState()
-    data class Downloading(val progress: Float, val currentFile: String) : ModelDownloadState()
-    data class Processing(val message: String) : ModelDownloadState()
-    object Ready : ModelDownloadState()
-    data class Error(val message: String) : ModelDownloadState()
-}
-
-class RecitationModelDownloader(
+actual class RecitationModelDownloader(
     private val context: Context,
     private val supabase: SupabaseClient,
     private val httpClient: HttpClient
@@ -50,11 +42,11 @@ class RecitationModelDownloader(
     }
 
     private val _downloadState = MutableStateFlow<ModelDownloadState>(ModelDownloadState.Idle)
-    val downloadState: Flow<ModelDownloadState> = _downloadState.asStateFlow()
+    actual val downloadState: StateFlow<ModelDownloadState> = _downloadState.asStateFlow()
 
     private val downloadMutex = Mutex()
 
-    fun isDownloading(): Boolean {
+    actual fun isDownloading(): Boolean {
         val current = _downloadState.value
         return current is ModelDownloadState.Downloading || current is ModelDownloadState.Processing
     }
@@ -74,7 +66,7 @@ class RecitationModelDownloader(
         }
     }
 
-    fun isModelReady(): Boolean {
+    actual fun isModelReady(): Boolean {
         val mergedModel = File(context.filesDir, MERGED_MODEL_NAME)
         if (!isFileValid(mergedModel, MIN_VALID_MODEL_SIZE)) return false
 
@@ -94,7 +86,7 @@ class RecitationModelDownloader(
         }
     }
 
-    suspend fun downloadAndPrepareModels(): Boolean = withContext(Dispatchers.IO) {
+    actual suspend fun downloadAndPrepareModels(): Boolean = withContext(Dispatchers.IO) {
         if (isModelReady()) {
             _downloadState.value = ModelDownloadState.Ready
             return@withContext true
@@ -222,7 +214,7 @@ class RecitationModelDownloader(
         }
     }
 
-    fun resetState() {
+    actual fun resetState() {
         _downloadState.value = ModelDownloadState.Idle
     }
 

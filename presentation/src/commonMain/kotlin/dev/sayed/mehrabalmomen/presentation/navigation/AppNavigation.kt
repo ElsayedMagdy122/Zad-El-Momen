@@ -30,6 +30,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8Calib
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
 import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
+import dev.sayed.mehrabalmomen.presentation.screen.quran.tasmee3.Tasmee3Screen
 
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
@@ -85,6 +86,16 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 searchType = runCatching { SearchType.valueOf(args.type) }.getOrDefault(SearchType.QURAN),
                 surahId = args.surahId,
                 surahName = args.surahName
+            )
+        }
+        composable<Route.Tasmee3Screen> { entry ->
+            val args = entry.toRoute<Route.Tasmee3Screen>()
+            Tasmee3Screen(
+                surahId = args.surahId,
+                surahName = args.surahName,
+                startAyah = args.startAyah,
+                endAyah = args.endAyah,
+                navController = navController
             )
         }
         composable<Route.RecitersScreen> { RecitersScreen(navController = navController) }
