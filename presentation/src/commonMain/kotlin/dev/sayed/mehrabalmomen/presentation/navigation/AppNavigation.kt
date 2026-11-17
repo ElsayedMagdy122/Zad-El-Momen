@@ -27,6 +27,9 @@ import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScree
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Figure8CalibrationScreen
+import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
+import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
+import dev.sayed.mehrabalmomen.presentation.screen.bookmarks.BookmarksListScreen
 
 @Composable
 fun AppNavigation(settingsRepository: SettingsRepository) {
@@ -72,8 +75,18 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
             val route = entry.toRoute<Route.AzkarDetailScreen>()
             AzkarDetailScreen(title = route.title, navController = navController)
         }
-        composable<Route.BookmarksListScreen> { Box(modifier = Modifier.fillMaxSize()) }
-        composable<Route.SearchAyahScreen> { Box(modifier = Modifier.fillMaxSize()) }
+        composable<Route.BookmarksListScreen> {
+            BookmarksListScreen(navController = navController)
+        }
+        composable<Route.SearchAyahScreen> { entry ->
+            val args = entry.toRoute<Route.SearchAyahScreen>()
+            SearchAyahScreen(
+                navController = navController,
+                searchType = runCatching { SearchType.valueOf(args.type) }.getOrDefault(SearchType.QURAN),
+                surahId = args.surahId,
+                surahName = args.surahName
+            )
+        }
         composable<Route.RecitersScreen> { RecitersScreen(navController = navController) }
         composable<Route.RecitersSearchScreen> { RecitersSearchScreen(navController = navController) }
         composable<Route.AppRoute> {

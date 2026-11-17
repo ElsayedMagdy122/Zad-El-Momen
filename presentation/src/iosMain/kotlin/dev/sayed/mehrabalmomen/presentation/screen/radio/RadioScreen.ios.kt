@@ -4,10 +4,13 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.presentation.screen.radio.components.RadioContent
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import kotlinx.coroutines.delay
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
+import org.koin.core.qualifier.named
 
 @Composable
 actual fun RadioScreen(
@@ -16,13 +19,19 @@ actual fun RadioScreen(
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     var toast by remember { mutableStateOf<ToastDetails?>(null) }
+    val audioPlayer: AudioPlayer = koinInject(named("radio"))
 
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             is RadioChannelsEffect.ShowToast -> {
                 toast = effect.toast
             }
-            else -> {}
+            is RadioChannelsEffect.PlaySound -> {
+                audioPlayer.play(AudioSource.RemoteUrl(effect.url))
+            }
+            is RadioChannelsEffect.PauseSound -> {
+                audioPlayer.pause()
+            }
         }
     }
 

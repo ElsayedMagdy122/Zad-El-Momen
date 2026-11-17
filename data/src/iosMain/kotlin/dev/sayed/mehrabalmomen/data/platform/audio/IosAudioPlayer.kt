@@ -31,6 +31,11 @@ import platform.AVFoundation.seekToTime
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSURL
+import platform.MediaPlayer.MPMediaItemPropertyTitle
+import platform.MediaPlayer.MPNowPlayingInfoCenter
+import platform.MediaPlayer.MPNowPlayingInfoPropertyPlaybackRate
+import platform.MediaPlayer.MPRemoteCommandCenter
+import platform.MediaPlayer.MPRemoteCommandHandlerStatusSuccess
 
 class IosAudioPlayer : AudioPlayer {
 
@@ -43,6 +48,7 @@ class IosAudioPlayer : AudioPlayer {
 
     init {
         setupAudioSession()
+        setupRemoteCommands()
     }
 
     @OptIn(ExperimentalForeignApi::class)
@@ -52,6 +58,28 @@ class IosAudioPlayer : AudioPlayer {
             session.setCategory(AVAudioSessionCategoryPlayback, error = null)
             session.setActive(true, error = null)
         } catch (_: Exception) {}
+    }
+
+    private fun setupRemoteCommands() {
+        val commandCenter = MPRemoteCommandCenter.sharedCommandCenter()
+        commandCenter.playCommand.addTargetWithHandler { _ ->
+            resume()
+            MPRemoteCommandHandlerStatusSuccess
+        }
+        commandCenter.pauseCommand.addTargetWithHandler { _ ->
+            pause()
+            MPRemoteCommandHandlerStatusSuccess
+        }
+    }
+
+    private fun updateNowPlayingInfo(title: String, isPlaying: Boolean) {
+        val infoCenter = MPNowPlayingInfoCenter.defaultCenter()
+        val info = mutableMapOf<Any?, Any?>().apply {
+            put(MPMediaItemPropertyTitle, title)
+            put(MPNowPlayingInfoPropertyPlaybackRate, if (isPlaying) 1.0 else 0.0)
+        }
+        @Suppress("UNCHECKED_CAST")
+        infoCenter.setNowPlayingInfo(info as Map<Any?, *>)
     }
 
     @OptIn(ExperimentalForeignApi::class)
@@ -71,6 +99,7 @@ class IosAudioPlayer : AudioPlayer {
         }
 
         avPlayer.play()
+        updateNowPlayingInfo("راديو القرآن الكريم", true)
 
         _playerState.update {
             it.copy(
@@ -85,17 +114,20 @@ class IosAudioPlayer : AudioPlayer {
 
     override fun pause() {
         avPlayer.pause()
+        updateNowPlayingInfo("راديو القرآن الكريم", false)
         _playerState.update { it.copy(status = AudioPlayerStatus.PAUSED) }
     }
 
     override fun resume() {
         avPlayer.play()
+        updateNowPlayingInfo("راديو القرآن الكريم", true)
         _playerState.update { it.copy(status = AudioPlayerStatus.PLAYING) }
     }
 
     override fun stop() {
         avPlayer.pause()
         avPlayer.replaceCurrentItemWithPlayerItem(null)
+        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo(null)
         progressJob?.cancel()
         _playerState.update { AudioPlayerState() }
     }
