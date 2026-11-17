@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.LocalIsDarkTheme
+import dev.sayed.mehrabalmomen.presentation.base.setAppLocale
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchAyahScreen
 import dev.sayed.mehrabalmomen.presentation.screen.SearchAyah.SearchType
@@ -58,6 +60,10 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         else -> isSystemInDarkTheme()
     }
     val language = appSettings?.language ?: AppSettings.Language.ARABIC
+
+    LaunchedEffect(language) {
+        setAppLocale(language)
+    }
 
     val startDestination: Route =
         if (onboardingComplete == true) Route.AppRoute
