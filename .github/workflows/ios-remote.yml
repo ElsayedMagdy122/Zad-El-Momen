@@ -1,0 +1,79 @@
+name: iOS Remote Streaming
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-remote-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  remote-ios:
+    name: Run Remote iOS Simulator
+    runs-on: macos-14
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Cloudflared
+        run: |
+          brew install cloudflared
+          npm install -g serve-sim
+
+      - name: Cache Kotlin/Native
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.konan/dependencies
+            ~/.konan/kotlin-native-prebuilt-*
+          key: konan-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            konan-${{ runner.os }}-
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Create local.properties
+        run: |
+          {
+            echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}"
+          } >> local.properties
+
+      - name: Build KMP iOS App for Simulator
+        run: |
+          xcodebuild build \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build-ios \
+            -destination "generic/platform=iOS Simulator" \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Launch Remote Interactive Session
+        run: |
+          APP_PATH=$(find build-ios/Build/Products/Debug-iphonesimulator -name "*.app" -type d -print -quit)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: .app bundle not found!"
+            exit 1
+          fi
+          echo "🚀 Found App Bundle at: $APP_PATH"
+          echo "🌐 Launching iOS Remote WebRTC Tunnel..."
+          npx serve-sim --app "$APP_PATH" --tunnel cloudflared
