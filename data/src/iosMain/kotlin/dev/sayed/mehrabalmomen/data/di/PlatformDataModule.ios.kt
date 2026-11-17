@@ -47,4 +47,5 @@ actual val platformDataModule: Module = module {
     single<BatteryOptimizationRepository> { IosBatteryOptimizationRepositoryImpl() }
     single<PermissionProvider> { IosPermissionProvider() }
     factory<AudioPlayer> { IosAudioPlayer() }
+    factory<AudioPlayer>(named("radio")) { IosAudioPlayer() }
 }
