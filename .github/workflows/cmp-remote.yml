@@ -175,9 +175,11 @@ jobs:
       - name: Start serve-sim
         env:
           UDID: ${{ steps.sim.outputs.udid }}
+          SERVE_SIM_AUTH_TOKEN: ${{ secrets.SERVE_SIM_AUTH_TOKEN }}
         run: |
           set -euo pipefail
-          npx --yes serve-sim --detach --quiet --port "$PREVIEW_PORT" "$UDID" || true
+          npx --yes serve-sim --detach --quiet --port "$PREVIEW_PORT" \
+            --auth-token "$SERVE_SIM_AUTH_TOKEN" "$UDID" || true
           for i in $(seq 1 60); do
             nc -z 127.0.0.1 "$PREVIEW_PORT" 2>/dev/null && break
             sleep 0.5

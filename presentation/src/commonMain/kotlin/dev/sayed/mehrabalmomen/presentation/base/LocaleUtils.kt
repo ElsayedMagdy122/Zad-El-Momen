@@ -6,6 +6,8 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 val LocalAppLocale = compositionLocalOf { AppSettings.Language.ARABIC }
 val LocalIsDarkTheme = compositionLocalOf { false }
 
+expect fun setAppLocale(language: AppSettings.Language)
+
 fun String.toLocalizedDigits(language: AppSettings.Language): String {
     return if (language == AppSettings.Language.ARABIC) {
         this.map {

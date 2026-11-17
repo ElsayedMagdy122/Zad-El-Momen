@@ -14,6 +14,7 @@ import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.UiText
+import dev.sayed.mehrabalmomen.presentation.base.setAppLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -554,6 +555,7 @@ class SettingsViewModel(
     private fun saveLanguage(language: AppSettings.Language) {
         viewModelScope.launch {
             settingsRepository.saveLanguage(language)
+            setAppLocale(language)
         }
     }
 
