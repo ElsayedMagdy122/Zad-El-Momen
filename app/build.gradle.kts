@@ -175,7 +175,6 @@ dependencies {
     // Kotlinx & utilities
     implementation(libs.bundles.kotlinx)
     implementation(libs.bundles.network)
-    implementation("com.github.msarhan:ummalqura-calendar:1.1.9")
     // Maps & location
     implementation(libs.bundles.maps.location)
 
