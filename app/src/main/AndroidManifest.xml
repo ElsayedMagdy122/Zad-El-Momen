@@ -105,13 +105,6 @@
             android:name=".presentation.widget.PrayerTimesWidgetPinReceiver"
             android:exported="false" />
         <service
-            android:name=".presentation.service.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".presentation.screen.radio.player.RadioPlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
