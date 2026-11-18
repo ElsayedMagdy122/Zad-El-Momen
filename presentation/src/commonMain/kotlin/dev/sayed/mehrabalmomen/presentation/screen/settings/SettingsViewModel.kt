@@ -9,6 +9,8 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
 import dev.sayed.mehrabalmomen.domain.repository.platform.WidgetPinProvider
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
@@ -18,7 +20,6 @@ import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.setAppLocale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import org.jetbrains.compose.resources.StringResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.al_tafseer
@@ -108,7 +109,8 @@ class SettingsViewModel(
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val billingService: BillingService,
     private val analyticsTracker: AnalyticsTracker,
-    private val widgetPinProvider: WidgetPinProvider
+    private val widgetPinProvider: WidgetPinProvider,
+    private val audioPlayer: AudioPlayer
 ) : BaseViewModel<SettingsUiState, SettingsEffect>(SettingsUiState()),
     SettingsInteractionListener {
 
@@ -280,19 +282,19 @@ class SettingsViewModel(
                     SettingsUiState.SettingsItemUiState(
                         icon = Res.drawable.ic_location,
                         title = UiText.StringRes(Res.string.location),
-                        action = SettingsUiState.SettingsAction.LOCATION,
-                        description = UiText.DynamicString(state.location.country.plus(", ").plus(state.location.city))
+                        description = UiText.DynamicString("${state.location.city}, ${state.location.country}"),
+                        action = SettingsUiState.SettingsAction.LOCATION
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = Res.drawable.ic_alarm_clock,
                         title = UiText.StringRes(Res.string.notifications),
-                        action = SettingsUiState.SettingsAction.NOTIFICATIONS,
+                        action = SettingsUiState.SettingsAction.NOTIFICATIONS
                     ),
                     SettingsUiState.SettingsItemUiState(
                         icon = Res.drawable.ic_rafeek,
                         title = UiText.StringRes(Res.string.companion_mode),
-                        action = SettingsUiState.SettingsAction.COMPANION,
-                        value = state.isCompanionEnabled
+                        value = state.isCompanionEnabled,
+                        action = SettingsUiState.SettingsAction.COMPANION
                     )
                 )
             ),
@@ -403,6 +405,19 @@ class SettingsViewModel(
             SettingsUiState.TafseerType.MOYASSAR -> Res.string.tafseer_moyasser
         }
         return UiText.StringRes(resId)
+    }
+
+    fun playPreview(index: Int) {
+        stopPreview()
+        val moazen = SettingsUiState.Moazen.entries.getOrNull(index) ?: return
+        val audioName = moazen.fileName.removeSuffix(".mp3")
+        audioPlayer.play(AudioSource.LocalResource(audioName))
+        updateState { it.copy(playingMoazenPreview = moazen) }
+    }
+
+    fun stopPreview() {
+        audioPlayer.stop()
+        updateState { it.copy(playingMoazenPreview = null) }
     }
 
     private fun openTafseerDialog() {
@@ -668,41 +683,16 @@ class SettingsViewModel(
     }
 
     override fun onDialogDismiss() {
+        stopPreview()
         val dialog = screenState.value.dialog
         if (dialog?.type == SettingsUiState.SelectionDialogType.SUPPORT) {
             viewModelScope.launch {
-                settingsRepository.onDonationPromptAction(DonationPromptAction.DISMISSED, 0L)
+                settingsRepository.onDonationPromptAction(
+                    DonationPromptAction.DISMISSED,
+                    kotlin.time.Clock.System.now().toEpochMilliseconds()
+                )
             }
         }
         updateState { it.copy(dialog = null) }
-    }
-
-    override fun onLocationClick() {
-        sendEffect(SettingsEffect.NavigateToLocation)
-    }
-
-    override fun onCalculationMethodClick() {}
-    override fun onHelpFeedbackClick() {
-        sendEffect(SettingsEffect.NavigateToHelpFeedback)
-    }
-
-    override fun onRateAppClick() {
-        sendEffect(SettingsEffect.NavigateToRateApp)
-    }
-
-    override fun onAboutClick() {
-        showSupportBottomSheet()
-    }
-
-    override fun onPrivacyAndPolicy() {
-        sendEffect(SettingsEffect.NavigateToPrivacy)
-    }
-
-    override fun onContactUs() {
-        sendEffect(SettingsEffect.NavigateToContactUs)
-    }
-
-    override fun onNotifications() {
-        sendEffect(SettingsEffect.NavigateToNotifications)
     }
 }

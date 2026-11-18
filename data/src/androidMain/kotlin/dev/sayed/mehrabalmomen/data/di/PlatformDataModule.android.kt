@@ -8,6 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
+import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createAndroidDataStore
 import dev.sayed.mehrabalmomen.data.location.LocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.platform.AndroidAlarmScheduler
@@ -49,6 +50,7 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>>(named("recitation_prefs")) { createAndroidDataStore(androidContext(), "recitation_prefs.preferences_pb") }
     single<AppDatabase> {
         getDatabaseBuilder()
+            .addCallback(roomDatabaseCallback)
             .fallbackToDestructiveMigration(true)
             .build()
     }

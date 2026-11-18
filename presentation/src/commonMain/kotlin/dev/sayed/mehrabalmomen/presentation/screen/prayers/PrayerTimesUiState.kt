@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import dev.sayed.mehrabalmomen.design_system.base.UiText
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsUiState
 import dev.sayed.mehrabalmomen.presentation.utils.FormattedTime
 import org.jetbrains.compose.resources.DrawableResource
 import zadelmomen.presentation.generated.resources.Res
@@ -18,7 +19,10 @@ data class PrayerTimesUiState(
     val isBatteryOptimizationEnabled: Boolean = false,
     val isOverlayPermissionGranted: Boolean = true,
     val showBatteryDialog: Boolean = false,
-    val batteryInstructions: List<String> = emptyList()
+    val batteryInstructions: List<String> = emptyList(),
+    val selectedMoazen: SettingsUiState.Moazen = SettingsUiState.Moazen.AZAN_MAKKAH,
+    val showMoazenDialog: Boolean = false,
+    val playingMoazenPreview: SettingsUiState.Moazen? = null
 ) {
     data class PrayerUiState(
         val prayerName: Prayer.PrayerName = Prayer.PrayerName.FAJR,

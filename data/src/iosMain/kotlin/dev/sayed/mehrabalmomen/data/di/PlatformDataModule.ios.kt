@@ -6,6 +6,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
 import dev.sayed.mehrabalmomen.data.bugReport.remote.IosBugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
+import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createIosDataStore
 import dev.sayed.mehrabalmomen.data.location.IosLocationRepositoryImpl
 import dev.sayed.mehrabalmomen.data.platform.IosAlarmScheduler
@@ -45,6 +46,7 @@ actual val platformDataModule: Module = module {
     single<DataStore<Preferences>>(named("recitation_prefs")) { createIosDataStore("recitation_prefs.preferences_pb") }
     single<AppDatabase> {
         getDatabaseBuilder()
+            .addCallback(roomDatabaseCallback)
             .setDriver(BundledSQLiteDriver())
             .fallbackToDestructiveMigration(true)
             .build()

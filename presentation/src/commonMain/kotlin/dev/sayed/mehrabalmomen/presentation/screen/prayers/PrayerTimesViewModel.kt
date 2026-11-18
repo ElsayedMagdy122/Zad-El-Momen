@@ -2,8 +2,11 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
 import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
+import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
+import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
@@ -13,6 +16,7 @@ import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.domain.utils.Logger
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimization.BatteryOptimizationInteractionListener
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -38,6 +43,7 @@ class PrayerTimesViewModel(
     private val permissionProvider: PermissionProvider,
     private val analyticsTracker: AnalyticsTracker,
     private val logger: Logger,
+    private val audioPlayer: AudioPlayer
 ) : BaseViewModel<PrayerTimesUiState, PrayerTimesEffect>(PrayerTimesUiState()),
     PrayerTimesInteractionListener, BatteryOptimizationInteractionListener {
 
@@ -51,8 +57,50 @@ class PrayerTimesViewModel(
         getDailyPrayers()
         getNextPrayer()
         observePrayerNotifications()
+        observeSelectedMoazen()
         refreshBatteryStatus()
         checkFirstTimeBatteryDialog()
+    }
+
+    private fun observeSelectedMoazen() {
+        viewModelScope.launch {
+            settingsRepository.observeSelectedMoazen().collect { fileName ->
+                val moazen = SettingsUiState.Moazen.entries.firstOrNull { it.fileName == fileName }
+                    ?: SettingsUiState.Moazen.AZAN_MAKKAH
+                updateState { it.copy(selectedMoazen = moazen) }
+            }
+        }
+    }
+
+    fun openMoazenDialog() {
+        updateState { it.copy(showMoazenDialog = true) }
+    }
+
+    fun dismissMoazenDialog() {
+        stopPreview()
+        updateState { it.copy(showMoazenDialog = false) }
+    }
+
+    fun playPreview(index: Int) {
+        stopPreview()
+        val moazen = SettingsUiState.Moazen.entries.getOrNull(index) ?: return
+        val audioName = moazen.fileName.removeSuffix(".mp3")
+        audioPlayer.play(AudioSource.LocalResource(audioName))
+        updateState { it.copy(playingMoazenPreview = moazen) }
+    }
+
+    fun stopPreview() {
+        audioPlayer.stop()
+        updateState { it.copy(playingMoazenPreview = null) }
+    }
+
+    fun onConfirmMoazen(index: Int) {
+        stopPreview()
+        val selected = SettingsUiState.Moazen.entries.getOrNull(index) ?: return
+        updateState { it.copy(selectedMoazen = selected, showMoazenDialog = false) }
+        viewModelScope.launch {
+            settingsRepository.saveSelectedMoazen(selected.fileName)
+        }
     }
 
     private fun checkFirstTimeBatteryDialog() {
@@ -79,34 +127,26 @@ class PrayerTimesViewModel(
                 )
                 updateState {
                     it.copy(
-                        isBatteryOptimizationEnabled = isIgnoring,
+                        isBatteryOptimizationEnabled = !isIgnoring,
                         isOverlayPermissionGranted = hasOverlay,
                         batteryInstructions = instructions
                     )
                 }
-            } catch (e: Exception) {
-                updateState {
-                    it.copy(
-                        isBatteryOptimizationEnabled = isIgnoring,
-                        isOverlayPermissionGranted = hasOverlay
-                    )
-                }
-            }
-        }
-    }
-
-    private fun scheduleAlarmsIfNeeded() {
-        viewModelScope.launch {
-            try {
-                prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
-            } catch (e: Exception) {
-                logger.e("AZAN_DEBUG", "Failed to schedule alarms", e)
+            } catch (_: Exception) {
             }
         }
     }
 
     fun onScreenOpened() {
-        analyticsTracker.logScreen("PrayerTimes")
+        getDailyPrayers()
+        getNextPrayer()
+        scheduleAlarmsIfNeeded()
+    }
+
+    private fun scheduleAlarmsIfNeeded() {
+        viewModelScope.launch {
+            prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+        }
     }
 
     private fun getDailyPrayers() {
@@ -174,31 +214,24 @@ class PrayerTimesViewModel(
     private fun startCountdown(targetMillis: Long) {
         countdownJob?.cancel()
         countdownJob = viewModelScope.launch {
-            while (true) {
+            while (isActive) {
                 val now = Clock.System.now().toEpochMilliseconds()
-                val diff: Long = targetMillis - now
-                if (diff <= 0L) {
-                    handleCountdownFinished()
+                val diff = targetMillis - now
+                if (diff <= 0) {
+                    getNextPrayer()
                     break
                 }
-                val hours = (diff / (1000 * 60 * 60)) % 24
-                val minutes = (diff / (1000 * 60)) % 60
-                val seconds = (diff / 1000) % 60
-
+                val hours = (diff / (1000 * 60 * 60)).toString().padStart(2, '0')
+                val minutes = ((diff / (1000 * 60)) % 60).toString().padStart(2, '0')
+                val seconds = ((diff / 1000) % 60).toString().padStart(2, '0')
                 _countdownTime.value = PrayerTimesUiState.TimeUiState(
-                    hours = hours.toString().padStart(2, '0'),
-                    minutes = minutes.toString().padStart(2, '0'),
-                    seconds = seconds.toString().padStart(2, '0')
+                    hours = hours,
+                    minutes = minutes,
+                    seconds = seconds
                 )
                 delay(1.seconds)
             }
         }
-    }
-
-    private fun handleCountdownFinished() {
-        getNextPrayer()
-        getDailyPrayers()
-        scheduleAlarmsIfNeeded()
     }
 
     private fun observePrayerNotifications() {

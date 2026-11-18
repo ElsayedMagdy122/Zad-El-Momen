@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.prayers
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -15,13 +16,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
+import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.BatteryOptimizationBottomSheet
+import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.MoazenSelectionBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerCard
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SelectionItem
+import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsUiState
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_moazen
+import zadelmomen.presentation.generated.resources.ic_setting_error_03
+import zadelmomen.presentation.generated.resources.mozan_abed_albaset
+import zadelmomen.presentation.generated.resources.mozan_makkah
+import zadelmomen.presentation.generated.resources.mozan_mansoor_alzahrani
+import zadelmomen.presentation.generated.resources.mozan_mishary_alafasi
+import zadelmomen.presentation.generated.resources.mozan_mohammed_almenshawy
+import zadelmomen.presentation.generated.resources.mozan_nasser_alqatami
+import zadelmomen.presentation.generated.resources.mozan_suhaib_khatba
 import zadelmomen.presentation.generated.resources.prayer_times
 
 @Composable
@@ -52,12 +69,23 @@ actual fun PrayerTimesScreen(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         item {
-            AppBar(
-                isBackEnabled = false,
-                onBackClick = viewModel::onClickBack,
+            QuranAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .background(Theme.color.surfaces.surface),
                 title = localizedString(Res.string.prayer_times),
-                modifier = Modifier.padding(
-                    horizontal = 16.dp
+                onBackClick = viewModel::onClickBack,
+                titleColor = Theme.color.primary.shadePrimary,
+                actions = listOf(
+                    AppBarAction(
+                        icon = painterResource(Res.drawable.ic_moazen),
+                        onClick = viewModel::openMoazenDialog
+                    ),
+                    AppBarAction(
+                        icon = painterResource(Res.drawable.ic_setting_error_03),
+                        onClick = viewModel::onBatteryWarningClick
+                    )
                 )
             )
         }
@@ -80,5 +108,47 @@ actual fun PrayerTimesScreen(
                 }
             )
         }
+    }
+
+    if (state.showMoazenDialog) {
+        val moazenOptions = SettingsUiState.Moazen.entries.map { moazen ->
+            SelectionItem(
+                text = UiText.StringRes(
+                    when (moazen) {
+                        SettingsUiState.Moazen.AZAN_ABED_ALBASET -> Res.string.mozan_abed_albaset
+                        SettingsUiState.Moazen.AZAN_MAKKAH -> Res.string.mozan_makkah
+                        SettingsUiState.Moazen.AZAN_MANSOOR_AL_ZAHRANI -> Res.string.mozan_mansoor_alzahrani
+                        SettingsUiState.Moazen.AZAN_MISHARY_ALAFASI -> Res.string.mozan_mishary_alafasi
+                        SettingsUiState.Moazen.AZAN_MOHAMMED_ALMENSHWY -> Res.string.mozan_mohammed_almenshawy
+                        SettingsUiState.Moazen.AZAN_NASSER_ALQATAMI -> Res.string.mozan_nasser_alqatami
+                        SettingsUiState.Moazen.AZAN_SUHAIB_KHATBA -> Res.string.mozan_suhaib_khatba
+                    }
+                )
+            )
+        }
+
+        MoazenSelectionBottomSheet(
+            items = moazenOptions,
+            selectedIndex = SettingsUiState.Moazen.entries.indexOf(state.selectedMoazen),
+            onConfirm = viewModel::onConfirmMoazen,
+            onDismiss = viewModel::dismissMoazenDialog,
+            playSound = viewModel::playPreview,
+            stopSound = viewModel::stopPreview
+        )
+    }
+
+    if (state.showBatteryDialog) {
+        BatteryOptimizationBottomSheet(
+            isBatteryOptimizationEnabled = state.isBatteryOptimizationEnabled,
+            isOverlayPermissionGranted = state.isOverlayPermissionGranted,
+            batteryInstructions = state.batteryInstructions,
+            onOpenBatterySettings = {
+                viewModel.onOpenSettingsClicked()
+            },
+            onOpenOverlaySettings = {
+                viewModel.onOpenOverlaySettingsClicked()
+            },
+            onDismiss = viewModel::onDismissBatteryDialog
+        )
     }
 }

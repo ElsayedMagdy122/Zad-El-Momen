@@ -41,7 +41,8 @@ data class SettingsUiState(
     val selectedFontSize: QuranFontSize = QuranFontSize.SMALL,
     val selectedMoazen: Moazen = Moazen.AZAN_MAKKAH,
     val selectedTafseer: TafseerType = TafseerType.MOKHTASAR,
-    val isCompanionEnabled: Boolean = true
+    val isCompanionEnabled: Boolean = true,
+    val playingMoazenPreview: Moazen? = null
 ) {
     data class LocationUiState(
         val country: String = "Unknown",
