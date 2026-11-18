@@ -64,6 +64,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation(libs.androidx.core.splashscreen)
                 implementation("androidx.media:media:1.6.0")
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.activity.compose)
