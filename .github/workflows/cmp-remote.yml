@@ -8,7 +8,7 @@ run-name: cmp-remote · ${{ inputs.minutes || '20' }}m
 
 on:
   push:
-    branches: [ main,feature/cmp-multiplatform-migration ]
+    branches: [ main, ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
