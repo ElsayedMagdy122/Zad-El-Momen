@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.data.azkar.local.AzkarLocalDataSource
 import dev.sayed.mehrabalmomen.presentation.recitation.HighlightingViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.AzkarDetails.AzkarDetailViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.azan.AzanViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.onBoarding.calculation_method.CalculationMethodViewModel
@@ -40,6 +41,7 @@ val presentationModule = module {
     viewModelOf(::SearchAyahViewModel)
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::ReminderSettingsViewModel)
+    viewModelOf(::AzanViewModel)
 
     single {
         HighlightingViewModel(

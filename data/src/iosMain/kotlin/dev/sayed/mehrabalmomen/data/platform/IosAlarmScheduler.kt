@@ -5,7 +5,6 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationSound
-import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
 class IosAlarmScheduler : AlarmScheduler {
@@ -14,13 +13,19 @@ class IosAlarmScheduler : AlarmScheduler {
         val delayMillis = triggerAtMillis - currentTime
         if (delayMillis <= 0L) return
 
+        val (title, body) = when (task) {
+            is AlarmTask.Prayer -> "حَيَّ عَلَى الصَّلاةِ" to "حان الآن موعد أذان ${getPrayerDisplayName(task.prayerName)}"
+            is AlarmTask.Reminder -> (task.title.ifBlank { "تنبيه" }) to task.body
+            is AlarmTask.DailyRefresh -> return
+        }
+
         val content = UNMutableNotificationContent().apply {
-            setTitle("Prayer Alarm")
-            setBody("It's time for prayer")
+            setTitle(title)
+            setBody(body)
             setSound(UNNotificationSound.defaultSound())
         }
 
-        val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
+        val trigger = platform.UserNotifications.UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
             timeInterval = (delayMillis.toDouble() / 1000.0).coerceAtLeast(1.0),
             repeats = false
         )
@@ -41,5 +46,14 @@ class IosAlarmScheduler : AlarmScheduler {
 
     override fun hasPermission(): Boolean {
         return true
+    }
+
+    private fun getPrayerDisplayName(name: String): String = when (name.uppercase()) {
+        "FAJR" -> "الفجر"
+        "ZUHR", "DHUHR" -> "الظهر"
+        "ASR" -> "العصر"
+        "MAGHRIB" -> "المغرب"
+        "ISHA" -> "العشاء"
+        else -> name
     }
 }
