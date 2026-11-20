@@ -220,6 +220,10 @@ class HomeViewModel(
         analyticsTracker.logEvent(name = "on click continue to tilawah")
         sendEffect(HomeEffect.NavigateToTilawah)
     }
+
+    override fun onClickLocation() {
+        sendEffect(HomeEffect.NavigateToLocation)
+    }
 }
 
 expect fun getHijriDateString(language: AppSettings.Language): String

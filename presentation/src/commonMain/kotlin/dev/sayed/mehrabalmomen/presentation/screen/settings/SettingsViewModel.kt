@@ -675,6 +675,10 @@ class SettingsViewModel(
         }
     }
 
+    override fun onLocationClick() {
+        sendEffect(SettingsEffect.NavigateToLocation)
+    }
+
     override fun onDialogConfirm(index: Int) {
         val dialog = screenState.value.dialog ?: return
         dialogHandlers[dialog.type]?.invoke(index)

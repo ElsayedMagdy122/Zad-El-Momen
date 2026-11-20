@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.screen.home.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,12 +24,14 @@ import zadelmomen.presentation.generated.resources.ic_location
 @Composable
 fun LocationCarousel(
     locationUiState: HomeUiState.LocationUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier.wrapContentWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
+            .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

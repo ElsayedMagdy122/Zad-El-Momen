@@ -66,6 +66,10 @@ fun HomeScreen(
                     )
                 )
             }
+
+            HomeEffect.NavigateToLocation -> {
+                navController.navigate(Route.MapsScreen)
+            }
         }
     }
     LazyColumn(
@@ -80,7 +84,8 @@ fun HomeScreen(
                 state = state,
                 onNotificationClick = {
                     navController.navigate(Route.ReminderSettingsScreen)
-                }
+                },
+                onLocationClick = viewModel::onClickLocation
             )
         }
         item {

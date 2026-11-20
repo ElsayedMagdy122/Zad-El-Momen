@@ -19,6 +19,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahListView
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -31,6 +32,7 @@ val presentationModule = module {
     viewModelOf(::SurahListViewModel)
     viewModelOf(::SurahAyatViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::MapsViewModel)
     viewModelOf(::RecitersViewModel)
     viewModelOf(::RecitersSearchViewModel)
     viewModelOf(::PrayerTimesViewModel)

@@ -14,7 +14,8 @@ import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
 fun HomeAppBar(
     state: HomeUiState,
     modifier: Modifier = Modifier,
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    onLocationClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -22,7 +23,7 @@ fun HomeAppBar(
             .padding(top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        LocationCarousel(locationUiState = state.location)
+        LocationCarousel(locationUiState = state.location, onClick = onLocationClick)
         Spacer(modifier = Modifier.weight(1f))
     }
 }

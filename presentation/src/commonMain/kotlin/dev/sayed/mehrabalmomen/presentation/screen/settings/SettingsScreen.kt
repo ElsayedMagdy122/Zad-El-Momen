@@ -88,7 +88,7 @@ fun SettingsScreen(
             }
 
             SettingsEffect.NavigateToLocation -> {
-                navController.navigate(Route.PermissionsScreen)
+                navController.navigate(Route.MapsScreen)
             }
 
             SettingsEffect.NavigateToRateApp -> {
