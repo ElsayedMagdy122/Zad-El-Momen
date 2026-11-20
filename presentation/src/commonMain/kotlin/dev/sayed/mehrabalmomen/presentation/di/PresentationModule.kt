@@ -20,6 +20,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.RecitersViewMo
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters_search.RecitersSearchViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -44,6 +45,7 @@ val presentationModule = module {
     viewModelOf(::BookMarkListViewModel)
     viewModelOf(::ReminderSettingsViewModel)
     viewModelOf(::AzanViewModel)
+    viewModelOf(::ReportBugViewModel)
 
     single {
         HighlightingViewModel(

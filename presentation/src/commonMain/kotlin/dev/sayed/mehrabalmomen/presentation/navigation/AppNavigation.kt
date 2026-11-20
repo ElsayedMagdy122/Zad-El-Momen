@@ -38,6 +38,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.reminders.ReminderSettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactUsScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.faq.FAQScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.privacy.PrivacyAnPolicyScreen
@@ -98,6 +99,7 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 composable<Route.SettingsScreen> { SettingsScreen(navController) }
                 composable<Route.MapsScreen> { MapsScreen(navController) }
                 composable<Route.ContactUsScreen> { ContactUsScreen(navController) }
+                composable<Route.ReportBugScreen> { ReportBugScreen(navController) }
                 composable<Route.FAQScreen> { FAQScreen(navController) }
                 composable<Route.PrivacyScreen> { PrivacyAnPolicyScreen(navController) }
                 composable<Route.PrayerTimes> { PrayerTimesScreen(navController = navController) }

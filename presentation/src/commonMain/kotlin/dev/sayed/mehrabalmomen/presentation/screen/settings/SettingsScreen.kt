@@ -84,7 +84,7 @@ fun SettingsScreen(
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
             SettingsEffect.NavigateToHelpFeedback -> {
-                navController.navigate(Route.ContactUsScreen)
+                navController.navigate(Route.ReportBugScreen)
             }
 
             SettingsEffect.NavigateToLocation -> {

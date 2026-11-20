@@ -679,6 +679,30 @@ class SettingsViewModel(
         sendEffect(SettingsEffect.NavigateToLocation)
     }
 
+    override fun onContactUs() {
+        sendEffect(SettingsEffect.NavigateToContactUs)
+    }
+
+    override fun onHelpFeedbackClick() {
+        sendEffect(SettingsEffect.NavigateToHelpFeedback)
+    }
+
+    override fun onRateAppClick() {
+        sendEffect(SettingsEffect.NavigateToRateApp)
+    }
+
+    override fun onAboutClick() {
+        showSupportBottomSheet()
+    }
+
+    override fun onPrivacyAndPolicy() {
+        sendEffect(SettingsEffect.NavigateToPrivacy)
+    }
+
+    override fun onNotifications() {
+        sendEffect(SettingsEffect.NavigateToNotifications)
+    }
+
     override fun onDialogConfirm(index: Int) {
         val dialog = screenState.value.dialog ?: return
         dialogHandlers[dialog.type]?.invoke(index)
