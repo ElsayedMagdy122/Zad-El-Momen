@@ -5,6 +5,9 @@ import dev.sayed.mehrabalmomen.data.recitation.tracking.PhoneticCostEngine
 import dev.sayed.mehrabalmomen.data.recitation.tracking.RecitationSpeed
 import kotlin.math.min
 
+/**
+ * Phonetic span representing a cohesive acoustic unit (Madd, Shaddah, Ghunnah, or Consonant+Vowel).
+ */
 private data class PhoneticSpan(
     val refStart: Int,
     val refEnd: Int,
@@ -16,11 +19,18 @@ private data class PhoneticSpan(
     val matchedRule: TajweedRule? = null
 )
 
+/**
+ * Clean architecture Tajweed and Phonetic Error Explainer engine.
+ * Directly translates the exact phoneme-trace algorithm from codeflutter.md into clean Kotlin.
+ */
 object ErrorExplainer {
 
     private val VOWELS = setOf('َ', 'ُ', 'ِ', 'ً', 'ٌ', 'ٍ', 'ْ')
     private val MADD_VOWELS = setOf('ا', 'ۦ', 'ۥ')
 
+    /**
+     * Evaluates a word match result and returns a list of detected mistakes (if any).
+     */
     fun evaluateWord(
         wordId: Int,
         fullPhonemes: String,
@@ -74,7 +84,8 @@ object ErrorExplainer {
             mistakes.addAll(spanMistakes)
         }
 
-        return mistakes.distinctBy { (it::class.simpleName ?: "") + "_" + (it as? ReciterMistake.UnderheldDuration)?.ruleType + "_" + (it as? ReciterMistake.OverheldDuration)?.ruleType }
+        // Deduplicate identical errors
+        return mistakes.distinctBy { it::class.simpleName + "_" + (it as? ReciterMistake.UnderheldDuration)?.ruleType + "_" + (it as? ReciterMistake.OverheldDuration)?.ruleType }
     }
 
     private fun buildWordSpans(
@@ -88,6 +99,7 @@ object ErrorExplainer {
         while (cursor < wordRefEnd) {
             val ch = fullPhonemes[cursor]
 
+            // 1. Madd Span (Consecutive Madd vowels: ا, ۦ, ۥ)
             if (ch in MADD_VOWELS) {
                 var end = cursor
                 while (end < wordRefEnd && fullPhonemes[end] == ch) {
@@ -112,6 +124,7 @@ object ErrorExplainer {
                 continue
             }
 
+            // 2. Mushaddad Ghunnah (نننن or مممم)
             if ((ch == 'ن' || ch == 'م') &&
                 cursor + 2 < wordRefEnd &&
                 fullPhonemes[cursor + 1] == ch &&
@@ -141,6 +154,7 @@ object ErrorExplainer {
                 continue
             }
 
+            // 3. Shaddah Span (Doubled consonant: رر, لل, etc.)
             if (cursor + 1 < wordRefEnd &&
                 fullPhonemes[cursor + 1] == ch &&
                 ch !in MADD_VOWELS
@@ -169,6 +183,7 @@ object ErrorExplainer {
                 continue
             }
 
+            // 4. Single Consonant + Harakah
             var end = cursor + 1
             while (end < wordRefEnd && fullPhonemes[end] in VOWELS) {
                 end++
@@ -201,6 +216,7 @@ object ErrorExplainer {
     ): List<ReciterMistake> {
         val mistakes = mutableListOf<ReciterMistake>()
 
+        // ── Phase 1: Base Character Verification (Omission & Substitution) ──
         if (span.refText.isNotEmpty()) {
             if (predText.isEmpty()) {
                 if (isTajweedEnabled && (span.isMadd || span.isShaddah || span.isGhunnah)) {
@@ -229,6 +245,7 @@ object ErrorExplainer {
             }
         }
 
+        // ── Phase 2: Tajweed Duration Rules (Madd, Ghunnah, Shaddah) ──
         if (isTajweedEnabled && (span.isMadd || span.isGhunnah || span.isShaddah)) {
             if (spanDuration > 0.0 && span.matchedRule != null) {
                 val rule = span.matchedRule
@@ -258,10 +275,12 @@ object ErrorExplainer {
             }
         }
 
+        // ── Phase 3: Tashkeel / Harakat Evaluation on Matching Consonants ──
         val refVowels = extractVowels(span.refText)
         val predVowels = extractVowels(predText)
 
         if (refVowels.isNotEmpty() || predVowels.isNotEmpty()) {
+            // Stopping on Sukoon at word end is valid Waqf, not an error
             val isTerminalWaqf = span.refEnd == wordRefEnd && predVowels.isEmpty()
             if (!isTerminalWaqf && refVowels != predVowels) {
                 mistakes.add(

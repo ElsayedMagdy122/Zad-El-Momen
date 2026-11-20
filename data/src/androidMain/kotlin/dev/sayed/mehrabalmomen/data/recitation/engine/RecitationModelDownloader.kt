@@ -30,7 +30,6 @@ actual class RecitationModelDownloader(
         private const val BUCKET_NAME = "recitation-models"
         private const val MERGED_MODEL_NAME = "zipformer_p_arabic_v3.1.int8.onnx"
 
-        private const val EXPECTED_MODEL_SIZE = 72705392L
         private const val MIN_VALID_MODEL_SIZE = 72700000L
 
         private val REQUIRED_ASSETS_WITH_MIN_SIZE = mapOf(
@@ -153,7 +152,7 @@ actual class RecitationModelDownloader(
 
                     if (!isFileValid(targetModelFile, MIN_VALID_MODEL_SIZE)) {
                         if (targetModelFile.exists()) targetModelFile.delete()
-                        throw IllegalStateException("فشل فك وتجميع ملف النموذج الرئيسي (${targetModelFile.length()} بايت)")
+                        throw IllegalStateException("فشل فك وتجميع ملف النموذج الرئيسي")
                     }
 
                     if (part1ZipFile.exists()) part1ZipFile.delete()
@@ -197,7 +196,7 @@ actual class RecitationModelDownloader(
                 }
 
                 if (!isModelReady()) {
-                    throw IllegalStateException("بعض ملفات مراجعة الحفظ المساعدة غير مكتملة. يرجى إعادة المحاولة.")
+                    throw IllegalStateException("بعض ملفات مراجعة الحفظ المساعدة غير مكتملة.")
                 }
 
                 _downloadState.value = ModelDownloadState.Processing("جاري تهيئة نموذج الذكاء الاصطناعي...")
@@ -208,7 +207,7 @@ actual class RecitationModelDownloader(
                     _downloadState.value = ModelDownloadState.Idle
                     throw e
                 }
-                _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "حدث خطأ أثناء تنزيل النماذج")
+                _downloadState.value = ModelDownloadState.Error(e.localizedMessage ?: "حدث خطأ أثناء التنزيل")
                 false
             }
         }
@@ -249,7 +248,7 @@ actual class RecitationModelDownloader(
         val statement = httpClient.prepareGet(publicUrl)
         statement.execute { response ->
             if (response.status.value !in 200..299) {
-                throw IllegalStateException("خطأ شبكة (HTTP ${response.status.value}) عند تنزيل $fileName")
+                throw IllegalStateException("خطأ شبكة (HTTP ${response.status.value})")
             }
             val contentLength = response.contentLength() ?: -1L
             val channel: ByteReadChannel = response.bodyAsChannel()

@@ -105,6 +105,6 @@ actual class AudioPipeline actual constructor() {
             audioRecord?.release()
         } catch (_: Exception) {
         }
-        audioRecord = null
+            audioRecord = null
     }
 }

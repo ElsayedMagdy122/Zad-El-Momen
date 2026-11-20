@@ -79,7 +79,12 @@ object IosLocationService {
             UNUserNotificationCenter.currentNotificationCenter()
                 .requestAuthorizationWithOptions(
                     UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge
-                ) { granted, _ -> if (cont.isActive) cont.resume(granted) }
+                ) { granted, _ ->
+                    if (granted) {
+                        platform.Foundation.NSUserDefaults.standardUserDefaults.setBool(true, "ios_notification_permission_granted")
+                    }
+                    if (cont.isActive) cont.resume(granted)
+                }
         }
 
     /** (lat, lng) */

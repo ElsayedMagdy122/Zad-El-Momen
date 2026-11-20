@@ -8,6 +8,9 @@ data class FuzzyMatch(
     val dist: Int
 )
 
+/**
+ * Gene Myers' 64-bit Bit-Parallel Substring Search algorithm for fuzzy phonetic matching.
+ */
 class FuzzySearch {
     companion object {
         fun findNearMatches(query: String, text: String, maxDist: Int): List<FuzzyMatch> {
@@ -24,10 +27,12 @@ class FuzzySearch {
         private fun bitParallelSearch(query: String, text: String, maxDist: Int): List<FuzzyMatch> {
             val n = query.length
             val m = text.length
+            val queryUnits = query.map { it.code }.toIntArray()
+            val textUnits = text.map { it.code }.toIntArray()
 
             val charMask = LongArray(2048)
             for (i in 0 until n) {
-                val code = query[i].code
+                val code = queryUnits[i]
                 if (code < 2048) {
                     charMask[code] = charMask[code] or (1L shl i)
                 }
@@ -42,7 +47,7 @@ class FuzzySearch {
             val rawMatches = mutableListOf<FuzzyMatch>()
 
             for (j in 0 until m) {
-                val code = text[j].code
+                val code = textUnits[j]
                 val pm = if (code < 2048) charMask[code] else 0L
 
                 val x = pm or vn

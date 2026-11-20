@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
+import platform.Foundation.NSUserDefaults
 
 class IosPermissionProvider : PermissionProvider {
 
@@ -14,7 +15,7 @@ class IosPermissionProvider : PermissionProvider {
     }
 
     override fun hasNotificationPermission(): Boolean {
-        return true
+        return NSUserDefaults.standardUserDefaults.boolForKey("ios_notification_permission_granted")
     }
 
     override fun canScheduleExactAlarms(): Boolean = true
