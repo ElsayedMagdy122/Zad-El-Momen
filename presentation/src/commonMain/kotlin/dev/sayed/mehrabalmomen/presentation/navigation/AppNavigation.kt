@@ -1,5 +1,11 @@
 package dev.sayed.mehrabalmomen.presentation.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,7 +88,35 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = startDestination,
+                enterTransition = {
+                    fadeIn(animationSpec = tween(280, easing = FastOutSlowInEasing)) +
+                            slideInHorizontally(
+                                initialOffsetX = { (it * 0.12f).toInt() },
+                                animationSpec = tween(320, easing = FastOutSlowInEasing)
+                            )
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(220, easing = FastOutSlowInEasing)) +
+                            slideOutHorizontally(
+                                targetOffsetX = { (-it * 0.12f).toInt() },
+                                animationSpec = tween(280, easing = FastOutSlowInEasing)
+                            )
+                },
+                popEnterTransition = {
+                    fadeIn(animationSpec = tween(280, easing = FastOutSlowInEasing)) +
+                            slideInHorizontally(
+                                initialOffsetX = { (-it * 0.12f).toInt() },
+                                animationSpec = tween(320, easing = FastOutSlowInEasing)
+                            )
+                },
+                popExitTransition = {
+                    fadeOut(animationSpec = tween(220, easing = FastOutSlowInEasing)) +
+                            slideOutHorizontally(
+                                targetOffsetX = { (it * 0.12f).toInt() },
+                                animationSpec = tween(280, easing = FastOutSlowInEasing)
+                            )
+                }
             ) {
                 composable<Route.CalculationMethodScreen> { CalculationMethodScreen(navController) }
                 composable<Route.PermissionsScreen> { PermissionsScreen(navController) }

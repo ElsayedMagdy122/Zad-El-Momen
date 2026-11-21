@@ -1,5 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -103,7 +107,9 @@ fun MainContainer(
             startDestination = Route.HomeScreen.route,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 74.dp)
+                .padding(bottom = 74.dp),
+            enterTransition = { fadeIn(animationSpec = tween(220, easing = FastOutSlowInEasing)) },
+            exitTransition = { fadeOut(animationSpec = tween(180, easing = FastOutSlowInEasing)) }
         ) {
             composable(Route.HomeScreen.route) { 
                 HomeScreen(
