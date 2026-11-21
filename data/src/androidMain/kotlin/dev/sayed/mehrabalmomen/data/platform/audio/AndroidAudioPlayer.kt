@@ -68,6 +68,7 @@ class AndroidAudioPlayer(
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             if (isReleased) return
+            if (exoPlayer.playbackState == Player.STATE_ENDED) return
             _playerState.update {
                 it.copy(
                     status = if (isPlaying) AudioPlayerStatus.PLAYING else AudioPlayerStatus.PAUSED

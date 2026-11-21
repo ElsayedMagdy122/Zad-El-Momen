@@ -90,11 +90,11 @@ class PrayerAlarmService : Service() {
             val channel = NotificationChannel(
                 SILENT_AZAN_CHANNEL_ID,
                 "صوت الأذان",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 setSound(null, null)
                 enableVibration(false)
-                enableLights(false)
+                enableLights(true)
                 setShowBadge(false)
             }
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
@@ -117,14 +117,32 @@ class PrayerAlarmService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        val fullScreenIntent = Intent(this, dev.sayed.mehrabalmomen.presentation.screen.azan.AzanActivity::class.java).apply {
+            addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            )
+            putExtra(PRAYER_NAME_KEY, prayerName)
+            putExtra(PRAYER_TIME_MILLIS_KEY, prayerTimeMillis)
+        }
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            fullScreenIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         val title = "أذان ${prayerEnum.getDisplayName()}"
 
         return NotificationCompat.Builder(this, SILENT_AZAN_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText("جارٍ تشغيل أذان ${prayerEnum.getDisplayName()}")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
             .setOngoing(true)
             .setAutoCancel(false)
             .setSilent(true)
@@ -144,9 +162,16 @@ class PrayerAlarmService : Service() {
 
         serviceScope.launch {
             audioPlayer.playerState.collect { state ->
-                if (state.status == AudioPlayerStatus.ENDED) {
+                if (state.status == AudioPlayerStatus.ENDED || state.status == AudioPlayerStatus.ERROR) {
                     stopAzanInternal()
                 }
+            }
+        }
+
+        serviceScope.launch {
+            delay(300_000L)
+            if (isRunning()) {
+                stopAzanInternal()
             }
         }
     }
