@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		32F1A2B3C4D5E6F700000004 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 32F1A2B3C4D5E6F700000002 /* MapLibre */; };
+		32F1A2B3C4D5E6F700000005 /* UIUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 32F1A2B3C4D5E6F700000003 /* UIUtilities */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		E83CB81A6147AD01A78A83F6 /* ZadElMomen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZadElMomen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32F1A2B3C4D5E6F700000004 /* MapLibre in Frameworks */,
+				32F1A2B3C4D5E6F700000005 /* UIUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +93,8 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				32F1A2B3C4D5E6F700000002 /* MapLibre */,
+				32F1A2B3C4D5E6F700000003 /* UIUtilities */,
 			);
 			productName = iosApp;
 			productReference = E83CB81A6147AD01A78A83F6 /* ZadElMomen.app */;
@@ -119,6 +128,9 @@
 			productRefGroup = 9D54B2E44BD81CF4926D8E5C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
+			packageReferences = (
+				32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+			);
 			targets = (
 				AB6297AC61AB00D244AF899C /* iosApp */,
 			);
@@ -395,6 +407,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		32F1A2B3C4D5E6F700000002 /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
+		};
+		32F1A2B3C4D5E6F700000003 /* UIUtilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = UIUtilities;
+		};
+		/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D98708D1F559F845710D1C84 /* Project object */;
 }
