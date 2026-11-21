@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		32F1A2B3C4D5E6F700000004 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 32F1A2B3C4D5E6F700000002 /* MapLibre */; };
-		32F1A2B3C4D5E6F700000005 /* UIUtilities in Frameworks */ = {isa = PBXBuildFile; productRef = 32F1A2B3C4D5E6F700000003 /* UIUtilities */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,7 +46,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				32F1A2B3C4D5E6F700000004 /* MapLibre in Frameworks */,
-				32F1A2B3C4D5E6F700000005 /* UIUtilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,7 +92,6 @@
 			name = iosApp;
 			packageProductDependencies = (
 				32F1A2B3C4D5E6F700000002 /* MapLibre */,
-				32F1A2B3C4D5E6F700000003 /* UIUtilities */,
 			);
 			productName = iosApp;
 			productReference = E83CB81A6147AD01A78A83F6 /* ZadElMomen.app */;
@@ -425,12 +422,7 @@
 			package = 32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = MapLibre;
 		};
-		32F1A2B3C4D5E6F700000003 /* UIUtilities */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 32F1A2B3C4D5E6F700000001 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
-			productName = UIUtilities;
-		};
-		/* End XCSwiftPackageProductDependency section */
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D98708D1F559F845710D1C84 /* Project object */;
 }
