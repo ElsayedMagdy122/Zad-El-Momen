@@ -307,6 +307,9 @@ class HighlightingViewModel(
         viewModelScope.launch(Dispatchers.Default) {
             initDeferred.await()
 
+            val isReady = modelDownloader.isModelReady()
+            val isDownloading = modelDownloader.isDownloading()
+
             val allVerses = quranRepository.getVersesForSurah(surahId)
             val effectiveStart = if (startAyah > 0) startAyah else 1
             val effectiveEnd = if (endAyah in effectiveStart..allVerses.size) endAyah else allVerses.size
@@ -343,6 +346,8 @@ class HighlightingViewModel(
             _uiState.update {
                 it.copy(
                     isLoading = false,
+                    showDownloadDialog = !isReady,
+                    isDownloadingModel = isDownloading,
                     targetSurah = surahId,
                     surahName = name,
                     verses = verses,
