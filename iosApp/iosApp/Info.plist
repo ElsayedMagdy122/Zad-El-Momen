@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleDisplayName</key>
+	<string>زاد المؤمن - ZadElMomen</string>
+	<key>CFBundleName</key>
+	<string>ZadElMomen</string>
 	<key>NSKeyedArchiverRootObjectNeeded</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
