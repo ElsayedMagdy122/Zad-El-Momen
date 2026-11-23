@@ -8,6 +8,7 @@ import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.model.audio.AudioSource
 import dev.sayed.mehrabalmomen.domain.repository.audio.AudioPlayer
 import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
+import dev.sayed.mehrabalmomen.domain.repository.platform.WidgetSync
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerNotificationsRepository
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.BatteryOptimizationRepository
@@ -43,7 +44,8 @@ class PrayerTimesViewModel(
     private val permissionProvider: PermissionProvider,
     private val analyticsTracker: AnalyticsTracker,
     private val logger: Logger,
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val widgetSync: WidgetSync
 ) : BaseViewModel<PrayerTimesUiState, PrayerTimesEffect>(PrayerTimesUiState()),
     PrayerTimesInteractionListener, BatteryOptimizationInteractionListener {
 
@@ -248,6 +250,42 @@ class PrayerTimesViewModel(
                         prayers = prayerUiStates
                     )
                 }
+
+                val prayersMap = mutableMapOf<String, String>()
+                prayers.forEach { p ->
+                    val timeLocal = p.time.toLocalDateTime(zone)
+                    val timeStr = "${timeLocal.hour.toString().padStart(2, '0')}:${timeLocal.minute.toString().padStart(2, '0')}"
+                    val key = when (p.name) {
+                        Prayer.PrayerName.FAJR -> "fajr"
+                        Prayer.PrayerName.ZUHR -> "dhuhr"
+                        Prayer.PrayerName.ASR -> "asr"
+                        Prayer.PrayerName.MAGHRIB -> "maghrib"
+                        Prayer.PrayerName.ISHA -> "isha"
+                    }
+                    prayersMap[key] = timeStr
+                }
+                val nextLocal = nextPrayer.time.toLocalDateTime(zone)
+                val nextTimeStr = "${nextLocal.hour.toString().padStart(2, '0')}:${nextLocal.minute.toString().padStart(2, '0')}"
+                val nextNameStr = when (nextPrayer.name) {
+                    Prayer.PrayerName.FAJR -> "الفجر"
+                    Prayer.PrayerName.ZUHR -> "الظهر"
+                    Prayer.PrayerName.ASR -> "العصر"
+                    Prayer.PrayerName.MAGHRIB -> "المغرب"
+                    Prayer.PrayerName.ISHA -> "العشاء"
+                }
+                val hijri = try {
+                    val hDateInfo = com.github.msarhan.ummalqura.calendar.UmmalquraGregorianConverter.toHijri(today.year, today.month.ordinal + 1, today.day)
+                    val monthsAr = listOf("محرم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة")
+                    "${hDateInfo[2]} ${monthsAr.getOrElse(hDateInfo[1]) { "" }}"
+                } catch (_: Exception) {
+                    "1 ذو القعدة"
+                }
+                widgetSync.updatePrayerTimes(
+                    hijriDate = hijri,
+                    nextPrayerName = nextNameStr,
+                    nextPrayerTime = nextTimeStr,
+                    prayers = prayersMap
+                )
             } catch (e: Exception) {
                 logger.e("PrayerTimesVM", "Error getting daily prayers", e)
             }

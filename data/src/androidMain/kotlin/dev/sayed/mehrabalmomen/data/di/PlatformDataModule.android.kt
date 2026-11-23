@@ -7,6 +7,8 @@ import androidx.media3.common.util.UnstableApi
 import com.google.firebase.analytics.FirebaseAnalytics
 import dev.sayed.mehrabalmomen.data.platform.system.AndroidImageCompressor
 import dev.sayed.mehrabalmomen.domain.repository.platform.ImageCompressor
+import dev.sayed.mehrabalmomen.domain.repository.platform.WidgetSync
+import dev.sayed.mehrabalmomen.data.platform.AndroidWidgetSync
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createAndroidDataStore
@@ -86,4 +88,5 @@ actual val platformDataModule: Module = module {
     }
     single { AudioPipeline() }
     single { SherpaEngine(androidContext()) }
+    single<WidgetSync> { AndroidWidgetSync() }
 }

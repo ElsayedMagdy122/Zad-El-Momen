@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.sayed.mehrabalmomen.data.platform.system.IosImageCompressor
 import dev.sayed.mehrabalmomen.domain.repository.platform.ImageCompressor
+import dev.sayed.mehrabalmomen.domain.repository.platform.WidgetSync
+import dev.sayed.mehrabalmomen.data.platform.IosWidgetSync
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createIosDataStore
@@ -75,4 +77,5 @@ actual val platformDataModule: Module = module {
     single { AudioPipeline() }
     single { SherpaEngine() }
     single { RecitationModelDownloader() }
+    single<WidgetSync> { IosWidgetSync() }
 }
