@@ -54,7 +54,7 @@ actual val platformDataModule: Module = module {
             .build()
     }
     single<LocationRepository> { IosLocationRepositoryImpl(get()) }
-    single<AlarmScheduler> { IosAlarmScheduler() }
+    single<AlarmScheduler> { IosAlarmScheduler(get()) }
     single<NotificationScheduler> { IosNotificationScheduler() }
     single<AnalyticsTracker> { IosAnalyticsTracker() }
     single<DeviceInfoProvider> { IosDeviceInfoProvider() }

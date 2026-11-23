@@ -2,6 +2,9 @@ package dev.sayed.mehrabalmomen.data.platform
 
 import dev.sayed.mehrabalmomen.domain.model.AlarmTask
 import dev.sayed.mehrabalmomen.domain.repository.prayer.AlarmScheduler
+import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -11,7 +14,9 @@ import platform.UserNotifications.UNNotificationSound
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
-class IosAlarmScheduler : AlarmScheduler {
+class IosAlarmScheduler(
+    private val settingsRepository: SettingsRepository
+) : AlarmScheduler {
 
     init {
         requestNotificationPermission()
@@ -35,10 +40,16 @@ class IosAlarmScheduler : AlarmScheduler {
             is AlarmTask.DailyRefresh -> return
         }
 
+        val moazenFile = runBlocking {
+            settingsRepository.observeSelectedMoazen().first()
+        }.removeSuffix(".mp3")
+
+        val sound = UNNotificationSound.soundNamed("$moazenFile.mp3") ?: UNNotificationSound.defaultSound()
+
         val content = UNMutableNotificationContent().apply {
             setTitle(title)
             setBody(body)
-            setSound(UNNotificationSound.defaultSound())
+            setSound(sound)
         }
 
         val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
