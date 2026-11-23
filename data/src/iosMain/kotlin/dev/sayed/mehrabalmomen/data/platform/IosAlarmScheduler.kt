@@ -32,19 +32,23 @@ class IosAlarmScheduler(
     override fun schedule(requestCode: Int, triggerAtMillis: Long, task: AlarmTask) {
         val currentTime = kotlin.time.Clock.System.now().toEpochMilliseconds()
         val delayMillis = triggerAtMillis - currentTime
-        if (delayMillis <= 0L) return
+        println("IosAlarmScheduler: schedule called for requestCode=$requestCode, task=$task, triggerAt=$triggerAtMillis, currentTime=$currentTime, delayMillis=$delayMillis")
+
+        if (delayMillis <= 0L) {
+            println("IosAlarmScheduler: [IGNORED] Reminder trigger time is in the past or now (delayMillis=$delayMillis)")
+            return
+        }
 
         val (title, body) = when (task) {
             is AlarmTask.Prayer -> "حَيَّ عَلَى الصَّلاةِ" to "حان الآن موعد أذان ${getPrayerDisplayName(task.prayerName)}"
             is AlarmTask.Reminder -> (task.title.ifBlank { "تنبيه" }) to task.body
-            is AlarmTask.DailyRefresh -> return
+            is AlarmTask.DailyRefresh -> {
+                println("IosAlarmScheduler: [IGNORED] DailyRefresh task")
+                return
+            }
         }
 
-        val moazenFile = runBlocking {
-            settingsRepository.observeSelectedMoazen().first()
-        }.removeSuffix(".mp3")
-
-        val sound = UNNotificationSound.soundNamed("$moazenFile.mp3") ?: UNNotificationSound.defaultSound()
+        val sound = UNNotificationSound.defaultSound()
 
         val content = UNMutableNotificationContent().apply {
             setTitle(title)
@@ -52,23 +56,37 @@ class IosAlarmScheduler(
             setSound(sound)
         }
 
+        val intervalSeconds = (delayMillis.toDouble() / 1000.0).coerceAtLeast(1.0)
         val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(
-            timeInterval = (delayMillis.toDouble() / 1000.0).coerceAtLeast(1.0),
+            timeInterval = intervalSeconds,
             repeats = false
         )
 
+        val identifier = "reminder_alarm_$requestCode"
         val request = UNNotificationRequest.requestWithIdentifier(
-            identifier = "reminder_alarm_$requestCode",
+            identifier = identifier,
             content = content,
             trigger = trigger
         )
 
-        UNUserNotificationCenter.currentNotificationCenter().addNotificationRequest(request) { _ -> }
+        UNUserNotificationCenter.currentNotificationCenter().addNotificationRequest(request) { error ->
+            if (error != null) {
+                println("IosAlarmScheduler: [ERROR] Failed to schedule notification '$identifier': ${error.localizedDescription}")
+            } else {
+                println("IosAlarmScheduler: [SUCCESS] Successfully scheduled notification '$identifier' to fire in $intervalSeconds seconds (Title: $title)")
+            }
+        }
+
+        UNUserNotificationCenter.currentNotificationCenter().getPendingNotificationRequestsWithCompletionHandler { requests ->
+            println("IosAlarmScheduler: Currently pending notifications count in system = ${requests?.size ?: 0}")
+        }
     }
 
     override fun cancel(requestCode: Int, task: AlarmTask) {
+        val identifier = "reminder_alarm_$requestCode"
+        println("IosAlarmScheduler: cancel called for identifier=$identifier")
         UNUserNotificationCenter.currentNotificationCenter()
-            .removePendingNotificationRequestsWithIdentifiers(listOf("reminder_alarm_$requestCode"))
+            .removePendingNotificationRequestsWithIdentifiers(listOf(identifier))
     }
 
     override fun hasPermission(): Boolean {
