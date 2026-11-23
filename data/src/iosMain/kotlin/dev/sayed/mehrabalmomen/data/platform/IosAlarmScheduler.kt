@@ -92,7 +92,6 @@ class IosAlarmScheduler(
     override fun hasPermission(): Boolean {
         return true
     }
-
     private fun getPrayerDisplayName(name: String): String = when (name.uppercase()) {
         "FAJR" -> "الفجر"
         "ZUHR", "DHUHR" -> "الظهر"
