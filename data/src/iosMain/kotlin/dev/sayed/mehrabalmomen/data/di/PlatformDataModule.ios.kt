@@ -3,8 +3,8 @@ package dev.sayed.mehrabalmomen.data.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
-import dev.sayed.mehrabalmomen.data.bugReport.remote.IosBugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.platform.system.IosImageCompressor
+import dev.sayed.mehrabalmomen.domain.repository.platform.ImageCompressor
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createIosDataStore
@@ -58,8 +58,8 @@ actual val platformDataModule: Module = module {
     single<DeviceInfoProvider> { IosDeviceInfoProvider() }
     single<DomainCompassSensorManager> { IosCompassSensorManager() }
     single<BillingService> { IosBillingManager() }
+    single<ImageCompressor> { IosImageCompressor() }
     single<NetworkConnectionRepository> { IosNetworkConnectionRepositoryImpl() }
-    single<BugReportRemoteDataSource> { IosBugReportRemoteDataSourceImpl() }
     single<BatteryOptimizationRepository> { IosBatteryOptimizationRepositoryImpl() }
     single<PermissionProvider> { IosPermissionProvider() }
     single<QuranAudioReadersRepository> {

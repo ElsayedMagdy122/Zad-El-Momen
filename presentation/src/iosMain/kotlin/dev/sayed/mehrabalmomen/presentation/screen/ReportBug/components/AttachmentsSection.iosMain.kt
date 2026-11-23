@@ -27,11 +27,66 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import org.jetbrains.compose.resources.painterResource
+import platform.Foundation.NSDate
+import platform.Foundation.NSTemporaryDirectory
+import platform.Foundation.timeIntervalSince1970
+import platform.Foundation.writeToFile
+import platform.UIKit.UIApplication
+import platform.UIKit.UIImage
+import platform.UIKit.UIImageJPEGRepresentation
+import platform.UIKit.UIImagePickerController
+import platform.UIKit.UIImagePickerControllerDelegateProtocol
+import platform.UIKit.UIImagePickerControllerOriginalImage
+import platform.UIKit.UIImagePickerControllerSourceType
+import platform.UIKit.UINavigationControllerDelegateProtocol
+import platform.UIKit.UIViewController
+import platform.UIKit.UIWindow
+import platform.UIKit.UIWindowScene
+import platform.darwin.NSObject
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.attachments
 import zadelmomen.presentation.generated.resources.click_to_upload_image
 import zadelmomen.presentation.generated.resources.ic_add_photo
 import zadelmomen.presentation.generated.resources.ic_pencil_edit
+
+private class ImagePickerDelegate(
+    private val onImagePicked: (String) -> Unit
+) : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
+    override fun imagePickerController(
+        picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo: Map<Any?, *>
+    ) {
+        val image = didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
+        if (image != null) {
+            val jpegData = UIImageJPEGRepresentation(image, 0.8)
+            if (jpegData != null) {
+                val tempDir = NSTemporaryDirectory()
+                val tempPath = "$tempDir/bug_report_${NSDate().timeIntervalSince1970}.jpg"
+                jpegData.writeToFile(tempPath, atomically = true)
+                onImagePicked(tempPath)
+            }
+        }
+        picker.dismissViewControllerAnimated(true, completion = null)
+    }
+
+    override fun imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        picker.dismissViewControllerAnimated(true, completion = null)
+    }
+}
+
+private fun getRootViewController(): UIViewController? {
+    val keyWindow = UIApplication.sharedApplication.connectedScenes
+        .mapNotNull { it as? UIWindowScene }
+        .flatMap { it.windows }
+        .firstOrNull { (it as? UIWindow)?.isKeyWindow() == true } as? UIWindow
+        ?: UIApplication.sharedApplication.keyWindow
+
+    var topController = keyWindow?.rootViewController
+    while (topController?.presentedViewController != null) {
+        topController = topController.presentedViewController
+    }
+    return topController
+}
 
 @Composable
 actual fun AttachmentsSection(
@@ -39,6 +94,12 @@ actual fun AttachmentsSection(
     selectedImageUri: String?,
     modifier: Modifier
 ) {
+    val delegate = remember(viewModel) {
+        ImagePickerDelegate { path ->
+            viewModel.onImageSelected(path)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -65,7 +126,11 @@ actual fun AttachmentsSection(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
-                        // iOS attachment picker placeholder
+                        val picker = UIImagePickerController().apply {
+                            sourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
+                            this.delegate = delegate
+                        }
+                        getRootViewController()?.presentViewController(picker, animated = true, completion = null)
                     }
                 ),
             contentAlignment = Alignment.Center

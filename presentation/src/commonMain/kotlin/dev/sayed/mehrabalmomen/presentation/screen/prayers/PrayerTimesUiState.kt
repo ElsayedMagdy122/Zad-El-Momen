@@ -22,7 +22,11 @@ data class PrayerTimesUiState(
     val batteryInstructions: List<String> = emptyList(),
     val selectedMoazen: SettingsUiState.Moazen = SettingsUiState.Moazen.AZAN_MAKKAH,
     val showMoazenDialog: Boolean = false,
-    val playingMoazenPreview: SettingsUiState.Moazen? = null
+    val playingMoazenPreview: SettingsUiState.Moazen? = null,
+    val showAlarmPermissionBottomSheet: Boolean = false,
+    val isNotificationPermissionMissing: Boolean = false,
+    val isExactAlarmPermissionMissing: Boolean = false,
+    val isBatteryOptimizationMissing: Boolean = false
 ) {
     data class PrayerUiState(
         val prayerName: Prayer.PrayerName = Prayer.PrayerName.FAJR,

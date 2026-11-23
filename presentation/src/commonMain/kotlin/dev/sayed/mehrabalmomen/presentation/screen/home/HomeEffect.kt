@@ -7,4 +7,8 @@ sealed interface HomeEffect {
     object NavigateToQuran : HomeEffect
     object NavigateToTilawah : HomeEffect
     object NavigateToLocation : HomeEffect
+    object RequestAlarmPermissions : HomeEffect
+    object RequestNotificationPermission : HomeEffect
+    object RequestExactAlarm : HomeEffect
+    object RequestIgnoreBatteryOptimization : HomeEffect
 }

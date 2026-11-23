@@ -12,7 +12,11 @@ data class HomeUiState(
     val time: TimeUiState = TimeUiState(),
     val prayers: List<PrayerUiState> = emptyList(),
     val nextPrayer: PrayerUiState = PrayerUiState(),
-    val hijriDate: String = ""
+    val hijriDate: String = "",
+    val showAlarmPermissionBottomSheet: Boolean = false,
+    val isNotificationPermissionMissing: Boolean = false,
+    val isExactAlarmPermissionMissing: Boolean = false,
+    val isBatteryOptimizationMissing: Boolean = false
 ) {
     data class LocationUiState(
         val country: String = "",

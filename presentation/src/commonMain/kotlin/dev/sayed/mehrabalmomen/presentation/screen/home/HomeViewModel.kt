@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.repository.platform.PermissionProvider
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
@@ -34,9 +35,11 @@ class HomeViewModel(
     private val settingsRepository: SettingsRepository,
     private val quranRepository: QuranRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val permissionProvider: PermissionProvider,
     private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
+    private var isBottomSheetDismissedByUser = false
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     private val _countdownTime = MutableStateFlow(HomeUiState.TimeUiState("00", "00", "00"))
     val countdownTime: StateFlow<HomeUiState.TimeUiState> = _countdownTime.asStateFlow()
@@ -44,7 +47,71 @@ class HomeViewModel(
     init {
         observeLocationChanges()
         observeContinueTilawah()
-        scheduleAlarms()
+        checkPermissionsAndScheduleAlarms()
+    }
+
+    fun onScreenOpened() {
+        checkPermissionsAndScheduleAlarms()
+    }
+
+    private fun checkPermissionsAndScheduleAlarms() {
+        val isExactAlarmMissing = permissionProvider.isExactAlarmPermissionRequired() && !permissionProvider.canScheduleExactAlarms()
+        val isNotificationMissing = permissionProvider.isNotificationPermissionRequired() && !permissionProvider.hasNotificationPermission()
+        val isBatteryOptimizationMissing = !permissionProvider.isIgnoringBatteryOptimizations()
+        val hasMissingPermissions = isExactAlarmMissing || isNotificationMissing || isBatteryOptimizationMissing
+
+        if (hasMissingPermissions) {
+            updateState {
+                it.copy(
+                    showAlarmPermissionBottomSheet = !isBottomSheetDismissedByUser,
+                    isNotificationPermissionMissing = isNotificationMissing,
+                    isExactAlarmPermissionMissing = isExactAlarmMissing,
+                    isBatteryOptimizationMissing = isBatteryOptimizationMissing
+                )
+            }
+        } else {
+            isBottomSheetDismissedByUser = false
+            updateState {
+                it.copy(
+                    showAlarmPermissionBottomSheet = false,
+                    isNotificationPermissionMissing = false,
+                    isExactAlarmPermissionMissing = false,
+                    isBatteryOptimizationMissing = false
+                )
+            }
+            scheduleAlarms()
+        }
+    }
+
+    fun onGrantNotificationPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(HomeEffect.RequestNotificationPermission)
+    }
+
+    fun onGrantExactAlarmPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(HomeEffect.RequestExactAlarm)
+    }
+
+    fun onGrantBatteryPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(HomeEffect.RequestIgnoreBatteryOptimization)
+    }
+
+    fun onGrantAlarmPermissions() {
+        isBottomSheetDismissedByUser = false
+        val state = screenState.value
+        when {
+            state.isNotificationPermissionMissing -> sendEffect(HomeEffect.RequestNotificationPermission)
+            state.isExactAlarmPermissionMissing -> sendEffect(HomeEffect.RequestExactAlarm)
+            state.isBatteryOptimizationMissing -> sendEffect(HomeEffect.RequestIgnoreBatteryOptimization)
+            else -> sendEffect(HomeEffect.RequestAlarmPermissions)
+        }
+    }
+
+    fun onIgnoreAlarmPermissions() {
+        isBottomSheetDismissedByUser = true
+        updateState { it.copy(showAlarmPermissionBottomSheet = false) }
     }
 
     private fun scheduleAlarms() {

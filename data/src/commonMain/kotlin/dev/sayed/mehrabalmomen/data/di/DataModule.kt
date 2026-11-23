@@ -2,6 +2,8 @@ package dev.sayed.mehrabalmomen.data.di
 
 import dev.sayed.mehrabalmomen.data.BuildKonfig
 import dev.sayed.mehrabalmomen.data.azkar.repository.AzkarRepositoryImpl
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
+import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRpcService
 import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportStorageService
 import dev.sayed.mehrabalmomen.data.bugReport.repository.BugReportRepositoryImpl
@@ -93,6 +95,15 @@ val commonDataModule = module {
 
     single { BugReportStorageService(get()) }
     single { BugReportRpcService(get()) }
+    single<BugReportRemoteDataSource> {
+        BugReportRemoteDataSourceImpl(
+            rpcService = get(),
+            storageService = get(),
+            deviceInfoProvider = get(),
+            imageCompressor = get(),
+            supabase = get()
+        )
+    }
 
     single<QuranAudioReadersRemoteDataSource> { QuranAudioReadersRemoteDataSourceImpl(get()) }
     single<QuranAudioRemoteDataSource> { QuranAudioRemoteDataSourceImpl(get()) }

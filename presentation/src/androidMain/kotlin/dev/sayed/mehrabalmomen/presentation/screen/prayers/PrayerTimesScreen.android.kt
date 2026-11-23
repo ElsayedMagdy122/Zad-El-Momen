@@ -1,9 +1,12 @@
 package dev.sayed.mehrabalmomen.presentation.screen.prayers
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +31,7 @@ import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.components.AlarmPermissionsBottomSheet
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.BatteryOptimizationBottomSheet
@@ -60,10 +64,17 @@ actual fun PrayerTimesScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val notificationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        viewModel.onScreenOpened()
+    }
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 viewModel.refreshBatteryStatus()
+                viewModel.onScreenOpened()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -76,6 +87,22 @@ actual fun PrayerTimesScreen(
         when (effect) {
             PrayerTimesEffect.NavigateBack -> {
                 navController.popBackStack()
+            }
+            PrayerTimesEffect.RequestNotificationPermission -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+            PrayerTimesEffect.RequestExactAlarm -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                        data = Uri.parse("package:${context.packageName}")
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    try {
+                        context.startActivity(intent)
+                    } catch (_: Exception) {}
+                }
             }
             PrayerTimesEffect.RequestIgnoreBatteryOptimization -> {
                 val intent = Intent().apply {
@@ -208,6 +235,19 @@ actual fun PrayerTimesScreen(
                 viewModel.onOpenOverlaySettingsClicked()
             },
             onDismiss = viewModel::onDismissBatteryDialog
+        )
+    }
+
+    if (state.showAlarmPermissionBottomSheet) {
+        AlarmPermissionsBottomSheet(
+            isNotificationPermissionMissing = state.isNotificationPermissionMissing,
+            isExactAlarmPermissionMissing = state.isExactAlarmPermissionMissing,
+            isBatteryOptimizationMissing = state.isBatteryOptimizationMissing,
+            onGrantNotification = viewModel::onGrantNotificationPermission,
+            onGrantExactAlarm = viewModel::onGrantExactAlarmPermission,
+            onGrantBattery = viewModel::onGrantBatteryPermission,
+            onGrantAll = viewModel::onGrantAlarmPermissions,
+            onIgnore = viewModel::onIgnoreAlarmPermissions
         )
     }
 }

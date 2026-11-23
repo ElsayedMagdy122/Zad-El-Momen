@@ -137,10 +137,72 @@ class PrayerTimesViewModel(
         }
     }
 
+    private var isBottomSheetDismissedByUser = false
+
     fun onScreenOpened() {
         getDailyPrayers()
         getNextPrayer()
-        scheduleAlarmsIfNeeded()
+        checkPermissionsAndScheduleAlarms()
+    }
+
+    private fun checkPermissionsAndScheduleAlarms() {
+        val isExactAlarmMissing = permissionProvider.isExactAlarmPermissionRequired() && !permissionProvider.canScheduleExactAlarms()
+        val isNotificationMissing = permissionProvider.isNotificationPermissionRequired() && !permissionProvider.hasNotificationPermission()
+        val isBatteryOptimizationMissing = !permissionProvider.isIgnoringBatteryOptimizations()
+        val hasMissingPermissions = isExactAlarmMissing || isNotificationMissing || isBatteryOptimizationMissing
+
+        if (!hasMissingPermissions) {
+            isBottomSheetDismissedByUser = false
+            updateState {
+                it.copy(
+                    showAlarmPermissionBottomSheet = false,
+                    isNotificationPermissionMissing = false,
+                    isExactAlarmPermissionMissing = false,
+                    isBatteryOptimizationMissing = false
+                )
+            }
+            scheduleAlarmsIfNeeded()
+        } else {
+            updateState {
+                it.copy(
+                    isNotificationPermissionMissing = isNotificationMissing,
+                    isExactAlarmPermissionMissing = isExactAlarmMissing,
+                    isBatteryOptimizationMissing = isBatteryOptimizationMissing
+                )
+            }
+        }
+    }
+
+    fun onGrantNotificationPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(PrayerTimesEffect.RequestNotificationPermission)
+    }
+
+    fun onGrantExactAlarmPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(PrayerTimesEffect.RequestExactAlarm)
+    }
+
+    fun onGrantBatteryPermission() {
+        isBottomSheetDismissedByUser = false
+        sendEffect(PrayerTimesEffect.RequestIgnoreBatteryOptimization)
+    }
+
+    fun onGrantAlarmPermissions() {
+        isBottomSheetDismissedByUser = false
+        val state = screenState.value
+        if (state.isNotificationPermissionMissing) {
+            sendEffect(PrayerTimesEffect.RequestNotificationPermission)
+        } else if (state.isExactAlarmPermissionMissing) {
+            sendEffect(PrayerTimesEffect.RequestExactAlarm)
+        } else if (state.isBatteryOptimizationMissing) {
+            sendEffect(PrayerTimesEffect.RequestIgnoreBatteryOptimization)
+        }
+    }
+
+    fun onIgnoreAlarmPermissions() {
+        isBottomSheetDismissedByUser = true
+        updateState { it.copy(showAlarmPermissionBottomSheet = false) }
     }
 
     private fun scheduleAlarmsIfNeeded() {
@@ -169,9 +231,14 @@ class PrayerTimesViewModel(
                 val notifications = notificationsRepository.observeAll().first()
                 val zone = TimeZone.currentSystemDefault()
 
+                val isExactAlarmMissing = permissionProvider.isExactAlarmPermissionRequired() && !permissionProvider.canScheduleExactAlarms()
+                val isNotificationMissing = permissionProvider.isNotificationPermissionRequired() && !permissionProvider.hasNotificationPermission()
+                val isBatteryOptimizationMissing = !permissionProvider.isIgnoringBatteryOptimizations()
+                val hasMissingPermissions = isExactAlarmMissing || isNotificationMissing || isBatteryOptimizationMissing
+
                 val prayerUiStates = prayers.map { prayer ->
                     prayer.toPrayerUiState(zone).copy(
-                        isNotificationEnabled = notifications[prayer.name] ?: true,
+                        isNotificationEnabled = if (hasMissingPermissions) false else (notifications[prayer.name] ?: true),
                         isUpComing = prayer.name == nextPrayer.name
                     )
                 }
@@ -278,7 +345,23 @@ class PrayerTimesViewModel(
     override fun onClickEnablePrayer(prayerName: Prayer.PrayerName, isEnabled: Boolean) {
         viewModelScope.launch {
             if (isEnabled) {
-                checkPermissionsBeforeEnable()
+                val isExactAlarmMissing = permissionProvider.isExactAlarmPermissionRequired() && !permissionProvider.canScheduleExactAlarms()
+                val isNotificationMissing = permissionProvider.isNotificationPermissionRequired() && !permissionProvider.hasNotificationPermission()
+                val isBatteryOptimizationMissing = !permissionProvider.isIgnoringBatteryOptimizations()
+                val hasMissingPermissions = isExactAlarmMissing || isNotificationMissing || isBatteryOptimizationMissing
+
+                if (hasMissingPermissions) {
+                    isBottomSheetDismissedByUser = false
+                    updateState {
+                        it.copy(
+                            showAlarmPermissionBottomSheet = true,
+                            isNotificationPermissionMissing = isNotificationMissing,
+                            isExactAlarmPermissionMissing = isExactAlarmMissing,
+                            isBatteryOptimizationMissing = isBatteryOptimizationMissing
+                        )
+                    }
+                    return@launch
+                }
             }
             notificationsRepository.setPrayerEnabled(prayerName, isEnabled)
             scheduleAlarmsIfNeeded()
@@ -292,24 +375,5 @@ class PrayerTimesViewModel(
         }
     }
 
-    private fun checkPermissionsBeforeEnable() {
-        if (!permissionProvider.hasNotificationPermission()) {
-            sendEffect(PrayerTimesEffect.RequestNotificationPermission)
-            return
-        }
-        if (!permissionProvider.canScheduleExactAlarms()) {
-            sendEffect(PrayerTimesEffect.RequestExactAlarm)
-            return
-        }
-        if (!permissionProvider.canDrawOverlays()) {
-            refreshBatteryStatus()
-            updateState { it.copy(showBatteryDialog = true) }
-            return
-        }
-        if (!batteryOptimizationRepository.isIgnoringBatteryOptimizations()) {
-            refreshBatteryStatus()
-            updateState { it.copy(showBatteryDialog = true) }
-            return
-        }
-    }
+
 }

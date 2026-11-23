@@ -5,8 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.media3.common.util.UnstableApi
 import com.google.firebase.analytics.FirebaseAnalytics
-import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSource
-import dev.sayed.mehrabalmomen.data.bugReport.remote.BugReportRemoteDataSourceImpl
+import dev.sayed.mehrabalmomen.data.platform.system.AndroidImageCompressor
+import dev.sayed.mehrabalmomen.domain.repository.platform.ImageCompressor
 import dev.sayed.mehrabalmomen.data.database.getDatabaseBuilder
 import dev.sayed.mehrabalmomen.data.database.roomDatabaseCallback
 import dev.sayed.mehrabalmomen.data.datastore.createAndroidDataStore
@@ -62,21 +62,13 @@ actual val platformDataModule: Module = module {
     @Suppress("MissingPermission")
     single<AnalyticsTracker> { AndroidAnalyticsTracker(FirebaseAnalytics.getInstance(androidContext())) }
     single<PermissionProvider> { AndroidPermissionProvider(androidContext()) }
-    single<DeviceInfoProvider> { AndroidDeviceInfoProvider() }
+    single<DeviceInfoProvider> { AndroidDeviceInfoProvider(androidContext()) }
+    single<ImageCompressor> { AndroidImageCompressor(androidContext()) }
     single<BillingService> { BillingManager(androidContext()) }
     single<BatteryOptimizationRepository> { BatteryOptimizationRepositoryImpl(androidContext(), get()) }
 
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(androidContext()) }
     single<LocationRepository> { LocationRepositoryImpl(androidContext(), get()) }
-    single<BugReportRemoteDataSource> {
-        BugReportRemoteDataSourceImpl(
-            rpcService = get(),
-            storageService = get(),
-            deviceInfoProvider = get(),
-            supabase = get(),
-            context = androidContext()
-        )
-    }
     single<QuranAudioReadersRepository> {
         QuranAudioReadersRepositoryImpl(
             readersRemoteDataSource = get(),

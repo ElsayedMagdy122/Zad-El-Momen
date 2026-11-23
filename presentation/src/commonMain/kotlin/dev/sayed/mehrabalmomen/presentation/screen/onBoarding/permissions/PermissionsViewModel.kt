@@ -77,9 +77,7 @@ class PermissionsViewModel(
 
     private fun checkIfAllPermissionsGranted() {
         val state = screenState.value
-        val requiredGranted = state.isLocationPermissionGranted &&
-                (!state.isAlarmPermissionRequired || state.isAlarmPermissionGranted) &&
-                !state.isLocationLoading
+        val requiredGranted = state.isLocationPermissionGranted && !state.isLocationLoading
 
         updateState { it.copy(isButtonEnabled = requiredGranted) }
     }

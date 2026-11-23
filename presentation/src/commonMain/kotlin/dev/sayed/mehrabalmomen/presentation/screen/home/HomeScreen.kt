@@ -27,6 +27,11 @@ import dev.sayed.mehrabalmomen.presentation.screen.home.component.PrayerTimesCar
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.koin.compose.viewmodel.koinViewModel
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import dev.sayed.mehrabalmomen.presentation.components.AlarmPermissionsBottomSheet
+
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -35,10 +40,19 @@ fun HomeScreen(
 ) {
     val state by viewModel.screenState.collectAsStateWithLifecycle()
     val language = LocalAppLocale.current
+    var currentEffect by remember { mutableStateOf<HomeEffect?>(null) }
+
     LaunchedEffect(Unit) {
         viewModel.getHijriDate(language)
     }
+
+    AlarmPermissionHandler(
+        effect = currentEffect,
+        onPermissionsUpdated = viewModel::onScreenOpened
+    )
+
     CollectEffect(viewModel.effect) { effect ->
+        currentEffect = effect
         when (effect) {
             HomeEffect.NavigateToPrayerTimes -> {
                 onNavigateToTab?.invoke(Route.PrayerTimes.route)
@@ -70,6 +84,12 @@ fun HomeScreen(
             HomeEffect.NavigateToLocation -> {
                 navController.navigate(Route.MapsScreen)
             }
+
+            HomeEffect.RequestAlarmPermissions -> {
+                // Handled via AlarmPermissionHandler
+            }
+
+            else -> {}
         }
     }
     LazyColumn(
@@ -125,5 +145,18 @@ fun HomeScreen(
             )
         }
         item { FeaturesSection(homeInteractionListener = viewModel) }
+    }
+
+    if (state.showAlarmPermissionBottomSheet) {
+        AlarmPermissionsBottomSheet(
+            isNotificationPermissionMissing = state.isNotificationPermissionMissing,
+            isExactAlarmPermissionMissing = state.isExactAlarmPermissionMissing,
+            isBatteryOptimizationMissing = state.isBatteryOptimizationMissing,
+            onGrantNotification = viewModel::onGrantNotificationPermission,
+            onGrantExactAlarm = viewModel::onGrantExactAlarmPermission,
+            onGrantBattery = viewModel::onGrantBatteryPermission,
+            onGrantAll = viewModel::onGrantAlarmPermissions,
+            onIgnore = viewModel::onIgnoreAlarmPermissions
+        )
     }
 }

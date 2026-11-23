@@ -9,4 +9,7 @@ interface DeviceInfoProvider {
 
     /** Returns the platform version (e.g., "Android 13"). */
     fun getOsVersion(): String
+
+    /** Returns a unique platform-specific device identifier. */
+    fun getDeviceId(): String
 }

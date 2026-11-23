@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -66,6 +67,12 @@ import zadelmomen.presentation.generated.resources.alarm_permission_desc
 import zadelmomen.presentation.generated.resources.ic_protected_privacy
 import zadelmomen.presentation.generated.resources.background_permission
 import zadelmomen.presentation.generated.resources.background_permission_desc
+
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.graphicsLayer
+import kotlinx.coroutines.delay
 
 @Composable
 actual fun PermissionsScreen(
@@ -206,11 +213,48 @@ actual fun PermissionsScreen(
 }
 
 @Composable
+private fun StaggeredItem(
+    index: Int,
+    isVisible: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val animatedProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            delay(index * 100L)
+            animatedProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 450,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
+    }
+
+    Box(
+        modifier = modifier.graphicsLayer {
+            alpha = animatedProgress.value
+            translationY = (1f - animatedProgress.value) * 60.dp.toPx()
+        }
+    ) {
+        content()
+    }
+}
+
+@Composable
 private fun PermissionsContent(
     state: PermissionsUiState,
     toastData: ToastDetails?,
     listener: PermissionsInteractionListener
 ) {
+    var isVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        isVisible = true
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -225,70 +269,89 @@ private fun PermissionsContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                PermissionCard()
-                Spacer(modifier = Modifier.height(16.dp))
-                PermissionHeader()
-                Spacer(modifier = Modifier.height(24.dp))
+                StaggeredItem(index = 0, isVisible = isVisible) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        PermissionCard()
+                        Spacer(modifier = Modifier.height(16.dp))
+                        PermissionHeader()
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                }
             }
 
             item {
-                PermissionItem(
-                    icon = Res.drawable.ic_location,
-                    title = Res.string.location_permission,
-                    description = Res.string.location_permission_desc,
-                    isGranted = state.isLocationPermissionGranted,
-                    isLoading = state.isLocationLoading,
-                    onClick = { listener.onClickAllowLocationAccess() }
-                )
+                StaggeredItem(index = 1, isVisible = isVisible) {
+                    PermissionItem(
+                        icon = Res.drawable.ic_location,
+                        title = Res.string.location_permission,
+                        description = Res.string.location_permission_desc,
+                        isGranted = state.isLocationPermissionGranted,
+                        isLoading = state.isLocationLoading,
+                        onClick = { listener.onClickAllowLocationAccess() }
+                    )
+                }
             }
 
             if (state.isNotificationPermissionRequired) {
                 item {
-                    PermissionItem(
-                        icon = Res.drawable.ic_alarm_clock,
-                        title = Res.string.notification_permission,
-                        description = Res.string.notification_permission_desc,
-                        isGranted = state.isNotificationPermissionGranted,
-                        isOptional = true,
-                        onClick = { listener.onClickAllowNotificationAccess() }
-                    )
+                    StaggeredItem(index = 2, isVisible = isVisible) {
+                        PermissionItem(
+                            icon = Res.drawable.ic_alarm_clock,
+                            title = Res.string.notification_permission,
+                            description = Res.string.notification_permission_desc,
+                            isGranted = state.isNotificationPermissionGranted,
+                            isOptional = true,
+                            onClick = { listener.onClickAllowNotificationAccess() }
+                        )
+                    }
                 }
             }
 
             if (state.isAlarmPermissionRequired) {
                 item {
-                    PermissionItem(
-                        icon = Res.drawable.ic_reminder,
-                        title = Res.string.alarm_permission,
-                        description = Res.string.alarm_permission_desc,
-                        isGranted = state.isAlarmPermissionGranted,
-                        onClick = { listener.onClickAllowAlarmAccess() }
-                    )
+                    StaggeredItem(index = 3, isVisible = isVisible) {
+                        PermissionItem(
+                            icon = Res.drawable.ic_reminder,
+                            title = Res.string.alarm_permission,
+                            description = Res.string.alarm_permission_desc,
+                            isGranted = state.isAlarmPermissionGranted,
+                            isOptional = true,
+                            onClick = { listener.onClickAllowAlarmAccess() }
+                        )
+                    }
                 }
             }
 
             item {
-                PermissionItem(
-                    icon = Res.drawable.ic_protected_privacy,
-                    title = Res.string.background_permission,
-                    description = Res.string.background_permission_desc,
-                    isGranted = state.isBackgroundPermissionGranted,
-                    isOptional = true,
-                    onClick = { listener.onClickAllowBackgroundAccess() }
-                )
+                StaggeredItem(index = 4, isVisible = isVisible) {
+                    PermissionItem(
+                        icon = Res.drawable.ic_protected_privacy,
+                        title = Res.string.background_permission,
+                        description = Res.string.background_permission_desc,
+                        isGranted = state.isBackgroundPermissionGranted,
+                        isOptional = true,
+                        onClick = { listener.onClickAllowBackgroundAccess() }
+                    )
+                }
             }
         }
 
-        PrimaryButton(
-            isLoading = state.isLoading,
-            isEnabled = state.isButtonEnabled,
-            text = localizedString(state.buttonState.value),
-            onClick = { listener.onClickNext() },
+        StaggeredItem(
+            index = 5,
+            isVisible = isVisible,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp)
-        )
+        ) {
+            PrimaryButton(
+                isLoading = state.isLoading,
+                isEnabled = state.isButtonEnabled,
+                text = localizedString(state.buttonState.value),
+                onClick = { listener.onClickNext() },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         toastData?.let {
             PrimaryToast(

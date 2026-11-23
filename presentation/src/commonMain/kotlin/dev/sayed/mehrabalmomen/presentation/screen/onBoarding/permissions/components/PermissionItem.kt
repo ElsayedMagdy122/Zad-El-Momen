@@ -40,7 +40,8 @@ fun PermissionItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    isOptional: Boolean = false
+    isOptional: Boolean = false,
+    showActionButton: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -96,28 +97,30 @@ fun PermissionItem(
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        if (showActionButton) {
+            Spacer(modifier = Modifier.width(8.dp))
 
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(if (isGranted) Color.Transparent else Theme.color.primary.primary)
-                .clickable(enabled = !isGranted && !isLoading) { onClick() }
-                .padding(horizontal = 12.dp, vertical = 6.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(16.dp),
-                    color = Theme.color.primary.onPrimary,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = localizedString(if (isGranted) Res.string.granted else Res.string.allow),
-                    style = Theme.textStyle.label.medium,
-                    color = if (isGranted) Theme.color.primary.primary else Theme.color.primary.onPrimary
-                )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isGranted) Color.Transparent else Theme.color.primary.primary)
+                    .clickable(enabled = !isGranted && !isLoading) { onClick() }
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = Theme.color.primary.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(
+                        text = localizedString(if (isGranted) Res.string.granted else Res.string.allow),
+                        style = Theme.textStyle.label.medium,
+                        color = if (isGranted) Theme.color.primary.primary else Theme.color.primary.onPrimary
+                    )
+                }
             }
         }
     }

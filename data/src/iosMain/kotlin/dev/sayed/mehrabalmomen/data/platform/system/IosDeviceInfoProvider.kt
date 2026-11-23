@@ -11,4 +11,8 @@ class IosDeviceInfoProvider : DeviceInfoProvider {
     override fun getOsVersion(): String {
         return "iOS ${UIDevice.currentDevice.systemVersion}"
     }
+
+    override fun getDeviceId(): String {
+        return UIDevice.currentDevice.identifierForVendor?.UUIDString ?: "ios_device"
+    }
 }
