@@ -108,6 +108,7 @@ struct PrayerWidgetEntryView : View {
     }
 }
 
+@main
 struct PrayerWidget: Widget {
     let kind: String = "PrayerWidget"
 

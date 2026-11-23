@@ -55,7 +55,7 @@ private fun StepsItem(
         )
         Column(
             modifier = Modifier.padding(start = 16.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
                 text = title,
