@@ -30,6 +30,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.azkar.AzkarScreen
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioScreen
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.PrayerTimesScreen
 import dev.sayed.mehrabalmomen.presentation.screen.settings.SettingsScreen
+import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionOverlay
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.azan
@@ -146,5 +147,7 @@ fun MainContainer(
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+
+        CompanionOverlay()
     }
 }
