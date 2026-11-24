@@ -103,7 +103,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 state = state,
                 onNotificationClick = {
-                    navController.navigate(Route.ReminderSettingsScreen)
+                    navController.navigate(Route.NotificationsScreen)
                 },
                 onLocationClick = viewModel::onClickLocation
             )

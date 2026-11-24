@@ -16,7 +16,8 @@ data class HomeUiState(
     val showAlarmPermissionBottomSheet: Boolean = false,
     val isNotificationPermissionMissing: Boolean = false,
     val isExactAlarmPermissionMissing: Boolean = false,
-    val isBatteryOptimizationMissing: Boolean = false
+    val isBatteryOptimizationMissing: Boolean = false,
+    val unreadNotificationsCount: Int = 0
 ) {
     data class LocationUiState(
         val country: String = "",

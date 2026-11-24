@@ -9,6 +9,8 @@ import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarCustomCategoryEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarCustomItemEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarHistoryEntity
 import dev.sayed.mehrabalmomen.data.azkar.local.entity.AzkarStatsEntity
+import dev.sayed.mehrabalmomen.data.notification.local.dao.AppNotificationDao
+import dev.sayed.mehrabalmomen.data.notification.local.entity.AppNotificationEntity
 import dev.sayed.mehrabalmomen.data.quran.audio.local.dao.DownloadedReciterDao
 import dev.sayed.mehrabalmomen.data.quran.audio.local.entity.DownloadedReciterEntity
 import dev.sayed.mehrabalmomen.data.quran.audio.local.entity.VerseTimingEntity
@@ -27,8 +29,9 @@ import dev.sayed.mehrabalmomen.data.reminders.local.entity.ReminderEntity
         AzkarStatsEntity::class,
         AzkarHistoryEntity::class,
         ReminderEntity::class,
+        AppNotificationEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 @ConstructedBy(AppDatabaseConstructor::class)
@@ -37,10 +40,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun downloadedReciterDao(): DownloadedReciterDao
     abstract fun azkarDao(): AzkarDao
     abstract fun reminderDao(): ReminderDao
+    abstract fun appNotificationDao(): AppNotificationDao
 }
 
 @Suppress("KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }
-

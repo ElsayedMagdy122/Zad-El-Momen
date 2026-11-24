@@ -11,6 +11,7 @@ import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.repository.notification.AppNotificationRepository
 import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
@@ -22,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
@@ -36,7 +38,8 @@ class HomeViewModel(
     private val quranRepository: QuranRepository,
     private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
     private val permissionProvider: PermissionProvider,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val notificationRepository: AppNotificationRepository
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private var isBottomSheetDismissedByUser = false
@@ -48,6 +51,15 @@ class HomeViewModel(
         observeLocationChanges()
         observeContinueTilawah()
         checkPermissionsAndScheduleAlarms()
+        observeUnreadNotifications()
+    }
+
+    private fun observeUnreadNotifications() {
+        viewModelScope.launch {
+            notificationRepository.getUnreadCount().collectLatest { unreadCount ->
+                updateState { it.copy(unreadNotificationsCount = unreadCount) }
+            }
+        }
     }
 
     fun onScreenOpened() {

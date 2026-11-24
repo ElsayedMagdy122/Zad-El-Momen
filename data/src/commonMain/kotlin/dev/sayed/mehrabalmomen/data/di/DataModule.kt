@@ -29,6 +29,8 @@ import dev.sayed.mehrabalmomen.data.settings.local.RecitationPreferences
 import dev.sayed.mehrabalmomen.data.settings.repositiory.SettingsRepositoryImpl
 import dev.sayed.mehrabalmomen.data.util.AppDatabase
 import dev.sayed.mehrabalmomen.data.util.KmpLogger
+import dev.sayed.mehrabalmomen.data.notification.repository.AppNotificationRepositoryImpl
+import dev.sayed.mehrabalmomen.domain.repository.notification.AppNotificationRepository
 import dev.sayed.mehrabalmomen.domain.repository.azkar.AzkarRepository
 import dev.sayed.mehrabalmomen.domain.repository.bugReport.BugReportRepository
 import dev.sayed.mehrabalmomen.domain.repository.companion.CompanionRepository
@@ -115,6 +117,7 @@ val commonDataModule = module {
     single { get<AppDatabase>().downloadedReciterDao() }
     single { get<AppDatabase>().azkarDao() }
     single { get<AppDatabase>().reminderDao() }
+    single { get<AppDatabase>().appNotificationDao() }
 
     single<PrayerRepository> { PrayerRepositoryImpl() }
     single<QiblahRepository> { QiblahRepositoryImpl(get()) }
@@ -131,6 +134,7 @@ val commonDataModule = module {
     single<ReminderSettingsRepository> { ReminderSettingsRepositoryImpl(get()) }
     single<ReminderSchedulerRepository> { ReminderSchedulerRepositoryImpl(get(), get(), get(), get()) }
     single<QuranAudioRepository> { QuranAudioRepositoryImpl(get(), get(), get()) }
+    single<AppNotificationRepository> { AppNotificationRepositoryImpl(get(), get()) }
 }
 
 expect val platformDataModule: Module

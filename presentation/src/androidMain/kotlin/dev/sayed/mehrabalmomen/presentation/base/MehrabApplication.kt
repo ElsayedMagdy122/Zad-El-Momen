@@ -1,6 +1,7 @@
 package dev.sayed.mehrabalmomen.presentation.base
 
 import android.app.Application
+import com.google.firebase.messaging.FirebaseMessaging
 import dev.sayed.mehrabalmomen.data.di.dataModule
 import dev.sayed.mehrabalmomen.domain.di.domainModule
 import dev.sayed.mehrabalmomen.presentation.di.presentationModule
@@ -15,5 +16,7 @@ class MehrabApplication : Application() {
             androidContext(this@MehrabApplication)
             modules(presentationModule, presentationPlatformModule, domainModule, *dataModule.toTypedArray())
         }
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all")
     }
 }

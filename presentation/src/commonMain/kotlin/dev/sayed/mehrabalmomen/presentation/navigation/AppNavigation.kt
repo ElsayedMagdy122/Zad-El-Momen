@@ -170,6 +170,17 @@ fun AppNavigation(settingsRepository: SettingsRepository) {
                 }
                 composable<Route.RecitersScreen> { RecitersScreen(navController = navController) }
                 composable<Route.RecitersSearchScreen> { RecitersSearchScreen(navController = navController) }
+                composable<Route.NotificationsScreen> {
+                    dev.sayed.mehrabalmomen.presentation.screen.notifications.NotificationsScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToReciter = { reciterId ->
+                            navController.navigate(Route.RecitersScreen(surahId = 1, currentReaderId = reciterId))
+                        },
+                        onNavigateToRadio = {
+                            navController.navigate(Route.RadioScreen)
+                        }
+                    )
+                }
                 composable<Route.AppRoute> {
                     MainContainer(rootNavController = navController)
                 }

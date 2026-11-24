@@ -112,6 +112,13 @@
             android:name=".data.recitation.engine.RecitationDownloadService"
             android:foregroundServiceType="dataSync"
             android:exported="false" />
+        <service
+            android:name=".service.AppFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <meta-data
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />

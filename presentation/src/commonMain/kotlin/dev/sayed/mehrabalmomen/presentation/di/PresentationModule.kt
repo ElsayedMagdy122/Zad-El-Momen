@@ -23,6 +23,7 @@ import dev.sayed.mehrabalmomen.presentation.screen.settings.contact_us.ContactVi
 import dev.sayed.mehrabalmomen.presentation.screen.maps.MapsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.ReportBug.ReportBugViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.companion.CompanionViewModel
+import dev.sayed.mehrabalmomen.presentation.screen.notifications.NotificationsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
@@ -51,6 +52,7 @@ val presentationModule = module {
     viewModelOf(::ReportBugViewModel)
     viewModelOf(::ContactViewModel)
     viewModelOf(::CompanionViewModel)
+    viewModelOf(::NotificationsViewModel)
 
     viewModel {
         HighlightingViewModel(

@@ -151,4 +151,10 @@ sealed interface Route {
         override val route: String
             get() = "reminder_settings_screen"
     }
+
+    @Serializable
+    data object NotificationsScreen : Route {
+        override val route: String
+            get() = "notifications_screen"
+    }
 }
