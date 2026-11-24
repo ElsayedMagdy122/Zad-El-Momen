@@ -335,6 +335,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.sayed.mehrabalmomen;
 				INFOPLIST_KEY_CFBundleDisplayName = "زاد المؤمن - ZadElMomen";
 				INFOPLIST_KEY_CFBundleName = "ZadElMomen";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -368,6 +369,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.sayed.mehrabalmomen;
 				INFOPLIST_KEY_CFBundleDisplayName = "زاد المؤمن - ZadElMomen";
 				INFOPLIST_KEY_CFBundleName = "ZadElMomen";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
