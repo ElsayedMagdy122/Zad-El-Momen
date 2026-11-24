@@ -52,6 +52,7 @@ import org.koin.compose.koinInject
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_notifications
 import zadelmomen.presentation.generated.resources.ic_trash
+import zadelmomen.presentation.generated.resources.no_data_yet
 
 @Composable
 fun NotificationsScreen(
@@ -194,20 +195,20 @@ private fun NotificationsContent(
             }
         }
 
-        // Bottom Action Buttons (Primary & Secondary)
+        // Bottom Action Buttons (Stacked Vertically)
         if (state.notifications.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (state.unreadCount > 0) {
                     PrimaryButton(
                         text = "تحديد الكل كمقروء",
                         onClick = listener::onMarkAllAsReadClick,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 PrimaryButton(
@@ -215,7 +216,7 @@ private fun NotificationsContent(
                     onClick = { showClearAllDialog = true },
                     enabledContainerColor = Theme.color.surfaces.surfaceHigh,
                     enabledTextColor = Theme.color.semantic.error,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -366,10 +367,10 @@ private fun EmptyNotificationsView() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                painter = painterResource(Res.drawable.ic_notifications),
+                painter = painterResource(Res.drawable.no_data_yet),
                 contentDescription = null,
-                tint = Theme.color.secondary.shadeSecondary.copy(alpha = 0.4f),
-                modifier = Modifier.size(64.dp)
+                tint = Color.Unspecified,
+                modifier = Modifier.size(96.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -385,7 +386,8 @@ private fun EmptyNotificationsView() {
             Text(
                 text = "ستصلك الإشعارات الجديدة فور إضافتها من الباك إند",
                 style = Theme.textStyle.body.small,
-                color = Theme.color.secondary.shadeSecondary
+                color = Theme.color.secondary.shadeSecondary,
+                textAlign = TextAlign.Center
             )
         }
     }

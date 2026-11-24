@@ -17,7 +17,8 @@ data class ReciterUiState(
     val downloadState: DownloadState = DownloadState.NOT_DOWNLOADED,
     val downloadProgress: Int = 0,
     val playState: PlayState = PlayState.RESUME,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val isNew: Boolean = false
 )
 
 enum class PlayState {

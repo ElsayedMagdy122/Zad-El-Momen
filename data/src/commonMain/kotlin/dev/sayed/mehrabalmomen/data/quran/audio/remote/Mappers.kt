@@ -24,7 +24,8 @@ fun QuranAudioReaderDto.toEntity(rewaya: QuranAudioRewayat? = null): QuranAudioR
     nameEn = nameEn,
     baseAudioUrl = baseAudioUrl,
     surahsCount = surahsCount,
-    rewaya = rewaya
+    rewaya = rewaya,
+    createdAt = createdAt.toInstantOrNull()
 )
 
 fun DownloadedReciterEntity.toEntity(): QuranAudioReader = QuranAudioReader(

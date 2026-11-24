@@ -30,7 +30,10 @@ import dev.sayed.mehrabalmomen.domain.model.notification.NotificationType
 import kotlin.time.Clock
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
+import zadelmomen.presentation.generated.resources.ic_download_01
 import zadelmomen.presentation.generated.resources.ic_notifications
+import zadelmomen.presentation.generated.resources.ic_quran
+import zadelmomen.presentation.generated.resources.ic_radio_selected
 
 @Composable
 fun NotificationItem(
@@ -52,6 +55,13 @@ fun NotificationItem(
         NotificationType.GENERAL -> Theme.color.primary.primary
     }
 
+    val iconResource = when (notification.type) {
+        NotificationType.NEW_RECITER -> Res.drawable.ic_quran
+        NotificationType.NEW_RADIO -> Res.drawable.ic_radio_selected
+        NotificationType.APP_UPDATE -> Res.drawable.ic_download_01
+        NotificationType.GENERAL -> Res.drawable.ic_notifications
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -70,7 +80,7 @@ fun NotificationItem(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(Res.drawable.ic_notifications),
+                painter = painterResource(iconResource),
                 contentDescription = null,
                 tint = typeIconColor,
                 modifier = Modifier.size(22.dp)
