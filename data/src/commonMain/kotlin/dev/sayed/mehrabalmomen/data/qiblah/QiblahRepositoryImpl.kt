@@ -3,6 +3,7 @@ package dev.sayed.mehrabalmomen.data.qiblah
 import com.batoulapps.adhan2.Coordinates
 import com.batoulapps.adhan2.Qibla
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
+import dev.sayed.mehrabalmomen.domain.repository.qiblah.CompassData
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.CompassSensorManager
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.QiblahRepository
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ class QiblahRepositoryImpl(
         return Qibla(coordinates).direction
     }
 
-    override fun observeCompassAzimuth(): Flow<Float> {
-        return compassSensorManager.observeAzimuth()
+    override fun observeCompassAzimuth(location: Location?): Flow<CompassData> {
+        return compassSensorManager.observeAzimuth(location)
     }
 }

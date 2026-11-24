@@ -6,6 +6,7 @@ data class QiblahUiState(
     val relativeAngle: Float = 0.0f,
     val qiblaOffset: Float = 0.0f,
     val isAligned: Boolean = false,
+    val isLowAccuracy: Boolean = false,
     val location: LocationUiState = LocationUiState(),
     val isCompassAvailable: Boolean = true
 ) {

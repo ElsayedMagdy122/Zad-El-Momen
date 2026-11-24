@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
+import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.DirectionCard
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.components.KaabaOnCircle
 import org.koin.compose.viewmodel.koinViewModel
@@ -77,7 +78,9 @@ private fun QiblahScreenContent(
         DirectionCard(
             locationUiState = state.location,
             qiblaOffset = state.qiblaOffset,
-            isAligned = state.isAligned
+            isAligned = state.isAligned,
+            isLowAccuracy = state.isLowAccuracy,
+            onCalibrateClick = { navController.navigate(Route.CalibrateDevice) }
         )
     }
 }

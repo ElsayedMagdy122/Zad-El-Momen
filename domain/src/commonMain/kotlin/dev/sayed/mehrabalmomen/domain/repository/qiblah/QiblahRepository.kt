@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface QiblahRepository {
     suspend fun getQiblahDirection(location: Location): Double
-    fun observeCompassAzimuth(): Flow<Float>
+    fun observeCompassAzimuth(location: Location? = null): Flow<CompassData>
 }

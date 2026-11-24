@@ -6,6 +6,7 @@ import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.repository.location.LocationRepository
 import dev.sayed.mehrabalmomen.domain.repository.qiblah.QiblahRepository
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,10 +22,12 @@ class QiblahViewModel(
     private var continuousAngle: Float = 0.0f
     private var isFirstAzimuthUpdate = true
     private var isLocationLoaded = false
+    private var cachedLocation: Location? = null
+    private var compassJob: Job? = null
 
     init {
         loadLocationAndQiblah()
-        observeCompass()
+        observeCompass(null)
     }
 
     fun onScreenOpened() {
@@ -35,6 +38,7 @@ class QiblahViewModel(
         viewModelScope.launch {
             try {
                 val location = locationRepository.getLocation()
+                cachedLocation = location
                 val bearing = qiblahRepository.getQiblahDirection(location).toFloat()
 
                 isLocationLoaded = true
@@ -49,18 +53,20 @@ class QiblahViewModel(
                         )
                     )
                 }
-            } catch (e: Exception) {
+                observeCompass(location)
+            } catch (_: Exception) {
                 isLocationLoaded = true
             }
         }
     }
 
-    private fun observeCompass() {
-        qiblahRepository.observeCompassAzimuth()
-            .onEach { magneticAzimuth ->
+    private fun observeCompass(location: Location?) {
+        compassJob?.cancel()
+        compassJob = qiblahRepository.observeCompassAzimuth(location)
+            .onEach { compassData ->
                 if (!isLocationLoaded) return@onEach
 
-                val trueAzimuth = magneticAzimuth
+                val trueAzimuth = compassData.azimuth
                 val qiblaBearing = screenState.value.qiblaBearing
                 val targetRelativeAngle = (qiblaBearing - trueAzimuth + 360f) % 360f
 
@@ -81,7 +87,8 @@ class QiblahViewModel(
                         deviceAzimuth = trueAzimuth,
                         relativeAngle = continuousAngle,
                         qiblaOffset = qiblaOffset,
-                        isAligned = aligned
+                        isAligned = aligned,
+                        isLowAccuracy = compassData.isLowAccuracy
                     )
                 }
             }
