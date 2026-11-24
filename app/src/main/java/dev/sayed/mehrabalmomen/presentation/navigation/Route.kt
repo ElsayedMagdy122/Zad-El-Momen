@@ -19,8 +19,8 @@ sealed interface Route {
     }
 
     @Serializable
-    data object FullPrayerTimeView : Route {
-        override val route = "full_prayer"
+    data object PrayerTimes : Route {
+        override val route = "prayer_times"
     }
 
     @Serializable
@@ -99,6 +99,16 @@ sealed interface Route {
         val surahName: String? = null
     ) : Route {
         override val route: String get() = "search_ayah_screen/${type.name}"
+    }
+
+    @Serializable
+    data class Tasmee3Screen(
+        val surahId: Int,
+        val surahName: String,
+        val startAyah: Int = 1,
+        val endAyah: Int = -1
+    ) : Route {
+        override val route: String get() = "tasmee3_screen/$surahId"
     }
 
     @Serializable

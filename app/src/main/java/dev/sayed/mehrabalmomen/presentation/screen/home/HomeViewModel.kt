@@ -4,15 +4,16 @@ package dev.sayed.mehrabalmomen.presentation.screen.home
 
 import androidx.lifecycle.viewModelScope
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
+import dev.sayed.mehrabalmomen.domain.analytics.AnalyticsTracker
 import dev.sayed.mehrabalmomen.domain.entity.location.Location
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
 import dev.sayed.mehrabalmomen.domain.repository.prayer.PrayerRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.QuranRepository
 import dev.sayed.mehrabalmomen.domain.repository.quran.ReadingProgressRepository
 import dev.sayed.mehrabalmomen.domain.repository.settings.SettingsRepository
+import dev.sayed.mehrabalmomen.domain.usecase.PrayerSchedulingUseCase
 import dev.sayed.mehrabalmomen.presentation.base.BaseViewModel
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
-import dev.sayed.mehrabalmomen.presentation.utils.AnalyticsHelper
 import dev.sayed.mehrabalmomen.presentation.utils.convertMillisToHMS
 import dev.sayed.mehrabalmomen.presentation.utils.getTimeDifference
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,8 @@ class HomeViewModel(
     private val readingProgressRepository: ReadingProgressRepository,
     private val settingsRepository: SettingsRepository,
     private val quranRepository: QuranRepository,
-    private val analyticsHelper: AnalyticsHelper
+    private val prayerSchedulingUseCase: PrayerSchedulingUseCase,
+    private val analyticsTracker: AnalyticsTracker
 ) : BaseViewModel<HomeUiState, HomeEffect>(HomeUiState()), HomeInteractionListener {
     private var countdownJob: Job? = null
     private val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -44,6 +46,15 @@ class HomeViewModel(
     init {
         observeLocationChanges()
         observeContinueTilawah()
+        scheduleAlarms()
+    }
+
+    private fun scheduleAlarms() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                prayerSchedulingUseCase.rescheduleTodayPrayerAlarms()
+            } catch (_: Exception) {}
+        }
     }
 
 
@@ -234,7 +245,7 @@ class HomeViewModel(
 
                 updateState { current ->
                     val updatedList = current.prayers.map {
-                        it.copy(isUpComing = (it.name == nextUi.name))
+                        it.copy(isUpComing = (it.prayerName != null && it.prayerName == nextUi.prayerName))
                     }
 
                     current.copy(
@@ -279,7 +290,7 @@ class HomeViewModel(
 
 
     override fun onClickViewAll() {
-        sendEffect(HomeEffect.NavigateToFullPrayersDetails)
+        sendEffect(HomeEffect.NavigateToPrayerTimes)
     }
 
     override fun onClickSettings() {
@@ -291,14 +302,14 @@ class HomeViewModel(
     }
 
     override fun onClickQuran() {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click surah list"
         )
         sendEffect(HomeEffect.NavigateToQuran)
     }
 
     override fun onClickTilawah() {
-        analyticsHelper.logEvent(
+        analyticsTracker.logEvent(
             name = "on click continue to tilawah"
         )
         sendEffect(HomeEffect.NavigateToTilawah)

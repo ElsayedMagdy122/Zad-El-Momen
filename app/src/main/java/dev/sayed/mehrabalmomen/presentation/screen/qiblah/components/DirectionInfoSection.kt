@@ -21,7 +21,7 @@ import kotlin.math.roundToInt
 @Composable
 fun DirectionInfoSection(
     locationUiState: QiblahUiState.LocationUiState,
-    direction: Float
+    qiblaOffset: Float
 ) {
     Column(
         modifier = Modifier
@@ -41,7 +41,7 @@ fun DirectionInfoSection(
         )
 
         Text(
-            text = "${direction.roundToInt()}°",
+            text = "${qiblaOffset.roundToInt()}°",
             color = Theme.color.surfaces.surfaceLow,
             style = Theme.textStyle.title.large,
             textAlign = TextAlign.Center

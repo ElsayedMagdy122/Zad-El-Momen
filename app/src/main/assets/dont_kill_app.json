@@ -16,7 +16,8 @@
             "تشغيل ثانوي",
             "تشغيل في الخلفية",
             "الإعدادات ← البطارية ← تحسين البطارية",
-            "ابحث عن زاد المؤمن واختر (عدم السماح بالتحسين)"
+            "ابحث عن زاد المؤمن واختر (عدم السماح بالتحسين)",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← الظهور فوق التطبيقات الأخرى ← تفعيل"
           ]
         },
         "en": {
@@ -31,7 +32,8 @@
             "Secondary launch",
             "Run in background",
             "Settings → Battery → Battery optimization",
-            "Find Zad Al-Momen and choose Don't allow"
+            "Find Zad Al-Momen and choose Don't allow",
+            "Settings → Apps → Zad Al-Momen → Display over other apps → Enable"
           ]
         }
       }
@@ -51,7 +53,9 @@
             "افتح التطبيقات الحديثة Recent Apps",
             "اضغط مطولاً على زاد المؤمن واختر رمز القفل 🔒",
             "افتح تطبيق Security ← البطارية ← App battery saver",
-            "اختر زاد المؤمن ← No restrictions"
+            "اختر زاد المؤمن ← No restrictions",
+            "الأذونات الأخرى (Other permissions) ← فعّل (العرض على شاشة القفل)",
+            "الأذونات الأخرى (Other permissions) ← فعّل (عرض النوافذ المنبثقة أثناء التشغيل في الخلفية)"
           ]
         },
         "en": {
@@ -65,7 +69,9 @@
             "Open Recent Apps",
             "Long press Zad Al-Momen and enable the lock icon",
             "Open Security app → Battery → App battery saver",
-            "Select Zad Al-Momen → No restrictions"
+            "Select Zad Al-Momen → No restrictions",
+            "Other permissions → Enable (Show on Lock screen)",
+            "Other permissions → Enable (Display pop-up windows while running in the background)"
           ]
         }
       }
@@ -121,7 +127,8 @@
             "الإعدادات ← البطارية ← إعدادات إضافية",
             "قم بإيقاف Adaptive battery",
             "افتح التطبيقات الحديثة Recent Apps",
-            "اضغط مطولاً على زاد المؤمن واختر قفل التطبيق"
+            "اضغط مطولاً على زاد المؤمن واختر قفل التطبيق",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← الظهور في الأعلى (Appear on top) ← تفعيل"
           ]
         },
         "en": {
@@ -137,7 +144,8 @@
             "Settings → Battery → More battery settings",
             "Disable Adaptive battery",
             "Open Recent Apps",
-            "Long press Zad Al-Momen and lock the app"
+            "Long press Zad Al-Momen and lock the app",
+            "Settings → Apps → Zad Al-Momen → Appear on top → Enable"
           ]
         }
       }
@@ -286,7 +294,7 @@
             "افتح تطبيق Security / مدير الأمان ← Startup Manager وفعّل Auto‑start لزاد المؤمن.",
             "افتح قائمة التطبيقات ← اختر زاد المؤمن ← البطارية ← شغّل Allow background activity أو Run in background.",
             "قم بإيقاف تحسينات البطارية (Battery optimization) للتطبيق.",
-            "إذا كان لديك خدمة تعمل في الخلفية استخدم Foreground Service مع إشعار ثابت."
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← فعّل (الظهور فوق التطبيقات الأخرى) و (العرض على شاشة القفل)"
           ]
         },
         "en": {
@@ -297,7 +305,7 @@
             "Open the Security / Safety app → Startup Manager and enable Auto‑start for Zad Al‑Momen.",
             "Go to App list → Zad Al‑Momen → Battery → Enable Allow background activity or Run in background.",
             "Turn off Battery optimization for the app.",
-            "If using a background service, use a Foreground Service with a persistent notification."
+            "Settings → Apps → Zad Al-Momen → Enable (Display over other apps) and (Show on lock screen)"
           ]
         }
       }
@@ -532,7 +540,8 @@
           "steps": [
             "الإعدادات ← البطارية ← تحسين البطارية",
             "ابحث عن تطبيق زاد المؤمن واختر (عدم السماح بالتحسين)",
-            "تأكد من السماح لتطبيق زاد المؤمن بالتشغيل في الخلفية"
+            "تأكد من السماح لتطبيق زاد المؤمن بالتشغيل في الخلفية",
+            "الإعدادات ← التطبيقات ← زاد المؤمن ← فعّل (الظهور فوق التطبيقات الأخرى) و (العرض على شاشة القفل)"
           ]
         },
         "en": {
@@ -541,6 +550,7 @@
           "steps": [
             "Settings → Battery → Battery optimization",
             "Find Zad Al-Momen and choose Don't allow",
+            "Settings → Apps → Zad Al-Momen → Display over other apps → Enable",
             "Make sure background activity is allowed for Zad Al-Momen"
           ]
         }

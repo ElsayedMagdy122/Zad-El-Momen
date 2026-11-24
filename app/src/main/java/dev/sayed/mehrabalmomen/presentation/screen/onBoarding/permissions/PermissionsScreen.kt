@@ -71,7 +71,7 @@ fun PermissionsScreen(
         val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
         if (fineGranted || coarseGranted) {
-            viewModel.onLocationPermissionGranted()
+            viewModel.onLocationGranted()
         } else {
             viewModel.onLocationDenied()
         }
@@ -89,32 +89,22 @@ fun PermissionsScreen(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            viewModel.onLocationPermissionGranted()
+            viewModel.onGpsEnabled()
         } else {
-            viewModel.onLocationDenied()
+            viewModel.onGpsDenied()
         }
     }
 
     var toastData by remember { mutableStateOf<ToastDetails?>(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.updateInitialPermissions(
-            isLocationGranted = PermissionsHelper.isLocationPermissionGranted(context),
-            isNotificationGranted = PermissionsHelper.isNotificationPermissionGranted(context),
-            isAlarmGranted = PermissionsHelper.isExactAlarmPermissionGranted(context),
-            isBackgroundGranted = PermissionsHelper.isBackgroundPermissionGranted(context)
-        )
+        viewModel.updateInitialPermissions()
     }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                if (PermissionsHelper.isExactAlarmPermissionGranted(context)) {
-                    viewModel.onAlarmPermissionGranted()
-                }
-                if (PermissionsHelper.isBackgroundPermissionGranted(context)) {
-                    viewModel.onBackgroundPermissionGranted()
-                }
+                viewModel.updateInitialPermissions()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -133,22 +123,16 @@ fun PermissionsScreen(
             }
 
             PermissionsEffect.RequestNotificationPermission -> {
-                if (PermissionsHelper.isNotificationPermissionRequired()) {
-                    notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                } else {
-                    viewModel.onNotificationPermissionGranted()
-                }
+                notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
 
             PermissionsEffect.RequestAlarmPermission -> {
-                if (PermissionsHelper.isExactAlarmPermissionRequired()) {
-                    val intent = Intent().apply {
-                        action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-                        data = Uri.parse("package:${context.packageName}")
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    context.startActivity(intent)
+                val intent = Intent().apply {
+                    action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                    data = Uri.parse("package:${context.packageName}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
+                context.startActivity(intent)
             }
 
             PermissionsEffect.RequestBackgroundPermission -> {
@@ -176,11 +160,20 @@ fun PermissionsScreen(
                 val client = LocationServices.getSettingsClient(context)
 
                 client.checkLocationSettings(builder.build())
+                    .addOnSuccessListener {
+                        viewModel.onGpsEnabled()
+                    }
                     .addOnFailureListener { exception ->
                         if (exception is ResolvableApiException) {
-                            enableGpsLauncher.launch(
-                                IntentSenderRequest.Builder(exception.resolution).build()
-                            )
+                            try {
+                                enableGpsLauncher.launch(
+                                    IntentSenderRequest.Builder(exception.resolution).build()
+                                )
+                            } catch (e: Exception) {
+                                viewModel.onGpsDenied()
+                            }
+                        } else {
+                            viewModel.onGpsDenied()
                         }
                     }
             }
@@ -230,23 +223,25 @@ private fun PermissionsContent(
                     title = R.string.location_permission,
                     description = R.string.location_permission_desc,
                     isGranted = state.isLocationPermissionGranted,
+                    isLoading = state.isLocationLoading,
                     onClick = { listener.onClickAllowLocationAccess() }
                 )
             }
 
-            if (PermissionsHelper.isNotificationPermissionRequired()) {
+            if (state.isNotificationPermissionRequired) {
                 item {
                     PermissionItem(
-                        icon = R.drawable.ic_notifications,
+                        icon = R.drawable.ic_alarm_clock,
                         title = R.string.notification_permission,
                         description = R.string.notification_permission_desc,
                         isGranted = state.isNotificationPermissionGranted,
+                        isOptional = true,
                         onClick = { listener.onClickAllowNotificationAccess() }
                     )
                 }
             }
 
-            if (PermissionsHelper.isExactAlarmPermissionRequired()) {
+            if (state.isAlarmPermissionRequired) {
                 item {
                     PermissionItem(
                         icon = R.drawable.ic_reminder,
@@ -264,6 +259,7 @@ private fun PermissionsContent(
                     title = R.string.background_permission,
                     description = R.string.background_permission_desc,
                     isGranted = state.isBackgroundPermissionGranted,
+                    isOptional = true,
                     onClick = { listener.onClickAllowBackgroundAccess() }
                 )
             }

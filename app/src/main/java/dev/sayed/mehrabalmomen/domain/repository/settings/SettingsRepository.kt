@@ -5,6 +5,7 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.CalculationMethod
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Madhab
 import dev.sayed.mehrabalmomen.domain.entity.prayer.PrayerSettings
 import dev.sayed.mehrabalmomen.domain.model.AppSettings
+import dev.sayed.mehrabalmomen.domain.model.DonationPromptAction
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -25,4 +26,17 @@ interface SettingsRepository {
     suspend fun saveTafseer(type: String)
     fun observeTafseer(): Flow<String>
     fun observeAppSettings(): Flow<AppSettings>
+
+    val lastDonationPromptTimeFlow: Flow<Long>
+    val hasDonatedFlow: Flow<Boolean>
+    suspend fun setLastDonationPromptTime(timeMs: Long)
+    suspend fun recordAppLaunch(currentTimeMs: Long)
+    suspend fun shouldShowDonationPrompt(currentTimeMs: Long): Boolean
+    suspend fun onDonationPromptAction(action: DonationPromptAction, currentTimeMs: Long)
+    suspend fun setHasDonated(hasDonated: Boolean)
+
+    fun observeHasSeenBatteryDialog(): Flow<Boolean>
+    suspend fun setHasSeenBatteryDialog(seen: Boolean)
+    fun observeHasSeenRecitationDisclaimer(): Flow<Boolean>
+    suspend fun setHasSeenRecitationDisclaimer(seen: Boolean)
 }

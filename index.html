@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستخرج توقيتات القرآن الكريم - زاد المؤمن</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Tajawal:wght@400;500;700&family=Amiri+Quran&display=swap" rel="stylesheet">
+    <script>
+        // تطبيق الثيم قبل أول رسم لتفادي الوميض
+        (function () {
+            var saved = null;
+            try { saved = localStorage.getItem('theme'); } catch (e) {}
+            var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        })();
+    </script>
+    <style>
+        /* ===== Design tokens: نفس قيم MehrabColors في تطبيق زاد المؤمن ===== */
+        :root {
+            color-scheme: light;
+            --brand: #111D2E;
+            --primary: #000000;
+            --on-primary: #FFFFFF;
+            --shade-primary: #0E1017;
+            --surface: #F2F4F7;
+            --surface-low: #FFFFFF;
+            --surface-high: #EAECF0;
+            --secondary: #66481F;
+            --shade-secondary: #3E4252;
+            --secondary-text: #997D56;
+            --disabled: #BEC0CC;
+            --text-disabled: #818599;
+            --shade-tertiary: #818599;
+            --error: #B42318;
+            --success: #19A44A;
+            --warning: #DC6803;
+            --code-bg: #111D2E;
+            --code-text: #EAECF0;
+            --scrim: rgba(14, 16, 23, 0.5);
+
+            /* الأشكال (نفس الـ corner radius في التطبيق) */
+            --r-chip: 100px;
+            --r-button: 16px;
+            --r-card: 16px;
+            --r-field: 12px;
+            --r-sheet: 28px;
+        }
+
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --brand: #415470;
+            --primary: #FFFFFF;
+            --on-primary: #12141C;
+            --shade-primary: #F8FAFC;
+            --surface: #000000;
+            --surface-low: #0E1017;
+            --surface-high: #12141C;
+            --secondary: #66481F;
+            --shade-secondary: #BEC0CC;
+            --secondary-text: #997D56;
+            --disabled: #3E4252;
+            --text-disabled: #818599;
+            --shade-tertiary: #818599;
+            --error: #FDA29B;
+            --success: #71CB87;
+            --warning: #FEC84B;
+            --code-bg: #12141C;
+            --code-text: #EAECF0;
+            --scrim: rgba(0, 0, 0, 0.7);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            /* Poppins للحروف اللاتينية والأرقام، وتجوال للعربية */
+            font-family: 'Poppins', 'Tajawal', sans-serif;
+            background-color: var(--surface);
+            color: var(--primary);
+            margin: 0;
+            padding: 16px 16px 48px;
+            line-height: 1.6;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .container { max-width: 1040px; margin: 0 auto; }
+
+        :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        /* ===== Type scale (DefaultTextStyle) ===== */
+        .t-title-xl { font-size: 24px; font-weight: 600; }
+        .t-title-md { font-size: 18px; font-weight: 600; }
+        .t-title-sm { font-size: 16px; font-weight: 500; }
+        .t-label-md { font-size: 14px; font-weight: 500; }
+        .t-body-sm  { font-size: 12px; font-weight: 500; }
+
+        /* ===== AppBar ===== */
+        .app-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+            min-height: 56px;
+        }
+        .app-bar h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+            padding: 0 52px;
+        }
+        .icon-btn {
+            position: absolute;
+            inset-inline-end: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: var(--r-button);
+            background: var(--surface-low);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            padding: 0;
+        }
+        .icon-btn svg { width: 24px; height: 24px; }
+        .icon-btn .sun { display: none; }
+        :root[data-theme="dark"] .icon-btn .sun { display: block; }
+        :root[data-theme="dark"] .icon-btn .moon { display: none; }
+
+        .app-subtitle {
+            margin: 4px 0 20px;
+            text-align: center;
+            color: var(--shade-tertiary);
+            font-size: 12px;
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: var(--surface-low);
+            border-radius: var(--r-card);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .scan-card { text-align: center; padding: 24px 16px; }
+
+        /* ===== PrimaryButton ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: auto;
+            border: none;
+            border-radius: var(--r-button);
+            padding: 16px;
+            background: var(--primary);
+            color: var(--on-primary);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color .2s, color .2s;
+        }
+        .btn:disabled {
+            background: var(--disabled);
+            color: var(--text-disabled);
+            cursor: not-allowed;
+        }
+        .btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+        .btn.loading .spinner { display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .status {
+            display: block;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--shade-secondary);
+            min-height: 1em;
+        }
+        .status.ok { color: var(--success); }
+        .status.err { color: var(--error); }
+
+        /* ===== Chips (التابات) ===== */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: none;
+            border-radius: var(--r-chip);
+            padding: 8px 12px;
+            background: var(--surface-low);
+            color: var(--shade-secondary);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color .2s, color .2s;
+        }
+        .chip[aria-selected="true"] {
+            background: var(--primary);
+            color: var(--on-primary);
+        }
+        .chip .count { opacity: .7; font-size: 12px; }
+
+        /* ===== Text field ===== */
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px;
+            background: var(--surface-high);
+            border-radius: var(--r-field);
+            margin-bottom: 16px;
+        }
+        .field:focus-within { box-shadow: inset 0 0 0 1.5px var(--primary); }
+        .field svg { width: 20px; height: 20px; flex: none; color: var(--shade-primary); }
+        .field input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--shade-primary);
+            font: inherit;
+            font-size: 14px;
+        }
+        .field input::placeholder { color: var(--shade-tertiary); font-size: 12px; }
+
+        /* ===== Reader cards ===== */
+        .readers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .reader-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--surface-low);
+            border-radius: var(--r-card);
+            padding: 16px;
+        }
+        .id-badge {
+            position: absolute;
+            top: 12px;
+            inset-inline-end: 12px;
+            background: var(--surface-high);
+            color: var(--secondary-text);
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: var(--r-chip);
+        }
+        .reader-info h3 {
+            margin: 0 0 4px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary);
+            padding-inline-end: 56px;
+        }
+        .rewaya { margin: 0 0 12px; font-size: 12px; color: var(--shade-tertiary); }
+
+        .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: var(--r-chip);
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .badge.success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+        .badge.warning { background: color-mix(in srgb, var(--warning) 14%, transparent); color: var(--warning); }
+        .badge.error   { background: color-mix(in srgb, var(--error) 14%, transparent);   color: var(--error); }
+
+        .coverage-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--shade-tertiary);
+            margin-bottom: 6px;
+        }
+        .coverage-track { height: 4px; border-radius: 2px; background: var(--surface-high); overflow: hidden; }
+        .coverage-fill { height: 100%; border-radius: 2px; }
+        .coverage-fill.success { background: var(--success); }
+        .coverage-fill.warning { background: var(--warning); }
+        .coverage-fill.error   { background: var(--error); }
+
+        .reader-card .btn { width: 100%; }
+        .reader-card .status { margin-top: 8px; text-align: center; }
+
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--shade-tertiary);
+            padding: 40px 0;
+            font-size: 14px;
+        }
+
+        /* ===== Bottom sheet (BottomSheetDs) ===== */
+        .scrim {
+            position: fixed;
+            inset: 0;
+            background: var(--scrim);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s, visibility .25s;
+            z-index: 40;
+        }
+        .scrim.open { opacity: 1; visibility: visible; }
+        .sheet {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            width: 100%;
+            max-width: 760px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--surface);
+            border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+            transform: translate(-50%, 100%);
+            visibility: hidden;
+            transition: transform .3s ease, visibility .3s;
+            z-index: 50;
+        }
+        .sheet.open { transform: translate(-50%, 0); visibility: visible; }
+        .sheet-handle {
+            width: 32px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+            margin: 12px auto;
+            flex: none;
+        }
+        .sheet-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 4px 16px 16px;
+            overflow: hidden;
+        }
+        .sheet-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .sheet-head h2 { margin: 0; font-size: 16px; font-weight: 500; color: var(--primary); }
+        .sheet-head .btn { padding: 12px 16px; }
+        .sql-output {
+            width: 100%;
+            height: min(52vh, 420px);
+            padding: 14px;
+            font-family: Consolas, 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            background: var(--code-bg);
+            color: var(--code-text);
+            border: none;
+            border-radius: var(--r-field);
+            direction: ltr;
+            text-align: left;
+            resize: none;
+        }
+
+
+        /* ===== بطاقة القارئ القابلة للنقر ===== */
+        .reader-info[role="button"] { cursor: pointer; border-radius: var(--r-field); }
+        .reader-info[role="button"]:hover h3 { text-decoration: underline; text-underline-offset: 4px; }
+        .card-actions { display: flex; gap: 8px; }
+        .card-actions .btn { flex: 1; width: auto; padding: 14px 8px; }
+        .btn.secondary { background: var(--surface-high); color: var(--primary); }
+        .btn.secondary:disabled { background: var(--surface-high); color: var(--text-disabled); }
+        .chip[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+
+        /* ===== نافذة القارئ (بيانات + مشغّل) ===== */
+        .sheet.tall { height: 90vh; height: 90dvh; max-height: 90dvh; }
+        .sheet-body.fill { flex: 1; min-height: 0; }
+        .sheet-head h2 { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .round-btn {
+            flex: none;
+            width: 44px; height: 44px;
+            border: none;
+            border-radius: var(--r-button);
+            background: var(--surface-high);
+            color: var(--primary);
+            display: grid; place-items: center;
+            cursor: pointer; padding: 0;
+        }
+        .round-btn svg { width: 22px; height: 22px; }
+        .round-btn.head { background: var(--surface-low); width: 40px; height: 40px; }
+        .round-btn.big { width: 56px; height: 56px; background: var(--primary); color: var(--on-primary); }
+        .round-btn:disabled { background: var(--disabled); color: var(--text-disabled); cursor: not-allowed; }
+        .view { display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
+        .view[hidden] { display: none; }
+        #viewInfo { overflow-y: auto; }
+
+        .kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 13px; }
+        .kv + .kv { border-top: 1px solid var(--surface-high); }
+        .kv .k { color: var(--shade-tertiary); flex: none; }
+        .kv .v { text-align: end; word-break: break-all; color: var(--primary); }
+        .ltr { direction: ltr; unicode-bidi: isolate; font-size: 12px; }
+        .section-title { margin: 4px 0 0; font-size: 14px; font-weight: 500; color: var(--shade-secondary); }
+
+        .surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; }
+        .surah-btn {
+            display: flex; align-items: center; gap: 8px;
+            border: none; border-radius: var(--r-field);
+            background: var(--surface-low); color: var(--primary);
+            padding: 10px; font: inherit; font-size: 13px;
+            cursor: pointer; text-align: start;
+        }
+        .surah-btn:hover:not(:disabled) { background: var(--surface-high); }
+        .surah-btn:disabled { color: var(--text-disabled); cursor: not-allowed; opacity: .6; }
+        .s-num {
+            flex: none; min-width: 26px; height: 26px; padding: 0 6px;
+            display: grid; place-items: center;
+            border-radius: var(--r-chip);
+            background: var(--surface-high); color: var(--secondary-text);
+            font-size: 11px;
+        }
+        .surah-btn .s-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .player-card { margin-bottom: 0; display: flex; flex-direction: column; gap: 12px; flex: none; }
+        .seek-row { display: flex; align-items: center; gap: 10px; direction: ltr; }
+        .seek-row .time { font-size: 11px; color: var(--shade-tertiary); min-width: 62px; text-align: center; font-variant-numeric: tabular-nums; }
+        .seek-row input[type="range"] { flex: 1; min-width: 0; accent-color: var(--primary); direction: ltr; }
+        .controls { display: flex; align-items: center; justify-content: center; gap: 16px; direction: ltr; }
+        .select {
+            background: var(--surface-high); color: var(--shade-primary);
+            border: none; border-radius: var(--r-field);
+            padding: 10px 12px; font: inherit; font-size: 13px; cursor: pointer;
+        }
+        .play-btn .ic-pause { display: none; }
+        .play-btn.playing .ic-play { display: none; }
+        .play-btn.playing .ic-pause { display: block; }
+        .toggles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .toggles .chip { background: var(--surface-high); }
+        .toggles .chip[aria-pressed="true"] { background: var(--primary); }
+        .now-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--shade-secondary); }
+        .now-row a { color: var(--secondary-text); text-underline-offset: 3px; }
+        .player-card .status { margin-top: 0; text-align: center; }
+
+        .verse-list {
+            flex: 1; min-height: 0; overflow-y: auto; position: relative;
+            display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px;
+        }
+        .verse {
+            flex: none; display: flex; align-items: flex-start; gap: 12px;
+            width: 100%; border: none; border-radius: var(--r-card);
+            background: var(--surface-low); color: var(--primary);
+            padding: 12px 14px; text-align: start; font: inherit; cursor: pointer;
+            transition: background-color .15s, color .15s;
+        }
+        .verse.warn { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--warning) 60%, transparent); }
+        .verse.active { background: var(--primary); color: var(--on-primary); }
+        .v-num {
+            flex: none; min-width: 30px; height: 30px; padding: 0 6px;
+            display: grid; place-items: center;
+            border-radius: var(--r-chip);
+            background: var(--surface-high); color: var(--secondary-text);
+            font-size: 12px;
+        }
+        .verse.active .v-num { background: var(--on-primary); color: var(--primary); }
+        .v-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .v-text { display: block; font-family: 'Amiri Quran', 'Tajawal', serif; font-size: 22px; line-height: 2; font-weight: 400; }
+        .v-text.plain { font-family: inherit; font-size: 13px; line-height: 1.6; color: var(--shade-tertiary); }
+        .verse.active .v-text.plain { color: inherit; opacity: .8; }
+        .v-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+        .v-time { direction: ltr; unicode-bidi: isolate; font-size: 11px; color: var(--shade-tertiary); font-variant-numeric: tabular-nums; }
+        .verse.active .v-time { color: inherit; opacity: .75; }
+        .v-flag { font-size: 11px; color: var(--warning); }
+        .verse.active .v-flag { color: inherit; font-weight: 600; }
+
+        /* ===== Toast (PrimaryToast) ===== */
+        .toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            width: min(400px, calc(100% - 32px));
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--surface-low);
+            border-radius: 12px;
+            transform: translate(-50%, -150%);
+            opacity: 0;
+            transition: transform .3s ease, opacity .3s ease;
+            z-index: 60;
+            pointer-events: none;
+        }
+        .toast.show { transform: translate(-50%, 0); opacity: 1; }
+        .toast svg { width: 28px; height: 28px; flex: none; }
+        .toast.success svg { color: var(--success); }
+        .toast.error svg { color: var(--error); }
+        .toast-title { font-size: 14px; font-weight: 500; color: var(--shade-primary); }
+        .toast-msg { font-size: 12px; color: var(--shade-secondary); }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="app-bar">
+            <h1>مستخرج توقيتات القرآن الكريم</h1>
+            <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي" onclick="toggleTheme()">
+                <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+                <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+        </div>
+        <p class="app-subtitle">توليد كود SQL متوافق مع جداول Supabase</p>
+    </header>
+
+    <div class="card scan-card">
+        <button class="btn" id="loadBtn" type="button" onclick="fetchReaders()">
+            <span>جلب وفحص القراء المتاحين</span>
+            <span class="spinner"></span>
+        </button>
+        <span id="globalProgress" class="status" aria-live="polite"></span>
+    </div>
+
+    <section id="resultsSection" style="display: none;">
+        <div class="chips" role="tablist" aria-label="تصفية القراء">
+            <button class="chip" role="tab" data-tab="all" aria-selected="false" type="button">الكل <span class="count" id="count-all">0</span></button>
+            <button class="chip" role="tab" data-tab="complete" aria-selected="true" type="button">المصحف كامل <span class="count" id="count-complete">0</span></button>
+            <button class="chip" role="tab" data-tab="incomplete" aria-selected="false" type="button">غير كامل <span class="count" id="count-incomplete">0</span></button>
+        </div>
+
+        <label class="field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="text" id="searchInput" oninput="applyFilters()" placeholder="ابحث باسم القارئ أو الرواية">
+        </label>
+
+        <div id="readersGrid" class="readers-grid"></div>
+    </section>
+</div>
+
+<!-- Bottom sheet لنتيجة الـ SQL -->
+<div class="scrim" id="scrim" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet-handle"></div>
+    <div class="sheet-body">
+        <div class="sheet-head">
+            <h2 id="sheetTitle">كود SQL</h2>
+            <button class="btn" type="button" onclick="copySql()">نسخ كود SQL</button>
+        </div>
+        <textarea id="sqlResult" class="sql-output" readonly></textarea>
+    </div>
+</div>
+
+<!-- نافذة القارئ: البيانات + السور + المشغّل -->
+<div class="scrim" id="readerScrim" onclick="closeReader()"></div>
+<div class="sheet tall" id="readerSheet" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
+    <div class="sheet-handle"></div>
+    <div class="sheet-body fill">
+        <div class="sheet-head">
+            <button class="round-btn head" id="backBtn" type="button" onclick="backToInfo()" aria-label="رجوع لقائمة السور" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+            <h2 id="readerTitle"></h2>
+            <button class="round-btn head" type="button" onclick="closeReader()" aria-label="إغلاق">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <!-- العرض الأول: بيانات القارئ + اختيار السورة -->
+        <div class="view" id="viewInfo">
+            <div class="card" style="margin-bottom:0">
+                <div id="infoCard"></div>
+            </div>
+            <h3 class="section-title">اختر سورة للاستماع والتحقق من التوقيتات</h3>
+            <label class="field" style="margin-bottom:0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="text" id="surahSearch" oninput="renderSurahGrid()" placeholder="ابحث باسم السورة أو رقمها">
+            </label>
+            <div class="surah-grid" id="surahGrid"></div>
+            <button class="btn" type="button" onclick="generateFromSheet()">توليد كود SQL لهذا القارئ</button>
+        </div>
+
+        <!-- العرض الثاني: المشغّل + الآيات -->
+        <div class="view" id="viewPlayer" hidden>
+            <div class="card player-card">
+                <div class="seek-row">
+                    <span class="time" id="timeCur">0:00.000</span>
+                    <input type="range" id="seek" min="0" max="0" step="any" value="0" disabled aria-label="شريط التقدم">
+                    <span class="time" id="timeTotal">--:--.---</span>
+                </div>
+                <div class="controls">
+                    <button class="round-btn" id="prevBtn" type="button" onclick="stepVerse(-1)" aria-label="الآية السابقة" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+                    </button>
+                    <button class="round-btn big play-btn" id="playBtn" type="button" onclick="togglePlay()" aria-label="تشغيل / إيقاف مؤقت" disabled>
+                        <svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>
+                        <svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+                    </button>
+                    <button class="round-btn" id="nextBtn" type="button" onclick="stepVerse(1)" aria-label="الآية التالية" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                    </button>
+                    <select class="select" id="rateSel" onchange="setRate(this.value)" aria-label="سرعة التشغيل">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+                </div>
+                <div class="toggles">
+                    <button class="chip" id="loopChip" type="button" aria-pressed="false" onclick="toggleLoop()">تكرار الآية الحالية</button>
+                    <button class="chip" id="followChip" type="button" aria-pressed="true" onclick="toggleFollow()">تمرير تلقائي</button>
+                </div>
+                <div class="now-row">
+                    <span id="nowLabel">الآية الحالية: —</span>
+                    <a id="audioLink" href="#" target="_blank" rel="noopener">فتح ملف الصوت</a>
+                </div>
+                <span id="playerStatus" class="status" aria-live="polite"></span>
+            </div>
+            <div class="badges" id="validation" style="margin-bottom:0"></div>
+            <div class="verse-list" id="verseList"></div>
+        </div>
+    </div>
+</div>
+<audio id="audioEl" preload="metadata" playsinline></audio>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <span id="toastIcon"></span>
+    <div>
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-msg" id="toastMsg"></div>
+    </div>
+</div>
+
+<script>
+    const TOTAL_SURAHS = 114;
+    let allReaders = [];
+    let activeTab = 'complete';
+
+    const surahNamesAr = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+    const surahNamesEn = ["Al-Fatihah","Al-Baqarah","Ali 'Imran","An-Nisa'","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf","Ar-Ra'd","Ibrahim","Al-Hijr","An-Nahl","Al-Isra","Al-Kahf","Maryam","Taha","Al-Anbiya","Al-Hajj","Al-Mu'minun","An-Nut","Al-Furqan","Ash-Shu'ara","An-Naml","Al-Qasas","Al-Ankabut","Ar-Rum","Luqman","As-Sajdah","Al-Ahzab","Saba","Fatir","Ya-Sin","As-Saffat","Sad","Az-Zumar","Ghafir","Fussilat","Ash-Shura","Az-Zukhruf","Ad-Dukhan","Al-Jathiyah","Al-Ahqaf","Muhammad","Al-Fath","Al-Hujurat","Qaf","Adh-Dhariyat","At-Tur","An-Najm","Al-Qamar","Ar-Rahman","Al-Waqi'ah","Al-Hadid","Al-Mujadilah","Al-Hashr","Al-Mumtahanah","As-Saff","Al-Jumu'ah","Al-Munafiqun","At-Taghabun","At-Talaq","At-Tahrim","Al-Mulk","Al-Qalam","Al-Haqqah","Al-Ma'arij","Nuh","Al-Jinn","Al-Muzzammil","Al-Muddaththir","Al-Qiyamah","Al-Insan","Al-Mursalat","An-Naba","An-Naziat","Abasa","At-Takwir","Al-Infitar","Al-Mutaffifin","Al-Inshiqaq","Al-Buruj","At-Tariq","Al-A'la","Al-Ghashiyah","Al-Fajr","Al-Balad","Ash-Shams","Al-Layl","Ad-Duha","Ash-Sharh","At-Tin","Al-Alaq","Al-Qadr","Al-Bayyinah","Az-Zalzalah","Al-Adiyat","Al-Qari'ah","At-Takathur","Al-Asr","Al-Humazah","Al-Fil","Quraysh","Al-Ma'un","Al-Kawthar","Al-Kafirun","An-Nasr","Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"];
+    const surahVersesCount = [7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135, 112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59, 37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8, 8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6];
+
+    const escapeSql = (str) => str ? String(str).replace(/'/g, "''") : '';
+    const escapeHtml = (str) => String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const $ = (id) => document.getElementById(id);
+
+    /* ===== الثيم ===== */
+    function toggleTheme() {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+    }
+
+    /* ===== Toast ===== */
+    const ICONS = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>'
+    };
+    let toastTimer;
+    function showToast(title, message, type = 'success') {
+        const toast = $('toast');
+        toast.className = `toast ${type}`;
+        $('toastIcon').innerHTML = ICONS[type];
+        $('toastTitle').textContent = title;
+        $('toastMsg').textContent = message;
+        requestAnimationFrame(() => toast.classList.add('show'));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    /* ===== Bottom sheet ===== */
+    function openSheet(title, sql) {
+        $('sheetTitle').textContent = title;
+        $('sqlResult').value = sql;
+        $('scrim').classList.add('open');
+        $('sheet').classList.add('open');
+    }
+    function closeSheet() {
+        $('scrim').classList.remove('open');
+        $('sheet').classList.remove('open');
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeSheet(); closeReader(); } });
+
+    /* ===== أدوات مساعدة ===== */
+    async function processInBatches(items, batchSize, processFn, progressCallback) {
+        let results = [];
+        for (let i = 0; i < items.length; i += batchSize) {
+            const batch = items.slice(i, i + batchSize);
+            const batchResults = await Promise.all(batch.map(processFn));
+            results = results.concat(batchResults);
+            if (progressCallback) progressCallback(Math.min(i + batchSize, items.length), items.length);
+        }
+        return results;
+    }
+
+    function setLoading(btn, loading) {
+        if (!btn) return;
+        btn.disabled = loading;
+        btn.classList.toggle('loading', loading);
+    }
+
+    /* ===== جلب وفحص القراء ===== */
+    async function fetchReaders() {
+        const btn = $('loadBtn');
+        const progress = $('globalProgress');
+        setLoading(btn, true);
+        progress.className = 'status';
+        progress.textContent = 'جاري جلب قائمة القراء وروابط الصوت...';
+
+        try {
+            const [readsRes, recitersRes] = await Promise.all([
+                fetch('https://www.mp3quran.net/api/v3/ayat_timing/reads'),
+                fetch('https://www.mp3quran.net/api/v3/reciters?language=ar')
+            ]);
+
+            const readsData = await readsRes.json();
+            const recitersData = await recitersRes.json();
+
+            const audioUrlsMap = {};
+            if (recitersData && recitersData.reciters) {
+                recitersData.reciters.forEach(reciter => {
+                    if (reciter.moshaf && reciter.moshaf.length > 0) {
+                        reciter.moshaf.forEach(m => { audioUrlsMap[`moshaf_${m.id}`] = m.server; });
+                        audioUrlsMap[reciter.name.trim()] = reciter.moshaf[0].server;
+                    }
+                });
+            }
+
+            const mappedReads = readsData.map(read => {
+                const nameKey = (read.name || read.title || '').trim();
+                let serverUrl = '';
+
+                if (audioUrlsMap[`moshaf_${read.id}`]) {
+                    serverUrl = audioUrlsMap[`moshaf_${read.id}`];
+                } else if (audioUrlsMap[nameKey]) {
+                    serverUrl = audioUrlsMap[nameKey];
+                } else {
+                    for (const key of Object.keys(audioUrlsMap)) {
+                        if (!key.startsWith('moshaf_') && (key.includes(nameKey) || nameKey.includes(key))) {
+                            serverUrl = audioUrlsMap[key];
+                            break;
+                        }
+                    }
+                }
+                return { ...read, audio_url: serverUrl };
+            });
+
+            // نحتفظ بكل القراء، ونسجّل عدد السور المتاحة لكل واحد
+            allReaders = await processInBatches(mappedReads, 15, async (read) => {
+                let surahsCount = null; // null = تعذّر الفحص
+                let surahIds = null;
+                try {
+                    const soarRes = await fetch(`https://www.mp3quran.net/api/v3/ayat_timing/soar?read=${read.id}`);
+                    const soarData = await soarRes.json();
+                    if (Array.isArray(soarData)) {
+                        surahsCount = soarData.length;
+                        const ids = soarData.map(extractSurahId).filter(n => Number.isInteger(n) && n >= 1 && n <= TOTAL_SURAHS);
+                        if (ids.length === soarData.length && new Set(ids).size === ids.length) surahIds = ids;
+                    }
+                } catch (e) {}
+                return { ...read, surahsCount, surahIds, isComplete: surahsCount === TOTAL_SURAHS };
+            }, (done, total) => {
+                progress.textContent = `جاري فحص القراء... (${done} من ${total})`;
+            });
+
+            $('resultsSection').style.display = 'block';
+            applyFilters();
+
+            const complete = allReaders.filter(r => r.isComplete).length;
+            progress.className = 'status ok';
+            progress.textContent = `تم فحص ${allReaders.length} قارئ: ${complete} مصحف كامل و${allReaders.length - complete} غير كامل.`;
+        } catch (error) {
+            progress.className = 'status err';
+            progress.textContent = 'فشلت العملية، حاول مجدداً.';
+            showToast('فشل الفحص', error.message, 'error');
+        } finally {
+            setLoading(btn, false);
+        }
+    }
+
+    /* ===== التابات والبحث ===== */
+    document.querySelector('.chips').addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        activeTab = chip.dataset.tab;
+        applyFilters();
+    });
+
+    function applyFilters() {
+        const keyword = $('searchInput').value.trim().toLowerCase();
+
+        // تحديث التابات والعدادات
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.setAttribute('aria-selected', String(chip.dataset.tab === activeTab));
+        });
+        $('count-all').textContent = allReaders.length;
+        $('count-complete').textContent = allReaders.filter(r => r.isComplete).length;
+        $('count-incomplete').textContent = allReaders.filter(r => !r.isComplete).length;
+
+        const filtered = allReaders.filter(r => {
+            if (activeTab === 'complete' && !r.isComplete) return false;
+            if (activeTab === 'incomplete' && r.isComplete) return false;
+            if (!keyword) return true;
+            const name = (r.name || r.title || '').toLowerCase();
+            const rewaya = (r.rewaya || '').toLowerCase();
+            return name.includes(keyword) || rewaya.includes(keyword);
+        });
+        renderReciters(filtered);
+    }
+
+    function renderReciters(readers) {
+        const container = $('readersGrid');
+
+        if (readers.length === 0) {
+            container.innerHTML = `<div class="empty">لا توجد نتائج مطابقة</div>`;
+            return;
+        }
+
+        container.innerHTML = readers.map(reader => {
+            const name = escapeHtml(reader.name || reader.title || 'قارئ غير معرف');
+            const rewaya = escapeHtml(reader.rewaya || 'غير محددة');
+            const hasAudio = !!reader.audio_url;
+            const count = reader.surahsCount;
+
+            let tone, label, pct;
+            if (count === null) { tone = 'error'; label = 'تعذّر فحص السور'; pct = 0; }
+            else if (reader.isComplete) { tone = 'success'; label = 'المصحف كامل'; pct = 100; }
+            else { tone = 'warning'; label = 'غير كامل'; pct = Math.round((count / TOTAL_SURAHS) * 100); }
+
+            return `
+                <div class="reader-card">
+                    <span class="id-badge">ID: ${reader.id}</span>
+                    <div class="reader-info" role="button" tabindex="0" data-open="${reader.id}" aria-label="عرض بيانات ${name} والاستماع">
+                        <h3>${name}</h3>
+                        <p class="rewaya">الرواية: ${rewaya}</p>
+                        <div class="badges">
+                            <span class="badge ${tone}">${label}</span>
+                            <span class="badge ${hasAudio ? 'success' : 'error'}">${hasAudio ? 'رابط الصوت متاح' : 'رابط الصوت غير متاح'}</span>
+                        </div>
+                        <div class="coverage-row">
+                            <span>السور المتاحة</span>
+                            <span>${count === null ? '—' : count} / ${TOTAL_SURAHS}</span>
+                        </div>
+                        <div class="coverage-track"><div class="coverage-fill ${tone}" style="width:${pct}%"></div></div>
+                    </div>
+                    <div>
+                        <div class="card-actions">
+                            <button class="btn secondary" type="button" data-open="${reader.id}">استعراض واستماع</button>
+                            <button class="btn" type="button" id="btn-${reader.id}" data-id="${reader.id}">
+                                <span>توليد كود SQL</span>
+                                <span class="spinner"></span>
+                            </button>
+                        </div>
+                        <span id="status-${reader.id}" class="status"></span>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    $('readersGrid').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-id]');
+        if (!btn) return;
+        const reader = allReaders.find(r => String(r.id) === btn.dataset.id);
+        if (reader) generateSQL(reader);
+    });
+
+    /* ===== توليد SQL ===== */
+    async function generateSQL(reader) {
+        const getBtn = () => $(`btn-${reader.id}`);
+        const setStatus = (text, cls = '') => {
+            const el = $(`status-${reader.id}`);
+            if (el) { el.textContent = text; el.className = `status ${cls}`; }
+        };
+
+        setLoading(getBtn(), true);
+        setStatus('');
+
+        const readerNameAr = reader.name || reader.title || 'غير معروف';
+        const readerNameEn = reader.name_en || reader.title_en || readerNameAr;
+        const rewayaAr = reader.rewaya || 'غير محدد';
+        const rewayaEn = reader.rewaya_en || rewayaAr;
+        const surahsCount = reader.surahsCount ?? 0;
+
+        // 1. إدراج السور
+        let sqlScript = `-- ==========================================\n`;
+        sqlScript += `-- 1. تهيئة جدول السور (quran_audio_surahs)\n`;
+        sqlScript += `-- ==========================================\n`;
+        sqlScript += `INSERT INTO quran_audio_surahs (id, name_ar, name_en, verses_count) VALUES \n`;
+        const surahInserts = [];
+        for (let s = 1; s <= TOTAL_SURAHS; s++) {
+            surahInserts.push(`(${s}, '${escapeSql(surahNamesAr[s - 1])}', '${escapeSql(surahNamesEn[s - 1])}', ${surahVersesCount[s - 1]})`);
+        }
+        sqlScript += surahInserts.join(",\n") + "\nON CONFLICT (id) DO NOTHING;\n\n";
+
+        // 2. إدراج الرواية
+        sqlScript += `-- ==========================================\n`;
+        sqlScript += `-- 2. إضافة الرواية (quran_audio_rewayat)\n`;
+        sqlScript += `-- ==========================================\n`;
+        sqlScript += `INSERT INTO quran_audio_rewayat (name_ar, name_en)\n`;
+        sqlScript += `SELECT '${escapeSql(rewayaAr)}', '${escapeSql(rewayaEn)}'\n`;
+        sqlScript += `WHERE NOT EXISTS (SELECT 1 FROM quran_audio_rewayat WHERE name_ar = '${escapeSql(rewayaAr)}');\n\n`;
+
+        // 3. القارئ (عدد السور الفعلي، وليس 114 دائماً)
+        sqlScript += `-- ==========================================\n`;
+        sqlScript += `-- 3. إضافة بيانات القارئ: ${readerNameAr}${reader.isComplete ? '' : ` (غير كامل: ${surahsCount} سورة)`}\n`;
+        sqlScript += `-- ==========================================\n`;
+        sqlScript += `INSERT INTO quran_audio_readers (id, name_ar, name_en, base_audio_url, surahs_count, rewaya_id)\n`;
+        sqlScript += `VALUES (\n`;
+        sqlScript += `  ${reader.id},\n`;
+        sqlScript += `  '${escapeSql(readerNameAr)}',\n`;
+        sqlScript += `  '${escapeSql(readerNameEn)}',\n`;
+        sqlScript += `  '${escapeSql(reader.audio_url || '')}',\n`;
+        sqlScript += `  ${surahsCount},\n`;
+        sqlScript += `  (SELECT id FROM quran_audio_rewayat WHERE name_ar = '${escapeSql(rewayaAr)}' LIMIT 1)\n`;
+        sqlScript += `)\nON CONFLICT (id) DO NOTHING;\n\n`;
+
+        let versesSql = `-- ==========================================\n`;
+        versesSql += `-- 4. توقيتات الآيات (quran_audio_verse_timings)\n`;
+        versesSql += `-- ==========================================\n`;
+
+        try {
+            const allSurahs = Array.from({ length: TOTAL_SURAHS }, (_, i) => i + 1);
+
+            const timingsResults = await processInBatches(allSurahs, 10, async (surahId) => {
+                try {
+                    const timingRes = await fetch(`https://www.mp3quran.net/api/v3/ayat_timing?read=${reader.id}&sura=${surahId}`);
+                    const timingData = await timingRes.json();
+
+                    if (!Array.isArray(timingData) || timingData.length === 0) return '';
+
+                    const verseValues = timingData.map(v => {
+                        const verseNum = v.ayah !== undefined ? v.ayah : 0;
+                        return `(${reader.id}, ${surahId}, ${verseNum}, ${v.start_time}, ${v.end_time})`;
+                    });
+
+                    return `INSERT INTO quran_audio_verse_timings (reader_id, surah_id, verse_number, start_time_ms, end_time_ms) VALUES \n`
+                        + verseValues.join(",\n")
+                        + "\nON CONFLICT (reader_id, surah_id, verse_number) DO NOTHING;\n\n";
+                } catch (e) {
+                    console.warn(`فشل جلب توقيتات السورة ${surahId}`, e);
+                }
+                return '';
+            }, (current, total) => {
+                setStatus(`جاري جلب السور (${current}/${total})`);
+            });
+
+            versesSql += timingsResults.join('');
+
+            setStatus('اكتمل التوليد', 'ok');
+            openSheet(`كود SQL: ${readerNameAr}`, sqlScript + versesSql);
+        } catch (error) {
+            setStatus('فشل التوليد', 'err');
+            showToast('فشل التوليد', error.message, 'error');
+        } finally {
+            setLoading(getBtn(), false);
+        }
+    }
+
+    /* ===== النسخ ===== */
+    async function copySql() {
+        const sqlArea = $('sqlResult');
+        try {
+            await navigator.clipboard.writeText(sqlArea.value);
+        } catch (e) {
+            sqlArea.select();
+            document.execCommand('copy');
+        }
+        showToast('تم النسخ', 'تم نسخ سكربت SQL، جاهز للتنفيذ في Supabase.');
+    }
+
+    /* =====================================================
+       نافذة القارئ: بيانات + سور + مشغّل متزامن مع التوقيتات
+       ===================================================== */
+    function extractSurahId(s) {
+        if (typeof s === 'number') return s;
+        if (!s || typeof s !== 'object') return NaN;
+        const v = s.sura_id ?? s.surah_id ?? s.sura ?? s.surah ?? s.number ?? s.id;
+        return Number(v);
+    }
+
+    const audioEl = $('audioEl');
+    const textCache = {};
+    const prefs = { rate: 1, loop: false, follow: true };
+    const cur = { reader: null, surah: null, rows: [], els: [], active: -1, started: -1, loopIdx: -1, token: 0, duration: 0, seeking: false };
+    let rafId = 0;
+
+    const norm = (s) => String(s).toLowerCase()
+        .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+        .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+
+    function fmt(ms) {
+        if (!Number.isFinite(ms)) return '--:--.---';
+        const total = Math.max(0, Math.round(ms));
+        const m = Math.floor(total / 60000);
+        const s = Math.floor((total % 60000) / 1000);
+        const r = total % 1000;
+        return `${m}:${String(s).padStart(2, '0')}.${String(r).padStart(3, '0')}`;
+    }
+
+    function audioUrl(reader, surah) {
+        let base = (reader.audio_url || '').trim();
+        if (!base) return '';
+        base = base.replace(/^http:\/\//i, 'https://');
+        if (!base.endsWith('/')) base += '/';
+        return base + String(surah).padStart(3, '0') + '.mp3';
+    }
+
+    /* ----- فتح / إغلاق ----- */
+    function openReader(id) {
+        const reader = allReaders.find(r => String(r.id) === String(id));
+        if (!reader) return;
+        cur.reader = reader;
+        renderReaderInfo(reader);
+        showView('info');
+        $('readerScrim').classList.add('open');
+        $('readerSheet').classList.add('open');
+    }
+    function closeReader() {
+        if (!$('readerSheet').classList.contains('open')) return;
+        stopAudio();
+        $('readerScrim').classList.remove('open');
+        $('readerSheet').classList.remove('open');
+    }
+    function backToInfo() { stopAudio(); cur.token++; showView('info'); }
+    function generateFromSheet() {
+        const reader = cur.reader;
+        closeReader();
+        if (reader) generateSQL(reader);
+    }
+
+    function showView(v) {
+        $('viewInfo').hidden = v !== 'info';
+        $('viewPlayer').hidden = v !== 'player';
+        $('backBtn').hidden = v === 'info';
+        if (v === 'info' && cur.reader) $('readerTitle').textContent = cur.reader.name || cur.reader.title || 'قارئ غير معرف';
+    }
+
+    /* ----- بيانات القارئ + شبكة السور ----- */
+    function renderReaderInfo(reader) {
+        const name = escapeHtml(reader.name || reader.title || 'قارئ غير معرف');
+        const rewaya = escapeHtml(reader.rewaya || 'غير محددة');
+        const count = reader.surahsCount;
+        let tone, label, pct;
+        if (count === null) { tone = 'error'; label = 'تعذّر فحص السور'; pct = 0; }
+        else if (reader.isComplete) { tone = 'success'; label = 'المصحف كامل'; pct = 100; }
+        else { tone = 'warning'; label = 'غير كامل'; pct = Math.round((count / TOTAL_SURAHS) * 100); }
+        const hasAudio = !!reader.audio_url;
+
+        $('infoCard').innerHTML = `
+            <div class="kv"><span class="k">الاسم</span><span class="v">${name}</span></div>
+            <div class="kv"><span class="k">المعرّف (ID)</span><span class="v ltr">${reader.id}</span></div>
+            <div class="kv"><span class="k">الرواية</span><span class="v">${rewaya}</span></div>
+            <div class="kv"><span class="k">رابط الصوت الأساسي</span><span class="v ltr">${hasAudio ? escapeHtml(reader.audio_url) : 'غير متاح'}</span></div>
+            <div class="badges" style="margin:8px 0 12px">
+                <span class="badge ${tone}">${label}</span>
+                <span class="badge ${hasAudio ? 'success' : 'error'}">${hasAudio ? 'رابط الصوت متاح' : 'رابط الصوت غير متاح'}</span>
+            </div>
+            <div class="coverage-row"><span>السور المتاحة</span><span>${count === null ? '—' : count} / ${TOTAL_SURAHS}</span></div>
+            <div class="coverage-track"><div class="coverage-fill ${tone}" style="width:${pct}%"></div></div>`;
+        $('surahSearch').value = '';
+        renderSurahGrid();
+    }
+
+    function renderSurahGrid() {
+        const reader = cur.reader;
+        if (!reader) return;
+        const available = reader.surahIds ? new Set(reader.surahIds) : null;
+        const kw = norm($('surahSearch').value.trim());
+        const items = [];
+        for (let s = 1; s <= TOTAL_SURAHS; s++) {
+            const ar = surahNamesAr[s - 1];
+            if (kw && !(norm(ar).includes(kw) || norm(surahNamesEn[s - 1]).includes(kw) || String(s) === kw)) continue;
+            const ok = !available || available.has(s);
+            items.push(`<button class="surah-btn" type="button" data-surah="${s}" ${ok ? '' : 'disabled'}>
+                <span class="s-num">${s}</span><span class="s-name">${ar}</span></button>`);
+        }
+        $('surahGrid').innerHTML = items.length ? items.join('') : '<div class="empty">لا توجد سور مطابقة</div>';
+    }
+    $('surahGrid').addEventListener('click', (e) => {
+        const b = e.target.closest('button[data-surah]');
+        if (b && !b.disabled) openSurah(Number(b.dataset.surah));
+    });
+
+    /* ----- جلب البيانات ----- */
+    async function fetchTimings(readId, surah) {
+        const res = await fetch(`https://www.mp3quran.net/api/v3/ayat_timing?read=${readId}&sura=${surah}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!Array.isArray(data)) return [];
+        return data
+            .map(v => ({ n: Number(v.ayah ?? 0), start: Number(v.start_time), end: Number(v.end_time) }))
+            .filter(v => Number.isFinite(v.n) && Number.isFinite(v.start) && Number.isFinite(v.end))
+            .sort((a, b) => a.n - b.n);
+    }
+
+    function stripBasmala(text) {
+        const strip = (s) => s.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '').replace(/\u0671/g, 'ا');
+        const words = text.split(' ');
+        if (words.length > 4 && strip(words.slice(0, 4).join(' ')) === 'بسم الله الرحمن الرحيم') return words.slice(4).join(' ');
+        return text;
+    }
+
+    // نص الآيات بالرسم العثماني: المصدر الأول quran.com ثم alquran.cloud كبديل
+    async function fetchVerseTexts(surah) {
+        if (textCache[surah]) return textCache[surah];
+        const map = {};
+        try {
+            const res = await fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${surah}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            (data.verses || []).forEach(v => { map[parseInt(String(v.verse_key).split(':')[1], 10)] = v.text_uthmani; });
+            if (!Object.keys(map).length) throw new Error('empty');
+        } catch (e) {
+            const res = await fetch(`https://api.alquran.cloud/v1/surah/${surah}/quran-uthmani`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            (data.data.ayahs || []).forEach(a => {
+                map[a.numberInSurah] = (surah !== 1 && a.numberInSurah === 1) ? stripBasmala(a.text) : a.text;
+            });
+        }
+        textCache[surah] = map;
+        return map;
+    }
+
+    /* ----- فتح سورة ----- */
+    async function openSurah(n) {
+        const reader = cur.reader;
+        const token = ++cur.token;
+        stopAudio();
+        Object.assign(cur, { surah: n, rows: [], els: [], active: -1, started: -1, loopIdx: -1, duration: 0 });
+        showView('player');
+        $('readerTitle').textContent = `سورة ${surahNamesAr[n - 1]}`;
+        $('verseList').innerHTML = '<div class="empty">جاري تحميل التوقيتات والآيات...</div>';
+        $('validation').innerHTML = '';
+        $('nowLabel').textContent = 'الآية الحالية: —';
+        $('timeCur').textContent = '0:00.000';
+        $('timeTotal').textContent = '--:--.---';
+        setPlayerEnabled(false);
+        setPlayerStatus('');
+
+        const url = audioUrl(reader, n);
+        $('audioLink').style.display = url ? '' : 'none';
+        $('audioLink').href = url || '#';
+        if (url) {
+            setPlayerStatus('جاري تحميل الصوت...');
+            audioEl.src = url;
+            audioEl.playbackRate = prefs.rate;
+            audioEl.load();
+        } else {
+            setPlayerStatus('لا يوجد رابط صوت لهذا القارئ', 'err');
+        }
+
+        try {
+            const [timings, texts] = await Promise.all([
+                fetchTimings(reader.id, n),
+                fetchVerseTexts(n).catch(() => null)
+            ]);
+            if (token !== cur.token) return;
+            if (!timings.length) {
+                $('verseList').innerHTML = '<div class="empty">لا توجد توقيتات لهذه السورة</div>';
+                return;
+            }
+            cur.rows = timings.map(t => ({ ...t, text: t.n === 0 ? null : (texts && texts[t.n]) || null, flags: [] }));
+            analyzeRows();
+            renderVerses(!!texts);
+            renderValidation();
+            setPlayerEnabled(!!url);
+            updateUI(true);
+        } catch (err) {
+            if (token !== cur.token) return;
+            $('verseList').innerHTML = '<div class="empty">فشل تحميل التوقيتات</div>';
+            showToast('فشل التحميل', err.message, 'error');
+        }
+    }
+
+    /* ----- فحص صحة التوقيتات ----- */
+    function analyzeRows() {
+        const rows = cur.rows;
+        let prevStart = null, prevEnd = null;
+        const st = { bad: 0, order: 0, overlap: 0 };
+        rows.forEach(r => {
+            r.flags = [];
+            if (!(r.end > r.start)) { r.flags.push('مدة غير صحيحة'); st.bad++; }
+            if (prevStart !== null && r.start < prevStart) { r.flags.push('ترتيب غير تصاعدي'); st.order++; }
+            else if (prevEnd !== null && r.start < prevEnd - 100) { r.flags.push('تداخل مع السابقة'); st.overlap++; }
+            prevStart = r.start; prevEnd = r.end;
+        });
+        const nums = rows.map(r => r.n).filter(n => n > 0);
+        const expected = surahVersesCount[cur.surah - 1];
+        const set = new Set(nums);
+        const missing = [];
+        for (let i = 1; i <= expected; i++) if (!set.has(i)) missing.push(i);
+        const extra = nums.filter(n => n > expected);
+        cur.stats = { ...st, expected, found: nums.length, missing, extra, flagged: rows.filter(r => r.flags.length).length };
+    }
+
+    function renderValidation() {
+        const s = cur.stats;
+        if (!s) return;
+        const b = [];
+        if (!s.missing.length && !s.extra.length && s.found === s.expected) {
+            b.push(['success', `عدد الآيات مطابق (${s.found} / ${s.expected})`]);
+        } else {
+            const miss = s.missing.length ? ` — ناقص: ${s.missing.slice(0, 8).join('، ')}${s.missing.length > 8 ? '…' : ''}` : '';
+            const ext = s.extra.length ? ` — زائد: ${s.extra.slice(0, 8).join('، ')}` : '';
+            b.push(['warning', `عدد الآيات ${s.found} من ${s.expected}${miss}${ext}`]);
+        }
+        if (!s.flagged) b.push(['success', 'التوقيتات متسلسلة بدون تداخل']);
+        else b.push(['warning', `${s.flagged} آية بها ملاحظات في التوقيت`]);
+
+        if (cur.duration && cur.rows.length) {
+            const lastEnd = Math.max(...cur.rows.map(r => r.end)) / 1000;
+            const diff = cur.duration - lastEnd;
+            if (lastEnd > cur.duration + 1) b.push(['error', `التوقيت يتجاوز مدة الملف (${lastEnd.toFixed(1)}ث من ${cur.duration.toFixed(1)}ث)`]);
+            else if (diff > 15) b.push(['warning', `يتبقى ${diff.toFixed(1)}ث في الملف بعد آخر آية`]);
+            else b.push(['success', 'التوقيت ضمن مدة الملف']);
+        }
+        $('validation').innerHTML = b.map(([t, m]) => `<span class="badge ${t}">${m}</span>`).join('');
+    }
+
+    function renderVerses(hasTexts) {
+        $('verseList').innerHTML = cur.rows.map((r, i) => {
+            let body;
+            if (r.n === 0) body = `<span class="v-text plain">مقدمة التلاوة (استعاذة / بسملة)</span>`;
+            else if (r.text) body = `<span class="v-text">${escapeHtml(r.text)}</span>`;
+            else body = `<span class="v-text plain">الآية ${r.n}${hasTexts ? '' : ' (تعذّر تحميل النص)'}</span>`;
+            const flags = r.flags.map(f => `<span class="v-flag">⚠ ${f}</span>`).join('');
+            return `<button type="button" class="verse ${r.flags.length ? 'warn' : ''}" data-i="${i}">
+                <span class="v-num">${r.n === 0 ? '•' : r.n}</span>
+                <span class="v-body">${body}
+                    <span class="v-meta"><span class="v-time">${fmt(r.start)} → ${fmt(r.end)}</span>${flags}</span>
+                </span></button>`;
+        }).join('');
+        cur.els = Array.from($('verseList').children);
+    }
+    $('verseList').addEventListener('click', (e) => {
+        const b = e.target.closest('.verse');
+        if (b) seekToRow(Number(b.dataset.i), true);
+    });
+
+    /* ----- المشغّل ----- */
+    function setPlayerStatus(text, cls = '') {
+        const el = $('playerStatus');
+        el.textContent = text;
+        el.className = `status ${cls}`;
+    }
+    function setPlayerEnabled(on) {
+        ['playBtn', 'prevBtn', 'nextBtn'].forEach(id => { $(id).disabled = !on; });
+        $('seek').disabled = !on || !cur.duration;
+    }
+    function stopAudio() {
+        cancelAnimationFrame(rafId);
+        audioEl.pause();
+        if (audioEl.getAttribute('src')) { audioEl.removeAttribute('src'); audioEl.load(); }
+        $('playBtn').classList.remove('playing');
+        cur.duration = 0;
+    }
+    function togglePlay() {
+        if (audioEl.paused) audioEl.play().catch(err => showToast('تعذّر التشغيل', err.message, 'error'));
+        else audioEl.pause();
+    }
+    function setRate(v) { prefs.rate = Number(v); audioEl.playbackRate = prefs.rate; }
+    function toggleLoop() {
+        prefs.loop = !prefs.loop;
+        $('loopChip').setAttribute('aria-pressed', String(prefs.loop));
+        if (prefs.loop) cur.loopIdx = cur.active >= 0 ? cur.active : cur.started;
+    }
+    function toggleFollow() {
+        prefs.follow = !prefs.follow;
+        $('followChip').setAttribute('aria-pressed', String(prefs.follow));
+        if (prefs.follow) scrollToActive();
+    }
+
+    function seekToRow(i, autoplay) {
+        const r = cur.rows[i];
+        if (!r || !audioEl.getAttribute('src')) return;
+        audioEl.currentTime = r.start / 1000;
+        cur.loopIdx = i;
+        updateUI(true);
+        if (autoplay && audioEl.paused) audioEl.play().catch(err => showToast('تعذّر التشغيل', err.message, 'error'));
+    }
+    function stepVerse(dir) {
+        const rows = cur.rows;
+        if (!rows.length) return;
+        const ms = audioEl.currentTime * 1000;
+        const i = cur.started;
+        let target;
+        if (dir > 0) target = Math.min(i + 1, rows.length - 1);
+        else target = (i >= 0 && ms - rows[i].start > 1500) ? i : Math.max(i - 1, 0);
+        seekToRow(target, false);
+    }
+
+    const findActive = (ms) => { for (let i = cur.rows.length - 1; i >= 0; i--) if (ms >= cur.rows[i].start && ms < cur.rows[i].end) return i; return -1; };
+    const findStarted = (ms) => { let k = -1; for (let i = 0; i < cur.rows.length; i++) if (cur.rows[i].start <= ms) k = i; return k; };
+
+    function scrollToActive() {
+        const el = cur.els[cur.active];
+        if (!el) return;
+        const list = $('verseList');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        list.scrollTo({ top: el.offsetTop - (list.clientHeight - el.offsetHeight) / 2, behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    function updateUI(force) {
+        const t = audioEl.currentTime || 0;
+        const ms = t * 1000;
+        $('timeCur').textContent = fmt(ms);
+        if (!cur.seeking) $('seek').value = t;
+        if (!cur.rows.length) return;
+        cur.started = findStarted(ms);
+        const a = findActive(ms);
+        if (a !== cur.active || force) {
+            if (cur.els[cur.active]) cur.els[cur.active].classList.remove('active');
+            cur.active = a;
+            if (cur.els[a]) { cur.els[a].classList.add('active'); if (prefs.follow) scrollToActive(); }
+            const shown = a >= 0 ? a : cur.started;
+            const row = cur.rows[shown];
+            $('nowLabel').textContent = row
+                ? (a >= 0 ? `الآية الحالية: ${row.n === 0 ? 'المقدمة' : row.n}` : `بين الآيات (بعد ${row.n === 0 ? 'المقدمة' : 'الآية ' + row.n})`)
+                : 'الآية الحالية: —';
+        }
+    }
+
+    function tick() {
+        updateUI(false);
+        if (prefs.loop && cur.loopIdx >= 0) {
+            const r = cur.rows[cur.loopIdx];
+            if (r && audioEl.currentTime * 1000 >= r.end) audioEl.currentTime = r.start / 1000;
+        }
+        if (!audioEl.paused) rafId = requestAnimationFrame(tick);
+    }
+
+    audioEl.addEventListener('play', () => { $('playBtn').classList.add('playing'); cancelAnimationFrame(rafId); rafId = requestAnimationFrame(tick); });
+    audioEl.addEventListener('pause', () => { $('playBtn').classList.remove('playing'); cancelAnimationFrame(rafId); });
+    audioEl.addEventListener('ended', () => { $('playBtn').classList.remove('playing'); cancelAnimationFrame(rafId); updateUI(true); });
+    audioEl.addEventListener('timeupdate', () => { if (audioEl.paused) updateUI(false); });
+    audioEl.addEventListener('seeked', () => updateUI(false));
+    audioEl.addEventListener('waiting', () => setPlayerStatus('جاري تحميل الصوت...'));
+    audioEl.addEventListener('canplay', () => setPlayerStatus(''));
+    audioEl.addEventListener('playing', () => setPlayerStatus(''));
+    audioEl.addEventListener('loadedmetadata', () => {
+        cur.duration = audioEl.duration || 0;
+        $('seek').max = cur.duration;
+        $('seek').disabled = !cur.rows.length;
+        $('timeTotal').textContent = fmt(cur.duration * 1000);
+        renderValidation();
+    });
+    audioEl.addEventListener('error', () => {
+        if (!audioEl.getAttribute('src')) return;
+        setPlayerStatus('تعذّر تحميل ملف الصوت — تأكد من الرابط (زر "فتح ملف الصوت")', 'err');
+    });
+
+    const seekEl = $('seek');
+    seekEl.addEventListener('pointerdown', () => { cur.seeking = true; });
+    ['pointerup', 'pointercancel', 'change'].forEach(ev => seekEl.addEventListener(ev, () => { cur.seeking = false; }));
+    seekEl.addEventListener('input', () => { audioEl.currentTime = Number(seekEl.value); updateUI(false); });
+
+    // فتح القارئ بالنقر أو Enter/Space على منطقة المعلومات
+    $('readersGrid').addEventListener('click', (e) => {
+        const o = e.target.closest('[data-open]');
+        if (o) openReader(o.dataset.open);
+    });
+    $('readersGrid').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const o = e.target.closest('.reader-info[data-open]');
+        if (o) { e.preventDefault(); openReader(o.dataset.open); }
+    });
+</script>
+</body>
+</html>

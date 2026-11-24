@@ -25,10 +25,12 @@ outputs/
 *.class
 *.jar
 *.aar
+!app/libs/*.aar
 app/release/
 output-metadata.json
 baselineProfiles/
-
+.kotlin/
+/kotlin
 # Gradle & cache
 .gradle/
 gradle/
@@ -62,3 +64,4 @@ proguard-rules.pro  #
 lint-results*.xml
 lint-results*.html
 test_output/
+powershell.cmd

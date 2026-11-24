@@ -2,6 +2,7 @@ package dev.sayed.mehrabalmomen.presentation.screen.onBoarding.batteryOptimizati
 
 interface BatteryOptimizationInteractionListener {
     fun onOpenSettingsClicked()
+    fun onOpenOverlaySettingsClicked() {}
     fun onSkipForNowClicked()
     fun onBackClicked()
     fun onLearnMoreClick()

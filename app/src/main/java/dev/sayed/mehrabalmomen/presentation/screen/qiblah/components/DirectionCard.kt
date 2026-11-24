@@ -20,18 +20,23 @@ import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahUiState
 @Composable
 fun DirectionCard(
     locationUiState: QiblahUiState.LocationUiState,
-    direction: Float, modifier: Modifier = Modifier
+    qiblaOffset: Float,
+    isAligned: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier.height(280.dp)
+        modifier = modifier.height(280.dp)
     ) {
         Column {
-            DirectionInfoSection(locationUiState = locationUiState, direction = direction)
-            DirectionInstruction(direction = direction)
+            DirectionInfoSection(
+                locationUiState = locationUiState,
+                qiblaOffset = qiblaOffset
+            )
+            DirectionInstruction(isAligned = isAligned)
         }
 
         LocationIndicator(
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.TopCenter)
                 .offset(y = (-30).dp)
         )
@@ -39,15 +44,14 @@ fun DirectionCard(
 }
 
 @Composable
-private fun ColumnScope.DirectionInstruction(direction: Float) {
-    val isAligned = kotlin.math.abs(direction) <= 5f
+private fun ColumnScope.DirectionInstruction(isAligned: Boolean) {
     val text = if (isAligned) R.string.qiblah_aligned else R.string.rotate_your_phone_to_align_with_the_qibla_direction
     Text(
         modifier = Modifier
             .align(Alignment.CenterHorizontally)
             .padding(top = 16.dp),
         text = localizedString(text),
-        color = Theme.color.primary.primary,
+        color = if (isAligned) Theme.color.semantic.success else Theme.color.primary.primary,
         style = Theme.textStyle.label.medium,
         textAlign = TextAlign.Center
     )

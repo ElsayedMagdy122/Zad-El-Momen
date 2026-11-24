@@ -3,9 +3,15 @@ package dev.sayed.mehrabalmomen.presentation.screen.settings
 import SettingsUiState
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Build
+import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetPinReceiver
+import dev.sayed.mehrabalmomen.presentation.widget.PrayerTimesWidgetProvider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,6 +66,7 @@ import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.Switch
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CheckboxItem
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
@@ -80,10 +87,6 @@ fun SettingsScreen(
     val versionNumber = BuildConfig.VERSION_NAME
     CollectEffect(settingsViewModel.effect) { effect ->
         when (effect) {
-            SettingsEffect.NavigateToAbout -> {
-
-            }
-
             SettingsEffect.NavigateToHelpFeedback -> {
                 navController.navigate(Route.ReportBugScreen)
             }
@@ -121,6 +124,12 @@ fun SettingsScreen(
             SettingsEffect.NavigateToFAQ -> {
                 navController.navigate(Route.FAQScreen)
             }
+
+            SettingsEffect.RequestPinWidget -> {
+                requestPinPrayerWidget(context) { details ->
+                    toast = details
+                }
+            }
         }
     }
     LaunchedEffect(toast) {
@@ -135,8 +144,8 @@ fun SettingsScreen(
             settingsViewModel = settingsViewModel,
             isMoazen = dialog.type == SettingsUiState.SelectionDialogType.MOAZEN,
             items = dialog.options,
-            title = localizedString(dialog.titleRes),
-            description = dialog.descriptionRes?.let { localizedString(it) } ?: "",
+            title = dialog.title,
+            description = dialog.description ?: UiText.DynamicString(""),
             selectedIndex = dialog.selectedIndex,
             onConfirm = { index ->
                 settingsViewModel.stopPreview()
@@ -177,7 +186,7 @@ fun SettingsScreen(
 
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Text(
-                        text = localizedString(section.titleRes),
+                        text = section.title.asString(),
                         style = Theme.textStyle.label.medium,
                         color = Theme.color.primary.primary,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
@@ -219,10 +228,10 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBottomSheet(
-    settingsViewModel: SettingsViewModel,
+    settingsViewModel: SettingsViewModel? = null,
     items: List<SelectionItem>,
-    title: String,
-    description: String,
+    title: UiText,
+    description: UiText,
     selectedIndex: Int,
     onConfirm: (Int) -> Unit,
     onDismiss: () -> Unit,
@@ -232,12 +241,12 @@ fun SettingsBottomSheet(
     val context = LocalContext.current
     BottomSheetDs(onDismiss = onDismiss) {
         Text(
-            text = title,
+            text = title.asString(),
             style = Theme.textStyle.label.medium,
             color = Theme.color.primary.shadePrimary
         )
         Text(
-            text = description,
+            text = description.asString(),
             style = Theme.textStyle.label.medium,
             color = Theme.color.semantic.shadeTertiary
         )
@@ -246,7 +255,7 @@ fun SettingsBottomSheet(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (isMoazen) {
+            if (isMoazen && settingsViewModel != null) {
                 SingleSelectionContentWithPreview(
                     items = items,
                     selectedIndex = currentSelected,
@@ -279,6 +288,17 @@ fun SettingsBottomSheet(
                 })
         }
 
+    }
+}
+
+fun getSupportName(id: String): Int {
+    return when (id) {
+        BuildConfig.SUPPORT_1 -> R.string.support_1
+        BuildConfig.SUPPORT_5 -> R.string.support_2
+        BuildConfig.SUPPORT_10 -> R.string.support_3
+        BuildConfig.SUPPORT_25 -> R.string.support_4
+        BuildConfig.SUPPORT_100 -> R.string.support_5
+        else -> 0
     }
 }
 
@@ -332,7 +352,7 @@ fun SingleSelectionContentWithPreview(
             }
             CheckboxItem(
                 modifier = Modifier.weight(1f),
-                text = item.text?.let { localizedString(it) } ?: "",
+                text = item.text?.asString() ?: "",
                 description = item.description,
                 icon = item.icon?.let { painterResource(it) },
                 isChecked = selectedIndex == index,
@@ -353,7 +373,7 @@ fun SingleSelectionContent(
 ) {
     items.forEachIndexed { index, item ->
         CheckboxItem(
-            text = item.text?.let { localizedString(it) } ?: "",
+            text = item.text?.asString() ?: "",
             description = item.description,
             icon = item.icon?.let { painterResource(it) },
             isChecked = selectedIndex == index,
@@ -366,7 +386,7 @@ fun SingleSelectionContent(
 }
 
 data class SelectionItem(
-    val text: Int? = null,
+    val text: UiText? = null,
     val description: String? = null,
     val icon: Int? = null,
     val resId: Int? = null
@@ -402,6 +422,7 @@ fun SettingsItem(
                     SettingsUiState.SettingsAction.CONTACT_US -> listener.onContactUs()
                     SettingsUiState.SettingsAction.NOTIFICATIONS -> listener.onNotifications()
                     SettingsUiState.SettingsAction.FAQ -> listener.onItemClick(item.action)
+                    SettingsUiState.SettingsAction.WIDGET -> listener.onItemClick(item.action)
                 }
             }
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -418,7 +439,7 @@ fun SettingsItem(
         Text(
             modifier = Modifier
                 .padding(horizontal = 8.dp),
-            text = localizedString(item.title),
+            text = item.title.asString(),
             color = Theme.color.primary.primary,
             style = Theme.textStyle.label.medium,
             maxLines = 1,
@@ -432,17 +453,9 @@ fun SettingsItem(
                 isChecked = item.value,
                 onCheckedChange = { listener.onItemClick(item.action) }
             )
-        } else if (item.description != 0 || item.descriptionText != null) {
+        } else if (item.description != null) {
             Text(
-                text = when {
-                    item.description != 0 ->
-                        localizedString(item.description)
-
-                    item.descriptionText != null ->
-                        item.descriptionText
-
-                    else -> ""
-                },
+                text = item.description.asString(),
                 color = Theme.color.semantic.shadeTertiary,
                 style = Theme.textStyle.label.small,
                 maxLines = 1,
@@ -471,4 +484,30 @@ fun Context.findActivity(): Activity? {
         currentContext = currentContext.baseContext
     }
     return currentContext as? Activity
+}
+
+private fun requestPinPrayerWidget(context: Context, onShowToast: (ToastDetails) -> Unit) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val provider = ComponentName(context, PrayerTimesWidgetProvider::class.java)
+        if (appWidgetManager != null && appWidgetManager.isRequestPinAppWidgetSupported) {
+            val successIntent = Intent(context, PrayerTimesWidgetPinReceiver::class.java)
+            val successPendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                successIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            appWidgetManager.requestPinAppWidget(provider, null, successPendingIntent)
+            return
+        }
+    }
+
+    onShowToast(
+        ToastDetails(
+            title = UiText.StringResource(R.string.prayer_times_widget),
+            message = UiText.StringResource(R.string.widget_pin_manual_guide),
+            icon = R.drawable.ic_prayer_times_selected
+        )
+    )
 }

@@ -16,5 +16,6 @@ enum class ReminderType(
         RecurrencePattern.WEEKLY_THURSDAY,
         "friday_sunnan"
     ),
-    DAILY_WORD(104, 5, 0, RecurrencePattern.DAILY, "daily_word")
+    DAILY_WORD(104, 5, 0, RecurrencePattern.DAILY, "daily_word"),
+    BEFORE_PRAYER(105, 0, 15, RecurrencePattern.DAILY, "before_prayer")
 }

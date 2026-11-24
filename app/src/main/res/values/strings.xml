@@ -1,6 +1,6 @@
 <resources>
 <!--    <string name="app_name">Mehrab Al Momen</string>-->
-    <string name="app_name">Zad Al-Mu’min</string>
+    <string name="app_name">Zad Al-Mu\'min</string>
     <string name="fajr">Fajr</string>
     <string name="sunrise">Sunrise</string>
     <string name="dhuhr">Dhuhr</string>
@@ -33,12 +33,14 @@
     <string name="tilt_and_rotate_the_device_to_cover_all_axes_for_complete_calibration">Tilt and rotate the device to cover all axes for complete calibration.</string>
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_desc">We need your location to calculate accurate prayer times and determine the Qibla direction.</string>
+    <string name="location_services_disabled">Location services are disabled. Please turn on GPS to calculate accurate prayer times.</string>
     <string name="notification_permission">Notification Permission</string>
     <string name="notification_permission_desc">Receive Azan and Azkar reminders on time.</string>
     <string name="alarm_permission">Exact Alarm Permission</string>
     <string name="alarm_permission_desc">Required to play the Azan exactly on time, even when the device is idle.</string>
     <string name="background_permission">Run in Background</string>
     <string name="background_permission_desc">Allow the app to run in the background without battery restrictions to ensure reminders work accurately.</string>
+    <string name="permission_optional_important">(Optional, but important)</string>
     <string name="granted">Granted</string>
     <string name="allow">Allow</string>
     <string name="set_up_permissions">Set up permissions</string>
@@ -70,7 +72,7 @@
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
     <string name="time_remaining">Time remaining</string>
-    <string name="today_s_full_timetable">Today’s Full Timetable</string>
+    <string name="today_s_full_timetable">Today\'s Full Timetable</string>
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="general">General</string>
@@ -141,7 +143,7 @@
     <string name="quran">Quran Kareem</string>
     <string name="ayat">%1$d Ayat</string>
     <string name="sur">Sur</string>
-    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you’re offline.</string>
+    <string name="oops_it_looks_like_you_re_offline">Oops! It looks like you\'re offline.</string>
     <string name="check_your_connection_and_try_again">Check your connection and try again</string>
     <string name="re_try">Re-try</string>
     <string name="success">Success</string>
@@ -346,8 +348,15 @@
     <string name="faq_a3">Go to Settings -> Support -> Report a Bug to send us your reports or suggestions.</string>
     <string name="faq_q4">Is the Qiblah compass accurate?</string>
     <string name="faq_a4">Yes, but it depends on your device\'s hardware sensors. We recommend calibrating your compass by moving your phone in a figure-8 pattern if you notice any inaccuracy.</string>
+    <string name="faq_q5">How to make the Azan screen appear automatically on Xiaomi, Samsung, and Huawei?</string>
+    <string name="faq_a5">To ensure the Azan screen opens automatically at prayer time on Xiaomi (HyperOS/MIUI), Samsung, Huawei, and Oppo devices, please go to phone Settings → Apps → Zad Al-Momen → Permissions, and ensure you enable: 1) Display pop-up windows while running in the background / Appear on top. 2) Show on Lock screen. 3) Autostart and set Battery to Unrestricted.</string>
+    <string name="faq_q6">Why is the \"Display over other apps\" permission required and how do I enable it?</string>
+    <string name="faq_a6">The \"Display over other apps\" permission is required on all devices so that Zad Al-Momen can launch the full Azan screen and alert you at the exact prayer time, even when your phone is locked or you are using another app. You can enable it by clicking the warning icon in Prayer Times → \"Enable Display Permission\", or via phone Settings → Apps → Zad Al-Momen → Display over other apps (or Appear on top) and turning it ON.</string>
     <string name="battery_settings_title">Notification Optimization</string>
     <string name="battery_optimization_description">These steps are essential to ensure the Adhan works efficiently and on time on your device.</string>
+    <string name="overlay_permission_title">Display Over Other Apps</string>
+    <string name="overlay_permission_description">This permission is required on all devices so the Azan screen can appear automatically at prayer time even when the screen is locked or another app is open.</string>
+    <string name="enable_overlay_permission">Enable Display Permission</string>
     <string name="companion_mode">Companion Mode</string>
 
     <!-- Rafiq's spiritual messages -->
@@ -395,4 +404,165 @@
     <string name="rafiq_tasbih_2">Alhamdulillah.. Alhamdulillah.. ❤️</string>
     <string name="rafiq_tasbih_3">Allahu Akbar.. Allahu Akbar.. ❤️</string>
     <string name="rafiq_tasbih_4">La ilaha illallah.. La ilaha illallah.. ❤️</string>
+
+    <string name="azkar_categories">Categories</string>
+    <string name="azkar_your_statistics">Your Statistics</string>
+    <string name="azkar_welcome">Welcome</string>
+    <string name="azkar_keep_tongue">Keep your tongue moist with the remembrance of Allah</string>
+    <string name="azkar_days_streak">Days Streak</string>
+    <string name="azkar_remaining">Remaining Azkar</string>
+    <string name="azkar_completed">Completed Azkar</string>
+    <string name="azkar_total">Total Azkar</string>
+    <string name="azkar_percentage">Percentage</string>
+    <string name="azkar_of_daily">of daily azkar</string>
+    <string name="azkar_add_category">Add New Category</string>
+    <string name="azkar_category_name_hint">Enter category name (e.g., Morning Adhkar)</string>
+    <string name="azkar_save_category">Save Category</string>
+    <string name="azkar_filter_day">Day</string>
+    <string name="azkar_filter_week">Week</string>
+    <string name="azkar_filter_month">Month</string>
+    <string name="azkar_filter_year">Year</string>
+    <string name="azkar_activity_log">Activity Log</string>
+    <string name="azkar_less">Less</string>
+    <string name="azkar_more">More</string>
+    <string name="azkar_add_dhikr">Add New Dhikr</string>
+    <string name="azkar_content_hint">Dhikr content</string>
+    <string name="azkar_repeat_count_hint">Repeat count (e.g. 3)</string>
+    <string name="azkar_description_hint">Virtue / Description (Optional)</string>
+    <string name="azkar_reference_hint">Reference / Source (Optional)</string>
+    <string name="azkar_save_dhikr">Save Dhikr</string>
+    <string name="azkar_allah_says">Allah says:</string>
+    <string name="azkar_quran_verse_morning"><![CDATA[﴿ وَمَا أَصْبَحَ مِنْ نِعْمَةٍ فَمِنَ اللَّهِ ﴾]]></string>
+    <string name="azkar_quran_verse_reference">[An-Nahl: 53]</string>
+    <string name="azkar_done_check">Done ✓</string>
+    <string name="azkar_times_format">%1$d times</string>
+    <string name="azkar_dhikr_count_format">%1$d dhikrs</string>
+
+    <!-- Azan Screen -->
+    <string name="azan">Azan</string>
+    <string name="azan_prayer_time">PRAYER TIME</string>
+    <string name="azan_stop">Stop Azan</string>
+    <string name="azan_open_app">Open Prayer Times</string>
+    <string name="azan_jumuah">Jumu\'ah</string>
+    <string name="time_for_prayer">It is time for prayer</string>
+    <string name="prayer_of_format">%1$s Prayer</string>
+    <string name="azan_is_playing">Azan is playing</string>
+    <string name="next_prayer_dot_format">Next prayer • %1$s</string>
+    <string name="mute_sound">Mute Sound</string>
+    <string name="unmute_sound">Unmute Sound</string>
+    <string name="location_unknown">Unknown</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="period">Period</string>
+    <string name="prayer_times_widget">Prayer Times Widget</string>
+    <string name="prayer_widget_desc">Display daily prayer times on the home screen</string>
+    <string name="widget_pin_success">Prayer times widget added to home screen</string>
+    <string name="widget_pin_manual_guide">To add the widget, long press on your home screen, select Widgets, and choose Zad Al-Mu\'min.</string>
+    <string name="next_prayer">Next Prayer</string>
+    <string name="set_location_to_view_prayers">Tap to set location and view prayer times</string>
+
+    <!-- Recitation & Tajweed Error Localization -->
+    <string name="tajweed_rule_normal_madd">Normal Madd</string>
+    <string name="tajweed_rule_mottasel_madd">Mottasel Madd</string>
+    <string name="tajweed_rule_monfasel_madd">Monfasel Madd</string>
+    <string name="tajweed_rule_aared_madd">Aared Madd</string>
+    <string name="tajweed_rule_lazem_madd">Lazem Madd</string>
+    <string name="tajweed_rule_leen_madd">Leen Madd</string>
+    <string name="tajweed_rule_mushaddad_ghunnah">Mushaddad Noon/Meem</string>
+    <string name="tajweed_rule_shaddah">Shaddah</string>
+
+    <string name="tajweed_error_underheld">Underheld %1$s: held for %2$.2fs, target is %3$.2fs</string>
+    <string name="tajweed_error_overheld">Overheld %1$s: held for %2$.2fs, allowed maximum is %3$.2fs</string>
+    <string name="tajweed_error_tashkeel">Diacritic error: expected (%1$s), heard (%2$s)</string>
+    <string name="tajweed_error_omission">Omitted letter: missed (%1$s)</string>
+    <string name="tajweed_error_substitution">Letter mismatch: expected (%1$s), heard (%2$s)</string>
+
+    <string name="tajweed_advice_normal_madd">Give the natural Madd its full 2 beats without excess or deficit</string>
+    <string name="tajweed_advice_mottasel_madd">Elongate the vowel for 4 to 5 beats obligatorily</string>
+    <string name="tajweed_advice_monfasel_madd">Elongate the vowel for 4 beats permissibly</string>
+    <string name="tajweed_advice_aared_madd">Give the Aared Madd its proper length (2, 4, or 6 beats upon pause)</string>
+    <string name="tajweed_advice_lazem_madd">Elongate the Lazem Madd for the full 6 beats obligatorily</string>
+    <string name="tajweed_advice_leen_madd">Give the Leen consonant its proper holding time upon pause</string>
+    <string name="tajweed_advice_mushaddad_ghunnah">Give the Ghunnah a full 2-beat nasal resonance</string>
+    <string name="tajweed_advice_shaddah">Hold and press the doubled consonant articulation point clearly</string>
+    <string name="tajweed_advice_overheld">Avoid over-extending the vowel past the allowed length</string>
+    <string name="tajweed_advice_tashkeel">Pay attention to the correct vowel mark (Fatha, Damma, Kasra)</string>
+    <string name="tajweed_advice_omission">Articulate all letters clearly without swallowing or skipping</string>
+    <string name="tajweed_advice_substitution">Articulate the letter from its correct Makhraj with proper attributes</string>
+
+    <string name="recitation_feedback_title">Recitation &amp; Tajweed Feedback</string>
+    <string name="recitation_feedback_on_word">Notice on word: %1$s</string>
+    <string name="recitation_feedback_close">Got it (Close)</string>
+
+    <!-- Tasmee3 & Recitation Feature -->
+    <string name="tasmee3_title_full">Recitation of Surah %1$s</string>
+    <string name="tasmee3_title_range">Recitation of %1$s (%2$s - %3$s)</string>
+    <string name="tasmee3_session_title">Voice Recitation Session</string>
+    <string name="tasmee3_session_active">Voice Recitation Session (Active)</string>
+    <string name="tasmee3_status_ongoing">Active</string>
+    <string name="tasmee3_status_ready">Ready</string>
+    <string name="tasmee3_status_initializing">Initializing AI model...</string>
+    <string name="tasmee3_status_listening">Listening... Recite clearly</string>
+    <string name="tasmee3_status_prompt">Tap the microphone to start reciting</string>
+
+    <string name="tasmee3_range_title">Select Recitation Range</string>
+    <string name="tasmee3_range_surah_info">Surah %1$s • Verses: %2$s verses</string>
+    <string name="tasmee3_mode_full_surah">Full Surah</string>
+    <string name="tasmee3_mode_full_surah_desc">From verse 1 to verse %1$s</string>
+    <string name="tasmee3_mode_custom_range">Select a verse range</string>
+    <string name="tasmee3_mode_custom_range_desc">Recite a specific section of the Surah</string>
+    <string name="tasmee3_from_ayah">From start of verse</string>
+    <string name="tasmee3_to_ayah">To end of verse</string>
+    <string name="tasmee3_single_ayah_hint">To recite a single verse, enter the same verse number in both fields (e.g. from 59 to 59)</string>
+    <string name="tasmee3_start_button">Start Recitation</string>
+    <string name="tasmee3_error_start_range">Start verse must be between 1 and %1$s</string>
+    <string name="tasmee3_error_end_range">End verse must be between 1 and %1$s</string>
+    <string name="tasmee3_error_start_greater">Start verse must be less than or equal to end verse</string>
+
+    <string name="recitation_disclaimer_title">Important Notice Regarding Recitation</string>
+    <string name="recitation_disclaimer_message">The recitation model relies on speech recognition of Quranic words and verse sequencing to help you review and retain your memorization only. It does not thoroughly verify Tajweed rules or precise phonetic articulation.\n\nThis feature is an assistive tool and does not replace oral recitation and learning directly from a qualified, certified Quran teacher.</string>
+    <string name="recitation_disclaimer_confirm">I understand</string>
+
+    <string name="recitation_download_error_title">Failed to Download Model</string>
+    <string name="recitation_download_processing_title">Setting Up Model</string>
+    <string name="recitation_download_in_progress_title">Downloading Recitation Model</string>
+    <string name="recitation_download_prompt_title">Download Recitation Model</string>
+    <string name="recitation_download_error_prefix">An error occurred during download:\n%1$s</string>
+    <string name="recitation_download_retry">Retry</string>
+    <string name="recitation_download_cancel">Cancel &amp; Go Back</string>
+    <string name="recitation_download_processing_msg">Downloaded successfully! Extracting and setting up AI files...</string>
+    <string name="recitation_download_progress_msg">Downloading AI files, please wait... (%1$s%%)</string>
+    <string name="recitation_download_cancel_long">Cancel Download &amp; Go Back</string>
+    <string name="recitation_download_continue_background">Continue in Background</string>
+    <string name="recitation_download_cancel_action">Cancel Download</string>
+    <string name="recitation_download_notification_channel">Recitation Model Download</string>
+    <string name="recitation_download_notification_channel_desc">Notifications for recitation model download progress</string>
+    <string name="recitation_download_notification_title">AI Recitation Model</string>
+    <string name="recitation_download_notification_processing">Extracting and preparing recitation models...</string>
+    <string name="recitation_download_notification_ready">Recitation model ready!</string>
+    <string name="recitation_download_notification_error">Failed to complete model download</string>
+    <string name="recitation_download_intro_msg">The recitation feature requires downloading the AI model (~70 MB) once to enable offline speech recognition.</string>
+    <string name="recitation_download_confirm">Start Download Now</string>
+
+    <string name="recitation_result_title">Recitation Result</string>
+    <string name="recitation_result_surah_prefix">Surah %1$s</string>
+    <string name="recitation_result_correct">Correct</string>
+    <string name="recitation_result_errors">Errors</string>
+    <string name="recitation_result_words">Words</string>
+    <string name="recitation_result_accuracy">Mastery Rate</string>
+    <string name="recitation_result_guide_title">Recitation Color Guide in Mus\'haf:</string>
+    <string name="recitation_result_green_meaning">Green: Words recited correctly with accurate pronunciation.</string>
+    <string name="recitation_result_red_meaning">Red: Words mispronounced or omitted during recitation.</string>
+    <string name="recitation_result_restart">Restart Recitation from Beginning</string>
+    <string name="recitation_result_review">Review Verses</string>
+
+    <string name="recitation_rating_excellent_title">Masha\'Allah! Excellent &amp; Precise Recitation</string>
+    <string name="recitation_rating_excellent_msg">You completed recitation with the highest degree of precision. May Allah bless you and benefit others through you.</string>
+    <string name="recitation_rating_very_good_title">Well Done! Very Good Recitation</string>
+    <string name="recitation_rating_very_good_msg">Blessed memorization with minor observations. Keep reviewing and progressing.</string>
+    <string name="recitation_rating_good_title">Good Recitation &amp; Blessed Effort</string>
+    <string name="recitation_rating_good_msg">Recitation completed. Reviewing omitted or mistaken words is recommended.</string>
+    <string name="recitation_rating_retry_title">Blessed Effort &amp; Rewarded Attempt</string>
+    <string name="recitation_rating_retry_msg">Continue repeating and reviewing to solidify the verses and master memorization.</string>
 </resources>

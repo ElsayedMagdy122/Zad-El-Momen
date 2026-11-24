@@ -38,9 +38,43 @@ class WeeklyThursdayTriggerStrategy : TriggerTimeStrategy {
     }
 }
 
+class WeeklyTriggerStrategy : TriggerTimeStrategy {
+    override fun calculateNextTrigger(hour: Int, minute: Int): Long {
+        val target = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val now = Calendar.getInstance()
+        if (target.before(now)) {
+            target.add(Calendar.DAY_OF_YEAR, 7)
+        }
+        return target.timeInMillis
+    }
+}
+
+class OnceTriggerStrategy : TriggerTimeStrategy {
+    override fun calculateNextTrigger(hour: Int, minute: Int): Long {
+        val target = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val now = Calendar.getInstance()
+        if (target.before(now)) {
+            target.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        return target.timeInMillis
+    }
+}
+
 object TriggerStrategyFactory {
     fun getStrategy(pattern: RecurrencePattern): TriggerTimeStrategy = when (pattern) {
         RecurrencePattern.DAILY -> DailyTriggerStrategy()
         RecurrencePattern.WEEKLY_THURSDAY -> WeeklyThursdayTriggerStrategy()
+        RecurrencePattern.WEEKLY -> WeeklyTriggerStrategy()
+        RecurrencePattern.ONCE -> OnceTriggerStrategy()
     }
 }

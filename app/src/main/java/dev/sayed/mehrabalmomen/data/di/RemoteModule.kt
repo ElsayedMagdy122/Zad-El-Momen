@@ -68,6 +68,7 @@ val remoteModule = module {
         BugReportRemoteDataSourceImpl(
             rpcService = get(),
             storageService = get(),
+            deviceInfoProvider = get(),
             supabase = get(),
             context = get()
         )
@@ -85,4 +86,12 @@ val remoteModule = module {
     single <QuranAudioReadersRemoteDataSource>{ QuranAudioReadersRemoteDataSourceImpl(get()) }
     single <QuranAudioRemoteDataSource>{ QuranAudioRemoteDataSourceImpl(get()) }
     single <QuranAudioTimingsRemoteDataSource>{ QuranAudioTimingsRemoteDataSourceImpl(get()) }
+
+    single {
+        dev.sayed.mehrabalmomen.data.recitation.engine.RecitationModelDownloader(
+            context = get(),
+            supabase = get(),
+            httpClient = get()
+        )
+    }
 }

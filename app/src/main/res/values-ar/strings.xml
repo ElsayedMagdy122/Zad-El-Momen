@@ -48,12 +48,14 @@
 
     <string name="location_permission">إذن الموقع</string>
     <string name="location_permission_desc">نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة وتحديد اتجاه القبلة.</string>
+    <string name="location_services_disabled">خدمات الموقع معطلة. يرجى تفعيل GPS للحصول على مواقيت الصلاة بدقة.</string>
     <string name="notification_permission">إذن الإشعارات</string>
     <string name="notification_permission_desc">استلام تنبيهات الأذان والأذكار في وقتها.</string>
     <string name="alarm_permission">إذن المنبه الدقيق</string>
     <string name="alarm_permission_desc">مطلوب لتشغيل الأذان في وقته الدقيق، حتى في حالة سكون الجهاز.</string>
     <string name="background_permission">العمل في الخلفية</string>
     <string name="background_permission_desc">السماح للتطبيق بالعمل في الخلفية دون قيود على البطارية لضمان وصول التنبيهات بدقة.</string>
+    <string name="permission_optional_important">(اختياري ولكن مهم)</string>
     <string name="granted">تم المنح</string>
     <string name="allow">منح</string>
     <string name="set_up_permissions">إعداد الأذونات</string>
@@ -213,8 +215,8 @@
 </string>
     <string name="start_tilawah">ابدأ التلاوة</string>
     <string name="home">الرئيسية</string>
-    <string name="am">صباحا</string>
-    <string name="pm">مساء</string>
+    <string name="am">صباحًا</string>
+    <string name="pm">مساءً</string>
     <plurals name="minutes_ago">
         <item quantity="zero">الآن</item>
         <item quantity="one">منذ دقيقة</item>
@@ -358,8 +360,15 @@
     <string name="faq_a3">اذهب إلى الإعدادات -> الدعم -> الإبلاغ عن مشكلة لإرسال تقاريرك أو اقتراحاتك لنا.</string>
     <string name="faq_q4">هل بوصلة القبلة دقيقة؟</string>
     <string name="faq_a4">نعم، ولكنها تعتمد على مستشعرات جهازك. نوصي بمعايرة البوصلة من خلال تحريك هاتفك بشكل رقم 8 إذا لاحظت أي عدم دقة.</string>
+    <string name="faq_q5">كيف أجعل شاشة الأذان تفتح تلقائياً في أجهزة شاومي وسامسونج وهواوي؟</string>
+    <string name="faq_a5">لضمان فتح شاشة الأذان تلقائياً عند وقت الصلاة في واجهات شاومي (HyperOS/MIUI)، وسامسونج، وهواوي، وأوبو، يرجى التوجه إلى إعدادات الهاتف ← التطبيقات ← زاد المؤمن ← الأذونات، وتأكيد تفعيل: 1) الظهور فوق التطبيقات الأخرى (Display pop-up windows). 2) العرض على شاشة القفل (Show on Lock screen). 3) التشغيل التلقائي وإلغاء قيود توفير البطارية.</string>
+    <string name="faq_q6">لماذا يحتاج التطبيق إلى إذن \"العرض فوق التطبيقات الأخرى\" وكيف أفعّله؟</string>
+    <string name="faq_a6">إذن \"العرض فوق التطبيقات الأخرى\" (Display over other apps) ضروري لجميع الأجهزة ليتمكن تطبيق زاد المؤمن من إظهار شاشة الأذان الكاملة والتنبيه في وقت الصلاة بدقة، حتى أثناء قفل الهاتف أو أثناء استخدام تطبيق آخر. يمكنك تفعيله بالضغط على أيقونة التنبيه في شاشة مواقيت الصلاة ثم الضغط على \"تفعيل إذن الظهور\"، أو من خلال إعدادات الهاتف ← التطبيقات ← زاد المؤمن ← الظهور فوق التطبيقات الأخرى (أو العرض فوق التطبيقات) وتفعيله.</string>
     <string name="battery_settings_title">تحسين استقبال التنبيهات</string>
     <string name="battery_optimization_description">هذه الخطوات ضرورية لضمان عمل الأذان بكفاءة وفي وقته المحدد على جهازك.</string>
+    <string name="overlay_permission_title">إذن العرض فوق التطبيقات</string>
+    <string name="overlay_permission_description">هذا الإذن ضروري لجميع الأجهزة ليتمكن التطبيق من إظهار شاشة الأذان تلقائياً عند وقت الصلاة حتى أثناء قفل الشاشة أو استخدام تطبيقات أخرى.</string>
+    <string name="enable_overlay_permission">تفعيل إذن الظهور</string>
     <string name="companion_mode">وضع الرفيق</string>
 
     <!-- رسائل رفيق الروحانية -->
@@ -407,4 +416,165 @@
     <string name="rafiq_tasbih_2">الحمد لله.. دائماً وأبداً ❤️</string>
     <string name="rafiq_tasbih_3">الله أكبر.. الله أكبر.. ❤️</string>
     <string name="rafiq_tasbih_4">لا إله إلا الله.. بها تحيا القلوب ❤️</string>
+
+    <string name="azkar_categories">الفئات</string>
+    <string name="azkar_your_statistics">إحصائياتك</string>
+    <string name="azkar_welcome">أهلاً بك</string>
+    <string name="azkar_keep_tongue">اجعل لسانك رطباً بذكر الله</string>
+    <string name="azkar_days_streak">أيام متتالية</string>
+    <string name="azkar_remaining">الأذكار المتبقية</string>
+    <string name="azkar_completed">الأذكار المكتملة</string>
+    <string name="azkar_total">إجمالي الأذكار</string>
+    <string name="azkar_percentage">النسبة</string>
+    <string name="azkar_of_daily">من الأذكار اليومية</string>
+    <string name="azkar_add_category">إضافة فئة أذكار جديدة</string>
+    <string name="azkar_category_name_hint">أدخل اسم الفئة (مثلا: أذكار الصباح الخاصة)</string>
+    <string name="azkar_save_category">حفظ الفئة</string>
+    <string name="azkar_filter_day">يوم</string>
+    <string name="azkar_filter_week">أسبوع</string>
+    <string name="azkar_filter_month">شهر</string>
+    <string name="azkar_filter_year">عام</string>
+    <string name="azkar_activity_log">سجل النشاط</string>
+    <string name="azkar_less">أقل</string>
+    <string name="azkar_more">أكثر</string>
+    <string name="azkar_add_dhikr">إضافة ذكر جديد</string>
+    <string name="azkar_content_hint">نص الذكر</string>
+    <string name="azkar_repeat_count_hint">عدد التكرار (مثلا: 3)</string>
+    <string name="azkar_description_hint">فضل الذكر / الوصف (اختياري)</string>
+    <string name="azkar_reference_hint">المرجع / التخريج (اختياري)</string>
+    <string name="azkar_save_dhikr">حفظ الذكر</string>
+    <string name="azkar_allah_says">قال تعالى:</string>
+    <string name="azkar_quran_verse_morning"><![CDATA[﴿ وَمَا أَصْبَحَ مِنْ نِعْمَةٍ فَمِنَ اللَّهِ ﴾]]></string>
+    <string name="azkar_quran_verse_reference">[النحل: 53]</string>
+    <string name="azkar_done_check">تم ✓</string>
+    <string name="azkar_times_format">%1$d مرة</string>
+    <string name="azkar_dhikr_count_format">%1$d ذكر</string>
+
+    <!-- Azan Screen -->
+    <string name="azan">الأذان</string>
+    <string name="azan_prayer_time">وقت الصلاة</string>
+    <string name="azan_stop">إيقاف الأذان</string>
+    <string name="azan_open_app">فتح مواقيت الصلاة</string>
+    <string name="azan_jumuah">الجمعة</string>
+    <string name="time_for_prayer">حان وقت الصلاة</string>
+    <string name="prayer_of_format">صلاة %1$s</string>
+    <string name="azan_is_playing">الأذان قيد التشغيل</string>
+    <string name="next_prayer_dot_format">الصلاة التالية • %1$s</string>
+    <string name="mute_sound">كتم الصوت</string>
+    <string name="unmute_sound">إلغاء الكتم</string>
+    <string name="location_unknown">غير معروف</string>
+    <string name="reminder_time">وقت التذكير</string>
+    <string name="hour">الساعة</string>
+    <string name="minute">الدقيقة</string>
+    <string name="period">الفترة</string>
+    <string name="prayer_times_widget">ويدجت مواقيت الصلاة</string>
+    <string name="prayer_widget_desc">عرض مواقيت الصلاة اليومية على الشاشة الرئيسية</string>
+    <string name="widget_pin_success">تمت إضافة ويدجت مواقيت الصلاة إلى الشاشة الرئيسية</string>
+    <string name="widget_pin_manual_guide">لإضافة الويدجت، اضغط مطولاً على الشاشة الرئيسية، ثم اختر التطبيقات المصغرة (Widgets) واختَر زاد المؤمن.</string>
+    <string name="next_prayer">الصلاة القادمة</string>
+    <string name="set_location_to_view_prayers">اضغط لتحديد الموقع وعرض مواقيت الصلاة</string>
+
+    <!-- Recitation & Tajweed Error Localization -->
+    <string name="tajweed_rule_normal_madd">المد الطبيعي</string>
+    <string name="tajweed_rule_mottasel_madd">المد المتصل</string>
+    <string name="tajweed_rule_monfasel_madd">المد المنفصل</string>
+    <string name="tajweed_rule_aared_madd">المد العارض للسكون</string>
+    <string name="tajweed_rule_lazem_madd">المد اللازم</string>
+    <string name="tajweed_rule_leen_madd">مد اللين</string>
+    <string name="tajweed_rule_mushaddad_ghunnah">النون أو الميم المشددة</string>
+    <string name="tajweed_rule_shaddah">الشدة</string>
+
+    <string name="tajweed_error_underheld">نقص في %1$s: قمت بمد الصوت %2$.2fث، والمطلوب %3$.2fث</string>
+    <string name="tajweed_error_overheld">زيادة في %1$s: قمت بمد الصوت %2$.2fث، والحد الأقصى المسموح %3$.2fث</string>
+    <string name="tajweed_error_tashkeel">خطأ في التشكيل: المتوقع (%1$s) ونُطِق (%2$s)</string>
+    <string name="tajweed_error_omission">إسقاط حرف: لم يتم نطق (%1$s)</string>
+    <string name="tajweed_error_substitution">خطأ في نطق الحرف: المتوقع (%1$s) ونُطِق (%2$s)</string>
+
+    <string name="tajweed_advice_normal_madd">أعطِ المد الطبيعي حقه بمقدار حركتين دون زيادة أو نقص</string>
+    <string name="tajweed_advice_mottasel_madd">أطل زمن المد بمقدار 4 أو 5 حركات وجوباً</string>
+    <string name="tajweed_advice_monfasel_madd">أطل زمن المد بمقدار 4 حركات جوازاً</string>
+    <string name="tajweed_advice_aared_madd">أعطِ المد العارض للسكون حقه (حركتان، 4، أو 6 حركات)</string>
+    <string name="tajweed_advice_lazem_madd">أطل زمن المد اللازم بمقدار 6 حركات كاملة لزوماً</string>
+    <string name="tajweed_advice_leen_madd">أعطِ حرف اللين زمنه المناسب عند الوقف</string>
+    <string name="tajweed_advice_mushaddad_ghunnah">أعطِ الغنة زمن حركتين كاملتين من الخيشوم</string>
+    <string name="tajweed_advice_shaddah">اضغط على مخرج الحرف المشدد بوضوح</string>
+    <string name="tajweed_advice_overheld">لا تبالغ في مد الصوت وتجاوز الحد المسموح به في الرواية</string>
+    <string name="tajweed_advice_tashkeel">احرص على ضبط الحركة الصحيحة (فتحة، ضمة، كسرة)</string>
+    <string name="tajweed_advice_omission">انطق جميع أحرف الكلمة بوضوح دون بلع أو إسقاط</string>
+    <string name="tajweed_advice_substitution">انطق الحرف من مخرجه الصحيح مع مراعاة صفاته (همس، جهر، ترقيق، تفخيم)</string>
+
+    <string name="recitation_feedback_title">ملاحظات التجويد والنطق</string>
+    <string name="recitation_feedback_on_word">تنبيه على كلمة: %1$s</string>
+    <string name="recitation_feedback_close">فهمت (إغلاق)</string>
+
+    <!-- Tasmee3 & Recitation Feature -->
+    <string name="tasmee3_title_full">مراجعة حفظ سورة %1$s</string>
+    <string name="tasmee3_title_range">مراجعة حفظ %1$s (%2$s - %3$s)</string>
+    <string name="tasmee3_session_title">جلسة مراجعة الحفظ</string>
+    <string name="tasmee3_session_active">جلسة مراجعة الحفظ (نشطة)</string>
+    <string name="tasmee3_status_ongoing">مستمر</string>
+    <string name="tasmee3_status_ready">جاهز</string>
+    <string name="tasmee3_status_initializing">جاري تهيئة نموذج الذكاء الاصطناعي...</string>
+    <string name="tasmee3_status_listening">جاري الاستماع... اقرأ بوضوح</string>
+    <string name="tasmee3_status_prompt">اضغط على المايك للبدء في مراجعة الحفظ</string>
+
+    <string name="tasmee3_range_title">تحديد نطاق مراجعة الحفظ</string>
+    <string name="tasmee3_range_surah_info">سورة %1$s • عدد الآيات: %2$s آية</string>
+    <string name="tasmee3_mode_full_surah">السورة كاملة</string>
+    <string name="tasmee3_mode_full_surah_desc">من الآية ١ إلى الآية %1$s</string>
+    <string name="tasmee3_mode_custom_range">تحديد مقطع من الآيات</string>
+    <string name="tasmee3_mode_custom_range_desc">مراجعة جزء محدد من السورة</string>
+    <string name="tasmee3_from_ayah">من بداية الآية</string>
+    <string name="tasmee3_to_ayah">إلى نهاية الآية</string>
+    <string name="tasmee3_single_ayah_hint">لمراجعة آية واحدة، اختر نفس الرقم في البداية والنهاية (مثال: من بداية الآية 59 إلى نهاية الآية 59)</string>
+    <string name="tasmee3_start_button">بدء مراجعة الحفظ</string>
+    <string name="tasmee3_error_start_range">بداية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_end_range">نهاية الآيات يجب أن تكون بين 1 و %1$s</string>
+    <string name="tasmee3_error_start_greater">آية البداية يجب أن تكون أصغر من أو تساوي آية النهاية</string>
+
+    <string name="recitation_disclaimer_title">تنبيه مهم بشأن مراجعة الحفظ</string>
+    <string name="recitation_disclaimer_message">يعتمد نموذج مراجعة الحفظ على التعرف على الكلمات القرآنية وترتيب الآيات لمساعدتك في تثبيت الحفظ فقط، ولا يقوم بالتدقيق على أحكام التجويد أو مخارج الحروف.\n\nهذه الميزة وسيلة مساعدة تقريبية ولا تُغني بأي حال عن التلقي والمشافهة والعرض على شيخ أو معلم متقن .</string>
+    <string name="recitation_disclaimer_confirm">فهمت ذلك</string>
+
+    <string name="recitation_download_error_title">تعذر تنزيل النموذج</string>
+    <string name="recitation_download_processing_title">تثبيت وتجهيز النموذج</string>
+    <string name="recitation_download_in_progress_title">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_prompt_title">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_error_prefix">حدث خطأ أثناء التنزيل:\n%1$s</string>
+    <string name="recitation_download_retry">إعادة المحاولة</string>
+    <string name="recitation_download_cancel">إلغاء والرجوع</string>
+    <string name="recitation_download_processing_msg">تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...</string>
+    <string name="recitation_download_progress_msg">يتم الآن تحميل ملفات الذكاء الاصطناعي، يرجى الانتظار... (%1$s%%)</string>
+    <string name="recitation_download_cancel_long">إلغاء التنزيل والرجوع</string>
+    <string name="recitation_download_continue_background">المتابعة في الخلفية</string>
+    <string name="recitation_download_cancel_action">إلغاء التنزيل</string>
+    <string name="recitation_download_notification_channel">تنزيل نموذج مراجعة الحفظ</string>
+    <string name="recitation_download_notification_channel_desc">إشعارات تقدم تنزيل نموذج التعرف الصوتي لمراجعة الحفظ</string>
+    <string name="recitation_download_notification_title">تنزيل نموذج مراجعة الحفظ الصوتي</string>
+    <string name="recitation_download_notification_processing">جاري فك ضغط وتجهيز نماذج مراجعة الحفظ...</string>
+    <string name="recitation_download_notification_ready">تم تثبيت نماذج مراجعة الحفظ بنجاح</string>
+    <string name="recitation_download_notification_error">تعذر اكتمال تنزيل النموذج</string>
+    <string name="recitation_download_intro_msg">تتطلب ميزة مراجعة الحفظ تنزيل نموذج الذكاء الاصطناعي (حجمه ~70 ميجابايت) لمرة واحدة فقط للعمل دون الحاجة للإنترنت.</string>
+    <string name="recitation_download_confirm">بدء التنزيل الآن</string>
+
+    <string name="recitation_result_title">نتيجة مراجعة الحفظ</string>
+    <string name="recitation_result_surah_prefix">سورة %1$s</string>
+    <string name="recitation_result_correct">صحيحة</string>
+    <string name="recitation_result_errors">أخطاء</string>
+    <string name="recitation_result_words">الكلمات</string>
+    <string name="recitation_result_accuracy">نسبة الإتقان</string>
+    <string name="recitation_result_guide_title">دليل ألوان المراجعة في المصحف:</string>
+    <string name="recitation_result_green_meaning">اللون الأخضر: كلمات قُرِئت بشكل صحيح وبنطق سليم.</string>
+    <string name="recitation_result_red_meaning">اللون الأحمر: كلمات حدث فيها خطأ في النطق أو سقطت أثناء المراجعة.</string>
+    <string name="recitation_result_restart">إعادة المراجعة من البداية</string>
+    <string name="recitation_result_review">مراجعة الآيات</string>
+
+    <string name="recitation_rating_excellent_title">ما شاء الله! تلاوة متقنة وممتازة</string>
+    <string name="recitation_rating_excellent_msg">أتممت المراجعة بأعلى درجات الإتقان والضبط، بارك الله فيك ونفع بك.</string>
+    <string name="recitation_rating_very_good_title">أحسنت! تلاوة جيدة جداً</string>
+    <string name="recitation_rating_very_good_msg">حفظ متقن ومبارك مع بعض الملاحظات البسيطة، استمر في المراجعة والارتقاء.</string>
+    <string name="recitation_rating_good_title">تلاوة جيدة وعمل مبارك</string>
+    <string name="recitation_rating_good_msg">أتممت المراجعة بنجاح، يُنصح بمراجعة المواضع التي سقطت أو أخطأت فيها لتثبيت الحفظ.</string>
+    <string name="recitation_rating_retry_title">محاولة مباركة ومأجورة</string>
+    <string name="recitation_rating_retry_msg">استمر في التكرار والمراجعة لتثبيت الآيات الكريمة وإتقان حفظها بإذن الله.</string>
 </resources>

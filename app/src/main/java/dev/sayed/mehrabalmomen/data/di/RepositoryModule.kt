@@ -43,7 +43,7 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single<PrayerRepository> { PrayerRepositoryImpl() }
-    single<QiblahRepository> { QiblahRepositoryImpl() }
+    single<QiblahRepository> { QiblahRepositoryImpl(get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<PrayerNotificationsRepository> { PrayerNotificationsRepositoryImpl(get()) }
     single<NetworkConnectionRepository> { NetworkConnectionRepositoryImpl(get()) }
@@ -66,20 +66,20 @@ val repositoryModule = module {
     }
     single<PrayerAlarmRepository> {
         PrayerAlarmRepositoryImpl(
-            context = androidContext(),
             alarmScheduler = get()
         )
     }
 
     single<ReminderSettingsRepository> {
-        ReminderSettingsRepositoryImpl(dataStore = get())
+        ReminderSettingsRepositoryImpl(reminderDao = get())
     }
 
     single<ReminderSchedulerRepository> {
         ReminderSchedulerRepositoryImpl(
-            context = androidContext(),
             settingsRepository = get(),
-            alarmScheduler = get()
+            alarmScheduler = get(),
+            prayerRepository = get(),
+            appSettingsRepository = get()
         )
     }
     single<QuranAudioRepository> { 
@@ -93,6 +93,7 @@ val repositoryModule = module {
         QuranAudioReadersRepositoryImpl(
             readersRemoteDataSource = get(),
             downloadedReciterDao = get(),
+            recitationPreferences = get(),
             context = androidContext()
         )
     }

@@ -32,12 +32,14 @@ import dev.sayed.mehrabalmomen.design_system.theme.MehrabTheme
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
+import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 
 @Composable
 fun PrayerItem(
-    prayerNameResource: Int,
+    prayerName: Prayer.PrayerName,
+    prayerLabel: UiText,
     prayerTime: String,
     isAm: Boolean,
     isNextPrayer: Boolean,
@@ -45,7 +47,7 @@ fun PrayerItem(
     onNotificationClick: (Prayer.PrayerName, Boolean) -> Unit,
 ) {
     val language = LocalAppLocale.current
-    val isAm = if (isAm) localizedString(R.string.am) else localizedString(R.string.pm)
+    val isAmStr = if (isAm) localizedString(R.string.am) else localizedString(R.string.pm)
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Row(
         Modifier
@@ -78,7 +80,7 @@ fun PrayerItem(
             }
 
             Text(
-                text = localizedString(prayerNameResource),
+                text = prayerLabel.asString(),
                 style = Theme.textStyle.label.medium,
                 color = Theme.color.secondary.shadeSecondary,
                 modifier = Modifier.padding(
@@ -90,8 +92,7 @@ fun PrayerItem(
         }
 
         Text(
-            prayerTime.toLocalizedDigits(language) + " ${isAm}",
-            //style = Theme.textStyle.label.large,
+            prayerTime.toLocalizedDigits(language) + " ${isAmStr}",
             style = Theme.textStyle.label.medium,
             color = Theme.color.primary.shadePrimary,
             modifier = Modifier.padding(
@@ -127,7 +128,7 @@ fun PrayerItem(
                         indication = null
                     ) {
                         onNotificationClick(
-                            prayerNameResource.toPrayerName(),
+                            prayerName,
                             !isNotificationEnabled
                         )
                     }
@@ -136,38 +137,19 @@ fun PrayerItem(
     }
 }
 
-fun Int.toPrayerName(): Prayer.PrayerName {
-    return when (this) {
-        R.string.fajr -> Prayer.PrayerName.FAJR
-        R.string.dhuhr -> Prayer.PrayerName.ZUHR
-        R.string.asr -> Prayer.PrayerName.ASR
-        R.string.maghrib -> Prayer.PrayerName.MAGHRIB
-        R.string.isha -> Prayer.PrayerName.ISHA
-        else -> Prayer.PrayerName.FAJR
-    }
-
-}
-
 @Preview
 @Composable
 private fun Preview() {
     MehrabTheme {
 
         PrayerItem(
-            prayerNameResource = R.string.fajr,
+            prayerName = Prayer.PrayerName.FAJR,
+            prayerLabel = UiText.StringResource(R.string.fajr),
             prayerTime = "1:20 AM",
             isNextPrayer = true,
             isAm = true,
             onNotificationClick = { _, _ -> }
         )
 
-    }
-}
-
-@Preview
-@Composable
-private fun PrayerItemPreview() {
-    MehrabTheme(isDarkTheme = false) {
-        // PrayerItem()
     }
 }
