@@ -103,7 +103,8 @@ val commonDataModule = module {
             storageService = get(),
             deviceInfoProvider = get(),
             imageCompressor = get(),
-            supabase = get()
+            supabase = get(),
+            logger = get()
         )
     }
 

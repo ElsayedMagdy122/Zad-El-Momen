@@ -4,6 +4,7 @@ import dev.sayed.mehrabalmomen.data.bugReport.mapper.toInsertDto
 import dev.sayed.mehrabalmomen.domain.model.BugReportRequest
 import dev.sayed.mehrabalmomen.domain.repository.platform.DeviceInfoProvider
 import dev.sayed.mehrabalmomen.domain.repository.platform.ImageCompressor
+import dev.sayed.mehrabalmomen.domain.utils.Logger
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.datetime.TimeZone
@@ -16,27 +17,44 @@ class BugReportRemoteDataSourceImpl(
     private val storageService: BugReportStorageService,
     private val deviceInfoProvider: DeviceInfoProvider,
     private val imageCompressor: ImageCompressor,
-    private val supabase: SupabaseClient
+    private val supabase: SupabaseClient,
+    private val logger: Logger
 ) : BugReportRemoteDataSource {
 
-
     override suspend fun submit(report: BugReportRequest) {
-        val deviceId = deviceInfoProvider.getDeviceId()
+        val deviceId = try {
+            deviceInfoProvider.getDeviceId()
+        } catch (_: Exception) {
+            "unknown_device"
+        }
         val dayStamp = currentDayStamp()
 
-        enforceDailyLimit(deviceId, dayStamp)
+        runCatching {
+            enforceDailyLimit(deviceId, dayStamp)
+        }.onFailure { e ->
+            if (e is DailyLimitExceededException) throw e
+            logger.e("BugReportDataSource", "Daily limit check error: ${e.message}")
+        }
 
-        val imageUrl = uploadImageIfNeeded(report, deviceId)
+        val imageUrl = runCatching {
+            uploadImageIfNeeded(report, deviceId)
+        }.onFailure { e ->
+            logger.e("BugReportDataSource", "Image upload error: ${e.message}")
+        }.getOrNull()
 
         val dto = report.toInsertDto(
             deviceId = deviceId,
             imageUrl = imageUrl,
             dayStamp = dayStamp,
-            deviceName = deviceInfoProvider.getDeviceModel(),
-            osVersion = deviceInfoProvider.getOsVersion()
+            deviceName = try { deviceInfoProvider.getDeviceModel() } catch (_: Exception) { "Unknown" },
+            osVersion = try { deviceInfoProvider.getOsVersion() } catch (_: Exception) { "Unknown" }
         )
 
-        supabase.from(TABLE_REPORTS).insert(dto)
+        runCatching {
+            supabase.from(TABLE_REPORTS).insert(dto)
+        }.onFailure { e ->
+            logger.e("BugReportDataSource", "Supabase insert error (completing gracefully): ${e.message}")
+        }
     }
 
     private suspend fun enforceDailyLimit(
