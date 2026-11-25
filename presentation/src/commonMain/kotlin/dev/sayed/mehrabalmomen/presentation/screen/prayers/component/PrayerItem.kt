@@ -31,6 +31,7 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.am
@@ -126,10 +127,7 @@ fun PrayerItem(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Theme.color.surfaces.surfaceHigh)
                     .padding(6.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
+                    .bounceClick(scaleDown = 0.88f) {
                         onNotificationClick(
                             prayerName,
                             !isNotificationEnabled

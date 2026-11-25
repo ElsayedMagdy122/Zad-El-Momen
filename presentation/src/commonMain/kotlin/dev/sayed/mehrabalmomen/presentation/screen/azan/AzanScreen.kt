@@ -45,6 +45,8 @@ import dev.sayed.mehrabalmomen.domain.entity.prayer.Prayer
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
+import dev.sayed.mehrabalmomen.presentation.utils.pulsate
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.azan
 import zadelmomen.presentation.generated.resources.azan_is_playing
@@ -185,7 +187,8 @@ fun AzanScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
                     .aspectRatio(1.8f)
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = 12.dp)
+                    .pulsate(enabled = !state.isMuted, minAlpha = 0.75f, maxAlpha = 1.0f, translationYPx = 2f),
                 contentScale = ContentScale.Fit,
                 alpha = 0.85f
             )
@@ -288,7 +291,7 @@ fun AzanScreen(
                     color = primaryColor,
                     style = Theme.textStyle.label.medium,
                     modifier = Modifier
-                        .clickable(onClick = onToggleMute)
+                        .bounceClick(scaleDown = 0.92f) { onToggleMute() }
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }

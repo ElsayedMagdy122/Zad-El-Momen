@@ -47,6 +47,7 @@ import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.components.ReciterItem
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import zadelmomen.presentation.generated.resources.Res
@@ -203,7 +204,7 @@ fun RecitersContent(
                 onDownloadClick = { onDownloadClick(reciter.id) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onRowSelected(reciter) }
+                    .bounceClick(scaleDown = 0.97f) { onRowSelected(reciter) }
             )
         }
     }

@@ -27,6 +27,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.DownloadState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.downloaded
@@ -49,10 +50,10 @@ fun DownloadButton(
         modifier = modifier
             .size(32.dp)
             .background(Color.Transparent)
-            .clickable(
+            .bounceClick(
                 enabled = downloadState == DownloadState.NOT_DOWNLOADED || downloadState == DownloadState.FAILED,
-                onClick = onDownloadClick,
-                interactionSource = MutableInteractionSource()
+                scaleDown = 0.88f,
+                onClick = onDownloadClick
             ),
         contentAlignment = Alignment.Center
     ) {

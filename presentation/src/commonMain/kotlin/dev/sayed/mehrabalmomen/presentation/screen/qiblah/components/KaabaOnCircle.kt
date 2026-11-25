@@ -1,6 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.qiblah.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,9 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
+import dev.sayed.mehrabalmomen.presentation.utils.pulsate
+import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.qibla_compass
 
@@ -33,15 +37,26 @@ fun KaabaOnCircle(
         label = "BorderColorAnimation"
     )
 
+    val scaleValue by animateFloatAsState(
+        targetValue = if (isAligned) 1.05f else 1.0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "CompassAlignedScale"
+    )
+
     Box(
         modifier = modifier
+            .graphicsLayer {
+                scaleX = scaleValue
+                scaleY = scaleValue
+            }
             .clip(CircleShape)
             .border(
                 width = 5.dp,
                 color = borderColor,
                 shape = CircleShape
             )
-            .background(Theme.color.surfaces.surface),
+            .background(Theme.color.surfaces.surface)
+            .pulsate(enabled = isAligned, minAlpha = 0.85f, maxAlpha = 1.0f, translationYPx = 2f),
         contentAlignment = Alignment.Center
     ) {
         Icon(

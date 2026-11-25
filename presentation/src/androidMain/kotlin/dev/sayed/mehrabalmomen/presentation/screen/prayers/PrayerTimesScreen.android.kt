@@ -7,7 +7,11 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,14 +19,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -144,8 +153,10 @@ actual fun PrayerTimesScreen(
         }
     }
 
+    var isVisible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.onScreenOpened()
+        isVisible = true
     }
 
     LazyColumn(
@@ -155,44 +166,50 @@ actual fun PrayerTimesScreen(
             .windowInsetsPadding(WindowInsets.systemBars)
     ) {
         item {
-            QuranAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
-                    .background(Theme.color.surfaces.surface),
-                title = localizedString(Res.string.prayer_times),
-                onBackClick = viewModel::onClickBack,
-                titleColor = Theme.color.primary.shadePrimary,
-                actions = listOf(
-                    AppBarAction(
-                        icon = painterResource(Res.drawable.ic_moazen),
-                        onClick = viewModel::openMoazenDialog
-                    ),
-                    AppBarAction(
-                        icon = painterResource(Res.drawable.ic_setting_error_03),
-                        onClick = viewModel::onBatteryWarningClick
+            StaggeredPrayerItem(index = 0, isVisible = isVisible) {
+                QuranAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .background(Theme.color.surfaces.surface),
+                    title = localizedString(Res.string.prayer_times),
+                    onBackClick = viewModel::onClickBack,
+                    titleColor = Theme.color.primary.shadePrimary,
+                    actions = listOf(
+                        AppBarAction(
+                            icon = painterResource(Res.drawable.ic_moazen),
+                            onClick = viewModel::openMoazenDialog
+                        ),
+                        AppBarAction(
+                            icon = painterResource(Res.drawable.ic_setting_error_03),
+                            onClick = viewModel::onBatteryWarningClick
+                        )
                     )
                 )
-            )
+            }
         }
         item {
-            NextPrayerCard(
-                state = state,
-                countdownTime = countdownTime,
-            )
+            StaggeredPrayerItem(index = 1, isVisible = isVisible) {
+                NextPrayerCard(
+                    state = state,
+                    countdownTime = countdownTime,
+                )
+            }
         }
-        items(state.prayers) { prayerUiState ->
-            PrayerItem(
-                prayerName = prayerUiState.prayerName,
-                prayerLabel = prayerUiState.name,
-                prayerTime = prayerUiState.time.time,
-                isAm = prayerUiState.time.isAm,
-                isNextPrayer = prayerUiState.isUpComing,
-                isNotificationEnabled = prayerUiState.isNotificationEnabled,
-                onNotificationClick = { name, enabled ->
-                    viewModel.onClickEnablePrayer(name, enabled)
-                }
-            )
+        itemsIndexed(state.prayers) { index, prayerUiState ->
+            StaggeredPrayerItem(index = index + 2, isVisible = isVisible) {
+                PrayerItem(
+                    prayerName = prayerUiState.prayerName,
+                    prayerLabel = prayerUiState.name,
+                    prayerTime = prayerUiState.time.time,
+                    isAm = prayerUiState.time.isAm,
+                    isNextPrayer = prayerUiState.isUpComing,
+                    isNotificationEnabled = prayerUiState.isNotificationEnabled,
+                    onNotificationClick = { name, enabled ->
+                        viewModel.onClickEnablePrayer(name, enabled)
+                    }
+                )
+            }
         }
     }
 
@@ -249,5 +266,37 @@ actual fun PrayerTimesScreen(
             onGrantAll = viewModel::onGrantAlarmPermissions,
             onIgnore = viewModel::onIgnoreAlarmPermissions
         )
+    }
+}
+
+@Composable
+private fun StaggeredPrayerItem(
+    index: Int,
+    isVisible: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val animatedProgress = remember { Animatable(0f) }
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            delay(index * 70L)
+            animatedProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 420,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
+    }
+
+    Box(
+        modifier = modifier.graphicsLayer {
+            alpha = animatedProgress.value
+            translationY = (1f - animatedProgress.value) * 45.dp.toPx()
+        }
+    ) {
+        content()
     }
 }

@@ -26,6 +26,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.tilawah
@@ -78,7 +79,7 @@ private fun TilawahRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable { onClick() }
+            .bounceClick(scaleDown = 0.97f) { onClick() }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -33,6 +33,7 @@ import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.screen.azkar.component.AzkarContributionHeatmap
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import zadelmomen.presentation.generated.resources.*
@@ -333,7 +334,7 @@ fun AzkarCategoryCard(
             .heightIn(min = 145.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable(onClick = onClick)
+            .bounceClick(scaleDown = 0.95f) { onClick() }
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally

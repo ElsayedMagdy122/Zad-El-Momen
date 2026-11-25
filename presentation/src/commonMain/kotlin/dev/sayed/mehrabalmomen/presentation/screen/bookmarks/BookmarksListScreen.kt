@@ -1,6 +1,9 @@
 package dev.sayed.mehrabalmomen.presentation.screen.bookmarks
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -57,6 +61,7 @@ import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.components.LoadingContainer
 import dev.sayed.mehrabalmomen.presentation.components.PrimaryDialog
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.viewmodel.koinViewModel
 import dev.sayed.mehrabalmomen.designsystem.generated.resources.Res as DesignRes
@@ -126,10 +131,17 @@ fun BookmarksListScreen(
                             )
 
                             SwipeToDismissBox(
+                                modifier = Modifier.animateItem(),
                                 state = dismissState,
                                 enableDismissFromStartToEnd = false,
                                 enableDismissFromEndToStart = true,
                                 backgroundContent = {
+                                    val isDismissing = dismissState.targetValue == SwipeToDismissBoxValue.EndToStart
+                                    val iconScale by animateFloatAsState(
+                                        targetValue = if (isDismissing) 1.15f else 0.85f,
+                                        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                                        label = "DismissIconScale"
+                                    )
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
@@ -142,7 +154,12 @@ fun BookmarksListScreen(
                                             painter = painterResource(Res.drawable.ic_bookmark_off_02),
                                             contentDescription = null,
                                             tint = Theme.color.semantic.error,
-                                            modifier = Modifier.padding(end = 12.dp)
+                                            modifier = Modifier
+                                                .padding(end = 12.dp)
+                                                .graphicsLayer {
+                                                    scaleX = iconScale
+                                                    scaleY = iconScale
+                                                }
                                         )
                                     }
                                 }
@@ -198,7 +215,7 @@ fun BookMarkItem(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable { onItemClick() }
+            .bounceClick(scaleDown = 0.97f) { onItemClick() }
             .padding(12.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -264,7 +281,7 @@ fun RemoveDialog(onDismiss: () -> Unit, onConfirm: () -> Unit, modifier: Modifie
                     .size(32.dp)
                     .clip(CircleShape)
                     .background(Theme.color.surfaces.surface)
-                    .clickable { onDismiss() },
+                    .bounceClick(scaleDown = 0.88f) { onDismiss() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -299,12 +316,7 @@ fun RemoveDialog(onDismiss: () -> Unit, onConfirm: () -> Unit, modifier: Modifie
                     modifier = Modifier
                         .padding(top = 24.dp, end = 8.dp)
                         .align(Alignment.End)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            onConfirm()
-                        },
+                        .bounceClick(scaleDown = 0.90f) { onConfirm() },
                     text = localizedString(Res.string.remove),
                     textAlign = TextAlign.End,
                     style = Theme.textStyle.label.medium,

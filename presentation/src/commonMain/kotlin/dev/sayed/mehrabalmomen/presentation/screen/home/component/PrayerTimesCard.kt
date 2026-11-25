@@ -29,6 +29,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalIsDarkTheme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.home.HomeUiState
+import dev.sayed.mehrabalmomen.presentation.utils.pulsate
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_mosque_dark_bg
@@ -138,6 +139,7 @@ private fun PrayerItem(
                 tint = Theme.color.secondary.secondaryText,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
+                    .pulsate(enabled = true, minAlpha = 0.6f, maxAlpha = 1.0f, translationYPx = 3f)
                     .size(16.dp),
             )
         }

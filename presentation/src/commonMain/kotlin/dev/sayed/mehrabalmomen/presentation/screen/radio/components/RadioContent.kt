@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import dev.sayed.mehrabalmomen.design_system.component.AppBar
 import dev.sayed.mehrabalmomen.design_system.component.PrimaryToast
 import dev.sayed.mehrabalmomen.design_system.component.ToastDetails
@@ -32,6 +35,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioChannelsViewModel
 import dev.sayed.mehrabalmomen.presentation.screen.radio.RadioUiState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import zadelmomen.presentation.generated.resources.*
 
 @Composable
@@ -87,27 +91,32 @@ private fun CategoryChip(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor =
-        if (selected) Theme.color.primary.primary
-        else Theme.color.surfaces.surfaceLow
+    val targetBgColor = if (selected) Theme.color.primary.primary else Theme.color.surfaces.surfaceLow
+    val targetTextColor = if (selected) Theme.color.surfaces.surfaceLow else Theme.color.primary.primary
 
-    val borderColor =
-        if (selected) Color.Transparent
-        else Theme.color.semantic.disabled
+    val backgroundColor by animateColorAsState(
+        targetValue = targetBgColor,
+        animationSpec = tween(durationMillis = 250),
+        label = "ChipBgAnimation"
+    )
+    val textColor by animateColorAsState(
+        targetValue = targetTextColor,
+        animationSpec = tween(durationMillis = 250),
+        label = "ChipTextAnimation"
+    )
+
+    val borderColor = if (selected) Color.Transparent else Theme.color.semantic.disabled
 
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
             .border(1.dp, borderColor, RoundedCornerShape(24.dp))
             .background(backgroundColor)
-            .clickable { onClick() }
+            .bounceClick(scaleDown = 0.94f) { onClick() }
     ) {
         Text(
             text = text,
-            color = if (selected)
-                Theme.color.surfaces.surfaceLow
-            else
-                Theme.color.primary.primary,
+            color = textColor,
             style = Theme.textStyle.label.medium,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
         )

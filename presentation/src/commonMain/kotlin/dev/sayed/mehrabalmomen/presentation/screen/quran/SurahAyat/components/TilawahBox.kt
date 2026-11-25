@@ -32,10 +32,14 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_backward_02
@@ -212,7 +216,7 @@ private fun ControlsRow(
             painter = painterResource(Res.drawable.ic_user_list),
             contentDescription = null,
             tint = Theme.color.primary.primary,
-            modifier = Modifier.clickable { onRecitersClick() }
+            modifier = Modifier.bounceClick(scaleDown = 0.88f) { onRecitersClick() }
         )
 
         PlayerControls(
@@ -228,19 +232,13 @@ private fun ControlsRow(
             painter = painterResource(Res.drawable.ic_repeat_one_01),
             contentDescription = null,
             tint = if (repeatCount > 0) Theme.color.primary.primary else Theme.color.semantic.shadeTertiary,
-            modifier = Modifier.clickable(
-                onClick = onRepeatClick,
-                interactionSource = MutableInteractionSource()
-            )
+            modifier = Modifier.bounceClick(scaleDown = 0.88f) { onRepeatClick() }
         )
 
         Icon(
             modifier = Modifier
                 .graphicsLayer { scaleX = if (isRtl) -1f else 1f }
-                .clickable(
-                    onClick = onContinuousClick,
-                    interactionSource = MutableInteractionSource()
-                ),
+                .bounceClick(scaleDown = 0.88f) { onContinuousClick() },
             painter = painterResource(Res.drawable.ic_curvy_right_direction),
             contentDescription = null,
             tint = if (isContinuous) Theme.color.primary.primary else Theme.color.semantic.shadeTertiary
@@ -268,7 +266,7 @@ private fun PlayerControls(
         Icon(
             modifier = Modifier
                 .graphicsLayer { scaleX = if (isRtl) -1f else 1f }
-                .clickable { onBackwardClick() },
+                .bounceClick(scaleDown = 0.88f) { onBackwardClick() },
             painter = painterResource(Res.drawable.ic_backward_02),
             contentDescription = null,
             tint = Theme.color.primary.primary
@@ -277,7 +275,7 @@ private fun PlayerControls(
         Box(
             modifier = Modifier
                 .padding(horizontal = 32.dp)
-                .clickable(enabled = !isLoading) { onPlayPauseClick() },
+                .bounceClick(enabled = !isLoading, scaleDown = 0.88f) { onPlayPauseClick() },
             contentAlignment = Alignment.Center
         ) {
             val state = when {
@@ -289,8 +287,10 @@ private fun PlayerControls(
             AnimatedContent(
                 targetState = state,
                 transitionSpec = {
-                    (fadeIn(tween(200)) + scaleIn(initialScale = 0.8f))
-                        .togetherWith(fadeOut(tween(200)) + scaleOut(targetScale = 0.8f))
+                    (fadeIn(tween(220, easing = FastOutSlowInEasing)) + scaleIn(initialScale = 0.75f, animationSpec = spring(stiffness = Spring.StiffnessMediumLow)))
+                        .togetherWith(
+                            fadeOut(tween(180)) + scaleOut(targetScale = 0.75f)
+                        )
                 },
                 label = "PlayerStateAnimation"
             ) { targetState ->
@@ -325,7 +325,7 @@ private fun PlayerControls(
         Icon(
             modifier = Modifier
                 .graphicsLayer { scaleX = if (isRtl) -1f else 1f }
-                .clickable { onForwardClick() },
+                .bounceClick(scaleDown = 0.88f) { onForwardClick() },
             painter = painterResource(Res.drawable.ic_forward_02),
             contentDescription = null,
             tint = Theme.color.primary.primary

@@ -25,6 +25,7 @@ import dev.sayed.mehrabalmomen.presentation.base.LocalAppLocale
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.base.toLocalizedDigits
 import dev.sayed.mehrabalmomen.presentation.screen.quran.SurahList.SurahUiState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
@@ -45,7 +46,9 @@ fun SurahItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .background(Theme.color.surfaces.surfaceLow)
-            .clickable { onClick(surahUiState.id, surahUiState.nameArabic, surahUiState.nameEnglish) }
+            .bounceClick(scaleDown = 0.97f) {
+                onClick(surahUiState.id, surahUiState.nameArabic, surahUiState.nameEnglish)
+            }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

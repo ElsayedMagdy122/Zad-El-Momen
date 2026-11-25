@@ -40,6 +40,7 @@ import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
 import dev.sayed.mehrabalmomen.presentation.components.SearchEmptyContainer
 import dev.sayed.mehrabalmomen.presentation.navigation.Route
 import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.viewmodel.koinViewModel
 import dev.sayed.mehrabalmomen.designsystem.generated.resources.Res as DesignRes
@@ -172,7 +173,7 @@ private fun SearchAyahContent(
                         SearchResultItem(
                             ayahUi = searchResults[index],
                             showSurahName = searchType == SearchType.QURAN,
-                            modifier = Modifier.clickable { listener.onAyahClick(ayah) }
+                            modifier = Modifier.bounceClick(scaleDown = 0.97f) { listener.onAyahClick(ayah) }
                         )
                     }
                 }

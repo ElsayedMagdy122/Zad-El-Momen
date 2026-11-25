@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.screen.quran.reciters.PlayState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_pause
@@ -36,7 +37,7 @@ fun PlayButton(
             .size(40.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(backgroundColor)
-            .clickable(enabled = playState != PlayState.LOADING, onClick = onPlayClick)
+            .bounceClick(enabled = playState != PlayState.LOADING, scaleDown = 0.88f, onClick = onPlayClick)
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {

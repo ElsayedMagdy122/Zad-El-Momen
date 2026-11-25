@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.screen.qiblah.QiblahUiState
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.calibrate_device
@@ -69,7 +70,7 @@ private fun ColumnScope.CalibrationWarning(onCalibrateClick: () -> Unit) {
             .padding(top = 12.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Theme.color.semantic.error.copy(alpha = 0.15f))
-            .clickable { onCalibrateClick() }
+            .bounceClick(scaleDown = 0.94f) { onCalibrateClick() }
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

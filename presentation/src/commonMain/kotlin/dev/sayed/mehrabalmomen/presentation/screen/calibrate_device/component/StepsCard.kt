@@ -21,6 +21,7 @@ import dev.sayed.mehrabalmomen.design_system.theme.Theme
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.CardIcon
 import dev.sayed.mehrabalmomen.presentation.screen.calibrate_device.Steps
+import dev.sayed.mehrabalmomen.presentation.utils.bounceClick
 
 fun LazyGridScope.stepsCard(
     steps: List<Steps>
@@ -45,6 +46,7 @@ private fun StepsItem(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Theme.color.surfaces.surfaceLow)
+            .bounceClick(scaleDown = 0.98f) {}
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
