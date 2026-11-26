@@ -15,7 +15,7 @@ import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
 class IosAlarmScheduler(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
 ) : AlarmScheduler {
 
     init {
@@ -48,7 +48,21 @@ class IosAlarmScheduler(
             }
         }
 
-        val sound = UNNotificationSound.defaultSound()
+        // Dynamically get user's preferred Moazen audio file from SettingsRepository
+        val selectedMoazenFile = try {
+            runBlocking { settingsRepository.observeSelectedMoazen().first() }
+        } catch (_: Exception) {
+            "azan_makkah.mp3"
+        }
+
+        val moazenBaseName = selectedMoazenFile.removeSuffix(".mp3")
+        val customSound: UNNotificationSound? = try {
+            UNNotificationSound.soundNamed("$moazenBaseName.mp3")
+        } catch (_: Exception) {
+            null
+        }
+
+        val sound = customSound ?: UNNotificationSound.defaultSound()
 
         val content = UNMutableNotificationContent().apply {
             setTitle(title)
@@ -73,7 +87,7 @@ class IosAlarmScheduler(
             if (error != null) {
                 println("IosAlarmScheduler: [ERROR] Failed to schedule notification '$identifier': ${error.localizedDescription}")
             } else {
-                println("IosAlarmScheduler: [SUCCESS] Successfully scheduled notification '$identifier' to fire in $intervalSeconds seconds (Title: $title)")
+                println("IosAlarmScheduler: [SUCCESS] Successfully scheduled notification '$identifier' to fire in $intervalSeconds seconds (Title: $title, Sound: $selectedMoazenFile)")
             }
         }
 
@@ -92,6 +106,7 @@ class IosAlarmScheduler(
     override fun hasPermission(): Boolean {
         return true
     }
+
     private fun getPrayerDisplayName(name: String): String = when (name.uppercase()) {
         "FAJR" -> "الفجر"
         "ZUHR", "DHUHR" -> "الظهر"

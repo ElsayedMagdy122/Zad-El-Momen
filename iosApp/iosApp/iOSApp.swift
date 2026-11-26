@@ -15,6 +15,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         completionHandler([.banner, .sound, .badge])
     }
 
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+
     private func indexAppInSpotlight() {
         let attributeSet = CSSearchableItemAttributeSet(contentType: UTType.item)
         attributeSet.title = "زاد المؤمن - ZadElMomen"
