@@ -29,7 +29,6 @@ import dev.sayed.mehrabalmomen.presentation.base.UiText
 import dev.sayed.mehrabalmomen.presentation.base.localizedString
 import dev.sayed.mehrabalmomen.presentation.components.AppBarAction
 import dev.sayed.mehrabalmomen.presentation.components.QuranAppBar
-import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.BatteryOptimizationBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.MoazenSelectionBottomSheet
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.NextPrayerCard
 import dev.sayed.mehrabalmomen.presentation.screen.prayers.component.PrayerItem
@@ -146,21 +145,6 @@ actual fun PrayerTimesScreen(
             onDismiss = viewModel::dismissMoazenDialog,
             playSound = viewModel::playPreview,
             stopSound = viewModel::stopPreview
-        )
-    }
-
-    if (state.showBatteryDialog) {
-        BatteryOptimizationBottomSheet(
-            isBatteryOptimizationEnabled = state.isBatteryOptimizationEnabled,
-            isOverlayPermissionGranted = state.isOverlayPermissionGranted,
-            batteryInstructions = state.batteryInstructions,
-            onOpenBatterySettings = {
-                viewModel.onOpenSettingsClicked()
-            },
-            onOpenOverlaySettings = {
-                viewModel.onOpenOverlaySettingsClicked()
-            },
-            onDismiss = viewModel::onDismissBatteryDialog
         )
     }
 }
