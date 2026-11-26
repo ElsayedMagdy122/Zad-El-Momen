@@ -30,7 +30,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import dev.sayed.mehrabalmomen.presentation.components.AlarmPermissionsBottomSheet
 
 @Composable
 fun HomeScreen(
@@ -47,8 +46,8 @@ fun HomeScreen(
     }
 
     AlarmPermissionHandler(
-        effect = currentEffect,
-        onPermissionsUpdated = viewModel::onScreenOpened
+        viewModel = viewModel,
+        state = state
     )
 
     CollectEffect(viewModel.effect) { effect ->
@@ -145,18 +144,5 @@ fun HomeScreen(
             )
         }
         item { FeaturesSection(homeInteractionListener = viewModel) }
-    }
-
-    if (state.showAlarmPermissionBottomSheet) {
-        AlarmPermissionsBottomSheet(
-            isNotificationPermissionMissing = state.isNotificationPermissionMissing,
-            isExactAlarmPermissionMissing = state.isExactAlarmPermissionMissing,
-            isBatteryOptimizationMissing = state.isBatteryOptimizationMissing,
-            onGrantNotification = viewModel::onGrantNotificationPermission,
-            onGrantExactAlarm = viewModel::onGrantExactAlarmPermission,
-            onGrantBattery = viewModel::onGrantBatteryPermission,
-            onGrantAll = viewModel::onGrantAlarmPermissions,
-            onIgnore = viewModel::onIgnoreAlarmPermissions
-        )
     }
 }

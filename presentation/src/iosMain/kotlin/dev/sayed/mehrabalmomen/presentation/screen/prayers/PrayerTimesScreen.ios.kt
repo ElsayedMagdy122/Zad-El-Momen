@@ -40,7 +40,6 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_moazen
-import zadelmomen.presentation.generated.resources.ic_setting_error_03
 import zadelmomen.presentation.generated.resources.mozan_abed_albaset
 import zadelmomen.presentation.generated.resources.mozan_makkah
 import zadelmomen.presentation.generated.resources.mozan_mansoor_alzahrani
@@ -93,10 +92,6 @@ actual fun PrayerTimesScreen(
                         AppBarAction(
                             icon = painterResource(Res.drawable.ic_moazen),
                             onClick = viewModel::openMoazenDialog
-                        ),
-                        AppBarAction(
-                            icon = painterResource(Res.drawable.ic_setting_error_03),
-                            onClick = viewModel::onBatteryWarningClick
                         )
                     )
                 )

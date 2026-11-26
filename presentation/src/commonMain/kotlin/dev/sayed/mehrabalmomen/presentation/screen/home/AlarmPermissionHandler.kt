@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 expect fun AlarmPermissionHandler(
-    effect: HomeEffect?,
-    onPermissionsUpdated: () -> Unit
+    viewModel: HomeViewModel,
+    state: HomeUiState
 )
