@@ -30,6 +30,7 @@ import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
+import platform.Foundation.NSBundle
 import platform.Foundation.NSURL
 import platform.MediaPlayer.MPMediaItemPropertyTitle
 import platform.MediaPlayer.MPNowPlayingInfoCenter
@@ -73,22 +74,41 @@ class IosAudioPlayer : AudioPlayer {
     }
 
     private fun updateNowPlayingInfo(title: String, isPlaying: Boolean) {
-        val infoCenter = MPNowPlayingInfoCenter.defaultCenter()
-        val info = mutableMapOf<Any?, Any?>().apply {
-            put(MPMediaItemPropertyTitle, title)
-            put(MPNowPlayingInfoPropertyPlaybackRate, if (isPlaying) 1.0 else 0.0)
-        }
-        @Suppress("UNCHECKED_CAST")
-        infoCenter.setNowPlayingInfo(info as Map<Any?, *>)
+        try {
+            val infoCenter = MPNowPlayingInfoCenter.defaultCenter()
+            val info = mutableMapOf<Any?, Any?>().apply {
+                put(MPMediaItemPropertyTitle, title)
+                put(MPNowPlayingInfoPropertyPlaybackRate, if (isPlaying) 1.0 else 0.0)
+            }
+            @Suppress("UNCHECKED_CAST")
+            infoCenter.setNowPlayingInfo(info as Map<Any?, *>)
+        } catch (_: Exception) {}
     }
 
     @OptIn(ExperimentalForeignApi::class)
     override fun play(source: AudioSource, startPositionMs: Long) {
+        // Clean up previous playback to prevent freezing/hanging when switching reciters
+        avPlayer.pause()
+        avPlayer.replaceCurrentItemWithPlayerItem(null)
+
         val nsUrl = when (source) {
             is AudioSource.RemoteUrl -> NSURL.URLWithString(source.url)
             is AudioSource.LocalFile -> NSURL.fileURLWithPath(source.path)
-            is AudioSource.LocalResource -> null
-        } ?: return
+            is AudioSource.LocalResource -> {
+                val bundle = NSBundle.mainBundle
+                bundle.URLForResource(source.name, withExtension = "mp3")
+                    ?: bundle.URLForResource(source.name, withExtension = "wav")
+                    ?: bundle.URLForResource(source.name, withExtension = "m4a")
+            }
+        } ?: run {
+            _playerState.update {
+                it.copy(
+                    status = AudioPlayerStatus.ERROR,
+                    errorMessage = "Audio source not found: $source"
+                )
+            }
+            return
+        }
 
         val playerItem = AVPlayerItem(uRL = nsUrl)
         avPlayer.replaceCurrentItemWithPlayerItem(playerItem)
@@ -99,7 +119,7 @@ class IosAudioPlayer : AudioPlayer {
         }
 
         avPlayer.play()
-        updateNowPlayingInfo("راديو القرآن الكريم", true)
+        updateNowPlayingInfo("زاد المؤمن", true)
 
         _playerState.update {
             it.copy(
@@ -114,20 +134,22 @@ class IosAudioPlayer : AudioPlayer {
 
     override fun pause() {
         avPlayer.pause()
-        updateNowPlayingInfo("راديو القرآن الكريم", false)
+        updateNowPlayingInfo("زاد المؤمن", false)
         _playerState.update { it.copy(status = AudioPlayerStatus.PAUSED) }
     }
 
     override fun resume() {
         avPlayer.play()
-        updateNowPlayingInfo("راديو القرآن الكريم", true)
+        updateNowPlayingInfo("زاد المؤمن", true)
         _playerState.update { it.copy(status = AudioPlayerStatus.PLAYING) }
     }
 
     override fun stop() {
         avPlayer.pause()
         avPlayer.replaceCurrentItemWithPlayerItem(null)
-        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo(null)
+        try {
+            MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo(null)
+        } catch (_: Exception) {}
         progressJob?.cancel()
         _playerState.update { AudioPlayerState() }
     }
