@@ -26,7 +26,7 @@ import zadelmomen.presentation.generated.resources.battery_optimization
 import zadelmomen.presentation.generated.resources.battery_optimization_description
 import zadelmomen.presentation.generated.resources.battery_settings_title
 import zadelmomen.presentation.generated.resources.ic_protected_privacy
-import zadelmomen.presentation.generated.resources.ic_setting_error_03
+import zadelmomen.presentation.generated.resources.ic_warning
 import zadelmomen.presentation.generated.resources.overlay_permission_description
 import zadelmomen.presentation.generated.resources.overlay_permission_title
 
@@ -50,13 +50,13 @@ fun BatteryOptimizationBottomSheet(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = localizedString(Res.string.battery_settings_title),
-                    style = Theme.textStyle.title.large,
+                    style = Theme.textStyle.label.medium,
                     color = Theme.color.primary.shadePrimary
                 )
                 Text(
                     text = localizedString(Res.string.battery_optimization_description),
-                    style = Theme.textStyle.body.small,
-                    color = Theme.color.secondary.secondaryText
+                    style = Theme.textStyle.label.medium,
+                    color = Theme.color.semantic.shadeTertiary
                 )
             }
 
@@ -64,7 +64,7 @@ fun BatteryOptimizationBottomSheet(
 
             // Battery Optimization Item
             PermissionItem(
-                icon = Res.drawable.ic_setting_error_03,
+                icon = Res.drawable.ic_warning,
                 title = Res.string.battery_optimization,
                 description = Res.string.background_permission_desc,
                 isGranted = !isBatteryOptimizationEnabled,

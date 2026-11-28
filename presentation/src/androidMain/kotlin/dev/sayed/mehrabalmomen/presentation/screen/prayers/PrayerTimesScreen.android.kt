@@ -53,7 +53,7 @@ import dev.sayed.mehrabalmomen.presentation.utils.CollectEffect
 import org.jetbrains.compose.resources.painterResource
 import zadelmomen.presentation.generated.resources.Res
 import zadelmomen.presentation.generated.resources.ic_moazen
-import zadelmomen.presentation.generated.resources.ic_setting_error_03
+import zadelmomen.presentation.generated.resources.ic_warning
 import zadelmomen.presentation.generated.resources.mozan_abed_albaset
 import zadelmomen.presentation.generated.resources.mozan_makkah
 import zadelmomen.presentation.generated.resources.mozan_mansoor_alzahrani
@@ -181,7 +181,7 @@ actual fun PrayerTimesScreen(
                             onClick = viewModel::openMoazenDialog
                         ),
                         AppBarAction(
-                            icon = painterResource(Res.drawable.ic_setting_error_03),
+                            icon = painterResource(Res.drawable.ic_warning),
                             onClick = viewModel::onBatteryWarningClick
                         )
                     )
