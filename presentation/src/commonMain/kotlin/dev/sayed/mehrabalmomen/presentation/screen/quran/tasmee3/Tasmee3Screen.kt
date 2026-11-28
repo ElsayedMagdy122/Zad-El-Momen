@@ -72,6 +72,12 @@ fun Tasmee3Screen(
     val hasSeenDisclaimer by viewModel.hasSeenDisclaimerFlow.collectAsStateWithLifecycle(initialValue = true)
     var showDisclaimerDialog by remember { mutableStateOf(false) }
 
+    val audioPermissionHandler = rememberAudioPermissionHandler(
+        onPermissionGranted = {
+            viewModel.startRecitationSession()
+        }
+    )
+
     LaunchedEffect(hasSeenDisclaimer) {
         if (!hasSeenDisclaimer) {
             showDisclaimerDialog = true
@@ -261,7 +267,11 @@ fun Tasmee3Screen(
                     if (uiState.isRecording) {
                         viewModel.stopRecitationSession()
                     } else {
-                        viewModel.startRecitationSession()
+                        if (audioPermissionHandler.hasPermission) {
+                            viewModel.startRecitationSession()
+                        } else {
+                            audioPermissionHandler.requestPermission()
+                        }
                     }
                 }
             )
@@ -272,7 +282,11 @@ fun Tasmee3Screen(
                 result = uiState.completionResult!!,
                 surahName = surahName,
                 onRestart = {
-                    viewModel.restartRecitationSession()
+                    if (audioPermissionHandler.hasPermission) {
+                        viewModel.restartRecitationSession()
+                    } else {
+                        audioPermissionHandler.requestPermission()
+                    }
                 },
                 onDismiss = { viewModel.dismissCompletionDialog() }
             )

@@ -536,7 +536,7 @@
     <string name="recitation_download_retry">Retry</string>
     <string name="recitation_download_cancel">Cancel &amp; Go Back</string>
     <string name="recitation_download_processing_msg">Downloaded successfully! Extracting and setting up AI files...</string>
-    <string name="recitation_download_progress_msg">Downloading AI files, please wait... (%1$s%%)</string>
+    <string name="recitation_download_progress_msg">Downloading AI files, please wait... (%1$s%)</string>
     <string name="recitation_download_cancel_long">Cancel Download &amp; Go Back</string>
     <string name="recitation_download_continue_background">Continue in Background</string>
     <string name="recitation_download_cancel_action">Cancel Download</string>

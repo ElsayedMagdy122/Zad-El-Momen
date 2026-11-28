@@ -241,12 +241,16 @@ class HighlightingViewModel(
 
     fun startModelDownload() {
         _uiState.update { it.copy(isDownloadingModel = true, downloadError = null) }
-        viewModelScope.launch(Dispatchers.Default) {
-            val success = modelDownloader.downloadAndPrepareModels()
-            if (success) {
-                _uiState.update { it.copy(isDownloadingModel = false, showDownloadDialog = false) }
-                sherpaEngine.initialize()
-                quranRepository.loadData()
+        try {
+            modelDownloader.startDownloadService()
+        } catch (_: Throwable) {
+            viewModelScope.launch(Dispatchers.Default) {
+                val success = modelDownloader.downloadAndPrepareModels()
+                if (success) {
+                    _uiState.update { it.copy(isDownloadingModel = false, showDownloadDialog = false) }
+                    sherpaEngine.initialize()
+                    quranRepository.loadData()
+                }
             }
         }
     }
@@ -260,6 +264,9 @@ class HighlightingViewModel(
     }
 
     fun cancelDownload() {
+        try {
+            modelDownloader.stopDownloadService()
+        } catch (_: Throwable) {}
         modelDownloader.resetState()
         _uiState.update {
             it.copy(
@@ -441,11 +448,13 @@ class HighlightingViewModel(
                 return@launch
             }
             tokenProcessor.reset()
-            audioPipeline.startStreaming()
+            _uiState.update { it.copy(isRecording = true, showCompletionDialog = false) }
+            audioPipeline.startStreaming {
+                _uiState.update { state -> state.copy(isRecording = false) }
+            }
             sherpaEngine.resetBuffer()
             lastProcessedText = ""
             isExpectingNewSegment = true
-            _uiState.update { it.copy(isRecording = true, showCompletionDialog = false) }
         }
     }
 

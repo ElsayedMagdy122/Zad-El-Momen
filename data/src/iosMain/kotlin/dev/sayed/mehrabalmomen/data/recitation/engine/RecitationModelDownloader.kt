@@ -12,4 +12,6 @@ actual class RecitationModelDownloader {
     actual fun isModelReady(): Boolean = true
     actual suspend fun downloadAndPrepareModels(): Boolean = true
     actual fun resetState() { _downloadState.value = ModelDownloadState.Ready }
+    actual fun startDownloadService() {}
+    actual fun stopDownloadService() {}
 }

@@ -8,4 +8,6 @@ expect class RecitationModelDownloader {
     fun isDownloading(): Boolean
     suspend fun downloadAndPrepareModels(): Boolean
     fun resetState()
+    fun startDownloadService()
+    fun stopDownloadService()
 }

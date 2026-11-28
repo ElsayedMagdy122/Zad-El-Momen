@@ -548,7 +548,7 @@
     <string name="recitation_download_retry">إعادة المحاولة</string>
     <string name="recitation_download_cancel">إلغاء والرجوع</string>
     <string name="recitation_download_processing_msg">تم التنزيل بنجاح! جاري فك ضغط وتثبيت ملفات الذكاء الاصطناعي...</string>
-    <string name="recitation_download_progress_msg">يتم الآن تحميل ملفات الذكاء الاصطناعي، يرجى الانتظار... (%1$s%%)</string>
+    <string name="recitation_download_progress_msg">يتم الآن تحميل ملفات الذكاء الاصطناعي، يرجى الانتظار... (%1$s%)</string>
     <string name="recitation_download_cancel_long">إلغاء التنزيل والرجوع</string>
     <string name="recitation_download_continue_background">المتابعة في الخلفية</string>
     <string name="recitation_download_cancel_action">إلغاء التنزيل</string>
